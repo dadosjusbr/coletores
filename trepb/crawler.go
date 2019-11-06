@@ -10,23 +10,26 @@ import (
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/charset"
 )
 
-func crawl(name, cpf string, month, year int) {
+func crawl(name, cpf string, month, year int) error {
 	acessCode, err := accessCode(name, cpf)
 	if err != nil {
-		log.Fatalf("Access Code Error: %q", err)
+		return fmt.Errorf("Access Code Error: %q", err)
 	}
 
 	data, err := queryData(acessCode, month, year)
 	if err != nil {
-		log.Fatalf("Query data error: %q", err)
+		return fmt.Errorf("Query data error: %q", err)
 	}
 
 	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", month, year)
 	if err = save(dataDesc, data); err != nil {
-		log.Fatalf("Error saving data to file: %q", err)
+		return fmt.Errorf("Error saving data to file: %q", err)
 	}
+
+	return nil
 }
 
 // queryData query server for data of a specified month and year.
@@ -37,6 +40,7 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error creating GET request to %s: %q", queryURL, err)
 	}
+	req.Header.Add("Accept-Charset", "utf-8")
 
 	doc, err := httpReq(req)
 	if err != nil {
@@ -67,8 +71,12 @@ func save(desc string, data []*html.Node) error {
 	defer f.Close()
 
 	for _, node := range data {
-		nodeReader := strings.NewReader(htmlquery.OutputHTML(node, true))
-		if io.Copy(f, nodeReader); err != nil {
+		r, err := charset.NewReader(strings.NewReader(htmlquery.OutputHTML(node, true)), "latin1")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err = io.Copy(f, r); err != nil {
 			os.Remove(fileName)
 			return fmt.Errorf("error copying response content to file: %q", err)
 		}

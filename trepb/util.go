@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"math"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -39,4 +42,37 @@ func substringBetween(str, before, after string) string {
 		return b[0]
 	}
 	return b[0][0 : len(b[0])-len(after)]
+}
+
+func retrieveFloat(row *html.Node, v *float64, xpath string) error {
+	r, err := htmlquery.Query(row, xpath)
+	if err != nil || r == nil {
+		return fmt.Errorf("error trying to find (%s): %q", xpath, err)
+	}
+
+	value, err := parseFloat(htmlquery.InnerText(r))
+	if err != nil {
+		return fmt.Errorf("error parsing float(%s): %q", htmlquery.InnerText(r), err)
+	}
+
+	*v = math.Abs(value)
+	return nil
+}
+
+func parseFloat(s string) (float64, error) {
+	s = strings.Trim(s, " ")
+	s = strings.Replace(s, ",", ".", 1)
+	if n := strings.Count(s, "."); n > 1 {
+		s = strings.Replace(s, ".", "", n-1)
+	}
+	return strconv.ParseFloat(s, 64)
+}
+
+func retrieveString(row *html.Node, s *string, xpath string) error {
+	r, err := htmlquery.Query(row, xpath)
+	if err != nil || r == nil {
+		return fmt.Errorf("error trying to find (%s): %q", xpath, err)
+	}
+	*s = strings.Trim((htmlquery.InnerText(r)), " ")
+	return nil
 }

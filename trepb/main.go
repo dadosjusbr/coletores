@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 )
 
@@ -15,5 +17,16 @@ func main() {
 		log.Fatalf("Need all arguments to continue, please try again\n")
 	}
 
-	crawl(*name, *cpf, *month, *year)
+	err := crawl(*name, *cpf, *month, *year)
+	if err != nil {
+		log.Fatalf("%q", err)
+	}
+
+	records, err := parser(*month, *year)
+	if err != nil {
+		log.Fatalf("%q", err)
+	}
+
+	jsonInfo, _ := json.Marshal(records)
+	fmt.Printf(`{"employees":%s}`, jsonInfo)
 }
