@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -13,27 +12,18 @@ import (
 	"golang.org/x/net/html"
 )
 
-func main() {
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	name := flag.String("nome", "", "Used for login purposes")
-	cpf := flag.String("cpf", "", "used for login purpose. format xxx.xxx.xxx-xx")
-	flag.Parse()
-	if *month == 0 || *year == 0 || *cpf == "" || *name == "" {
-		log.Fatalf("Need all arguments to continue, please try again\n")
-	}
-
-	acessCode, err := accessCode(*name, *cpf)
+func crawl(name, cpf string, month, year int) {
+	acessCode, err := accessCode(name, cpf)
 	if err != nil {
 		log.Fatalf("Access Code Error: %q", err)
 	}
 
-	data, err := queryData(acessCode, *month, *year)
+	data, err := queryData(acessCode, month, year)
 	if err != nil {
 		log.Fatalf("Query data error: %q", err)
 	}
 
-	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", *month, *year)
+	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", month, year)
 	if err = save(dataDesc, data); err != nil {
 		log.Fatalf("Error saving data to file: %q", err)
 	}
@@ -63,10 +53,14 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	return tables, nil
 }
 
-// save creates a file and save the data nodes to it.
+// save creates a file in the output folder and save the data nodes to it.
 func save(desc string, data []*html.Node) error {
+	if err := os.Mkdir("output", os.ModePerm); err != nil && !os.IsExist(err) {
+		return fmt.Errorf("error creating output folder(%s): %q", "/output", err)
+	}
+
 	fileName := fmt.Sprintf("%s.html", desc)
-	f, err := os.Create(fileName)
+	f, err := os.Create("./output/" + fileName)
 	if err != nil {
 		return fmt.Errorf("error creating file(%s):%q", fileName, err)
 	}
