@@ -44,6 +44,7 @@ func substringBetween(str, before, after string) string {
 	return b[0][0 : len(b[0])-len(after)]
 }
 
+// retrieveFloat makes an xpath query to the row and retrieve a float from inner text of the node found.
 func retrieveFloat(row *html.Node, v *float64, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
 	if err != nil || r == nil {
@@ -59,6 +60,7 @@ func retrieveFloat(row *html.Node, v *float64, xpath string) error {
 	return nil
 }
 
+// parseFloat makes the string with format "xx.xx,xx" able to be parsed by the strconv.ParseFloat and return it parsed.
 func parseFloat(s string) (float64, error) {
 	s = strings.Trim(s, " ")
 	s = strings.Replace(s, ",", ".", 1)
@@ -68,6 +70,7 @@ func parseFloat(s string) (float64, error) {
 	return strconv.ParseFloat(s, 64)
 }
 
+// retrieveString makes an xpath query to the row and retrieve the innerText of the node found.
 func retrieveString(row *html.Node, s *string, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
 	if err != nil || r == nil {

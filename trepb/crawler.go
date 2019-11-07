@@ -13,6 +13,8 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
+// crawl will access the TRE-PB api and retrieve payment files for a given month and year.
+// name and cpf might be necessary to get an api key if no access code is saved in cache file.
 func crawl(name, cpf string, month, year int) error {
 	acessCode, err := accessCode(name, cpf)
 	if err != nil {

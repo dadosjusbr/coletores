@@ -29,6 +29,7 @@ func Test_saveToCache(t *testing.T) {
 	assert.Equal(t, "hello", string(r))
 }
 
+// Test if the access code is retrieved from file if file exists.
 func Test_retrieveCachedCode(t *testing.T) {
 	cache := "cacheTest"
 	//Shouldn't throw error or retrieve any code, file does not exist.
@@ -49,6 +50,7 @@ func Test_retrieveCachedCode(t *testing.T) {
 	assert.Equal(t, "hello", code)
 }
 
+// Test if find question is returning the right question from the html.
 func Test_findQuestion(t *testing.T) {
 	passHTML := "<span>question</span>"
 	passDoc, err := html.Parse(strings.NewReader(passHTML))
@@ -89,6 +91,7 @@ func Test_findQuestion(t *testing.T) {
 	}
 }
 
+// Test if retrieveAccessCode is able to retrieve the correct code from the html.
 func Test_retrieveAcessCode(t *testing.T) {
 	page := `<input type="hidden" name="chaveDeAcesso" value="chaveDeAcesso1526349532185444432"` // AccessCode should have 32 characters
 	type args struct {
