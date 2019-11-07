@@ -56,3 +56,30 @@ func Test_substringBetween(t *testing.T) {
 		})
 	}
 }
+
+// Test if parseFloat will get the correct numbers from the parsed string.
+func Test_parseFloat(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     string
+		want    float64
+		wantErr bool
+	}{
+		{"units", "10,55", 10.55, false},
+		{"units without comma", "10.55", 10.55, false},
+		{"Thousands", "1.000,55", 1000.55, false},
+		{"Not a number", "sd", 0, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parseFloat(tt.arg)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parseFloat() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("parseFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

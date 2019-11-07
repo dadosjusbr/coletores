@@ -13,7 +13,7 @@ import (
 )
 
 var netClient = &http.Client{
-	Timeout: time.Second * 60,
+	Timeout: time.Second * 150,
 	CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	},
@@ -23,13 +23,13 @@ var netClient = &http.Client{
 func httpReq(req *http.Request) (*html.Node, error) {
 	resp, err := netClient.Do(req)
 	if err != nil {
-		//return nil, fmt.Errorf("error making request to %s: %q", reqURL., err)
+		return nil, fmt.Errorf("error making request to %s: %q", req.URL, err)
 	}
 	defer resp.Body.Close()
 
 	doc, err := htmlquery.Parse(resp.Body)
 	if err != nil {
-		//return nil, fmt.Errorf("error loading doc (%s): %q", reqURL, err)
+		return nil, fmt.Errorf("error loading doc (%s): %q", req.URL, err)
 	}
 	return doc, nil
 }
@@ -70,7 +70,7 @@ func parseFloat(s string) (float64, error) {
 	return strconv.ParseFloat(s, 64)
 }
 
-// retrieveString makes an xpath query to the row and retrieve the innerText of the node found.
+// retrieveString makes an xpath query to the row and retrieve the innerText of the node found trimmed for white spaces.
 func retrieveString(row *html.Node, s *string, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
 	if err != nil || r == nil {

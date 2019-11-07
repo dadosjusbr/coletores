@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	d "trepb/datastructures"
 
@@ -33,35 +34,39 @@ const (
 
 // parser will return a slice of employees for a given month and year
 func parser(month, year int) ([]d.Employee, error) {
-	table, err := loadTable(month, year)
-	if err != nil {
-		return nil, fmt.Errorf("error while loading data table: %q", err)
-	}
-
-	e, err := employeeRecords(table)
-	if err != nil {
-		return nil, fmt.Errorf("error while loading data table: %q", err)
-	}
-
-	return e, nil
-}
-
-// loadTable will load a table of a specific month and year that should be in the output/ directory
-func loadTable(month, year int) (*html.Node, error) {
 	fileName := fmt.Sprintf("./output/remuneracoes-trepb-%02d-%04d.html", month, year)
 	f, err := os.Open(fileName)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file (%s): %q", fileName, err)
 	}
 
-	doc, err := htmlquery.Parse(f)
+	table, err := loadTable(f)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing file html tree (%s): %q", fileName, err)
+		return nil, fmt.Errorf("error while loading data table from %s: %q", fileName, err)
 	}
 
-	table, err := htmlquery.Query(doc, `//*[@id="tblDetalhamentoFolhaPagamentoPessoal"]`)
+	e, err := employeeRecords(table)
 	if err != nil {
-		return nil, fmt.Errorf("error finding data table in file (%s): %q", fileName, err)
+		return nil, fmt.Errorf("error while parsing data from table (%s): %q", fileName, err)
+	}
+
+	return e, nil
+}
+
+// loadTable will load a the correct data table from an io.Reader that should hold an html page.
+func loadTable(r io.Reader) (*html.Node, error) {
+	doc, err := htmlquery.Parse(r)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing file html tree: %q", err)
+	}
+
+	tableXPath := `//*[@id="tblDetalhamentoFolhaPagamentoPessoal"]`
+	table, err := htmlquery.Query(doc, tableXPath)
+	if err != nil {
+		return nil, fmt.Errorf("error making xpathquery(%s) in file: %q", tableXPath, err)
+	}
+	if table == nil {
+		return nil, fmt.Errorf("error finding data table in file: %q", err)
 	}
 
 	return table, nil
