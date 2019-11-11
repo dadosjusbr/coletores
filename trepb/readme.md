@@ -14,12 +14,13 @@ Os dados devem estar de acordo com a [Resolução 102 do CNJ](https://atos.cnj.j
 
 - É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/).
 - Rode o comando abaixo, com mês, ano, cpf e nome que você quer ter acesso as informações
-- O nome deve ser completo. O cpf deve ter o formato xxx.xxx.xxx-xx. Informações para obter chave de acesso para a API.
+- Um arquivo .env com nome e cpf deve ser preenchido na pasta trepb
+	- O nome deve ser completo. O cpf deve ter o formato xxx.xxx.xxx-xx. Informações para obter chave de acesso para a API.
 
 ```sh
 cd crawler/trepb
 go build
-./trepb --mes=${MES} --ano=${ANO} --nome="${NOME COMPLETO}" --cpf="${CPF}"
+./trepb --mes=${MES} --ano=${ANO}"
 ```
 
 ## Dicionário de Dados
