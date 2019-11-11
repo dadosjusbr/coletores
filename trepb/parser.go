@@ -5,7 +5,8 @@ import (
 	"io"
 	"math"
 	"os"
-	d "trepb/storage"
+
+	d "github.com/dadosjusbr/storage"
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
