@@ -44,8 +44,25 @@ func substringBetween(str, before, after string) string {
 	return b[0][0 : len(b[0])-len(after)]
 }
 
+// getValue takes a float64 pointer and returns it's value or 0 if it's nil
+func getValue(p *float64) float64 {
+	if p == nil {
+		return 0
+	}
+	return *p
+}
+
+// sumMapValues takes a map of string -> float64 and return the sum of the map values.
+func sumMapValues(m map[string]float64) float64 {
+	var sum float64
+	for _, v := range m {
+		sum += v
+	}
+	return sum
+}
+
 // retrieveFloat makes an xpath query to the row and retrieve a float from inner text of the node found.
-func retrieveFloat(row *html.Node, v *float64, xpath string) error {
+func retrieveFloat(row *html.Node, v interface{}, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
 	if err != nil || r == nil {
 		return fmt.Errorf("error trying to find (%s): %q", xpath, err)
@@ -55,9 +72,17 @@ func retrieveFloat(row *html.Node, v *float64, xpath string) error {
 	if err != nil {
 		return fmt.Errorf("error parsing float(%s): %q", htmlquery.InnerText(r), err)
 	}
+	value = math.Abs(value)
 
-	*v = math.Abs(value)
-	return nil
+	if v, ok := v.(**float64); ok {
+		*v = &value
+		return nil
+	}
+	if v, ok := v.(*float64); ok {
+		*v = value
+		return nil
+	}
+	return fmt.Errorf("parameter v is not a pointer to a float or a pointer to pointer of float")
 }
 
 // parseFloat makes the string with format "xx.xx,xx" able to be parsed by the strconv.ParseFloat and return it parsed.

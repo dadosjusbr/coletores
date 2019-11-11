@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"os"
-	d "trepb/datastructures"
+	d "trepb/storage"
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
@@ -93,19 +94,20 @@ func employeeRecords(table *html.Node) ([]d.Employee, error) {
 
 // newEmployee will create a new employee from a row.
 func newEmployee(row *html.Node) (d.Employee, error) {
+	// Creating employee struct as needed.
 	var e d.Employee
+	e.Income = &d.IncomeDetails{Other: &d.Funds{}, Perks: &d.Perks{}}
+	e.Discounts = &d.Discount{}
+
 	if err := employeeBasicInfo(row, &e); err != nil {
 		return e, fmt.Errorf("error retrieving employee basic info: %q", err)
 	}
-	if err := employeeIncome(row, &e.Income); err != nil {
+	if err := employeeIncome(row, e.Income); err != nil {
 		return e, fmt.Errorf("error retrieving employee income info: %q", err)
 	}
-	if err := employeeDiscounts(row, &e.Discounts); err != nil {
+	if err := employeeDiscounts(row, e.Discounts); err != nil {
 		return e, fmt.Errorf("error retrieving employee discounts info: %q", err)
 	}
-	e.GrossIncome = grossIncome(e.Income)
-	e.TotalDiscounts = totalDiscounts(e.Discounts)
-	e.NetIncome = netIncome(e)
 	return e, nil
 }
 
@@ -125,16 +127,17 @@ func employeeBasicInfo(row *html.Node, e *d.Employee) error {
 }
 
 // employeeIncome will fetch Income info from the rows.
-func employeeIncome(row *html.Node, i *d.Income) error {
+func employeeIncome(row *html.Node, i *d.IncomeDetails) error {
 	if err := retrieveFloat(row, &i.Wage, wage); err != nil {
 		return fmt.Errorf("error retrieving Wage: %q", err)
 	}
-	if err := retrieveFloat(row, &i.Perks, perks); err != nil {
+	if err := retrieveFloat(row, &i.Perks.Total, perks); err != nil {
 		return fmt.Errorf("error retrieving perks: %q", err)
 	}
-	if err := employeeIncomeOthers(row, &i.Other); err != nil {
+	if err := employeeIncomeOthers(row, i.Other); err != nil {
 		return fmt.Errorf("error retrieving other incomes: %q", err)
 	}
+	i.Total = grossIncome(*i)
 	return nil
 }
 
@@ -169,9 +172,13 @@ func employeeDiscounts(row *html.Node, d *d.Discount) error {
 	if err := retrieveFloat(row, &d.IncomeTax, incomeTax); err != nil {
 		return fmt.Errorf("error retrieving incomeTax: %q", err)
 	}
-	if err := retrieveFloat(row, &d.Sundry, sundry); err != nil {
-		return fmt.Errorf("error retrieving sundry: %q", err)
+	var sundryV float64
+	if err := retrieveFloat(row, &sundryV, sundry); err != nil {
+		return fmt.Errorf("error retrieving incomeTax: %q", err)
 	}
+	d.Others = make(map[string]float64)
+	d.Others["Sundry"] = sundryV
+	d.Total = totalDiscounts(*d)
 	return nil
 }
 
@@ -181,20 +188,16 @@ func active(role string) bool {
 }
 
 // grossIncome returns the sum of incomes.
-func grossIncome(in d.Income) float64 {
-	o := in.Other
-	// Not accounted: Origin Position
-	totalOthers := o.PersonalBenefits + o.EventualBenefits +
-		o.PositionOfTrust + o.Daily + o.Gratification + o.Others
-	return in.Wage + in.Perks + totalOthers
+func grossIncome(in d.IncomeDetails) float64 {
+	o := *in.Other
+	totalOthers := getValue(o.PersonalBenefits) + getValue(o.EventualBenefits) +
+		getValue(o.PositionOfTrust) + getValue(o.Daily) + getValue(o.Gratification) + sumMapValues(o.Others)
+	total := getValue(in.Wage) + in.Perks.Total + totalOthers
+	return math.Round(total*100) / 100
 }
 
 // totalDiscounts returns the sum of discounts.
 func totalDiscounts(d d.Discount) float64 {
-	return d.PrevContribution + d.CeilRetention + d.IncomeTax + d.Sundry
-}
-
-// netIncome returns the net income for the employee.
-func netIncome(e d.Employee) float64 {
-	return e.GrossIncome - e.TotalDiscounts
+	total := *d.PrevContribution + *d.CeilRetention + *d.IncomeTax + sumMapValues(d.Others)
+	return math.Round(total*100) / 100
 }

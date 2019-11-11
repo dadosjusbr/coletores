@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	dt "trepb/datastructures"
+	dt "trepb/storage"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/stretchr/testify/assert"
@@ -48,6 +48,27 @@ func row() (*html.Node, error) {
 	return nil, nil
 }
 
+// expectedEmployee auxiliary function to create the expected employee struct.
+func expectedEmployee() dt.Employee {
+	zero := 0.0
+	pb := 7475.71
+	pt := 5990.88
+	expectedOthers := dt.Funds{PersonalBenefits: &pb, EventualBenefits: &zero, PositionOfTrust: &pt, Gratification: &zero, OriginPosition: &zero}
+	expectedPerks := dt.Perks{Total: 0}
+
+	wg := 16902.0
+	expectedIncome := dt.IncomeDetails{Total: 30368.59, Wage: &wg, Perks: &expectedPerks, Other: &expectedOthers}
+
+	prev := 2719.5
+	it := 6158.41
+	others := make(map[string]float64)
+	others["Sundry"] = 0
+	expectedDiscount := dt.Discount{Total: 8877.91, PrevContribution: &prev, CeilRetention: &zero, IncomeTax: &it, Others: others}
+	expected := dt.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: &expectedIncome,
+		Discounts: &expectedDiscount}
+	return expected
+}
+
 // Test if newEmployee is creating a new employee from a row with correct information.
 func Test_newEmployee(t *testing.T) {
 	row, err := row()
@@ -56,15 +77,8 @@ func Test_newEmployee(t *testing.T) {
 
 	e, err := newEmployee(row)
 
-	//Expected:
-	expectedOthers := dt.Funds{PersonalBenefits: 7475.71, EventualBenefits: 0, PositionOfTrust: 5990.88, Daily: 0, Gratification: 0, OriginPosition: 0, Others: 0}
-	expectedIncome := dt.Income{Wage: 16902, Perks: 0, Other: expectedOthers}
-	expectedDiscount := dt.Discount{PrevContribution: 2719.5, CeilRetention: 0, IncomeTax: 6158.41, Sundry: 0}
-	expected := dt.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: expectedIncome,
-		Discounts: expectedDiscount, GrossIncome: 30368.59, TotalDiscounts: 8877.91, NetIncome: 30368.59 - 8877.91}
-
 	assert.NoError(t, err)
-	assert.Equal(t, expected, e)
+	assert.Equal(t, expectedEmployee(), e)
 }
 
 func Test_totalDiscounts(t *testing.T) {
@@ -72,9 +86,7 @@ func Test_totalDiscounts(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	d := dt.Discount{PrevContribution: 2719.5, CeilRetention: 0, IncomeTax: 6158.41, Sundry: 0}
-
-	assert.Equal(t, 8877.91, totalDiscounts(d))
+	assert.Equal(t, 8877.91, totalDiscounts(*expectedEmployee().Discounts))
 }
 
 func Test_grossIncome(t *testing.T) {
@@ -82,10 +94,7 @@ func Test_grossIncome(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	o := dt.Funds{PersonalBenefits: 7475.71, EventualBenefits: 0, PositionOfTrust: 5990.88, Daily: 0, Gratification: 0, OriginPosition: 0, Others: 0}
-	income := dt.Income{Wage: 16902, Perks: 0, Other: o}
-
-	assert.Equal(t, 30368.59, grossIncome(income))
+	assert.Equal(t, 30368.59, grossIncome(*expectedEmployee().Income))
 }
 
 // Test if employeeIncome is collecting correct information from the row.
@@ -94,13 +103,9 @@ func Test_employeeIncome(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	var i = dt.Income{}
-
-	expectedOthers := dt.Funds{PersonalBenefits: 7475.71, EventualBenefits: 0, PositionOfTrust: 5990.88, Daily: 0, Gratification: 0, OriginPosition: 0, Others: 0}
-	expected := dt.Income{Wage: 16902, Perks: 0, Other: expectedOthers}
-
+	var i = dt.IncomeDetails{Perks: &dt.Perks{}, Other: &dt.Funds{}}
 	assert.NoError(t, employeeIncome(row, &i))
-	assert.Equal(t, expected, i)
+	assert.Equal(t, *expectedEmployee().Income, i)
 }
 
 // Test if employeeIncomeOthers is collecting correct information from the row.
@@ -111,7 +116,7 @@ func Test_employeeIncomeOthers(t *testing.T) {
 
 	var o = dt.Funds{}
 	assert.NoError(t, employeeIncomeOthers(row, &o))
-	assert.Equal(t, dt.Funds{PersonalBenefits: 7475.71, EventualBenefits: 0, PositionOfTrust: 5990.88, Gratification: 0, OriginPosition: 0}, o)
+	assert.Equal(t, *expectedEmployee().Income.Other, o)
 }
 
 // Test if employeeBasicInfo is collecting correct information from the row.
@@ -133,7 +138,7 @@ func Test_employeeDiscounts(t *testing.T) {
 
 	var d = dt.Discount{}
 	assert.NoError(t, employeeDiscounts(row, &d))
-	assert.Equal(t, dt.Discount{PrevContribution: 2719.5, CeilRetention: 0, IncomeTax: 6158.41, Sundry: 0}, d)
+	assert.Equal(t, *expectedEmployee().Discounts, d)
 }
 
 // Test if loadTable is loading the correct html table from reader.
