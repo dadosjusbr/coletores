@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -15,7 +14,7 @@ import (
 
 // crawl will access the TRE-PB api and retrieve payment files for a given month and year.
 // name and cpf might be necessary to get an api key if no access code is saved in cache file.
-func crawl(name, cpf string, month, year int) error {
+func crawl(outputFolder, name, cpf string, month, year int) error {
 	acessCode, err := accessCode(name, cpf)
 	if err != nil {
 		return fmt.Errorf("Access Code Error: %q", err)
@@ -27,10 +26,9 @@ func crawl(name, cpf string, month, year int) error {
 	}
 
 	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", month, year)
-	if err = save(dataDesc, data); err != nil {
+	if err = save(dataDesc, outputFolder, data); err != nil {
 		return fmt.Errorf("Error saving data to file: %q", err)
 	}
-
 	return nil
 }
 
@@ -60,22 +58,23 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 }
 
 // save creates a file in the output folder and save the data nodes to it.
-func save(desc string, data []*html.Node) error {
-	if err := os.Mkdir("output", os.ModePerm); err != nil && !os.IsExist(err) {
+func save(desc, outputFolder string, data []*html.Node) error {
+	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
 		return fmt.Errorf("error creating output folder(%s): %q", "/output", err)
 	}
 
 	fileName := fmt.Sprintf("%s.html", desc)
-	f, err := os.Create("./output/" + fileName)
+	filePath := fmt.Sprintf("./%s/%s", outputFolder, fileName)
+	f, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("error creating file(%s):%q", fileName, err)
+		return fmt.Errorf("error creating file(%s):%q", filePath, err)
 	}
 	defer f.Close()
 
 	for _, node := range data {
 		r, err := charset.NewReader(strings.NewReader(htmlquery.OutputHTML(node, true)), "latin1")
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if _, err = io.Copy(f, r); err != nil {
