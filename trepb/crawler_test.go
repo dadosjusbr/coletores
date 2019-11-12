@@ -12,7 +12,8 @@ import (
 )
 
 func Test_save(t *testing.T) {
-	parsedHTML, err := html.Parse(strings.NewReader("<table></table>"))
+	table := "<table><tbody><tr><td>éâõ</td></tr></tbody></table>"
+	parsedHTML, err := html.Parse(strings.NewReader(table))
 	assert.NoError(t, err)
 	tables, err := htmlquery.QueryAll(parsedHTML, "//table")
 	assert.NoError(t, err)
@@ -21,6 +22,6 @@ func Test_save(t *testing.T) {
 	f, err := os.Open("./testFolder/file.html")
 	assert.NoError(t, err)
 	content, err := ioutil.ReadAll(f)
-	assert.Equal(t, "<table></table>", string(content))
+	assert.Equal(t, table, string(content))
 	assert.NoError(t, os.RemoveAll("./testFolder"))
 }
