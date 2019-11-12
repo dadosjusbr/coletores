@@ -82,9 +82,8 @@ func Test_findQuestion(t *testing.T) {
 			got, err := findQuestion(tt.args.doc, tt.args.xpath)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("findQuestion() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
-			if got != tt.want {
+			if !tt.wantErr && got != tt.want {
 				t.Errorf("findQuestion() = %v, want %v", got, tt.want)
 			}
 		})
