@@ -25,12 +25,20 @@ func main() {
 	if *month == 0 || *year == 0 || cpf == "" || name == "" {
 		log.Fatalf("Need all arguments to continue, please try again.\n")
 	}
+	if outputFolder == "" {
+		outputFolder = "./output"
+	}
 
-	if err := crawl(outputFolder, name, cpf, *month, *year); err != nil {
+	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
+		log.Fatalf("Error creating output folder(%s): %q", outputFolder, err)
+	}
+	filePath := filePath(outputFolder, *month, *year)
+
+	if err := crawl(filePath, name, cpf, *month, *year); err != nil {
 		log.Fatalf("Crawler error: %q", err)
 	}
 
-	records, err := parse(*month, *year, outputFolder)
+	records, err := parse(filePath)
 	if err != nil {
 		log.Fatalf("Parser error: %q", err)
 	}

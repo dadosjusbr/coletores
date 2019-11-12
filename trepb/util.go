@@ -34,7 +34,12 @@ func httpReq(req *http.Request) (*html.Node, error) {
 	return doc, nil
 }
 
-//substringBetween returns the substring in str between before and after strings.
+// filePath returns the path that will be used for the saved file.
+func filePath(outputFolder string, month, year int) string {
+	return fmt.Sprintf("./%s/remuneracoes-trepb-%02d-%04d.html", outputFolder, month, year)
+}
+
+// substringBetween returns the substring in str between before and after strings.
 func substringBetween(str, before, after string) string {
 	a := strings.SplitAfterN(str, before, 2)
 	b := strings.SplitAfterN(a[len(a)-1], after, 2)

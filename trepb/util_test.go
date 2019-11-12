@@ -85,6 +85,7 @@ func Test_parseFloat(t *testing.T) {
 	}
 }
 
+// Test if retrieveFloat is able to save to both pointer and value and returns correct values.
 func Test_retrieveFloat(t *testing.T) {
 	htmlSample := `<table><tr><td id="h01">115</td>
 	<td id="h02">115.10</td>
@@ -140,6 +141,7 @@ func Test_retrieveFloat(t *testing.T) {
 	}
 }
 
+// Test if retrieveString retrieves the correct strings.
 func Test_retrieveString(t *testing.T) {
 	htmlSample := `<table><tr>
 	<td id="h01">hello World</td>

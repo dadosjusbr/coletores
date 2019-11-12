@@ -36,22 +36,21 @@ const (
 	originPositionXPath = `//*[@class="c16"]`
 )
 
-// parser will return a slice of employees for a given month and year
-func parse(month, year int, outputFolder string) ([]storage.Employee, error) {
-	fileName := fmt.Sprintf("./%s/remuneracoes-trepb-%02d-%04d.html", outputFolder, month, year)
-	f, err := os.Open(fileName)
+// parser takes a filepath and will return a slice of employees extracted from the file
+func parse(filePath string) ([]storage.Employee, error) {
+	f, err := os.Open(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("error opening file (%s): %q", fileName, err)
+		return nil, fmt.Errorf("error opening file (%s): %q", filePath, err)
 	}
 
 	table, err := loadTable(f)
 	if err != nil {
-		return nil, fmt.Errorf("error while loading data table from %s: %q", fileName, err)
+		return nil, fmt.Errorf("error while loading data table from %s: %q", filePath, err)
 	}
 
 	e, err := employeeRecords(table)
 	if err != nil {
-		return nil, fmt.Errorf("error while parsing data from table (%s): %q", fileName, err)
+		return nil, fmt.Errorf("error while parsing data from table (%s): %q", filePath, err)
 	}
 
 	return e, nil

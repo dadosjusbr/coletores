@@ -14,7 +14,7 @@ import (
 
 // crawl will access the TRE-PB api and retrieve payment files for a given month and year.
 // name and cpf might be necessary to get an api key if no access code is saved in cache file.
-func crawl(outputFolder, name, cpf string, month, year int) error {
+func crawl(filePath, name, cpf string, month, year int) error {
 	acessCode, err := accessCode(name, cpf)
 	if err != nil {
 		return fmt.Errorf("Access Code Error: %q", err)
@@ -25,8 +25,7 @@ func crawl(outputFolder, name, cpf string, month, year int) error {
 		return fmt.Errorf("Query data error: %q", err)
 	}
 
-	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", month, year)
-	if err = save(dataDesc, outputFolder, data); err != nil {
+	if err = save(filePath, data); err != nil {
 		return fmt.Errorf("Error saving data to file: %q", err)
 	}
 	return nil
@@ -57,14 +56,8 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	return tables, nil
 }
 
-// save creates a file in the output folder and save the data nodes to it.
-func save(desc, outputFolder string, data []*html.Node) error {
-	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-		return fmt.Errorf("error creating output folder(%s): %q", "/output", err)
-	}
-
-	fileName := fmt.Sprintf("%s.html", desc)
-	filePath := fmt.Sprintf("./%s/%s", outputFolder, fileName)
+// save creates a file in the filePath and save the data nodes to it.
+func save(filePath string, data []*html.Node) error {
 	f, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("error creating file(%s):%q", filePath, err)
@@ -78,7 +71,7 @@ func save(desc, outputFolder string, data []*html.Node) error {
 		}
 
 		if _, err = io.Copy(f, r); err != nil {
-			os.Remove(fileName)
+			os.Remove(filePath)
 			return fmt.Errorf("error copying response content to file: %q", err)
 		}
 	}
