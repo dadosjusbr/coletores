@@ -13,7 +13,7 @@ import (
 )
 
 var netClient = &http.Client{
-	Timeout: time.Second * 150,
+	Timeout: time.Second * 180,
 	CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	},
