@@ -1,42 +1,34 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/charset"
 )
 
-func main() {
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	name := flag.String("nome", "", "Used for login purposes")
-	cpf := flag.String("cpf", "", "used for login purpose. format xxx.xxx.xxx-xx")
-	flag.Parse()
-	if *month == 0 || *year == 0 || *cpf == "" || *name == "" {
-		log.Fatalf("Need all arguments to continue, please try again\n")
-	}
-
-	acessCode, err := accessCode(*name, *cpf)
+// crawl will access the TRE-PB api and retrieve payment files for a given month and year.
+// name and cpf might be necessary to get an api key if no access code is saved in cache file.
+func crawl(filePath, name, cpf string, month, year int) error {
+	acessCode, err := accessCode(name, cpf)
 	if err != nil {
-		log.Fatalf("Access Code Error: %q", err)
+		return fmt.Errorf("Access Code Error: %q", err)
 	}
 
-	data, err := queryData(acessCode, *month, *year)
+	data, err := queryData(acessCode, month, year)
 	if err != nil {
-		log.Fatalf("Query data error: %q", err)
+		return fmt.Errorf("Query data error: %q", err)
 	}
 
-	dataDesc := fmt.Sprintf("remuneracoes-trepb-%02d-%04d", *month, *year)
-	if err = save(dataDesc, data); err != nil {
-		log.Fatalf("Error saving data to file: %q", err)
+	if err = save(filePath, data); err != nil {
+		return fmt.Errorf("Error saving data to file: %q", err)
 	}
+	return nil
 }
 
 // queryData query server for data of a specified month and year.
@@ -47,6 +39,7 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error creating GET request to %s: %q", queryURL, err)
 	}
+	req.Header.Add("Accept-Charset", "utf-8")
 
 	doc, err := httpReq(req)
 	if err != nil {
@@ -63,19 +56,22 @@ func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	return tables, nil
 }
 
-// save creates a file and save the data nodes to it.
-func save(desc string, data []*html.Node) error {
-	fileName := fmt.Sprintf("%s.html", desc)
-	f, err := os.Create(fileName)
+// save creates a file in the filePath and save the data nodes to it.
+func save(filePath string, data []*html.Node) error {
+	f, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("error creating file(%s):%q", fileName, err)
+		return fmt.Errorf("error creating file(%s):%q", filePath, err)
 	}
 	defer f.Close()
 
 	for _, node := range data {
-		nodeReader := strings.NewReader(htmlquery.OutputHTML(node, true))
-		if io.Copy(f, nodeReader); err != nil {
-			os.Remove(fileName)
+		r, err := charset.NewReader(strings.NewReader(htmlquery.OutputHTML(node, true)), "latin1")
+		if err != nil {
+			return fmt.Errorf("error creating new reader from table node: %q", err)
+		}
+
+		if _, err = io.Copy(f, r); err != nil {
+			os.Remove(filePath)
 			return fmt.Errorf("error copying response content to file: %q", err)
 		}
 	}
