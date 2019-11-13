@@ -67,7 +67,7 @@ func save(filePath string, data []*html.Node) error {
 	for _, node := range data {
 		r, err := charset.NewReader(strings.NewReader(htmlquery.OutputHTML(node, true)), "latin1")
 		if err != nil {
-			return err
+			return fmt.Errorf("error creating new reader from table node: %q", err)
 		}
 
 		if _, err = io.Copy(f, r); err != nil {

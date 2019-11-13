@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -22,8 +21,8 @@ func main() {
 	cpf := os.Getenv("CPF")
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	flag.Parse()
-	if *month == 0 || *year == 0 || cpf == "" || name == "" {
-		log.Fatalf("Need all arguments to continue, please try again.\n")
+	if *month == 0 || *year == 0 {
+		log.Fatalf("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
 	}
 	if outputFolder == "" {
 		outputFolder = "./output"
@@ -35,12 +34,12 @@ func main() {
 	filePath := filePath(outputFolder, *month, *year)
 
 	if err := crawl(filePath, name, cpf, *month, *year); err != nil {
-		log.Fatalf("Crawler error: %q", err)
+		log.Fatalf("Crawler error(%02d-%04d): %q", *month, *year, err)
 	}
 
 	records, err := parse(filePath)
 	if err != nil {
-		log.Fatalf("Parser error: %q", err)
+		log.Fatalf("Parser error(%02d-%04d): %q", *month, *year, err)
 	}
 
 	employees, err := json.MarshalIndent(records, "\n", "  ")

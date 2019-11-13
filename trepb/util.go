@@ -36,7 +36,7 @@ func httpReq(req *http.Request) (*html.Node, error) {
 
 // filePath returns the path that will be used for the saved file.
 func filePath(outputFolder string, month, year int) string {
-	return fmt.Sprintf("./%s/remuneracoes-trepb-%02d-%04d.html", outputFolder, month, year)
+	return fmt.Sprintf("%s/remuneracoes-trepb-%02d-%04d.html", outputFolder, month, year)
 }
 
 // substringBetween returns the substring in str between before and after strings.

@@ -147,6 +147,10 @@ func findQuestion(doc *html.Node, xpath string) (string, error) {
 
 // login makes a login request and returns an accessCode if found.
 func login(question, ans, name, cpf string) (string, error) {
+	if name == "" || cpf == "" {
+		return "", fmt.Errorf("name or cpf are empty, need both to perform login attempt")
+	}
+
 	resp, err := loginRequest(question, ans, name, cpf)
 	if err != nil {
 		return "", fmt.Errorf("error while trying to make a login request: %q", err)
@@ -154,7 +158,7 @@ func login(question, ans, name, cpf string) (string, error) {
 
 	code := retrieveAcessCode(resp)
 	if code == "" {
-		return "", fmt.Errorf("couldn't retrieve access code. Question: %s. Answer: %s", question, ans)
+		return "", fmt.Errorf("no access code found. Question: %s. Answer: %s. CPF: %s. Name: %s", question, ans, cpf, name)
 	}
 
 	err = saveToCache(code, accessCodeCache)
