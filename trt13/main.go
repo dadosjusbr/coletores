@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -35,16 +36,14 @@ func main() {
 		log.Fatalf("Crawler error(%02d-%04d): %q", *month, *year, err)
 	}
 
-	err := parse(filePath)
+	records, err := parse(filePath)
 	if err != nil {
 		log.Fatalf("Parser error(%02d-%04d): %q", *month, *year, err)
 	}
 
-	/**
 	employees, err := json.MarshalIndent(records, "\n", "  ")
 	if err != nil {
 		log.Fatalf("JSON marshaling error: %q", err)
 	}
 	fmt.Printf("%s", employees)
-	**/
 }

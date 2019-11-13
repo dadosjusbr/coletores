@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func getValue(m map[string]interface{}, key string) interface{} {
 	v, ok := m[key]
@@ -38,7 +40,11 @@ func getString(v *string, m map[string]interface{}, key string) error {
 	value := getValue(m, key)
 	valueStr, ok := value.(string)
 	if value == nil || !ok {
-		return fmt.Errorf("value not retrieved or is not a string(key: %s, value: %v)", key, value)
+		if valueF, ok := value.(float64); ok {
+			valueStr = fmt.Sprintf("%.0f", valueF)
+		} else {
+			return fmt.Errorf("value not retrieved or is not a string(key: %s, value: %v)", key, value)
+		}
 	}
 	*v = valueStr
 	return nil
