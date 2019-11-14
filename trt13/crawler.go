@@ -12,6 +12,7 @@ var netClient = &http.Client{
 	Timeout: time.Second * 60,
 }
 
+// crawl takes a month and year and retrieve payment informations from trt13 from these, saving into filePath
 func crawl(filePath string, month, year int) error {
 	f, err := os.Create(filePath)
 	if err != nil {
@@ -27,6 +28,7 @@ func crawl(filePath string, month, year int) error {
 	return nil
 }
 
+// download makes a req to reqURL and saves response body to an io.Writer.
 func download(reqURL string, w io.Writer) error {
 	req, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
