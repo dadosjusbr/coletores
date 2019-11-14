@@ -61,17 +61,25 @@ func getSliceOfMaps(m map[string]interface{}, key string) ([]map[string]interfac
 
 // getString retrieves a string from map using key, saves it in "v". returns error if string is not found.
 func getString(v *string, m map[string]interface{}, key string) error {
-	value := getValue(m, key)
-	valueStr, ok := value.(string)
-	if value == nil || !ok {
-		if valueF, ok := value.(float64); ok {
-			valueStr = fmt.Sprintf("%.0f", valueF)
-		} else {
-			return fmt.Errorf("value not retrieved or is not a string(key: %s, value: %v)", key, value)
-		}
+	value, ok := m[key]
+	if !ok {
+		return fmt.Errorf("Value couldn't be retrieved: key %s", key)
 	}
-	*v = valueStr
-	return nil
+
+	if valueStr, ok := value.(string); ok {
+		*v = valueStr
+		return nil
+	}
+	if valueF, ok := value.(float64); ok {
+		*v = fmt.Sprintf("%.0f", valueF)
+		return nil
+	}
+	if ok && value == nil {
+		return nil
+	}
+
+	return fmt.Errorf("value not retrieved or is not a string(key: %s, value: %v)", key, value)
+
 }
 
 // getFloat64 retrieves a float64 from map using key and saves it in "v". returns error if float is not found.
