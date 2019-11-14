@@ -1,8 +1,28 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 )
+
+// readJSON takes a filepath that should contain a json file and returns it as a map.
+func readJSON(filePath string) (map[string]interface{}, error) {
+	jsonFile, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error trying to open file at (%s) : %q", filePath, err)
+	}
+	defer jsonFile.Close()
+
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	var result map[string]interface{}
+	err = json.Unmarshal(byteValue, &result)
+	if err != nil {
+		return nil, fmt.Errorf("error trying to unmarshal json: %q", err)
+	}
+	return result, nil
+}
 
 // getValue tries to retrieve a value from map with key, return nil if none found.
 func getValue(m map[string]interface{}, key string) interface{} {

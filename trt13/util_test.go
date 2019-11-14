@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"os"
 	"reflect"
 	"testing"
 
@@ -20,6 +21,22 @@ func jsonExample(j string) (map[string]interface{}, error) {
 	var empSample map[string]interface{}
 	err := json.Unmarshal([]byte(j), &empSample)
 	return empSample, err
+}
+
+func Test_readJSON(t *testing.T) {
+	f, err := os.Create("./_test.json")
+	assert.NoError(t, err)
+	_, err = f.Write([]byte(getValueSample))
+	assert.NoError(t, err)
+
+	actual, err := readJSON("./_test.json")
+	assert.NoError(t, err)
+	expected, err := jsonExample(getValueSample)
+	assert.NoError(t, err)
+	assert.Equal(t, actual, expected)
+	assert.NoError(t, os.Remove("./_test.json"))
+	_, err = readJSON("_invalidPath")
+	assert.Error(t, err)
 }
 
 func Test_getMap(t *testing.T) {

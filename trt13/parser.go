@@ -1,16 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math"
-	"os"
 	"strings"
 
 	storage "github.com/dadosjusbr/storage"
 )
 
+// parse takes a json filePath and retrieve the array of employees from it.
 func parse(filePath string) ([]storage.Employee, error) {
 	resultJSON, err := readJSON(filePath)
 	if err != nil {
@@ -22,23 +20,6 @@ func parse(filePath string) ([]storage.Employee, error) {
 		return nil, fmt.Errorf("error parsing employees: %q", err)
 	}
 	return emps, nil
-}
-
-// readJSON takes a filepath that should contain a json file and returns it as a map.
-func readJSON(filePath string) (map[string]interface{}, error) {
-	jsonFile, err := os.Open(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("error trying to open file at (%s) : %q", filePath, err)
-	}
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	var result map[string]interface{}
-	err = json.Unmarshal(byteValue, &result)
-	if err != nil {
-		return nil, fmt.Errorf("error trying to unmarshal json: %q", err)
-	}
-	return result, nil
 }
 
 // parseEmployees takes a map in the format returned from the trt13 api and retrieves employees list.
@@ -187,7 +168,7 @@ func employeeIncomeOthers(o *storage.Funds, emp map[string]interface{}) error {
 func employeeDiscounts(d *storage.Discount, emp map[string]interface{}) error {
 	discountsMap, err := getMap(emp, "descontos")
 	if err != nil {
-		return fmt.Errorf("couldn't retrieve discounts map (k: rendimentos): %q", err)
+		return fmt.Errorf("couldn't retrieve discounts map (k: descontos): %q", err)
 	}
 	if err := getFloat64(&d.PrevContribution, discountsMap, "previdenciaPublica"); err != nil {
 		return fmt.Errorf("couldn't retrieve employee Prev Contribution: %q", err)

@@ -32,18 +32,21 @@ const empSample = `{
 }`
 
 var (
-	pb   = 2.0
-	eb   = 3.0
-	pt   = 4.0
-	d    = 5.0
-	grat = 6.0
-	orig = 7.0
+	two   = 2.0
+	three = 3.0
+	four  = 4.0
+	five  = 5.0
+	six   = 6.0
+	seven = 7.0
 )
-var expectedEmployeeBasicInfo = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor"}
-var expectedIncomeOthers = storage.Funds{PersonalBenefits: &pb, EventualBenefits: &eb, PositionOfTrust: &pt, Daily: &d, Gratification: &grat, OriginPosition: &orig}
-var expectedDiscounts = storage.Discount{PrevContribution: &pb, IncomeTax: &eb, CeilRetention: &d, Others: map[string]float64{"sundry": 4}, Total: 14}
-var expectedIncome = storage.IncomeDetails{Wage: &orig, Perks: &storage.Perks{Total: 0}, Other: &expectedIncomeOthers}
-var expectedNewEmployee = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor", Income: &expectedIncome, Discounts: &expectedDiscounts}
+var (
+	expectedEmployeeBasicInfo = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor"}
+	expectedIncomeOthers      = storage.Funds{PersonalBenefits: &two, EventualBenefits: &three, PositionOfTrust: &four, Daily: &five, Gratification: &six, OriginPosition: &seven}
+	expectedDiscounts         = storage.Discount{PrevContribution: &two, IncomeTax: &three, CeilRetention: &five, Others: map[string]float64{"sundry": 4}, Total: 14}
+	perks                     = storage.Perks{Total: 5}
+	expectedIncome            = storage.IncomeDetails{Total: 32, Wage: &seven, Perks: &perks, Other: &expectedIncomeOthers}
+	expectedNewEmployee       = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor", Income: &expectedIncome, Discounts: &expectedDiscounts}
+)
 
 func Test_employeeType(t *testing.T) {
 	tests := []struct {
@@ -141,29 +144,30 @@ func Test_employeeIncomeOthers(t *testing.T) {
 		{"missing eventual benefits",
 			args{&o, map[string]interface{}{"rendimentos": map[string]interface{}{
 				"vantagensPessoais": 0.0,
-			}}}, true, nil},
-
+			}}}, true, nil,
+		},
 		{"missing gratification",
 			args{&o, map[string]interface{}{"rendimentos": map[string]interface{}{
 				"vantagensPessoais": 0.0, "vantagensEventuais": 0.0,
-			}}}, true, nil},
-
+			}}}, true, nil,
+		},
 		{"missing Position Of Trust",
 			args{&o, map[string]interface{}{"rendimentos": map[string]interface{}{
 				"vantagensPessoais": 0.0, "vantagensEventuais": 0.0, "gratificacao": 0.0,
-			}}}, true, nil},
-
+			}}}, true, nil,
+		},
 		{"missing Origin Position",
 			args{&o, map[string]interface{}{"rendimentos": map[string]interface{}{
 				"vantagensPessoais": 0.0, "vantagensEventuais": 0.0, "gratificacao": 0.0,
 				"subsidio": 0.0,
-			}}}, true, nil},
-
+			}}}, true, nil,
+		},
 		{"missing Daily",
 			args{&o, map[string]interface{}{"rendimentos": map[string]interface{}{
 				"vantagensPessoais": 0.0, "vantagensEventuais": 0.0, "gratificacao": 0.0,
 				"subsidio": 0.0,
-			}, "remuneracaoOrgaoOrigem": 0.0}}, true, nil},
+			}, "remuneracaoOrgaoOrigem": 0.0}}, true, nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -193,6 +197,26 @@ func Test_employeeDiscounts(t *testing.T) {
 		want    *storage.Discount
 	}{
 		{"ok", args{&d, j}, false, &expectedDiscounts},
+		{"missing discounts map", args{&d, map[string]interface{}{}}, true, nil},
+		{"missing PrevContribution", args{&d, map[string]interface{}{"descontos": map[string]interface{}{}}}, true, nil},
+		{"missing IncomeTax",
+			args{&d, map[string]interface{}{"descontos": map[string]interface{}{
+				"previdenciaPublica": 0.,
+			}}},
+			true, nil,
+		},
+		{"missing CeilRetention",
+			args{&d, map[string]interface{}{"descontos": map[string]interface{}{
+				"previdenciaPublica": 0., "impostoRenda": 0.,
+			}}},
+			true, nil,
+		},
+		{"missing sundry",
+			args{&d, map[string]interface{}{"descontos": map[string]interface{}{
+				"previdenciaPublica": 0., "impostoRenda": 0., "retencaoTeto": 0.,
+			}}},
+			true, nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -204,4 +228,49 @@ func Test_employeeDiscounts(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_employeeIncome(t *testing.T) {
+	j, err := jsonExample(empSample)
+	assert.NoError(t, err)
+	in := storage.IncomeDetails{Other: &storage.Funds{}, Perks: &storage.Perks{}}
+
+	type args struct {
+		in  *storage.IncomeDetails
+		emp map[string]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+		want    *storage.IncomeDetails
+	}{
+		{"ok", args{&in, j}, false, &expectedIncome},
+		{"missing income map", args{&in, map[string]interface{}{}}, true, nil},
+		{"missing wage", args{&in, map[string]interface{}{"rendimentos": map[string]interface{}{}}}, true, nil},
+		{"missing perks", args{&in, map[string]interface{}{"rendimentos": map[string]interface{}{
+			"remuneracaoParadigma": 0.,
+		}}}, true, nil},
+		{"missing incomeOthers", args{&in, map[string]interface{}{"rendimentos": map[string]interface{}{
+			"remuneracaoParadigma": 0., "indenizacoes": 0.,
+		}}}, true, nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := employeeIncome(tt.args.in, tt.args.emp); (err != nil) != tt.wantErr {
+				t.Errorf("employeeIncome() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr && !reflect.DeepEqual(tt.args.in, tt.want) {
+				t.Errorf("employeeIncome() result error. got: %v, want %v", tt.args.in, tt.want)
+			}
+		})
+	}
+}
+
+func Test_newEmployee(t *testing.T) {
+	j, err := jsonExample(empSample)
+	assert.NoError(t, err)
+	e, err := newEmployee(j, "Servidores Ativos")
+	assert.NoError(t, err)
+	assert.Equal(t, expectedNewEmployee, e)
 }
