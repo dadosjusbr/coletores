@@ -10,6 +10,7 @@ import (
 
 const getValueSample = `{"float64":872.0,
 "string":"ABIA",
+"latin": "àôãõç",
 "map": {"a": "a"},
 "list": ["1", "2", "3"],
 "mapSlice": [{}]
@@ -49,6 +50,8 @@ func Test_getString(t *testing.T) {
 	var result string
 	assert.NoError(t, getString(&result, sample, "string"))
 	assert.Equal(t, "ABIA", result)
+	assert.NoError(t, getString(&result, sample, "latin"))
+	assert.Equal(t, "àôãõç", result)
 	assert.NoError(t, getString(&result, sample, "float64"))
 	assert.Equal(t, "872", result)
 	assert.Error(t, getString(&result, sample, "map"))
