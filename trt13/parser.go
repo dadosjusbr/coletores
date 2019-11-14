@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"strings"
 
@@ -23,6 +24,7 @@ func parse(filePath string) ([]storage.Employee, error) {
 	return emps, nil
 }
 
+// readJSON takes a filepath that should contain a json file and returns it as a map.
 func readJSON(filePath string) (map[string]interface{}, error) {
 	jsonFile, err := os.Open(filePath)
 	if err != nil {
@@ -39,6 +41,7 @@ func readJSON(filePath string) (map[string]interface{}, error) {
 	return result, nil
 }
 
+// parseEmployees takes a map in the format returned from the trt13 api and retrieves employees list.
 func parseEmployees(m map[string]interface{}) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	mapArray, err := getSliceOfMaps(m, "listaAnexoviiiServidorMagistradoPensionista")
@@ -55,6 +58,7 @@ func parseEmployees(m map[string]interface{}) ([]storage.Employee, error) {
 	return employees, nil
 }
 
+// parseCategory will parse a category of employees and return the employee list.
 func parseCategory(category map[string]interface{}) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	var catInfo string
@@ -77,6 +81,7 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 	return employees, nil
 }
 
+// newEmployee creates an employee from a json map.
 func newEmployee(emp map[string]interface{}, catInfo string) (storage.Employee, error) {
 	// Creating employee struct as needed.
 	e := storage.Employee{
@@ -95,6 +100,7 @@ func newEmployee(emp map[string]interface{}, catInfo string) (storage.Employee, 
 	return e, nil
 }
 
+// employeeBasicInfo retrieves the basic information of the employee
 func employeeBasicInfo(e *storage.Employee, emp map[string]interface{}, catInfo string) error {
 	if err := getString(&e.Name, emp, "nome"); err != nil {
 		return fmt.Errorf("couldn't retrieve employee name: %q", err)
@@ -113,6 +119,7 @@ func employeeBasicInfo(e *storage.Employee, emp map[string]interface{}, catInfo 
 	return nil
 }
 
+// employeeType returns employee.Type based in category string.
 func employeeType(cat string) string {
 	if strings.Contains(cat, "Servidores") {
 		return "servidor"
@@ -124,10 +131,12 @@ func employeeType(cat string) string {
 	return ""
 }
 
+// active returns Employee.Active based in category string.
 func active(cat string) bool {
-	return !strings.Contains(cat, "Inativos")
+	return !strings.Contains(cat, "Inativos") && !strings.Contains(cat, "Pensionistas")
 }
 
+// employeeIncome retrieves employee income information.
 func employeeIncome(in *storage.IncomeDetails, emp map[string]interface{}) error {
 	incomeMap, err := getMap(emp, "rendimentos")
 	if err != nil {
@@ -142,9 +151,11 @@ func employeeIncome(in *storage.IncomeDetails, emp map[string]interface{}) error
 	if err := employeeIncomeOthers(in.Other, emp); err != nil {
 		return fmt.Errorf("error retrieving employee other incomes: %q", err)
 	}
+	in.Total = totalIncome(in)
 	return nil
 }
 
+// employeeIncomeOthers retrieves the employee funds.
 func employeeIncomeOthers(o *storage.Funds, emp map[string]interface{}) error {
 	incomeMap, err := getMap(emp, "rendimentos")
 	if err != nil {
@@ -172,6 +183,7 @@ func employeeIncomeOthers(o *storage.Funds, emp map[string]interface{}) error {
 	return nil
 }
 
+// employeeDiscounts retrieves employee discounts.
 func employeeDiscounts(d *storage.Discount, emp map[string]interface{}) error {
 	discountsMap, err := getMap(emp, "descontos")
 	if err != nil {
@@ -193,5 +205,21 @@ func employeeDiscounts(d *storage.Discount, emp map[string]interface{}) error {
 		return fmt.Errorf("couldn't retrieve employee sundry: %q", err)
 	}
 	d.Others["sundry"] = sundry
+	d.Total = totalDiscounts(d)
 	return nil
+}
+
+// totalDiscounts returns the sum of discounts.
+func totalDiscounts(d *storage.Discount) float64 {
+	total := getPointerValue(d.PrevContribution) + getPointerValue(d.CeilRetention) + getPointerValue(d.IncomeTax) + sumMapValues(d.Others)
+	return math.Round(total*100) / 100
+}
+
+// grossIncome returns the sum of incomes.
+func totalIncome(in *storage.IncomeDetails) float64 {
+	o := *in.Other
+	totalOthers := getPointerValue(o.PersonalBenefits) + getPointerValue(o.EventualBenefits) +
+		getPointerValue(o.PositionOfTrust) + getPointerValue(o.Daily) + getPointerValue(o.Gratification) + sumMapValues(o.Others)
+	total := getPointerValue(in.Wage) + in.Perks.Total + totalOthers
+	return math.Round(total*100) / 100
 }
