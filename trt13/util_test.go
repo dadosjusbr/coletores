@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"os"
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,35 +71,6 @@ func Test_getString(t *testing.T) {
 	assert.NoError(t, getString(&result, sample, "float64"))
 	assert.Equal(t, "872", result)
 	assert.Error(t, getString(&result, sample, "map"))
-}
-
-func Test_getValue(t *testing.T) {
-	sample, err := jsonExample(getValueSample)
-	assert.NoError(t, err)
-	type args struct {
-		m   map[string]interface{}
-		key string
-	}
-	tests := []struct {
-		name string
-		args args
-		want interface{}
-	}{
-		{"float64", args{sample, `float64`}, 872.0},
-		{"string", args{sample, `string`}, "ABIA"},
-		{"map", args{sample, `map`}, map[string]interface{}{"a": "a"}},
-		{"list", args{sample, `list`}, []interface{}{"1", "2", "3"}},
-		{"not found", args{sample, `nil`}, nil},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := getValue(tt.args.m, tt.args.key)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getValue() = %v (%T), want %v (%T)", got, got, tt.want, tt.want)
-			}
-		})
-	}
 }
 
 func Test_getFloat64(t *testing.T) {

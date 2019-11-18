@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 
-	storage "github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/storage"
 )
 
 // parse takes a json filePath and retrieve the array of employees from it.
@@ -192,15 +192,15 @@ func employeeDiscounts(d *storage.Discount, emp map[string]interface{}) error {
 
 // totalDiscounts returns the sum of discounts.
 func totalDiscounts(d *storage.Discount) float64 {
-	total := getPointerValue(d.PrevContribution) + getPointerValue(d.CeilRetention) + getPointerValue(d.IncomeTax) + sumMapValues(d.Others)
+	total := getFloat64Value(d.PrevContribution) + getFloat64Value(d.CeilRetention) + getFloat64Value(d.IncomeTax) + sumMapValues(d.Others)
 	return math.Round(total*100) / 100
 }
 
 // grossIncome returns the sum of incomes.
 func totalIncome(in *storage.IncomeDetails) float64 {
 	o := *in.Other
-	totalOthers := getPointerValue(o.PersonalBenefits) + getPointerValue(o.EventualBenefits) +
-		getPointerValue(o.PositionOfTrust) + getPointerValue(o.Daily) + getPointerValue(o.Gratification) + sumMapValues(o.Others)
-	total := getPointerValue(in.Wage) + in.Perks.Total + totalOthers
+	totalOthers := getFloat64Value(o.PersonalBenefits) + getFloat64Value(o.EventualBenefits) +
+		getFloat64Value(o.PositionOfTrust) + getFloat64Value(o.Daily) + getFloat64Value(o.Gratification) + sumMapValues(o.Others)
+	total := getFloat64Value(in.Wage) + in.Perks.Total + totalOthers
 	return math.Round(total*100) / 100
 }

@@ -38,7 +38,7 @@ func main() {
 
 	records, err := parse(filePath)
 	if err != nil {
-		log.Fatalf("Parser error(%02d-%04d): %q", *month, *year, err)
+		log.Fatalf("Parser error(%02d-%04d) - %s: %q", *month, *year, filePath, err)
 	}
 
 	employees, err := json.MarshalIndent(records, "\n", "  ")

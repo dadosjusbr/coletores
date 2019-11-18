@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	storage "github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/storage"
 	"github.com/stretchr/testify/assert"
 )
 
