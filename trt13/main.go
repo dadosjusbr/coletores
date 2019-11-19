@@ -41,9 +41,9 @@ func main() {
 		log.Fatalf("Parser error(%02d-%04d) - %s: %q", *month, *year, filePath, err)
 	}
 
-	employees, err := json.MarshalIndent(records, "\n", "  ")
+	_, err = json.MarshalIndent(records, "\n", "  ")
 	if err != nil {
 		log.Fatalf("JSON marshaling error: %q", err)
 	}
-	fmt.Printf("%s", employees)
+	//fmt.Printf("%s", employees)
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"math"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -52,8 +52,21 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 		return nil, fmt.Errorf("couldn't find map for category: %q", err)
 	}
 
-	for i, empMap := range cMap {
-		newEmp, err := newEmployee(empMap, catInfo)
+	// Employee list back to json
+	cMapJSON, err := json.Marshal(cMap)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling employee list from category: %q", err)
+	}
+
+	// Translate employee list to []trt13Employee
+	var trt13Employees []trt13Employee
+	err = json.Unmarshal(cMapJSON, &trt13Employees)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling employee list from category: %q", err)
+	}
+
+	for i, emp := range trt13Employees {
+		newEmp, err := newEmployee(emp, catInfo)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing employee at (%s: %d): %q", catInfo, i, err)
 		}
@@ -63,23 +76,46 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 }
 
 // newEmployee creates an employee from a json map.
-func newEmployee(emp map[string]interface{}, catInfo string) (storage.Employee, error) {
-	// Creating employee struct as needed.
-	e := storage.Employee{
-		Income:    &storage.IncomeDetails{Other: &storage.Funds{}, Perks: &storage.Perks{}},
-		Discounts: &storage.Discount{},
-	}
-	if err := employeeBasicInfo(&e, emp, catInfo); err != nil {
-		return e, fmt.Errorf("error parsing employee basic info: %q", err)
-	}
-	if err := employeeIncome(e.Income, emp); err != nil {
-		return e, fmt.Errorf("error parsing employee income: %q", err)
-	}
-	if err := employeeDiscounts(e.Discounts, emp); err != nil {
-		return e, fmt.Errorf("error parsing employee income: %q", err)
-	}
-	return e, nil
+func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
+	e := storage.Employee{}
+	e.Reg = fmt.Sprintf("%.0f", emp.Reg)
+	e.Name = emp.Name
+	e.Workplace = emp.Workplace
+	e.Active = active(catInfo)
+	e.Type = employeeType(catInfo)
+	e.Income = employeeIncome(emp)
+	return e
 }
+
+func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
+	in := storage.IncomeDetails{Perks: &storage.Perks{}, Other: &storage.Funds{}}
+	in.Wage = &emp.Income.Wage
+	in.Perks.Total = emp.Income.Perks
+	in.Other.PersonalBenefits = &emp.Income.PersonalBenefits
+	in.Other.EventualBenefits = &emp.Income.EventualBenefits
+	in.Other.PositionOfTrust = &emp.Income.Subsidio
+
+	return &in
+}
+
+// employeeType returns employee.Type based in category string.
+func employeeType(cat string) string {
+	if strings.Contains(cat, "Servidores") {
+		return "servidor"
+	} else if strings.Contains(cat, "Magistrados") {
+		return "membro"
+	} else if strings.Contains(cat, "Pensionistas") {
+		return "pensionista"
+	}
+	return ""
+}
+
+// active returns Employee.Active based in category string.
+func active(cat string) bool {
+	return !strings.Contains(cat, "Inativos") && !strings.Contains(cat, "Pensionistas")
+}
+
+/**
 
 // employeeBasicInfo retrieves the basic information of the employee
 func employeeBasicInfo(e *storage.Employee, emp map[string]interface{}, catInfo string) error {
@@ -98,23 +134,6 @@ func employeeBasicInfo(e *storage.Employee, emp map[string]interface{}, catInfo 
 	e.Active = active(catInfo)
 	e.Type = employeeType(catInfo)
 	return nil
-}
-
-// employeeType returns employee.Type based in category string.
-func employeeType(cat string) string {
-	if strings.Contains(cat, "Servidores") {
-		return "servidor"
-	} else if strings.Contains(cat, "Magistrados") {
-		return "membro"
-	} else if strings.Contains(cat, "Pensionistas") {
-		return "pensionista"
-	}
-	return ""
-}
-
-// active returns Employee.Active based in category string.
-func active(cat string) bool {
-	return !strings.Contains(cat, "Inativos") && !strings.Contains(cat, "Pensionistas")
 }
 
 // employeeIncome retrieves employee income information.
@@ -204,3 +223,5 @@ func totalIncome(in *storage.IncomeDetails) float64 {
 	total := getFloat64Value(in.Wage) + in.Perks.Total + totalOthers
 	return math.Round(total*100) / 100
 }
+
+**/
