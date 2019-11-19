@@ -66,7 +66,7 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 	}
 
 	for i, emp := range trt13Employees {
-		newEmp, err := newEmployee(emp, catInfo)
+		newEmp := newEmployee(emp, catInfo)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing employee at (%s: %d): %q", catInfo, i, err)
 		}
@@ -79,8 +79,8 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 	e := storage.Employee{}
 	e.Reg = fmt.Sprintf("%.0f", emp.Reg)
-	e.Name = emp.Name
-	e.Workplace = emp.Workplace
+	e.Name = *emp.Name
+	e.Workplace = *emp.Workplace
 	e.Active = active(catInfo)
 	e.Type = employeeType(catInfo)
 	e.Income = employeeIncome(emp)
@@ -89,11 +89,13 @@ func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 
 func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
 	in := storage.IncomeDetails{Perks: &storage.Perks{}, Other: &storage.Funds{}}
-	in.Wage = &emp.Income.Wage
-	in.Perks.Total = emp.Income.Perks
-	in.Other.PersonalBenefits = &emp.Income.PersonalBenefits
-	in.Other.EventualBenefits = &emp.Income.EventualBenefits
-	in.Other.PositionOfTrust = &emp.Income.Subsidio
+	in.Wage = emp.Income.Wage
+	in.Perks.Total = *emp.Income.Perks
+	in.Other.PersonalBenefits = emp.Income.PersonalBenefits
+	in.Other.EventualBenefits = emp.Income.EventualBenefits
+	in.Other.PositionOfTrust = emp.Income.Subsidio
+	in.Other.Gratification = emp.Income.Gratification
+	in.Other.Daily = emp.Daily
 
 	return &in
 }
