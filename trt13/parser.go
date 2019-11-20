@@ -43,46 +43,66 @@ func parseEmployees(m map[string]interface{}) ([]storage.Employee, error) {
 // parseCategory will parse a category of employees and return the employee list.
 func parseCategory(category map[string]interface{}) ([]storage.Employee, error) {
 	var employees []storage.Employee
-	var catInfo string
-	if err := getString(&catInfo, category, "rotuloCabecalho"); err != nil {
-		return nil, fmt.Errorf("couldn't find string for role: %q", err)
+	catInfo, err := catInfo(category)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving category info: %q", err)
 	}
 
-	cMap, err := getSliceOfMaps(category, "listaAnexoviii")
+	empsMap, err := getSliceOfMaps(category, "listaAnexoviii")
 	if err != nil {
 		return nil, fmt.Errorf("couldn't find map for category: %q", err)
 	}
 
-	// Employee list back to json
-	cMapJSON, err := json.Marshal(cMap)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling employee list from category: %q", err)
-	}
-
-	// Translate employee list to []trt13Employee
-	var trt13Employees []trt13Employee
-	err = json.Unmarshal(cMapJSON, &trt13Employees)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling employee list from category: %q", err)
-	}
-
-	for i, emp := range trt13Employees {
-		newEmp := newEmployee(emp, catInfo)
-		if err != nil {
-			return nil, fmt.Errorf("error parsing employee at (%s: %d): %q", catInfo, i, err)
+	for i, emp := range empsMap {
+		errKey, ok := findNil(emp)
+		if ok {
+			fmt.Printf("error parsing employee at (%s: %d): missing key %q\n", catInfo, i, errKey)
+			continue
 		}
+		trt13Emp, err := newTRT13Employee(emp)
+		if err != nil {
+			return nil, fmt.Errorf("error creating trt13Employee(%s: %d): %q", catInfo, i, err)
+		}
+		newEmp := newEmployee(trt13Emp, catInfo)
 		employees = append(employees, newEmp)
 	}
 	return employees, nil
 }
 
+// catInfo retrieves category info from a category map.
+func catInfo(category map[string]interface{}) (string, error) {
+	cat, ok := category["rotuloCabecalho"]
+	if !ok || cat == nil {
+		return "", fmt.Errorf("couldn't find string for role")
+	}
+	catInfo, ok := cat.(string)
+	if !ok {
+		return "", fmt.Errorf("retrieved rotuloCabecalho is not a string")
+	}
+	return catInfo, nil
+}
+
+// newTRT13Employee creates a trt13Employee from a map[string]interface{}
+func newTRT13Employee(emp map[string]interface{}) (trt13Employee, error) {
+	var e trt13Employee
+	empJSON, err := json.Marshal(emp)
+	if err != nil {
+		return e, fmt.Errorf("error marshaling map: %q", err)
+	}
+	err = json.Unmarshal(empJSON, &e)
+	if err != nil {
+		return e, fmt.Errorf("error unmarshaling trt13employee: %q", err)
+	}
+	return e, nil
+}
+
 // newEmployee creates an storage.employee from a trt13Employee
 func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 	e := storage.Employee{}
-	e.Reg = fmt.Sprintf("%.0f", getFloat64Value(emp.Reg))
-	e.Name = getStringValue(emp.Name)
-	e.Role = getStringValue(emp.Role)
-	e.Workplace = getStringValue(emp.Workplace)
+	e.Reg = fmt.Sprintf("%.0f", emp.Reg)
+	e.Name = emp.Name
+	e.Role = emp.Role
+	e.Workplace = emp.Workplace
 	e.Active = active(catInfo)
 	e.Type = employeeType(catInfo)
 	e.Income = employeeIncome(emp)
@@ -93,8 +113,8 @@ func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 // employeeIncome creates an *storage.IncomeDetails from a trt13Employee
 func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
 	in := storage.IncomeDetails{Perks: &storage.Perks{}}
-	in.Wage = emp.Income.Wage
-	in.Perks.Total = getFloat64Value(emp.Income.Perks)
+	in.Wage = &emp.Income.Wage
+	in.Perks.Total = emp.Income.Perks
 	in.Other = employeeFunds(emp)
 	in.Total = totalIncome(in)
 	return &in
@@ -103,12 +123,12 @@ func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
 // employeeFunds creates an *storage.Funds from a trt13Employee
 func employeeFunds(emp trt13Employee) *storage.Funds {
 	o := storage.Funds{}
-	o.PersonalBenefits = emp.Income.PersonalBenefits
-	o.EventualBenefits = emp.Income.EventualBenefits
-	o.PositionOfTrust = emp.Income.Subsidio
-	o.Gratification = emp.Income.Gratification
-	o.Daily = emp.Daily
-	o.OriginPosition = emp.OriginPosition
+	o.PersonalBenefits = &emp.Income.PersonalBenefits
+	o.EventualBenefits = &emp.Income.EventualBenefits
+	o.PositionOfTrust = &emp.Income.Subsidio
+	o.Gratification = &emp.Income.Gratification
+	o.Daily = &emp.Daily
+	o.OriginPosition = &emp.OriginPosition
 	o.Total = totalFunds(o)
 	return &o
 }
@@ -116,10 +136,10 @@ func employeeFunds(emp trt13Employee) *storage.Funds {
 // employeeDiscounts creates an *storage.Discount from a trt13Employee
 func employeeDiscounts(emp trt13Employee) *storage.Discount {
 	d := storage.Discount{}
-	d.PrevContribution = emp.Discount.PrevContribution
-	d.CeilRetention = emp.Discount.CeilRetantion
-	d.IncomeTax = emp.Discount.IncomeTax
-	d.Others = map[string]float64{"other_discounts": getFloat64Value(emp.Discount.Sundry)}
+	d.PrevContribution = &emp.Discount.PrevContribution
+	d.CeilRetention = &emp.Discount.CeilRetantion
+	d.IncomeTax = &emp.Discount.IncomeTax
+	d.Others = map[string]float64{"other_discounts": emp.Discount.Sundry}
 	d.Total = totalDiscounts(d)
 	return &d
 }
