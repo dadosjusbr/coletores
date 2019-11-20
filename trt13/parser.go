@@ -150,7 +150,7 @@ func totalDiscounts(d storage.Discount) float64 {
 // totalFunds returns the sum of funds.
 func totalFunds(f storage.Funds) float64 {
 	total := getFloat64Value(f.PersonalBenefits) + getFloat64Value(f.EventualBenefits) +
-		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + sumMapValues(f.Others)
+		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + getFloat64Value(f.OriginPosition) + sumMapValues(f.Others)
 	return math.Round(total*100) / 100
 }
 
