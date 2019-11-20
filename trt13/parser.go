@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"os"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -56,7 +57,7 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 	for i, emp := range empsMap {
 		errKey, ok := findNil(emp)
 		if ok {
-			fmt.Printf("error parsing employee at (%s: %d): missing key %q\n", catInfo, i, errKey)
+			fmt.Fprintf(os.Stderr, "error parsing employee at (%s: %d): missing key %q - %v\n", catInfo, i, errKey, emp)
 			continue
 		}
 		trt13Emp, err := newTRT13Employee(emp)
