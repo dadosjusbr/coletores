@@ -16,7 +16,7 @@ const getValueSample = `{"float64":872.0,
 "mapSlice": [{}]
 }`
 
-func jsonExample(j string) (map[string]interface{}, error) {
+func jsonMap(j string) (map[string]interface{}, error) {
 	var empSample map[string]interface{}
 	err := json.Unmarshal([]byte(j), &empSample)
 	return empSample, err
@@ -30,7 +30,7 @@ func Test_readJSON(t *testing.T) {
 
 	actual, err := readJSON("./_test.json")
 	assert.NoError(t, err)
-	expected, err := jsonExample(getValueSample)
+	expected, err := jsonMap(getValueSample)
 	assert.NoError(t, err)
 	assert.Equal(t, actual, expected)
 	assert.NoError(t, os.Remove("./_test.json"))
@@ -39,7 +39,7 @@ func Test_readJSON(t *testing.T) {
 }
 
 func Test_getMap(t *testing.T) {
-	sample, err := jsonExample(getValueSample)
+	sample, err := jsonMap(getValueSample)
 	assert.NoError(t, err)
 	m, err := getMap(sample, "map")
 	assert.NoError(t, err)
@@ -49,7 +49,7 @@ func Test_getMap(t *testing.T) {
 }
 
 func Test_getSliceOfMap(t *testing.T) {
-	sample, err := jsonExample(getValueSample)
+	sample, err := jsonMap(getValueSample)
 	assert.NoError(t, err)
 	_, err = getSliceOfMaps(sample, "map")
 	assert.Error(t, err)
@@ -61,7 +61,7 @@ func Test_getSliceOfMap(t *testing.T) {
 }
 
 func Test_getString(t *testing.T) {
-	sample, err := jsonExample(getValueSample)
+	sample, err := jsonMap(getValueSample)
 	assert.NoError(t, err)
 	var result string
 	assert.NoError(t, getString(&result, sample, "string"))
@@ -76,7 +76,7 @@ func Test_getString(t *testing.T) {
 func Test_getFloat64(t *testing.T) {
 	var float float64
 	var pointer *float64
-	sample, err := jsonExample(getValueSample)
+	sample, err := jsonMap(getValueSample)
 	assert.NoError(t, err)
 
 	type args struct {

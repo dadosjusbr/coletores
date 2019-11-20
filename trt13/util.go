@@ -96,10 +96,18 @@ func getFloat64(v interface{}, m map[string]interface{}, key string) error {
 	}
 }
 
-// getPointerValue get float value or nil from pointer
+// getPointerValue returns float value or 0 if nil pointer
 func getFloat64Value(p *float64) float64 {
 	if p == nil {
 		return 0
+	}
+	return *p
+}
+
+// getStringValue returns the string value or empty string if nil pointer
+func getStringValue(p *string) string {
+	if p == nil {
+		return ""
 	}
 	return *p
 }

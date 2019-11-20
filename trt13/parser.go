@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -75,29 +76,52 @@ func parseCategory(category map[string]interface{}) ([]storage.Employee, error) 
 	return employees, nil
 }
 
-// newEmployee creates an employee from a json map.
+// newEmployee creates an storage.employee from a trt13Employee
 func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 	e := storage.Employee{}
-	e.Reg = fmt.Sprintf("%.0f", emp.Reg)
-	e.Name = *emp.Name
-	e.Workplace = *emp.Workplace
+	e.Reg = fmt.Sprintf("%.0f", getFloat64Value(emp.Reg))
+	e.Name = getStringValue(emp.Name)
+	e.Role = getStringValue(emp.Role)
+	e.Workplace = getStringValue(emp.Workplace)
 	e.Active = active(catInfo)
 	e.Type = employeeType(catInfo)
 	e.Income = employeeIncome(emp)
+	e.Discounts = employeeDiscounts(emp)
 	return e
 }
 
+// employeeIncome creates an *storage.IncomeDetails from a trt13Employee
 func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
-	in := storage.IncomeDetails{Perks: &storage.Perks{}, Other: &storage.Funds{}}
+	in := storage.IncomeDetails{Perks: &storage.Perks{}}
 	in.Wage = emp.Income.Wage
-	in.Perks.Total = *emp.Income.Perks
-	in.Other.PersonalBenefits = emp.Income.PersonalBenefits
-	in.Other.EventualBenefits = emp.Income.EventualBenefits
-	in.Other.PositionOfTrust = emp.Income.Subsidio
-	in.Other.Gratification = emp.Income.Gratification
-	in.Other.Daily = emp.Daily
-
+	in.Perks.Total = getFloat64Value(emp.Income.Perks)
+	in.Other = employeeFunds(emp)
+	in.Total = totalIncome(in)
 	return &in
+}
+
+// employeeFunds creates an *storage.Funds from a trt13Employee
+func employeeFunds(emp trt13Employee) *storage.Funds {
+	o := storage.Funds{}
+	o.PersonalBenefits = emp.Income.PersonalBenefits
+	o.EventualBenefits = emp.Income.EventualBenefits
+	o.PositionOfTrust = emp.Income.Subsidio
+	o.Gratification = emp.Income.Gratification
+	o.Daily = emp.Daily
+	o.OriginPosition = emp.OriginPosition
+	o.Total = totalFunds(o)
+	return &o
+}
+
+// employeeDiscounts creates an *storage.Discount from a trt13Employee
+func employeeDiscounts(emp trt13Employee) *storage.Discount {
+	d := storage.Discount{}
+	d.PrevContribution = emp.Discount.PrevContribution
+	d.CeilRetention = emp.Discount.CeilRetantion
+	d.IncomeTax = emp.Discount.IncomeTax
+	d.Others = map[string]float64{"other_discounts": getFloat64Value(emp.Discount.Sundry)}
+	d.Total = totalDiscounts(d)
+	return &d
 }
 
 // employeeType returns employee.Type based in category string.
@@ -117,113 +141,21 @@ func active(cat string) bool {
 	return !strings.Contains(cat, "Inativos") && !strings.Contains(cat, "Pensionistas")
 }
 
-/**
-
-// employeeBasicInfo retrieves the basic information of the employee
-func employeeBasicInfo(e *storage.Employee, emp map[string]interface{}, catInfo string) error {
-	if err := getString(&e.Name, emp, "nome"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee name: %q", err)
-	}
-	if err := getString(&e.Role, emp, "cargo"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee role: %q", err)
-	}
-	if err := getString(&e.Workplace, emp, "lotacao"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee workplace: %q", err)
-	}
-	if err := getString(&e.Reg, emp, "id"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee id: %q", err)
-	}
-	e.Active = active(catInfo)
-	e.Type = employeeType(catInfo)
-	return nil
-}
-
-// employeeIncome retrieves employee income information.
-func employeeIncome(in *storage.IncomeDetails, emp map[string]interface{}) error {
-	incomeMap, err := getMap(emp, "rendimentos")
-	if err != nil {
-		return fmt.Errorf("couldn't retrieve income map (k: rendimentos): %q", err)
-	}
-	if err := getFloat64(&in.Wage, incomeMap, "remuneracaoParadigma"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee wage: %q", err)
-	}
-	if err := getFloat64(&in.Perks.Total, incomeMap, "indenizacoes"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee total perks: %q", err)
-	}
-	if err := employeeIncomeOthers(in.Other, emp); err != nil {
-		return fmt.Errorf("error retrieving employee other incomes: %q", err)
-	}
-	in.Total = totalIncome(in)
-	return nil
-}
-
-// employeeIncomeOthers retrieves the employee funds.
-func employeeIncomeOthers(o *storage.Funds, emp map[string]interface{}) error {
-	incomeMap, err := getMap(emp, "rendimentos")
-	if err != nil {
-		return fmt.Errorf("couldn't retrieve income map (k: rendimentos): %q", err)
-	}
-	if err := getFloat64(&o.PersonalBenefits, incomeMap, "vantagensPessoais"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee personal benefits: %q", err)
-	}
-	if err := getFloat64(&o.EventualBenefits, incomeMap, "vantagensEventuais"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee eventual benefits: %q", err)
-	}
-	if err := getFloat64(&o.Gratification, incomeMap, "gratificacao"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee gratifications: %q", err)
-	}
-	//Revisar. Pensionistas recebem por subsidio
-	if err := getFloat64(&o.PositionOfTrust, incomeMap, "subsidio"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee position of trust: %q", err)
-	}
-	if err := getFloat64(&o.OriginPosition, emp, "remuneracaoOrgaoOrigem"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee total perks: %q", err)
-	}
-	if err := getFloat64(&o.Daily, emp, "diarias"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee total perks: %q", err)
-	}
-	return nil
-}
-
-// employeeDiscounts retrieves employee discounts.
-func employeeDiscounts(d *storage.Discount, emp map[string]interface{}) error {
-	discountsMap, err := getMap(emp, "descontos")
-	if err != nil {
-		return fmt.Errorf("couldn't retrieve discounts map (k: descontos): %q", err)
-	}
-	if err := getFloat64(&d.PrevContribution, discountsMap, "previdenciaPublica"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee Prev Contribution: %q", err)
-	}
-	if err := getFloat64(&d.IncomeTax, discountsMap, "impostoRenda"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee income tax: %q", err)
-	}
-	if err := getFloat64(&d.CeilRetention, discountsMap, "retencaoTeto"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee income tax: %q", err)
-	}
-	// Others
-	d.Others = make(map[string]float64)
-	var sundry float64
-	if err := getFloat64(&sundry, discountsMap, "descontosDiversos"); err != nil {
-		return fmt.Errorf("couldn't retrieve employee sundry: %q", err)
-	}
-	d.Others["sundry"] = sundry
-	d.Total = totalDiscounts(d)
-	return nil
-}
-
 // totalDiscounts returns the sum of discounts.
-func totalDiscounts(d *storage.Discount) float64 {
+func totalDiscounts(d storage.Discount) float64 {
 	total := getFloat64Value(d.PrevContribution) + getFloat64Value(d.CeilRetention) + getFloat64Value(d.IncomeTax) + sumMapValues(d.Others)
 	return math.Round(total*100) / 100
 }
 
-// grossIncome returns the sum of incomes.
-func totalIncome(in *storage.IncomeDetails) float64 {
-	o := *in.Other
-	totalOthers := getFloat64Value(o.PersonalBenefits) + getFloat64Value(o.EventualBenefits) +
-		getFloat64Value(o.PositionOfTrust) + getFloat64Value(o.Daily) + getFloat64Value(o.Gratification) + sumMapValues(o.Others)
-	total := getFloat64Value(in.Wage) + in.Perks.Total + totalOthers
+// totalFunds returns the sum of funds.
+func totalFunds(f storage.Funds) float64 {
+	total := getFloat64Value(f.PersonalBenefits) + getFloat64Value(f.EventualBenefits) +
+		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + sumMapValues(f.Others)
 	return math.Round(total*100) / 100
 }
 
-**/
+// grossIncome returns the sum of incomes.
+func totalIncome(in storage.IncomeDetails) float64 {
+	total := getFloat64Value(in.Wage) + in.Perks.Total + in.Other.Total
+	return math.Round(total*100) / 100
+}
