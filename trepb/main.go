@@ -48,7 +48,7 @@ func main() {
 
 	cr := newCrawlingResult(employees, filePath, *month, *year)
 
-	crJSON, err := json.MarshalIndent(cr, "\n", "  ")
+	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
 		fatalError("JSON marshaling error: %q", err)
 	}
