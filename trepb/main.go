@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	storage "github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 )
 
@@ -26,44 +26,52 @@ func main() {
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	flag.Parse()
 	if *month == 0 || *year == 0 {
-		fatalError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+		os.Exit(1)
 	}
 	if outputFolder == "" {
 		outputFolder = "./output"
 	}
 
 	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-		fatalError("Error creating output folder(%s): %q", outputFolder, err)
+		logError("Error creating output folder(%s): %q", outputFolder, err)
+		os.Exit(1)
 	}
 
 	filePath := filePath(outputFolder, *month, *year)
 	if err := crawl(filePath, name, cpf, *month, *year); err != nil {
-		fatalError("Crawler error(%02d-%04d): %q", *month, *year, err)
+		logError("Crawler error(%02d-%04d): %q", *month, *year, err)
+		os.Exit(1)
 	}
 
 	f, err := os.Open(filePath)
 	if err != nil {
-		log.Fatalf("error opening file (%s): %q", filePath, err)
+		logError("error opening file (%s): %q", filePath, err)
+		os.Exit(1)
 	}
 	defer f.Close()
 
 	table, err := loadTable(f)
 	if err != nil {
-		log.Fatalf("error while loading data table from %s: %q", filePath, err)
+		logError("error while loading data table from %s: %q", filePath, err)
+		os.Exit(1)
 	}
 
-	records, err := employeeRecords(table)
-	if err != nil {
-		log.Fatalf("error while parsing data from table (%s): %q", filePath, err)
+	records, parsingErr := employeeRecords(table)
+	if parsingErr != nil {
+		logError("Parsing error (%02d-%04d):\n%s", *month, *year, parsingErr)
 	}
 
 	cr := newCrawlingResult(records, filePath, *month, *year)
-
 	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
-		fatalError("JSON marshaling error: %q", err)
+		logError("JSON marshaling error: %q", err)
+		os.Exit(1)
 	}
 	fmt.Printf("%s", string(crJSON))
+	if parsingErr != nil {
+		os.Exit(1)
+	}
 }
 
 func newCrawlingResult(emps []storage.Employee, filePath string, month, year int) storage.CrawlingResult {
@@ -81,11 +89,4 @@ func newCrawlingResult(emps []storage.Employee, filePath string, month, year int
 		Timestamp: time.Now(),
 	}
 	return cr
-}
-
-// fatalError prints to Stderr and calls exit(0)
-func fatalError(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stderr, time+format, args...)
-	os.Exit(1)
 }

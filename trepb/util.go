@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -69,8 +70,11 @@ func sumMapValues(m map[string]float64) float64 {
 // retrieveFloat makes an xpath query to the row and retrieve a float from inner text of the node found.
 func retrieveFloat(row *html.Node, v interface{}, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
-	if err != nil || r == nil {
+	if err != nil {
 		return fmt.Errorf("error trying to find (%s): %q", xpath, err)
+	}
+	if r == nil {
+		return fmt.Errorf("error trying to find (%s): no html node found", xpath)
 	}
 
 	value, err := parseFloat(htmlquery.InnerText(r))
@@ -103,9 +107,18 @@ func parseFloat(s string) (float64, error) {
 // retrieveString makes an xpath query to the row and retrieve the innerText of the node found trimmed for white spaces.
 func retrieveString(row *html.Node, s *string, xpath string) error {
 	r, err := htmlquery.Query(row, xpath)
-	if err != nil || r == nil {
+	if err != nil {
 		return fmt.Errorf("error trying to find (%s): %q", xpath, err)
+	}
+	if r == nil {
+		return fmt.Errorf("error trying to find (%s): no html node found", xpath)
 	}
 	*s = strings.Trim((htmlquery.InnerText(r)), " ")
 	return nil
+}
+
+// fatalError prints to Stderr
+func logError(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
 }

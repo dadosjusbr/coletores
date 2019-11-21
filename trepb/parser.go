@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"os"
 
 	"github.com/dadosjusbr/storage"
 
@@ -36,6 +35,16 @@ const (
 	originPositionXPath = `//*[@class="c16"]`
 )
 
+type parsingErrors []error
+
+func (p parsingErrors) Error() string {
+	errorStr := ``
+	for _, e := range p {
+		errorStr += e.Error() + "\n"
+	}
+	return errorStr
+}
+
 // loadTable will load the correct data table from an io.Reader that should hold an html page.
 // The returned value are the slice of table rows.
 func loadTable(r io.Reader) ([]*html.Node, error) {
@@ -57,16 +66,21 @@ func loadTable(r io.Reader) ([]*html.Node, error) {
 	return records, nil
 }
 
-// employeeRecords will retrieve a list of employees from the data table
-func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
+// employeeRecords will retrieve a list of employees from the data table. Status 1 if any errors trying to parse employees, 0 if none.
+func employeeRecords(records []*html.Node) ([]storage.Employee, parsingErrors) {
 	var employees []storage.Employee
+	var errs []error
 	for i, row := range records[1:] {
 		e, err := newEmployee(row)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error trying to parse employee columns(position %d): %q. Row: %v", i, err, row)
+			err = fmt.Errorf("error trying to parse employee columns(position %d): %q. Row: \n%s", i, err, htmlquery.OutputHTML(row, true))
+			errs = append(errs, err)
 			continue
 		}
 		employees = append(employees, e)
+	}
+	if len(errs) > 0 {
+		return employees, errs
 	}
 	return employees, nil
 }
