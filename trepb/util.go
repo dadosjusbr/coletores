@@ -50,7 +50,7 @@ func substringBetween(str, before, after string) string {
 }
 
 // getValue takes a float64 pointer and returns it's value or 0 if it's nil
-func getValue(p *float64) float64 {
+func getFloat64Value(p *float64) float64 {
 	if p == nil {
 		return 0
 	}
