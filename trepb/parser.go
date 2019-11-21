@@ -86,6 +86,7 @@ func employeeRecords(table *html.Node) ([]storage.Employee, error) {
 		e, err := newEmployee(row)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error trying to parse employee columns(position %d): %q. Row: %v", i, err, row)
+			continue
 		}
 		employees = append(employees, e)
 	}
