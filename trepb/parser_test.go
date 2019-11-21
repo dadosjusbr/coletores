@@ -62,7 +62,7 @@ func expectedEmployee() storage.Employee {
 	prev := 2719.5
 	it := 6158.41
 	others := make(map[string]float64)
-	others["Sundry"] = 0
+	others["other_discounts"] = 0
 	expectedDiscount := storage.Discount{Total: 8877.91, PrevContribution: &prev, CeilRetention: &zero, IncomeTax: &it, Others: others}
 	expected := storage.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: &expectedIncome,
 		Discounts: &expectedDiscount}
