@@ -62,23 +62,24 @@ func Test_getSliceOfMap(t *testing.T) {
 
 func Test_findNil(t *testing.T) {
 	tests := []struct {
-		name  string
-		arg   map[string]interface{}
-		want  string
-		want1 bool
+		name      string
+		arg       map[string]interface{}
+		wantValue string
+		wantOK    bool
 	}{
 		{"find nil in map", map[string]interface{}{"a": nil}, "a", true},
 		{"no nil in map", map[string]interface{}{"a": map[string]interface{}{"b": "c"}}, "", false},
 		{"nil in inner map", map[string]interface{}{"a": map[string]interface{}{"b": nil}}, "b", true},
+		{"nil and map", map[string]interface{}{"e": nil, "a": map[string]interface{}{"b": "c"}, "c": "d", "f": "d"}, "e", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := findNil(tt.arg)
-			if got != tt.want {
-				t.Errorf("findNil() got = %v, want %v", got, tt.want)
+			got, ok := findNil(tt.arg)
+			if got != tt.wantValue {
+				t.Errorf("findNil() got = %v, want %v", got, tt.wantValue)
 			}
-			if got1 != tt.want1 {
-				t.Errorf("findNil() got1 = %v, want %v", got1, tt.want1)
+			if ok != tt.wantOK {
+				t.Errorf("findNil() ok = %v, want %v", ok, tt.wantOK)
 			}
 		})
 	}
