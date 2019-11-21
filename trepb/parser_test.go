@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -141,35 +140,39 @@ func Test_employeeDiscounts(t *testing.T) {
 	assert.Equal(t, *expectedEmployee().Discounts, d)
 }
 
-// Test if loadTable is loading the correct html table from reader.
-func Test_loadTable(t *testing.T) {
+func TestLoadTable(t *testing.T) {
 	tests := []struct {
-		name    string
-		arg     string // Will be transformed in reader
-		wantErr bool
+		name string
+		arg  string // Will be transformed in reader
+		want string
 	}{
-		{"Table present", `<table id="tblDetalhamentoFolhaPagamentoPessoal"></table>`, false},
-		{"Wrong table present", "<table></table>", true},
-		{"No table", "", true},
+		{"Table present", `<table id="tblDetalhamentoFolhaPagamentoPessoal"><tr class="fundo0"></tr></table>`, `<tr class="fundo0"></tr>`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := loadTable(strings.NewReader(tt.arg))
-			if err != nil {
-				if tt.wantErr {
-					return
-				}
-				t.Errorf("loadTable() error = %v, wantErr %v", err, tt.wantErr)
-			}
-
-			var gotBuf bytes.Buffer
-			err = html.Render(&gotBuf, got)
 			assert.NoError(t, err)
 
-			if !reflect.DeepEqual(gotBuf.String(), tt.arg) {
-				t.Errorf("loadTable() = %v, want %v", gotBuf.String(), tt.arg)
-			}
+			var gotBuf bytes.Buffer
+			err = html.Render(&gotBuf, got[0])
+			assert.NoError(t, err)
+			assert.Equal(t, gotBuf.String(), tt.want)
+		})
+	}
+}
 
+func TestLoadTable_error(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  string // Will be transformed in reader
+	}{
+		{"Wrong table present", "<table></table>"},
+		{"No table", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := loadTable(strings.NewReader(tt.arg))
+			assert.Error(t, err)
 		})
 	}
 }

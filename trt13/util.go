@@ -36,7 +36,10 @@ func findNil(m map[string]interface{}) (string, bool) {
 		}
 		switch v.(type) {
 		case map[string]interface{}:
-			return findNil(v.(map[string]interface{}))
+			k, found := findNil(v.(map[string]interface{}))
+			if found {
+				return k, true
+			}
 		}
 	}
 	return "", false
