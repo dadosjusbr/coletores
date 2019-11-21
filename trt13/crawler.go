@@ -1,10 +1,8 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -14,27 +12,23 @@ var netClient = &http.Client{
 	Timeout: time.Second * 60,
 }
 
-func main() {
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	flag.Parse()
-	if *month == 0 || *year == 0 {
-		log.Fatalf("Need all arguments to continue, please try again: \"go run crawler-trtpb.go --mes=int --ano=int\"")
-	}
-	fileName := fmt.Sprintf("remuneracoes-trt13-%02d-%04d.json", *month, *year)
-	f, err := os.Create(fileName)
+// crawl takes a month and year and retrieve payment informations from trt13 from these, saving into filePath
+func crawl(filePath string, month, year int) error {
+	f, err := os.Create(filePath)
 	if err != nil {
-		log.Fatalf("Error creating file(%s):%q", fileName, err)
+		return fmt.Errorf("Error creating file(%s):%q", filePath, err)
 	}
 	defer f.Close()
 
-	reqURL := fmt.Sprintf("https://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?mes=%02d&ano=%04d", *month, *year)
+	reqURL := fmt.Sprintf("https://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?mes=%02d&ano=%04d", month, year)
 	if err = download(reqURL, f); err != nil {
-		os.Remove(fileName)
-		log.Fatalf("Error while downloading content (%02d-%04d): %q", *month, *year, err)
+		os.Remove(filePath)
+		return fmt.Errorf("Error while downloading content (%02d-%04d): %q", month, year, err)
 	}
+	return nil
 }
 
+// download makes a req to reqURL and saves response body to an io.Writer.
 func download(reqURL string, w io.Writer) error {
 	req, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
