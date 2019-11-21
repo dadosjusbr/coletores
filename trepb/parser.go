@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"os"
 
 	storage "github.com/dadosjusbr/storage"
 
@@ -36,28 +35,9 @@ const (
 	originPositionXPath = `//*[@class="c16"]`
 )
 
-// parser takes a filepath and will return a slice of employees extracted from the file
-func parse(filePath string) ([]storage.Employee, error) {
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("error opening file (%s): %q", filePath, err)
-	}
-
-	table, err := loadTable(f)
-	if err != nil {
-		return nil, fmt.Errorf("error while loading data table from %s: %q", filePath, err)
-	}
-
-	e, err := employeeRecords(table)
-	if err != nil {
-		return nil, fmt.Errorf("error while parsing data from table (%s): %q", filePath, err)
-	}
-
-	return e, nil
-}
-
-// loadTable will load a the correct data table from an io.Reader that should hold an html page.
-func loadTable(r io.Reader) (*html.Node, error) {
+// loadTable will load the correct data table from an io.Reader that should hold an html page.
+// The returned value are the slice of table rows.
+func loadTable(r io.Reader) ([]*html.Node, error) {
 	doc, err := htmlquery.Parse(r)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing file html tree: %q", err)
@@ -69,19 +49,16 @@ func loadTable(r io.Reader) (*html.Node, error) {
 	if table == nil {
 		return nil, fmt.Errorf("error finding data table in file: %q", err)
 	}
-
-	return table, nil
-}
-
-// employeeRecords will retrieve a list of employees from the data table
-func employeeRecords(table *html.Node) ([]storage.Employee, error) {
 	records, err := htmlquery.QueryAll(table, "//tr")
 	if err != nil {
 		return nil, fmt.Errorf("error while querying data table for tr elements: %q", err)
 	}
+	return records, nil
+}
 
+// employeeRecords will retrieve a list of employees from the data table
+func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
 	var employees []storage.Employee
-
 	for i, row := range records[1:] {
 		e, err := newEmployee(row)
 		if err != nil {

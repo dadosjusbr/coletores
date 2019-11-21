@@ -31,15 +31,26 @@ func main() {
 	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
 		log.Fatalf("Error creating output folder(%s): %q", outputFolder, err)
 	}
-	filePath := filePath(outputFolder, *month, *year)
 
+	filePath := filePath(outputFolder, *month, *year)
 	if err := crawl(filePath, name, cpf, *month, *year); err != nil {
 		log.Fatalf("Crawler error(%02d-%04d): %q", *month, *year, err)
 	}
 
-	records, err := parse(filePath)
+	f, err := os.Open(filePath)
 	if err != nil {
-		log.Fatalf("Parser error(%02d-%04d): %q", *month, *year, err)
+		log.Fatalf("error opening file (%s): %q", filePath, err)
+	}
+	defer f.Close()
+
+	table, err := loadTable(f)
+	if err != nil {
+		log.Fatalf("error while loading data table from %s: %q", filePath, err)
+	}
+
+	records, err := employeeRecords(table)
+	if err != nil {
+		log.Fatalf("error while parsing data from table (%s): %q", filePath, err)
 	}
 
 	employees, err := json.MarshalIndent(records, "\n", "  ")
