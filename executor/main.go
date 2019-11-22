@@ -1,12 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"github.com/dadosjusbr/storage"
 )
 
 func main() {
@@ -16,7 +20,8 @@ func main() {
 
 	commit, err := getGitCommit()
 	if err != nil {
-		log.Fatalf("%s", err)
+		logError("%s", err)
+		os.Exit(1)
 	}
 
 	jobList := []string{
@@ -25,21 +30,52 @@ func main() {
 	for _, job := range jobList {
 		err := build(job, commit)
 		if err != nil {
-			log.Fatalf("Building error: %s", err)
+			logError("Building error: %s", err)
+			os.Exit(1)
 		}
 	}
-	for _, job := range jobList {
-		out, err := execDataCollector(job, *month, *year)
-		fmt.Println(out, err)
+
+	outputs, execErrs := execJobs(jobList, *month, *year)
+	for _, err := range execErrs {
+		logError("%s", err)
 	}
+	result, err := json.Marshal(outputs)
+	if err != nil {
+		panic("error marshalling results")
+	}
+	fmt.Printf("%s", result)
+	if len(execErrs) > 0 {
+		os.Exit(1)
+	}
+	os.Exit(0)
 }
 
-func execDataCollector(path string, month, year int) (string, error) {
+func execJobs(jobs []string, month, year int) ([]storage.CrawlingResult, []error) {
+	var execErrors []error
+	var outputs []storage.CrawlingResult
+	for _, job := range jobs {
+		var cr storage.CrawlingResult
+		out, err := execDataCollector(job, month, year)
+		if err != nil {
+			execErrors = append(execErrors, fmt.Errorf("error executing data colector (%s): %q", job, err))
+		}
+		err = json.Unmarshal(out, &cr)
+		if err != nil {
+			execErrors = append(execErrors, fmt.Errorf("error unmarshalling crawling result from (%s): %q", job, err))
+		} else {
+			outputs = append(outputs, cr)
+		}
+	}
+
+	return outputs, execErrors
+}
+
+func execDataCollector(path string, month, year int) ([]byte, error) {
 	cmdList := strings.Split(fmt.Sprintf("./%s --mes=%d --ano=%d", filepath.Base(path), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
 	out, err := cmd.CombinedOutput()
-	return string(out), err
+	return out, err
 }
 
 func getGitCommit() (string, error) {
@@ -59,4 +95,10 @@ func build(path, commit string) error {
 		return fmt.Errorf("build() error (%s): %s", path, err)
 	}
 	return nil
+}
+
+// fatalError prints to Stderr
+func logError(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
 }
