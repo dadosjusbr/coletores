@@ -52,7 +52,7 @@ func expectedEmployee() storage.Employee {
 	zero := 0.0
 	pb := 7475.71
 	pt := 5990.88
-	expectedOthers := storage.Funds{PersonalBenefits: &pb, EventualBenefits: &zero, PositionOfTrust: &pt, Gratification: &zero, OriginPosition: &zero}
+	expectedOthers := storage.Funds{Total: 13466.59, PersonalBenefits: &pb, EventualBenefits: &zero, PositionOfTrust: &pt, Gratification: &zero, OriginPosition: &zero}
 	expectedPerks := storage.Perks{Total: 0}
 
 	wg := 16902.0
@@ -61,7 +61,7 @@ func expectedEmployee() storage.Employee {
 	prev := 2719.5
 	it := 6158.41
 	others := make(map[string]float64)
-	others["Sundry"] = 0
+	others["other_discounts"] = 0
 	expectedDiscount := storage.Discount{Total: 8877.91, PrevContribution: &prev, CeilRetention: &zero, IncomeTax: &it, Others: others}
 	expected := storage.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: &expectedIncome,
 		Discounts: &expectedDiscount}
@@ -88,12 +88,12 @@ func Test_totalDiscounts(t *testing.T) {
 	assert.Equal(t, 8877.91, totalDiscounts(*expectedEmployee().Discounts))
 }
 
-func Test_grossIncome(t *testing.T) {
+func Test_totalIncome(t *testing.T) {
 	row, err := row()
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	assert.Equal(t, 30368.59, grossIncome(*expectedEmployee().Income))
+	assert.Equal(t, 30368.59, totalIncome(*expectedEmployee().Income))
 }
 
 // Test if employeeIncome is collecting correct information from the row.

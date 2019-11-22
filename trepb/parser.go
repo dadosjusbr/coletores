@@ -5,7 +5,7 @@ import (
 	"io"
 	"math"
 
-	storage "github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/storage"
 
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
@@ -35,6 +35,16 @@ const (
 	originPositionXPath = `//*[@class="c16"]`
 )
 
+type parsingErrors []error
+
+func (p parsingErrors) Error() string {
+	errorStr := ``
+	for _, e := range p {
+		errorStr += e.Error() + "\n"
+	}
+	return errorStr
+}
+
 // loadTable will load the correct data table from an io.Reader that should hold an html page.
 // The returned value are the slice of table rows.
 func loadTable(r io.Reader) ([]*html.Node, error) {
@@ -56,15 +66,21 @@ func loadTable(r io.Reader) ([]*html.Node, error) {
 	return records, nil
 }
 
-// employeeRecords will retrieve a list of employees from the data table
-func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
+// employeeRecords will retrieve a list of employees from the data table. Status 1 if any errors trying to parse employees, 0 if none.
+func employeeRecords(records []*html.Node) ([]storage.Employee, parsingErrors) {
 	var employees []storage.Employee
+	var errs []error
 	for i, row := range records[1:] {
 		e, err := newEmployee(row)
 		if err != nil {
-			return nil, fmt.Errorf("error trying to parse employee columns(position %d): %q", i, err)
+			err = fmt.Errorf("error trying to parse employee columns(position %d): %q. Row: \n%s", i, err, htmlquery.OutputHTML(row, true))
+			errs = append(errs, err)
+			continue
 		}
 		employees = append(employees, e)
+	}
+	if len(errs) > 0 {
+		return employees, errs
 	}
 	return employees, nil
 }
@@ -115,7 +131,7 @@ func employeeIncome(row *html.Node, i *storage.IncomeDetails) error {
 	if err := employeeIncomeOthers(row, i.Other); err != nil {
 		return fmt.Errorf("error retrieving other incomes: %q", err)
 	}
-	i.Total = grossIncome(*i)
+	i.Total = totalIncome(*i)
 	return nil
 }
 
@@ -136,6 +152,7 @@ func employeeIncomeOthers(row *html.Node, o *storage.Funds) error {
 	if err := retrieveFloat(row, &o.OriginPosition, originPositionXPath); err != nil {
 		return fmt.Errorf("error retrieving origin position: %q", err)
 	}
+	o.Total = totalFunds(*o)
 	return nil
 }
 
@@ -155,7 +172,7 @@ func employeeDiscounts(row *html.Node, d *storage.Discount) error {
 		return fmt.Errorf("error retrieving incomeTax: %q", err)
 	}
 	d.Others = make(map[string]float64)
-	d.Others["Sundry"] = sundryV
+	d.Others["other_discounts"] = sundryV
 	d.Total = totalDiscounts(*d)
 	return nil
 }
@@ -165,17 +182,21 @@ func active(role string) bool {
 	return role != "Inativo"
 }
 
-// grossIncome returns the sum of incomes.
-func grossIncome(in storage.IncomeDetails) float64 {
-	o := *in.Other
-	totalOthers := getValue(o.PersonalBenefits) + getValue(o.EventualBenefits) +
-		getValue(o.PositionOfTrust) + getValue(o.Daily) + getValue(o.Gratification) + sumMapValues(o.Others)
-	total := getValue(in.Wage) + in.Perks.Total + totalOthers
+// totalDiscounts returns the sum of discounts.
+func totalDiscounts(d storage.Discount) float64 {
+	total := getFloat64Value(d.PrevContribution) + getFloat64Value(d.CeilRetention) + getFloat64Value(d.IncomeTax) + sumMapValues(d.Others)
 	return math.Round(total*100) / 100
 }
 
-// totalDiscounts returns the sum of discounts.
-func totalDiscounts(d storage.Discount) float64 {
-	total := *d.PrevContribution + *d.CeilRetention + *d.IncomeTax + sumMapValues(d.Others)
+// totalFunds returns the sum of funds.
+func totalFunds(f storage.Funds) float64 {
+	total := getFloat64Value(f.PersonalBenefits) + getFloat64Value(f.EventualBenefits) +
+		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + getFloat64Value(f.OriginPosition) + sumMapValues(f.Others)
+	return math.Round(total*100) / 100
+}
+
+// grossIncome returns the sum of incomes.
+func totalIncome(in storage.IncomeDetails) float64 {
+	total := getFloat64Value(in.Wage) + in.Perks.Total + in.Other.Total
 	return math.Round(total*100) / 100
 }
