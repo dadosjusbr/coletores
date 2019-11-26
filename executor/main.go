@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -55,11 +56,14 @@ func execJobs(jobs []string, month, year int) ([]storage.CrawlingResult, []error
 	var outputs []storage.CrawlingResult
 	for _, job := range jobs {
 		var cr storage.CrawlingResult
-		out, err := execDataCollector(job, month, year)
+		stdout, stderr, err := execDataCollector(job, month, year) //stdout, stderr and exit status for data collector.
 		if err != nil {
-			execErrors = append(execErrors, fmt.Errorf("error executing data colector (%s): %q", job, err))
+			execErrors = append(execErrors, fmt.Errorf("error executing data colector (%s): %s", job, err)) // This will capture exit status.
 		}
-		err = json.Unmarshal(out, &cr)
+		if len(stderr) > 0 {
+			execErrors = append(execErrors, fmt.Errorf("error executing data colector (%s): %s", job, stderr))
+		}
+		err = json.Unmarshal(stdout, &cr)
 		if err != nil {
 			execErrors = append(execErrors, fmt.Errorf("error unmarshalling crawling result from (%s): %q", job, err))
 		} else {
@@ -70,12 +74,15 @@ func execJobs(jobs []string, month, year int) ([]storage.CrawlingResult, []error
 	return outputs, execErrors
 }
 
-func execDataCollector(path string, month, year int) ([]byte, error) {
+func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
 	cmdList := strings.Split(fmt.Sprintf("./%s --mes=%d --ano=%d", filepath.Base(path), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
-	out, err := cmd.CombinedOutput()
-	return out, err
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err := cmd.Run()
+	return outb.Bytes(), errb.Bytes(), err
 }
 
 func getGitCommit() (string, error) {
