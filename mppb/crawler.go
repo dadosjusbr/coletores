@@ -1,10 +1,8 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 )
@@ -26,25 +24,23 @@ var (
 	}
 )
 
-func main() {
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	flag.Parse()
-	if *month == 0 || *year == 0 {
-		log.Fatalf("need arguments to continue, please try again")
-	}
-	for typ, url := range links(baseURL, *month, *year) {
-		name := fmt.Sprintf("%s-%d-%d.ods", typ, month, year)
-		f, err := os.Create(name)
+// Crawl retrieves payment files from MPPB.
+func Crawl(outputPath string, month, year int) ([]string, error) {
+	var files []string
+	for typ, url := range links(baseURL, month, year) {
+		filePath := fmt.Sprintf("%s/%s-%d-%d.ods", outputPath, typ, month, year)
+		f, err := os.Create(filePath)
 		if err != nil {
-			log.Fatalf("error creating file(%s):%q", name, err)
+			return nil, fmt.Errorf("error creating file(%s):%q", filePath, err)
 		}
 		if download(url, f); err != nil {
-			log.Fatalf("error while downloading content: %q", err)
+			return nil, fmt.Errorf("error while downloading content: %q", err)
 		}
 		f.Close()
-		fmt.Printf("File successfully saved:%s calc", name)
+		files = append(files, filePath)
+		break
 	}
+	return files, nil
 }
 
 // Generate endpoints able to download
