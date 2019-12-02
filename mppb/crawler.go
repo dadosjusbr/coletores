@@ -38,7 +38,6 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 		}
 		f.Close()
 		files = append(files, filePath)
-		break
 	}
 	return files, nil
 }

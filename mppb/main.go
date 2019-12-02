@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -36,8 +35,8 @@ func main() {
 		logError("Crawler error: %q", err)
 		os.Exit(1)
 	}
-	fmt.Printf("%v", files)
-	err = Parser(files[:1])
+	// files := []string{"./output/servidoresAtivos-2-2018.ods", "./output/servidoresInativos-2-2018.ods", "./output/servidoresDisponiveis-2-2018.ods", "./output/aposentados-2-2018.ods", "./output/estagiarios-2-2018.ods", "./output/indenizacoes-2-2018.ods", "./output/membrosAtivos-2-2018.ods", "./output/membrosInativos-2-2018.ods"}
+	err = Parser(files)
 	if err != nil {
 		logError("Parsing error: %q", err)
 	}
