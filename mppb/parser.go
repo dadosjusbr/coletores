@@ -7,6 +7,13 @@ import (
 	"github.com/knieriem/odf/ods"
 )
 
+// Data type
+const (
+	ESTAGIARIOS  = 0
+	INDENIZACOES = 1
+	REMUNERACOES = 2
+)
+
 var mapping = map[string]int{
 	"MATRÍCULA":             0,
 	"NOME":                  1,
@@ -27,59 +34,92 @@ var mapping = map[string]int{
 
 // Parser parses the ods tables.
 func Parser(files []string) error {
-	var doc ods.Doc
 	for _, file := range files {
+		var doc ods.Doc
 		f, err := ods.Open(file)
 		if err != nil {
 			return fmt.Errorf("ods.Open error(%s): %q", file, err)
 		}
 		f.ParseContent(&doc)
-		/*
-			json, err := json.MarshalIndent(getHeaders(doc), "", " ")
-			if err != nil {
-				return fmt.Errorf("marshalling error")
-			}
-			fmt.Printf("%s", json)
-		*/
-
-		if err := assertHeaders(doc); err != nil {
-			return fmt.Errorf("assertHeaders() error: %q", err)
+		fileType := dataType(file)
+		if err := assertHeaders(doc, fileType); err != nil {
+			logError("assertHeaders() for %s error: %q", file, err)
 		}
-
+		f.Close()
 	}
 	return nil
 }
 
-func getHeaders(doc ods.Doc) [][]string {
-	headers := doc.Table[0].Strings()[5:8]
-	for row := range headers {
-		for col := range headers[row] {
-			headers[row][col] = strings.ToUpper(strings.ReplaceAll(headers[row][col], "\n", " "))
+func dataType(fileName string) int {
+	if strings.Contains(fileName, "indenizacoes") {
+		return INDENIZACOES
+	} else if strings.Contains(fileName, "estagiarios") {
+		return ESTAGIARIOS
+	} else if strings.Contains(fileName, "membros") || strings.Contains(fileName, "servidores") {
+		return REMUNERACOES
+	}
+	return -1
+}
+
+func getHeaders(doc ods.Doc, fileType int) []string {
+	var headers []string
+	raw := doc.Table[0].Strings()[5:8]
+	for row := range raw {
+		for col := range raw[row] {
+			raw[row][col] = strings.ToUpper(strings.ReplaceAll(raw[row][col], "\n", " "))
 		}
+	}
+	switch fileType {
+	case INDENIZACOES:
+		headers = append(headers, raw[0][:4]...)
+		headers = append(headers, raw[2][4:]...)
+		break
+	case ESTAGIARIOS:
+		headers = append(headers, raw[0][:3]...)
+		headers = append(headers, raw[2][3:9]...)
+		headers = append(headers, raw[1][9])
+		headers = append(headers, raw[2][10:]...)
+		headers = append(headers, raw[1][13])
+		headers = append(headers, raw[0][14:]...)
+		break
+	case REMUNERACOES:
+		headers = append(headers, raw[0][:4]...)
+		headers = append(headers, raw[2][4:10]...)
+		headers = append(headers, raw[1][10:13]...)
+		headers = append(headers, raw[2][13:]...)
+		break
 	}
 	return headers
 }
 
-func assertHeaders(doc ods.Doc) error {
-	headers := getHeaders(doc)
-	for key, value := range mapping {
-		if err := containsHeader(headers, key, value); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func containsHeader(headers [][]string, key string, value int) error {
-	for row := range headers {
-		for i, cell := range headers[row] {
-			if strings.Contains(cell, key) {
-				if i != value {
-					return fmt.Errorf("%s should be at position %d, but was in %d instead", key, value, i)
-				}
-				return nil
+func assertHeaders(doc ods.Doc, fileType int) error {
+	headers := getHeaders(doc, fileType)
+	switch fileType {
+	case REMUNERACOES:
+		for key, value := range mapping {
+			if err := containsHeader(headers, key, value); err != nil {
+				return err
 			}
 		}
+		return nil
+	case ESTAGIARIOS:
+		for key, value := range mapping {
+			if key == "MATRÍCULA" {
+				continue
+			}
+			if err := containsHeader(headers, key, value-1); err != nil {
+				return err
+			}
+		}
+		return nil
+	default:
+		return fmt.Errorf("couldn't fit fileType: %d", fileType)
 	}
-	return fmt.Errorf("couldn't find %s", key)
+}
+
+func containsHeader(headers []string, key string, value int) error {
+	if strings.Contains(headers[value], key) {
+		return nil
+	}
+	return fmt.Errorf("couldn't find %s at position %d", key, value)
 }

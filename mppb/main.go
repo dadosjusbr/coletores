@@ -30,14 +30,13 @@ func main() {
 		logError("Error creating output folder(%s): %q", outputFolder, err)
 		os.Exit(1)
 	}
+
 	files, err := Crawl(outputFolder, *month, *year)
 	if err != nil {
 		logError("Crawler error: %q", err)
 		os.Exit(1)
 	}
-	// files := []string{"./output/servidoresAtivos-2-2018.ods", "./output/servidoresInativos-2-2018.ods", "./output/servidoresDisponiveis-2-2018.ods", "./output/aposentados-2-2018.ods", "./output/estagiarios-2-2018.ods", "./output/indenizacoes-2-2018.ods", "./output/membrosAtivos-2-2018.ods", "./output/membrosInativos-2-2018.ods"}
-	err = Parser(files)
-	if err != nil {
+	if err = Parser(files); err != nil {
 		logError("Parsing error: %q", err)
 	}
 }
