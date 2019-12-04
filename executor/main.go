@@ -21,6 +21,7 @@ type config struct {
 	Month        int
 	Year         int
 	MongoURI     string
+	DBName       string
 }
 
 var c config
@@ -46,6 +47,18 @@ func init() {
 }
 
 func main() {
+	storageClient, err := storage.NewClient(c.MongoURI)
+	if err != nil {
+		logError("Error trying to initialize mongo client: %q", err)
+		os.Exit(1)
+	}
+	err = storageClient.Connect(c.DBName)
+	if err != nil {
+		logError("Error trying to connect to mongo client: %q", err)
+		os.Exit(1)
+	}
+	defer storageClient.Disconnect()
+
 	commit, err := getGitCommit()
 	if err != nil {
 		logError("%s", err)
@@ -67,7 +80,7 @@ func main() {
 			logError("Execution error %s: %q", job, err)
 			continue
 		}
-		err = store(stdOut)
+		err = store(stdOut, storageClient)
 		if err != nil {
 			logError("Store error %s: %q", job, err)
 			continue
@@ -75,28 +88,16 @@ func main() {
 	}
 }
 
-func store(content []byte) error {
-	storageClient, err := storage.NewClient(c.MongoURI)
-	if err != nil {
-		return fmt.Errorf("Error trying to initialize mongo client: %q", err)
-	}
-	err = storageClient.Connect()
-	if err != nil {
-		return fmt.Errorf("Error trying to connect to mongo client: %q", err)
-	}
-
+// store stores crawling results to db in storageClient
+func store(content []byte, storageClient *storage.Client) error {
 	var cr storage.CrawlingResult
-	err = json.Unmarshal(content, &cr)
+	err := json.Unmarshal(content, &cr)
 	if err != nil {
 		return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
 	err = storageClient.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
-	}
-	err = storageClient.Disconnect()
-	if err != nil {
-		return fmt.Errorf("Error trying to disconnect from mongo client: %q", err)
 	}
 	return nil
 }
@@ -161,7 +162,6 @@ func backup(job string, desc string, content []byte) {
 		return
 	}
 	path := fmt.Sprintf("%s/%s(%d-%d)-%s-%s", c.OutputFolder, filepath.Base(job), c.Month, c.Year, desc, time.Now().Format(time.RFC3339))
-	fmt.Println(path, c.OutputFolder)
 	f, err := os.Create(path)
 	if err != nil {
 		logError("backup error: error creating file: %s", err)
