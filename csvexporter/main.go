@@ -52,8 +52,7 @@ func main() {
 		if err := cur.Decode(&mi); err != nil {
 			log.Fatalf("error decoding value from mongodb:%q\n", err)
 		}
-		fmt.Println(mi)
-		break
+		// TODO: Para cada registro, transformar em CSV e imprimir na saída padrão.
 	}
 	if err := cur.Err(); err != nil {
 		log.Fatalf("error dealing with mongodb cursor:%q\n", err)
