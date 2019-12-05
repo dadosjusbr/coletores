@@ -113,7 +113,8 @@ func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 // employeeIncome creates an *storage.IncomeDetails from a trt13Employee
 func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
 	in := storage.IncomeDetails{Perks: &storage.Perks{}}
-	in.Wage = &emp.Income.Wage
+	wage := emp.Income.Wage + emp.Income.Subsidio
+	in.Wage = &wage
 	in.Perks.Total = emp.Income.Perks
 	in.Other = employeeFunds(emp)
 	in.Total = totalIncome(in)
@@ -125,7 +126,6 @@ func employeeFunds(emp trt13Employee) *storage.Funds {
 	o := storage.Funds{}
 	o.PersonalBenefits = &emp.Income.PersonalBenefits
 	o.EventualBenefits = &emp.Income.EventualBenefits
-	o.PositionOfTrust = &emp.Income.Subsidio
 	o.Gratification = &emp.Income.Gratification
 	o.Daily = &emp.Daily
 	o.OriginPosition = &emp.OriginPosition

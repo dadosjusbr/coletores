@@ -32,19 +32,20 @@ const empSample = `{
 }`
 
 var (
-	two   = 2.0
-	three = 3.0
-	four  = 4.0
-	five  = 5.0
-	six   = 6.0
-	seven = 7.0
+	two    = 2.0
+	three  = 3.0
+	four   = 4.0
+	five   = 5.0
+	six    = 6.0
+	seven  = 7.0
+	eleven = 11.0
 )
 var (
 	expectedEmployeeBasicInfo = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor"}
-	expectedIncomeOthers      = storage.Funds{Total: 27, PersonalBenefits: &two, EventualBenefits: &three, PositionOfTrust: &four, Daily: &five, Gratification: &six, OriginPosition: &seven}
+	expectedIncomeOthers      = storage.Funds{Total: 23, PersonalBenefits: &two, EventualBenefits: &three, Daily: &five, Gratification: &six, OriginPosition: &seven}
 	expectedDiscounts         = storage.Discount{PrevContribution: &two, IncomeTax: &three, CeilRetention: &five, Others: map[string]float64{"other_discounts": 4}, Total: 14}
 	perks                     = storage.Perks{Total: 5}
-	expectedIncome            = storage.IncomeDetails{Total: 39, Wage: &seven, Perks: &perks, Other: &expectedIncomeOthers}
+	expectedIncome            = storage.IncomeDetails{Total: 39, Wage: &eleven, Perks: &perks, Other: &expectedIncomeOthers}
 	expectedNewEmployee       = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor", Income: &expectedIncome, Discounts: &expectedDiscounts}
 )
 
