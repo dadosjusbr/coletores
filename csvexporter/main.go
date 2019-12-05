@@ -31,13 +31,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("error creating mongodb client: %q\n", err.Error())
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 10*time.Second)
 	if err = mgo.Connect(ctx); err != nil {
 		log.Fatalf("error connecting to mongodb: %q\n", err.Error())
 	}
-	defer cancel()
+	defer cancelCtx()
+
 	// Calling Connect does not block for server discovery. Need to ping.
-	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	if err = mgo.Ping(ctx, readpref.Primary()); err != nil {
 		log.Fatalf("could not find any available mongo instance: %q\n", err.Error())
 	}
@@ -55,7 +56,7 @@ func main() {
 		if err := cur.Decode(&mi); err != nil {
 			log.Fatalf("error decoding value from mongodb:%q\n", err)
 		}
-		err = logAgencies(mi)
+		err = logAgencyMonthlyInfo(mi)
 		if err != nil {
 			log.Fatalf("error logging agency: %q", err)
 		}
@@ -65,6 +66,7 @@ func main() {
 	}
 }
 
+// csvHeaders prints headers for the csv to stdout
 func csvHeaders() {
 	fmt.Printf(`"aid", "year", "month",`)
 	fmt.Printf(`"reg", "name", "role", "type", "workplace", "active",`)
@@ -75,7 +77,8 @@ func csvHeaders() {
 	fmt.Println()
 }
 
-func logAgencies(ag storage.AgencyMonthlyInfo) error {
+// logAgencyMonthlyInfo will take a AgencyMonthlyInfo and prints to stdout all the employees as csv lines.
+func logAgencyMonthlyInfo(ag storage.AgencyMonthlyInfo) error {
 	for _, e := range ag.Employee {
 		basicInfo := fmt.Sprintf("%q, %d, %d,", ag.AgencyID, ag.Year, ag.Month)
 		empInfo := empInfo(e)
@@ -84,6 +87,7 @@ func logAgencies(ag storage.AgencyMonthlyInfo) error {
 	return nil
 }
 
+// empInfo returns the employee as a csv line.
 func empInfo(e storage.Employee) string {
 	basicInfo := fmt.Sprintf("%q, %q, %q, %q, %q, %t,", e.Reg, e.Name, e.Role, e.Type, e.Workplace, e.Active)
 	income := incomeInfo(e.Income)
@@ -92,6 +96,7 @@ func empInfo(e storage.Employee) string {
 	return line
 }
 
+// incomeInfo generates the IncomeDetails as a csv line
 func incomeInfo(i *storage.IncomeDetails) string {
 	if i == nil {
 		return ",,,,,,,,,,,,,,,,,,,,,"
@@ -116,6 +121,7 @@ func incomeInfo(i *storage.IncomeDetails) string {
 	return result
 }
 
+// discountInfo generates discount info as a csv line.
 func discountInfo(d *storage.Discount) string {
 	if d == nil {
 		return ",,,,,"
@@ -124,6 +130,7 @@ func discountInfo(d *storage.Discount) string {
 	return result
 }
 
+// getFloatValues takes a list of float pointers and returns them as a string for csv.
 func getFloatValues(floats ...*float64) string {
 	result := ""
 	for _, p := range floats {
@@ -136,6 +143,7 @@ func getFloatValues(floats ...*float64) string {
 	return result
 }
 
+// getMapTotal returns sum of map values as a csv field("%.2f,").
 func getMapTotal(m map[string]float64) string {
 	total := 0.
 	for _, v := range m {
