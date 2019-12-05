@@ -36,7 +36,7 @@ func main() {
 		logError("Crawler error: %q", err)
 		os.Exit(1)
 	}
-	if err = Parser(files); err != nil {
+	if err = Parse(files); err != nil {
 		logError("Parsing error: %q", err)
 	}
 }

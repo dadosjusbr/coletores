@@ -14,6 +14,7 @@ const (
 	REMUNERACOES = 2
 )
 
+// Mapping of headers to indexes
 var headersMap = []map[string]int{
 	ESTAGIARIOS: map[string]int{
 		"NOME":                0,
@@ -62,12 +63,13 @@ var headersMap = []map[string]int{
 	},
 }
 
-// Parser parses the ods tables.
-func Parser(files []string) error {
+// Parse parses the ods tables.
+func Parse(files []string) error {
 	data, err := dataAsSlices(files)
 	if err != nil {
 		return fmt.Errorf("error trying to parse data as slices: %q", err)
 	}
+	// TODO
 	fmt.Printf("%v\n", data)
 	return nil
 }
