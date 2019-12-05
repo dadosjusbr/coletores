@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
+	"github.com/dadosjusbr/storage"
 	"github.com/knieriem/odf/ods"
 )
 
@@ -65,51 +67,204 @@ var headersMap = []map[string]int{
 
 // Parse parses the ods tables.
 func Parse(files []string) error {
-	data, err := dataAsSlices(files)
+	perks, err := retrievePerksData(files)
 	if err != nil {
-		return fmt.Errorf("error trying to parse data as slices: %q", err)
+		return fmt.Errorf("error trying to retrieve perks data: %q", err)
 	}
-	// TODO
-	fmt.Printf("%v\n", data)
+	var employees []storage.Employee
+	for _, f := range files {
+		if dataType(f) == INDENIZACOES {
+			continue
+		}
+
+		data, err := dataAsSlices(f)
+		if err != nil {
+			return fmt.Errorf("error trying to parse data as slices(%s): %q", f, err)
+		}
+
+		emps := retrieveEmployees(data, perks, f)
+		employees = append(employees, emps...)
+		json, _ := json.MarshalIndent(emps, "", " ")
+		fmt.Printf("%s", json)
+	}
 	return nil
 }
 
-func dataAsSlices(files []string) (map[int][][]string, error) {
-	var (
-		perksAndbenefits [][]string
-		employees        [][]string
-		interns          [][]string
-	)
-	for _, file := range files {
-		var doc ods.Doc
-		f, err := ods.Open(file)
-		if err != nil {
-			return nil, fmt.Errorf("ods.Open error(%s): %q", file, err)
+func retrievePerksData(files []string) ([][]string, error) {
+	for _, f := range files {
+		if dataType(f) == INDENIZACOES {
+			return dataAsSlices(f)
 		}
-		f.ParseContent(&doc)
-		fileType := dataType(file)
-		if err := assertHeaders(doc, fileType); err != nil {
-			logError("assertHeaders() for %s error: %q", file, err)
+	}
+	return nil, nil
+}
+
+func retrieveEmployees(emps [][]string, perks [][]string, fileName string) []storage.Employee {
+	var employees []storage.Employee
+	fileType := dataType(fileName)
+	for _, emp := range emps {
+		var err error
+		var newEmp storage.Employee
+		if fileType == REMUNERACOES {
+			empPerks := retrievePerksLine(emp[0], perks)
+			newEmp, err = newEmployee(emp, empPerks, fileName)
+			if err != nil {
+				logError("error retrieving employee from %s: %q", fileName, err)
+				continue
+			}
+		} else if fileType == ESTAGIARIOS {
 			continue
 		}
-		switch fileType {
-		case REMUNERACOES:
-			employees = append(employees, getEmployees(doc)...)
-			break
-		case ESTAGIARIOS:
-			interns = append(interns, getEmployees(doc)...)
-			break
-		case INDENIZACOES:
-			perksAndbenefits = append(perksAndbenefits, getEmployees(doc)...)
-			break
-		}
-		f.Close()
+		employees = append(employees, newEmp)
 	}
-	return map[int][][]string{
-		REMUNERACOES: employees,
-		ESTAGIARIOS:  interns,
-		INDENIZACOES: perksAndbenefits,
-	}, nil
+	return employees
+}
+
+func retrievePerksLine(regNum string, perks [][]string) []string {
+	if perks == nil || len(perks) == 0 {
+		return nil
+	}
+	for _, p := range perks {
+		if p[headersMap[INDENIZACOES]["MATRÍCULA"]] == regNum {
+			return p
+		}
+	}
+	return nil
+}
+
+func newEmployee(emp []string, perks []string, fileName string) (storage.Employee, error) {
+	fileType := dataType(fileName)
+	var newEmp storage.Employee
+	var err error
+	newEmp.Reg = retrieveString(emp, "MATRÍCULA", fileType)
+	newEmp.Name = retrieveString(emp, "NOME", fileType)
+	newEmp.Role = retrieveString(emp, "CARGO", fileType)
+	newEmp.Workplace = retrieveString(emp, "LOTAÇÃO", fileType)
+	newEmp.Type = employeeType(fileName)
+	newEmp.Active = employeeActive(fileName)
+	if newEmp.Income, err = employeeIncomeInfo(emp, perks, fileType); err != nil {
+		return newEmp, fmt.Errorf("error parsing new employee: %q", err)
+	}
+	return newEmp, nil
+}
+
+func employeeActive(fileName string) bool {
+	return (strings.Contains(fileName, "Inativos") || strings.Contains(fileName, "aposentados")) == false
+}
+
+func employeeType(fileName string) string {
+	if strings.Contains(fileName, "servidor") {
+		return "servidor"
+	} else if strings.Contains(fileName, "membro") {
+		return "membros"
+	} else if strings.Contains(fileName, "aposentados") {
+		return "pensionista"
+	} else if strings.Contains(fileName, "estagiario") {
+		return "estagiario"
+	}
+	return ""
+}
+
+func employeeIncomeInfo(emp []string, perks []string, fileType int) (*storage.IncomeDetails, error) {
+	var err error
+	var in storage.IncomeDetails
+	if err = retrieveFloat64(&in.Wage, emp, "CARGO EFETIVO", fileType); err != nil {
+		return nil, fmt.Errorf("error retrieving employee income info: %q", err)
+	}
+	if in.Perks, err = employeePerks(emp[headersMap[fileType]["MATRÍCULA"]], perks); err != nil {
+		return nil, fmt.Errorf("error retrieving employee perks: %q", err)
+	}
+	if in.Other, err = employeeIncomeFunds(emp, perks, fileType); err != nil {
+		return nil, fmt.Errorf("error retrieving employee funds: %q", err)
+	}
+	in.Total = getFloat64Value(in.Wage)
+	if in.Other != nil {
+		in.Total += in.Other.Total
+	}
+	if in.Perks != nil {
+		in.Total += in.Perks.Total
+	}
+	return &in, nil
+}
+
+func employeePerks(reg string, perks []string) (*storage.Perks, error) {
+	if perks == nil || len(perks) == 0 {
+		return nil, nil
+	}
+	var inPerks storage.Perks
+	if reg != perks[headersMap[INDENIZACOES]["MATRÍCULA"]] {
+		return nil, fmt.Errorf("error retrieving perks: employee reg does not match perks. %s, %v", reg, perks)
+	}
+	if err := retrieveFloat64(&inPerks.Food, perks, "ALIMENTAÇÃO", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	if err := retrieveFloat64(&inPerks.Health, perks, "SAÚDE", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	if err := retrieveFloat64(&inPerks.HousingAid, perks, "MORADIA", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	if err := retrieveFloat64(&inPerks.BirthAid, perks, "NATALIDADE", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	if err := retrieveFloat64(&inPerks.Subsistence, perks, "AJUDA DE CUSTO", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	var pecunia float64
+	if err := retrieveFloat64(&pecunia, perks, "PECÚNIA", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	inPerks.Others = map[string]float64{"pecunia": pecunia}
+	inPerks.Total = totalPerks(inPerks)
+	return &inPerks, nil
+}
+
+func employeeIncomeFunds(emp []string, perks []string, fileType int) (*storage.Funds, error) {
+	var o storage.Funds
+	pb, err := sumKeyValues(emp, []string{"OUTRAS VERBAS", "PERMANÊNCIA"}, fileType)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
+	}
+	o.PersonalBenefits = &pb
+	ebKeys, err := sumKeyValues(emp, []string{"FÉRIAS", "GRATIFICAÇÃO NATALINA"}, fileType)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
+	}
+	var ebPerks float64
+	if perks != nil && len(perks) > 0 {
+		ebPerks, err = sumIndexes(perks, 10, 21)
+		if err != nil {
+			return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
+		}
+	}
+	eb := ebPerks + ebKeys
+	o.EventualBenefits = &eb
+	if err := retrieveFloat64(&o.PositionOfTrust, emp, "CARGO EM COMISSÃO", fileType); err != nil {
+		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
+	}
+
+	return &o, nil
+}
+
+func totalPerks(p storage.Perks) float64 {
+	return getFloat64Value(p.Food, p.Health, p.HousingAid, p.BirthAid, p.Subsistence) + sumMapValues(p.Others)
+}
+
+func dataAsSlices(file string) ([][]string, error) {
+	var result [][]string
+	var doc ods.Doc
+	f, err := ods.Open(file)
+	if err != nil {
+		return nil, fmt.Errorf("ods.Open error(%s): %q", file, err)
+	}
+	f.ParseContent(&doc)
+	fileType := dataType(file)
+	if err := assertHeaders(doc, fileType); err != nil {
+		return nil, fmt.Errorf("assertHeaders() for %s error: %q", file, err)
+	}
+	result = append(result, getEmployees(doc)...)
+	f.Close()
+	return result, nil
 }
 
 func dataType(fileName string) int {
@@ -181,13 +336,4 @@ func containsHeader(headers []string, key string, value int) error {
 		return nil
 	}
 	return fmt.Errorf("couldn't find %s at position %d", key, value)
-}
-
-func cleanStrings(raw [][]string) [][]string {
-	for row := range raw {
-		for col := range raw[row] {
-			raw[row][col] = strings.ToUpper(strings.ReplaceAll(strings.ReplaceAll(raw[row][col], "N/D", ""), "\n", " "))
-		}
-	}
-	return raw
 }
