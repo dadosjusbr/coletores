@@ -1,12 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 )
+
+var gitCommit string
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -37,7 +43,37 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = Parse(files); err != nil {
+	var emps []storage.Employee
+	var parseErr error
+	if emps, parseErr = Parse(files); err != nil {
 		logError("Parsing error: %q", err)
 	}
+
+	cr := newCrawlingResult(emps, files, *month, *year)
+	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	if err != nil {
+		logError("JSON marshaling error: %q", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s", string(crJSON))
+	if parseErr != nil {
+		os.Exit(1)
+	}
+}
+
+func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
+	crawlerInfo := storage.Crawler{
+		CrawlerID:      "mppb",
+		CrawlerVersion: gitCommit,
+	}
+	cr := storage.CrawlingResult{
+		AgencyID:  "mppb",
+		Month:     month,
+		Year:      year,
+		Files:     files,
+		Employees: emps,
+		Crawler:   crawlerInfo,
+		Timestamp: time.Now(),
+	}
+	return cr
 }

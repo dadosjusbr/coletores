@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
 	"strings"
@@ -67,12 +66,14 @@ var headersMap = []map[string]int{
 }
 
 // Parse parses the ods tables.
-func Parse(files []string) error {
+func Parse(files []string) ([]storage.Employee, error) {
+	var employees []storage.Employee
+	var parseErr bool
+
 	perks, err := retrievePerksData(files)
 	if err != nil {
-		return fmt.Errorf("error trying to retrieve perks data: %q", err)
+		return nil, fmt.Errorf("error trying to retrieve perks data: %q", err)
 	}
-	var employees []storage.Employee
 	for _, f := range files {
 		if dataType(f) == INDENIZACOES {
 			continue
@@ -80,15 +81,19 @@ func Parse(files []string) error {
 
 		data, err := dataAsSlices(f)
 		if err != nil {
-			return fmt.Errorf("error trying to parse data as slices(%s): %q", f, err)
+			return nil, fmt.Errorf("error trying to parse data as slices(%s): %q", f, err)
 		}
 
-		emps := retrieveEmployees(data, perks, f)
+		emps, ok := retrieveEmployees(data, perks, f)
+		if !ok {
+			parseErr = true
+		}
 		employees = append(employees, emps...)
-		json, _ := json.MarshalIndent(emps, "", " ")
-		fmt.Printf("%s", json)
 	}
-	return nil
+	if parseErr {
+		return employees, fmt.Errorf("parse error")
+	}
+	return employees, nil
 }
 
 func retrievePerksData(files []string) ([][]string, error) {
@@ -100,7 +105,8 @@ func retrievePerksData(files []string) ([][]string, error) {
 	return nil, nil
 }
 
-func retrieveEmployees(emps [][]string, perks [][]string, fileName string) []storage.Employee {
+func retrieveEmployees(emps [][]string, perks [][]string, fileName string) ([]storage.Employee, bool) {
+	var parseErr bool
 	var employees []storage.Employee
 	fileType := dataType(fileName)
 	for _, emp := range emps {
@@ -109,18 +115,20 @@ func retrieveEmployees(emps [][]string, perks [][]string, fileName string) []sto
 		if fileType == REMUNERACOES {
 			empPerks := retrievePerksLine(emp[0], perks)
 			if newEmp, err = newEmployee(emp, empPerks, fileName); err != nil {
+				parseErr = true
 				logError("error retrieving employee from %s: %q", fileName, err)
 				continue
 			}
 		} else if fileType == ESTAGIARIOS {
 			if newEmp, err = newIntern(emp, fileName); err != nil {
+				parseErr = true
 				logError("error retrieving employee from %s: %q", fileName, err)
 				continue
 			}
 		}
 		employees = append(employees, *newEmp)
 	}
-	return employees
+	return employees, parseErr
 }
 
 func retrievePerksLine(regNum string, perks [][]string) []string {
