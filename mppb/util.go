@@ -20,10 +20,16 @@ func retrieveString(emp []string, key string, fileType int) string {
 }
 
 func retrieveFloat64(v interface{}, emp []string, key string, fileType int) error {
+	var err error
+	var value float64
 	valueStr := retrieveString(emp, key, fileType)
-	value, err := parseFloat(valueStr)
-	if err != nil {
-		return fmt.Errorf("error retrieving float %s from %v: %q", key, emp, err)
+	if valueStr == "" {
+		value = 0.0
+	} else {
+		value, err = parseFloat(valueStr)
+		if err != nil {
+			return fmt.Errorf("error retrieving float %s from %v: %q", key, emp, err)
+		}
 	}
 
 	if v, ok := v.(**float64); ok {
@@ -46,7 +52,7 @@ func sumMapValues(m map[string]float64) float64 {
 	for _, v := range m {
 		sum += v
 	}
-	return sum
+	return math.Round(sum*100) / 100
 }
 
 // parseFloat makes the string with format "xx.xx,xx" able to be parsed by the strconv.ParseFloat and return it parsed.
@@ -95,7 +101,7 @@ func sumIndexes(data []string, start int, end int) (float64, error) {
 		}
 		total += tmp
 	}
-	return total, nil
+	return math.Round(total*100) / 100, nil
 }
 
 func sumKeyValues(data []string, keys []string, fileType int) (float64, error) {
@@ -105,6 +111,7 @@ func sumKeyValues(data []string, keys []string, fileType int) (float64, error) {
 		if err := retrieveFloat64(&tmp, data, k, fileType); err != nil {
 			return 0, fmt.Errorf("sum key values error: %q", err)
 		}
+		total += tmp
 	}
-	return total, nil
+	return math.Round(total*100) / 100, nil
 }
