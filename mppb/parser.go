@@ -83,6 +83,9 @@ func Parse(files []string) ([]storage.Employee, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error trying to parse data as slices(%s): %q", f, err)
 		}
+		if len(data) == 0 {
+			return nil, fmt.Errorf("No data to be parsed. (%s)", f)
+		}
 
 		emps, ok := retrieveEmployees(data, perks, f)
 		if !ok {
@@ -106,7 +109,7 @@ func retrievePerksData(files []string) ([][]string, error) {
 }
 
 func retrieveEmployees(emps [][]string, perks [][]string, fileName string) ([]storage.Employee, bool) {
-	var parseErr bool
+	ok := true
 	var employees []storage.Employee
 	fileType := dataType(fileName)
 	for _, emp := range emps {
@@ -115,20 +118,20 @@ func retrieveEmployees(emps [][]string, perks [][]string, fileName string) ([]st
 		if fileType == REMUNERACOES {
 			empPerks := retrievePerksLine(emp[0], perks)
 			if newEmp, err = newEmployee(emp, empPerks, fileName); err != nil {
-				parseErr = true
+				ok = false
 				logError("error retrieving employee from %s: %q", fileName, err)
 				continue
 			}
 		} else if fileType == ESTAGIARIOS {
 			if newEmp, err = newIntern(emp, fileName); err != nil {
-				parseErr = true
+				ok = false
 				logError("error retrieving employee from %s: %q", fileName, err)
 				continue
 			}
 		}
 		employees = append(employees, *newEmp)
 	}
-	return employees, parseErr
+	return employees, ok
 }
 
 func retrievePerksLine(regNum string, perks [][]string) []string {
@@ -244,10 +247,12 @@ func employeeIncomeInfo(emp []string, perks []string, fileType int) (*storage.In
 }
 
 func employeePerks(reg string, perks []string) (*storage.Perks, error) {
-	if perks == nil || len(perks) == 0 {
-		return nil, nil
-	}
 	var inPerks storage.Perks
+	if perks == nil || len(perks) == 0 {
+		inPerks.Total = 0
+		return &inPerks, nil
+	}
+
 	if reg != perks[headersMap[INDENIZACOES]["MATRÍCULA"]] {
 		return nil, fmt.Errorf("error retrieving perks: employee reg does not match perks. %s, %v", reg, perks)
 	}

@@ -45,8 +45,8 @@ func main() {
 
 	var emps []storage.Employee
 	var parseErr error
-	if emps, parseErr = Parse(files); err != nil {
-		logError("Parsing error: %q", err)
+	if emps, parseErr = Parse(files); parseErr != nil {
+		logError("Parsing error: %q", parseErr)
 	}
 
 	cr := newCrawlingResult(emps, files, *month, *year)
@@ -57,6 +57,7 @@ func main() {
 	}
 	fmt.Printf("%s", string(crJSON))
 	if parseErr != nil {
+		fmt.Printf("%q\n", parseErr)
 		os.Exit(1)
 	}
 }
