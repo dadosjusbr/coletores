@@ -16,12 +16,12 @@ import (
 )
 
 type config struct {
-	OutputFolder string
-	JobList      []string
+	OutputFolder string   `envconfig:"OUTPUT_FOLDER"`
+	JobList      []string `envconfig:"JOB_LIST"`
 	Month        int
 	Year         int
-	MongoURI     string
-	DBName       string
+	MongoURI     string `envconfig:"MONGODB_URI"`
+	DBName       string `envconfig:"MONGODB_DBNAME"`
 }
 
 var c config
@@ -44,6 +44,7 @@ func init() {
 		logError("Error creating output folder(%s): %q", c.OutputFolder, err)
 		os.Exit(1)
 	}
+	fmt.Printf("%v\n", c)
 }
 
 func main() {
