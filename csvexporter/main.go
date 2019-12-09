@@ -44,12 +44,14 @@ func main() {
 		log.Fatalf("could not find any available mongo instance: %q\n", err.Error())
 	}
 	fmt.Fprintf(os.Stderr, "Sucessfully connected to mongodb %s\n", c.MongoDBURI)
+	defer cancel()
 
 	cur, err := mgo.Database(c.MongoDBName).Collection(c.MongoDBCollection).Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatalf("error querying mongodb:%q", err)
 	}
 	defer cur.Close(context.Background())
+	csvHeaders()
 	for cur.Next(context.Background()) {
 		var mi storage.AgencyMonthlyInfo
 		if err := cur.Decode(&mi); err != nil {
