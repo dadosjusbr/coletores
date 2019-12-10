@@ -78,12 +78,12 @@ func main() {
 		backup(job, "exec.stdout", stdOut)
 		backup(job, "exec.stderr", stdErr)
 		if err != nil {
-			logError("Execution error %s: %q", job, err)
+			logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
 			continue
 		}
 		err = store(stdOut, storageClient)
 		if err != nil {
-			logError("Store error %s: %q", job, err)
+			logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
 			continue
 		}
 	}
