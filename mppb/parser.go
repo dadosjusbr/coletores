@@ -227,6 +227,7 @@ func internIncomeInfo(emp []string, fileType int) (*storage.IncomeDetails, error
 	in.Other.EventualBenefits = &eb
 	total := eb + pb + getFloat64Value(in.Other.PositionOfTrust)
 	in.Other.Total = math.Round(total*100) / 100
+	in.Total = totalIncome(in)
 	return &in, nil
 }
 
