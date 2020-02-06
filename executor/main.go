@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/dadosjusbr/storage"
@@ -65,28 +66,32 @@ func main() {
 		logError("%s", err)
 		os.Exit(1)
 	}
-
+	var wg sync.WaitGroup
+	wg.Add(len(c.JobList))
 	for _, job := range c.JobList {
-		stdOut, stdErr, err := build(job, commit)
-		backup(job, "build.stdout", stdOut)
-		backup(job, "build.stderr", stdErr)
-		if err != nil {
-			logError("Build error %s: %q", job, err)
-			continue
-		}
-		stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
-		backup(job, "exec.stdout", stdOut)
-		backup(job, "exec.stderr", stdErr)
-		if err != nil {
-			logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
-			continue
-		}
-		err = store(stdOut, storageClient)
-		if err != nil {
-			logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
-			continue
-		}
+		go func(job string) {
+			defer wg.Done()
+			stdOut, stdErr, err := build(job, commit)
+			backup(job, "build.stdout", stdOut)
+			backup(job, "build.stderr", stdErr)
+			if err != nil {
+				logError("Build error %s: %q", job, err)
+			}
+			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
+			backup(job, "exec.stdout", stdOut)
+			backup(job, "exec.stderr", stdErr)
+			if err != nil {
+				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+			}
+			err = store(stdOut, storageClient)
+			if err != nil {
+				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
+			}
+		}(job)
 	}
+
+	wg.Wait()
+	fmt.Println("Finished.")
 }
 
 // store stores crawling results to db in storageClient
