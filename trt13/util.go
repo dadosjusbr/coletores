@@ -32,13 +32,13 @@ func readJSON(filePath string) (map[string]interface{}, error) {
 // findNil verifies if map contains any nil values.
 func findNil(m map[string]interface{}) (string, bool) {
 	for k, v := range m {
-		if v == nil {
+		if v == nil && k != "matricula" {
 			return k, true
 		}
 		switch v.(type) {
 		case map[string]interface{}:
 			k, found := findNil(v.(map[string]interface{}))
-			if found {
+			if found && k != "matricula" {
 				return k, true
 			}
 		}

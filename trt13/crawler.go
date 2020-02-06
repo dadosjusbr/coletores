@@ -46,7 +46,7 @@ func download(reqURL string, w io.Writer) error {
 		return fmt.Errorf("unexpected status code. Request: GET (%s) - Response: (%d): %s", reqURL, resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
 
-	if io.Copy(w, resp.Body); err != nil {
+	if _, err := io.Copy(w, resp.Body); err != nil {
 		return fmt.Errorf("error copying response content:%q", err)
 	}
 	return nil
