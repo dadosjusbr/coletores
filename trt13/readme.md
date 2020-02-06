@@ -9,12 +9,14 @@ Os dados devem estar de acordo com a [Resolução 102 do CNJ](https://atos.cnj.j
 
 ## Como usar
 
-- É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/).
+- É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/). Versão 1.13+
 - Rode o comando abaixo, com mês e ano que você quer ter acesso as informações
 
 ```sh
-cd crawler/trtpb
-go run crawler-trtpb.go --mes=${MES} --ano=${ANO}
+cd crawler/trt13
+go get
+go build
+./trt13 --mes=${MES} --ano=${ANO}
 ```
 
 ## Dicionário de Dados
