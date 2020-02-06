@@ -99,7 +99,7 @@ func newTRT13Employee(emp map[string]interface{}) (trt13Employee, error) {
 // newEmployee creates an storage.employee from a trt13Employee
 func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 	e := storage.Employee{}
-	e.Reg = fmt.Sprintf("%.0f", emp.Reg)
+	e.Reg = emp.Reg
 	e.Name = emp.Name
 	e.Role = emp.Role
 	e.Workplace = emp.Workplace

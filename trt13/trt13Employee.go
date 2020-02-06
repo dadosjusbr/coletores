@@ -1,7 +1,7 @@
 package main
 
 type trt13Employee struct {
-	Reg            float64       `json:"id"`
+	Reg            string        `json:"matricula"`
 	Name           string        `json:"nome"`
 	Workplace      string        `json:"lotacao"`
 	Role           string        `json:"cargo"`
