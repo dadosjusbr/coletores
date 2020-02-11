@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sync"
 )
 
 const (
@@ -27,18 +28,34 @@ var (
 // Crawl retrieves payment files from MPPB.
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	var files []string
+
+	errChan := make(chan error)
+	var wg sync.WaitGroup
 	for typ, url := range links(baseURL, month, year) {
-		filePath := fmt.Sprintf("%s/%s-%d-%d.ods", outputPath, typ, month, year)
-		f, err := os.Create(filePath)
-		if err != nil {
-			return nil, fmt.Errorf("error creating file(%s):%q", filePath, err)
-		}
-		if download(url, f); err != nil {
-			return nil, fmt.Errorf("error while downloading content: %q", err)
-		}
-		f.Close()
-		files = append(files, filePath)
+		wg.Add(1)
+		go func(typ, url string) {
+			defer wg.Done()
+			filePath := fmt.Sprintf("%s/%s-%d-%d.ods", outputPath, typ, month, year)
+			f, err := os.Create(filePath)
+			if err != nil {
+				errChan <- fmt.Errorf("error creating file(%s):%q", filePath, err)
+			}
+			if err := download(url, f); err != nil {
+				errChan <- fmt.Errorf("error while downloading content: %q", err)
+			}
+			f.Close()
+			files = append(files, filePath)
+		}(typ, url)
 	}
+	wg.Wait()
+	close(errChan)
+
+	for err := range errChan {
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return files, nil
 }
 
@@ -59,7 +76,7 @@ func download(url string, w io.Writer) error {
 		return fmt.Errorf("error downloading file:%q", err)
 	}
 	defer resp.Body.Close()
-	if io.Copy(w, resp.Body); err != nil {
+	if _, err := io.Copy(w, resp.Body); err != nil {
 		return fmt.Errorf("error copying response content:%q", err)
 	}
 	return nil
