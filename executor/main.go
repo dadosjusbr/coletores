@@ -73,25 +73,29 @@ func main() {
 	wg.Add(len(c.JobList))
 	for _, job := range c.JobList {
 		go func(job string) {
+			defer wg.Done()
 			stdOut, stdErr, err := build(job, commit)
 			backup(job, "build.stdout", stdOut)
 			backup(job, "build.stderr", stdErr)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
 			}
+
 			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
 			backup(job, "exec.stdout", stdOut)
 			backup(job, "exec.stderr", stdErr)
-
 			// Data collection execution exited with error. Abort job.
 			if err != nil {
 				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
 				return
 			}
+			log(" -- Data collector executed for %s --\n", job)
+
 			err = store(stdOut, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
 			}
+			log(" -- Store executed for %s --\n", job)
 		}(job)
 	}
 	wg.Wait()
@@ -120,7 +124,6 @@ func store(content []byte, storageClient *storage.Client) error {
 	if err != nil {
 		return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
-	fmt.Printf("\ntimestamp: %v\n", cr.Timestamp)
 	err = storageClient.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
@@ -180,6 +183,12 @@ func statusCode(err error) int {
 func logError(format string, args ...interface{}) {
 	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
 	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
+}
+
+// fatalError prints to Stderr
+func log(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stdin, time+format+"\n", args...)
 }
 
 // backup will log content of job-description when content is not empty
