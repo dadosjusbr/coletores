@@ -40,10 +40,10 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			if err != nil {
 				errChan <- fmt.Errorf("error creating file(%s):%q", filePath, err)
 			}
+			defer f.Close()
 			if err := download(url, f); err != nil {
 				errChan <- fmt.Errorf("error while downloading content: %q", err)
 			}
-			f.Close()
 			files = append(files, filePath)
 		}(typ, url)
 	}
