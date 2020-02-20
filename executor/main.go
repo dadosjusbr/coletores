@@ -21,8 +21,17 @@ type config struct {
 	JobList      []string `envconfig:"JOB_LIST"`
 	Month        int
 	Year         int
-	MongoURI     string `envconfig:"MONGODB_URI"`
-	DBName       string `envconfig:"MONGODB_DBNAME"`
+	// MONGO CONF
+	MongoURI   string `envconfig:"MONGODB_URI"`
+	DBName     string `envconfig:"MONGODB_DBNAME"`
+	MongoMICol string `envconfig:"MONGODB_MICOL"`
+	MongoAgCol string `envconfig:"MONGODB_AGCOL"`
+	// Swift Conf
+	SwiftUsername  string `envconfig:"SWIFT_USERNAME"`
+	SwiftAPIKey    string `envconfig:"SWIFT_APIKEY"`
+	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL"`
+	SwiftDomain    string `envconfig:"SWIFT_DOMAIN"`
+	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
 }
 
 var c config
@@ -49,17 +58,11 @@ func init() {
 }
 
 func main() {
-	storageClient, err := storage.NewClient(c.MongoURI)
+	client, err := newClient()
 	if err != nil {
-		logError("Error trying to initialize mongo client: %q", err)
+		logError("newClient() error: %s", err)
 		os.Exit(1)
 	}
-	err = storageClient.Connect(c.DBName)
-	if err != nil {
-		logError("Error trying to connect to mongo client: %q", err)
-		os.Exit(1)
-	}
-	defer storageClient.Disconnect()
 
 	commit, err := getGitCommit()
 	if err != nil {
@@ -77,21 +80,41 @@ func main() {
 			if err != nil {
 				logError("Build error %s: %q", job, err)
 			}
+
 			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
 			backup(job, "exec.stdout", stdOut)
 			backup(job, "exec.stderr", stdErr)
+			// Data collection execution exited with error. Abort job.
 			if err != nil {
 				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+				return
 			}
-			err = store(stdOut, storageClient)
+			log(" -- Data collector executed for %s --\n", job)
+
+			err = store(stdOut, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
 			}
+			log(" -- Store executed for %s --\n", job)
 		}(job)
 	}
-
 	wg.Wait()
 	fmt.Println("Finished.")
+}
+
+// newClient Creates client to connect with DB and Cloud5
+func newClient() (*storage.Client, error) {
+	db, err := storage.NewDBClient(c.MongoURI, c.DBName, c.MongoMICol, c.MongoAgCol)
+	if err != nil {
+		return nil, fmt.Errorf("error creating DB client: %q", err)
+	}
+	db.Collection(c.MongoMICol)
+	bc := storage.NewBackupClient(c.SwiftUsername, c.SwiftAPIKey, c.SwiftAuthURL, c.SwiftDomain, c.SwiftContainer)
+	client, err := storage.NewClient(db, bc)
+	if err != nil {
+		return nil, fmt.Errorf("error creating storage.client: %q", err)
+	}
+	return client, nil
 }
 
 // store stores crawling results to db in storageClient
@@ -160,6 +183,12 @@ func statusCode(err error) int {
 func logError(format string, args ...interface{}) {
 	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
 	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
+}
+
+// log prints to Stdout
+func log(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
 }
 
 // backup will log content of job-description when content is not empty
