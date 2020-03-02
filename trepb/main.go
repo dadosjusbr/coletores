@@ -26,12 +26,10 @@ func main() {
 	if outputFolder == "" {
 		outputFolder = "./output"
 	}
-	/*
-		if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-			logError("Error creating output folder(%s): %q", outputFolder, err)
-			os.Exit(1)
-		}
-	*/
+	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
+		logError("Error creating output folder(%s): %q", outputFolder, err)
+		os.Exit(1)
+	}
 
 	filePath := filePath(outputFolder, *month, *year)
 	if err := crawl(filePath, name, cpf, *month, *year); err != nil {
