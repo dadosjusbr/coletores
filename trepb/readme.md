@@ -12,8 +12,39 @@ Os dados devem estar de acordo com a [Resolução 102 do CNJ](https://atos.cnj.j
 
 ## Como usar
 
+### Executando com Docker
+
+- Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+- Construção da imagem:
+
+```sh
+cd crawler/trepb
+docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t trepb .
+```
+
+- Execução:
+	- Para executar é necessário passar o .env e um volume, caso deseje persistência dos dados. No .env, o campo ```OUTPUT_PATH``` indica o path relativo dentro do container. 
+	- OBS: O path dos arquivos retornado no [CrawlingResult](https://github.com/dadosjusbr/storage/blob/master/agency.go) será relativo ao container. Montar o volume de dados no mesmo path para diversos containers pode ser boa prática.
+
+
+```sh
+docker volume create dadosjus
+
+docker run \
+--mount source=dadosjus,target=/dataContainer/ \
+--env-file=.env \
+trepb --mes=${MES} --ano=${ANO}
+```
+
+- ```docker volume create dadosjus``` cria um volume local que pode ser usado pelos containers com o nome "dadosjus".
+- No comando de run:
+	- ```--mount source=dadosjus,target=/dadojus_crawling_output/``` monta o volume que criamos anteriormente no path "/dataContainer/", dessa forma, qualquer coisa que salvarmos dentro desse path será persistida após  o container ser derrubado.
+	- ```--env-file=.env``` especifica o path para o env-file.
+	- ```trepb --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
+
   
-### Rodando sem uso do docker:
+### Executando sem uso do docker:
 - É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/).
 
 - Rode o comando abaixo, com mês, ano, cpf e nome que você quer ter acesso as informações
@@ -30,37 +61,6 @@ go get
 go build -ldflags "-X main.gitCommit=$(git rev-parse -1 HEAD)"
 ./trepb --mes=${MES} --ano=${ANO}
 ```
-
-  
-
-### Docker
-
-
-- Build da imagem:
-
-```sh
-sudo docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t trepb .
-```
-
-- Execução:
-	- Para executar é necessário passar o .env e um volume, caso deseje persistência dos dados. No .env, o campo OUTPUT_PATH indica o path relativo dentro do container. 
-	- OBS: O path dos arquivos retornado no CrawlingResult será relativo ao container. Montar o volume de dados no mesmo path para diversos containers pode ser boa prática.
-
-
-```sh
-docker volume create dadosjus
-
-docker run \
---mount source=dadosjus,target=/dataContainer/ \
---env-file=.env \
-trepb --mes=${MES} --ano=${ANO}
-```
-
-- ```docker volume create dadosjus``` cria um volume local que pode ser usado pelos containers com o nome "dadosjus".
-- No comando de run:
-	- ```--mount source=dadosjus,target=/dataContainer/``` monta o volume que criamos anteriormente no path "/dataContainer/", dessa forma, qualquer coisa que salvarmos dentro desse path será persistida após  o container ser derrubado.
-	- ```--env-file=.env``` especifica o path para o env-file.
-	- ```trepb --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
 
 ## Dicionário de Dados
 
