@@ -28,8 +28,8 @@ var (
 // Crawl retrieves payment files from MPPB.
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	var files []string
-
-	errChan := make(chan error)
+	pathChan := make(chan string, 10)
+	errChan := make(chan error, 10)
 	var wg sync.WaitGroup
 	for typ, url := range links(baseURL, month, year) {
 		wg.Add(1)
@@ -44,16 +44,21 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			if err := download(url, f); err != nil {
 				errChan <- fmt.Errorf("error while downloading content: %q", err)
 			}
-			files = append(files, filePath)
+			pathChan <- filePath
 		}(typ, url)
 	}
 	wg.Wait()
 	close(errChan)
+	close(pathChan)
 
 	for err := range errChan {
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	for path := range pathChan {
+		files = append(files, path)
 	}
 
 	return files, nil
