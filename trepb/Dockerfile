@@ -1,4 +1,4 @@
-FROM golang:alpine AS builder
+FROM golang:1.14.0-alpine AS builder
 
 ARG GIT_COMMIT=unspecified
 
