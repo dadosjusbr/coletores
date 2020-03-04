@@ -1,4 +1,4 @@
-# Ministério Público de Perbambuco - Crawler
+# Ministério Público de Pernambuco - Crawler
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público de Pernambuco. O site com as informações pode ser acessado [aqui](https://transparencia.mppe.mp.br/contracheque).
 
@@ -12,7 +12,7 @@ O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e an
 ```sh
 cd crawler/mppe
 go build
-go run crawler-mppb.go --mes=${MES} --ano=${ANO}
+go run mppe.go --mes=${MES} --ano=${ANO}
 ```
 
 ## Dicionário de Dados
