@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -15,8 +16,7 @@ var gitCommit string
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		logError("Error loading .env file")
-		os.Exit(1)
+		log.Println("No .env to read.")
 	}
 
 	month := flag.Int("mes", 0, "Mês a ser analisado")
