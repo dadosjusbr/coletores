@@ -1,6 +1,6 @@
 module trt13
 
-go 1.13
+go 1.14
 
 require (
 	github.com/dadosjusbr/storage v0.0.0-20191128230552-eee844101f82
