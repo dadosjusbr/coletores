@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"sync"
 )
 
 // MembrosAtivos wraps category and year codes
@@ -32,7 +31,7 @@ func newActiveMembers() MembrosAtivos {
 	}
 }
 
-func (c MembrosAtivos) crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error) {
+func (c MembrosAtivos) crawl(outputPath string, month, year int) (string, error) {
 	link := c.getURLForYear(year)
 
 	htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, c.category)
@@ -88,8 +87,6 @@ func (c MembrosAtivos) crawl(outputPath string, month, year int, wg *sync.WaitGr
 	if err != nil {
 		return "nil", fmt.Errorf("Error deleting html file: %q", err)
 	}
-
-	//defer wg.Done()
 
 	return filePath, nil
 }

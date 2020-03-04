@@ -7,7 +7,7 @@ import (
 
 // Crawler defines how the crawlers should work
 type crawler interface {
-	crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error)
+	crawl(outputPath string, month, year int) (string, error)
 
 	getURLForYear(year int) string
 
@@ -47,7 +47,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 		go func(outputPath string, month, year int, cr crawler) {
 			defer wg.Done()
 
-			path, err := cr.crawl(outputPath, month, year, &wg)
+			path, err := cr.crawl(outputPath, month, year)
 
 			if err != nil {
 				errChannel <- err

@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"sync"
 )
 
 //ServidoresAtivos wraps category and year codes
@@ -32,7 +31,7 @@ func newActiveEmployees() ServidoresAtivos {
 	}
 }
 
-func (c ServidoresAtivos) crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error) {
+func (c ServidoresAtivos) crawl(outputPath string, month, year int) (string, error) {
 	link := c.getURLForYear(year)
 
 	htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, c.category)
@@ -88,8 +87,6 @@ func (c ServidoresAtivos) crawl(outputPath string, month, year int, wg *sync.Wai
 	if err != nil {
 		return "nil", fmt.Errorf("Error deleting html file: %q", err)
 	}
-
-	defer wg.Done()
 
 	return filePath, nil
 }

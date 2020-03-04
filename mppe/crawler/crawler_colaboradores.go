@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"sync"
 )
 
 //Colaborador wraps category and year codes
@@ -29,7 +28,7 @@ func newCollaborator() Colaborador {
 	}
 }
 
-func (c Colaborador) crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error) {
+func (c Colaborador) crawl(outputPath string, month, year int) (string, error) {
 	link := c.getURLForYear(year)
 
 	htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, c.category)
@@ -85,8 +84,6 @@ func (c Colaborador) crawl(outputPath string, month, year int, wg *sync.WaitGrou
 	if err != nil {
 		return "nil", fmt.Errorf("Error deleting html file: %q", err)
 	}
-
-	defer wg.Done()
 
 	return filePath, nil
 }
