@@ -12,7 +12,7 @@ O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e an
 ```sh
 cd crawler/mppe
 go build
-go run mppe.go --mes=${MES} --ano=${ANO}
+./mppe.go --mes=${MES} --ano=${ANO}
 ```
 
 ## Dicionário de Dados
