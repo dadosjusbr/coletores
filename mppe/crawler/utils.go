@@ -49,7 +49,6 @@ func donwloadFile(url string, w io.Writer) error {
 
 // it get a path of a file and returns the file content as a string
 func fileToString(filePath string) (string, error) {
-	fmt.Println("file path: ", filePath)
 	bytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return "nil", fmt.Errorf("Error getting downloaded html as a string")
@@ -69,7 +68,6 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	}
 
 	if indexOfPattern > 0 {
-		fmt.Println("index: ", indexOfPattern)
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
 		possibleMatches := regexp.MustCompile("[0-9]+").FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {

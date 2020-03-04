@@ -1,8 +1,13 @@
 package crawler
 
+import (
+	"fmt"
+	"sync"
+)
+
 // Crawler defines how the crawlers should work
 type crawler interface {
-	crawl(outputPath string, month, year int) (string, error)
+	crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error)
 
 	getURLForYear(year int) string
 
@@ -31,14 +36,41 @@ var (
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
 
-	for _, crawler := range crawlers {
+	pathsChannel := make(chan string, 10)
+	errChannel := make(chan error, 10)
 
-		path, err := crawler.crawl(outputPath, month, year)
+	var wg sync.WaitGroup
 
+	for _, c := range crawlers {
+		wg.Add(1)
+
+		go func(outputPath string, month, year int, cr crawler) {
+			defer wg.Done()
+
+			path, err := cr.crawl(outputPath, month, year, &wg)
+
+			if err != nil {
+				errChannel <- err
+			}
+
+			pathsChannel <- path
+
+		}(outputPath, month, year, c)
+	}
+
+	wg.Wait()
+
+	close(errChannel)
+	close(pathsChannel)
+
+	for err := range errChannel {
 		if err != nil {
+			fmt.Println("o error: ", err.Error())
 			return nil, err
 		}
+	}
 
+	for path := range pathsChannel {
 		paths = append(paths, path)
 	}
 

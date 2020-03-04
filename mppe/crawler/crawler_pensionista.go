@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sync"
 )
 
 //Pensionista wraps category and year codes
@@ -33,7 +34,7 @@ func newPensioner() Pensionista {
 	}
 }
 
-func (c Pensionista) crawl(outputPath string, month, year int) (string, error) {
+func (c Pensionista) crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error) {
 	link := c.getURLForYear(year)
 
 	htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, c.category)
@@ -89,6 +90,8 @@ func (c Pensionista) crawl(outputPath string, month, year int) (string, error) {
 	if err != nil {
 		return "nil", fmt.Errorf("Error deleting html file: %q", err)
 	}
+
+	defer wg.Done()
 
 	return filePath, nil
 }

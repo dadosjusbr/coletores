@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sync"
 )
 
 // ExerciciosAnteriores wraps category and year codes
@@ -26,7 +27,7 @@ func newPreviousYears() ExerciciosAnteriores {
 	}
 }
 
-func (c ExerciciosAnteriores) crawl(outputPath string, month, year int) (string, error) {
+func (c ExerciciosAnteriores) crawl(outputPath string, month, year int, wg *sync.WaitGroup) (string, error) {
 	link := c.getURLForYear(year)
 
 	htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, c.category)
@@ -82,6 +83,8 @@ func (c ExerciciosAnteriores) crawl(outputPath string, month, year int) (string,
 	if err != nil {
 		return "nil", fmt.Errorf("Error deleting html file: %q", err)
 	}
+
+	defer wg.Done()
 
 	return filePath, nil
 }
