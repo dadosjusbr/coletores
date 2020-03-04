@@ -20,7 +20,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -ldflags "-X main.gitCommit=$GIT_COMMIT" -o main
+RUN go build -o main
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
