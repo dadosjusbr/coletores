@@ -1,6 +1,6 @@
 module mppb
 
-go 1.14
+go 1.13
 
 require (
 	github.com/dadosjusbr/storage v0.0.0-20191202174801-ad5aae8c5e2f
