@@ -321,16 +321,16 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			link := getURLForYear(year, member.category, member.yearCodes)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("Error getting downloading main html file :%q", err)
+				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				errChannel <- fmt.Errorf("error reading response body: %q", err)
 			}
-			fileAsHTML := string(b)
+			htmlAsString := string(b)
 			pattern := member.pathResolver(month, year)
-			fileCode, err := findFileIdentifier(fileAsHTML, pattern)
+			fileCode, err := findFileIdentifier(htmlAsString, pattern)
 			if err != nil {
 				errChannel <- err
 			}
@@ -338,12 +338,12 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			filePath := getFileName(member.category, outputPath, month, year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				errChannel <- fmt.Errorf("Error creating sheet file:%q", err)
+				errChannel <- fmt.Errorf("error creating sheet file:%q", err)
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				errChannel <- fmt.Errorf("Error downloading main file:%q", err)
+				errChannel <- fmt.Errorf("error downloading main file: %s %q", filePath, err)
 			}
 			pathChannel <- filePath
 		}(member, month, year)
@@ -373,33 +373,24 @@ func getURLForYear(year int, category string, yearCodes map[int]int) string {
 	return fmt.Sprintf("%s%d-%s", baseURL, code, category)
 }
 
-// it get a path of a file and returns the file content as a string
-func fileToString(filePath string) (string, error) {
-	bytes, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return "nil", fmt.Errorf("Error getting downloaded html as a string")
-	}
-	return string(bytes), nil
-}
-
 // it gets a HTML file as a string and searchs inside of it a pattern
 // with only numbers
 func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
-		return "nil", fmt.Errorf("Not possible to get previous n chars from environment")
+		return "nil", fmt.Errorf("not possible to get previous n chars from environment %q", err)
 	}
 	if indexOfPattern > 0 {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
 		possibleMatches := regexp.MustCompile("[0-9]+").FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
-			return "nil", fmt.Errorf("Was not possible to get file indetifier")
+			return "nil", fmt.Errorf("was not possible to get file indetifier")
 		}
 		fileIdentifier := possibleMatches[0]
 		return fileIdentifier, nil
 	}
-	return "nil", fmt.Errorf("Was not found anny pattern")
+	return "nil", fmt.Errorf("was not found anny pattern")
 }
 
 // returns the URL to download the file

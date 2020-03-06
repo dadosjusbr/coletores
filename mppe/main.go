@@ -12,7 +12,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("error loading .env file")
 	}
 
 	month := flag.Int("mes", 0, "Mês a ser analisado")
@@ -21,17 +21,17 @@ func main() {
 	flag.Parse()
 
 	if *month == 0 || *year == 0 {
-		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+		logError("month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
 		os.Exit(1)
 	}
 
 	if *year < 2011 {
-		logError("Years before 2011 are not supported yet :(")
+		logError("years before 2011 are not supported yet :(")
 		os.Exit(1)
 	}
 
 	if *month < 1 || *month > 12 {
-		logError("Invalid month value. Give values between 1 and 12")
+		logError("invalid month value. Give values between 1 and 12")
 		os.Exit(1)
 	}
 
@@ -42,13 +42,13 @@ func main() {
 	}
 
 	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-		logError("Error creating output folder(%s): %q", outputFolder, err)
+		logError("error creating output folder(%s): %q", outputFolder, err)
 		os.Exit(1)
 	}
 
 	paths, err := Crawl(outputFolder, *month, *year)
 	if err != nil {
-		logError("Error on crawling: ", err.Error())
+		logError("error on crawling: ", err.Error())
 		os.Exit(1)
 	}
 
