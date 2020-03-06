@@ -56,6 +56,18 @@ func inactiveMembersPathResolver(month, year int) string {
 	return fmt.Sprintf(":membros-inativos-%s-%d", correctMonth, year)
 }
 
+func activeEmployeesPathResolver(month, year int) string {
+	var correctMonth string
+
+	if month < 10 {
+		correctMonth = fmt.Sprintf("0%d", month)
+	} else {
+		correctMonth = fmt.Sprintf("%d", month)
+	}
+
+	return fmt.Sprintf(":servidores-ativos-%s-%d", correctMonth, year)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -105,6 +117,22 @@ var (
 				2018: 406,
 				2019: 447,
 				2020: 505,
+			},
+		},
+		"servidoresAtivos": {
+			category:     "remuneracao-de-todos-os-servidores-atuvos",
+			pathResolver: activeEmployeesPathResolver,
+			yearCodes: map[int]int{
+				2011: 291,
+				2012: 292,
+				2013: 293,
+				2014: 294,
+				2015: 295,
+				2016: 296,
+				2017: 344,
+				2018: 407,
+				2019: 446,
+				2020: 506,
 			},
 		},
 	}
