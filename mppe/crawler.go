@@ -92,6 +92,12 @@ func pensionersPathResolver(month, year int) string {
 	return fmt.Sprintf(":pensionistas-%s-%d", correctMonth, year)
 }
 
+func partnersPathResolver(month, year int) string {
+	correctMonth := months[month]
+
+	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", correctMonth)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -189,6 +195,17 @@ var (
 				2018: 409,
 				2019: 449,
 				2020: 508,
+			},
+		},
+		"colaboradores": {
+			category:     "valores-percebidos-por-todos-os-colaboradores",
+			pathResolver: partnersPathResolver,
+			yearCodes: map[int]int{
+				2016: 365,
+				2017: 366,
+				2018: 410,
+				2019: 450,
+				2020: 496,
 			},
 		},
 	}
