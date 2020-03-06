@@ -98,6 +98,18 @@ func partnersPathResolver(month, year int) string {
 	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", correctMonth)
 }
 
+func previousYearsPatternToSearch(month, year int) string {
+	var correctMonth string
+
+	if month < 10 {
+		correctMonth = fmt.Sprintf("0%d", month)
+	} else {
+		correctMonth = fmt.Sprintf("%d", month)
+	}
+
+	return fmt.Sprintf(":dea-%s%d", correctMonth, year)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -206,6 +218,17 @@ var (
 				2018: 410,
 				2019: 450,
 				2020: 496,
+			},
+		},
+		"exerciciosAnteriores": {
+			category:     "verbas-referentes-a-exercicios-anteriores",
+			pathResolver: previousYearsPatternToSearch,
+			yearCodes: map[int]int{
+				2016: 348,
+				2017: 349,
+				2018: 411,
+				2019: 461,
+				2020: 509,
 			},
 		},
 	}

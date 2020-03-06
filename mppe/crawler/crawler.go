@@ -21,12 +21,6 @@ type crawler interface {
 var (
 	//Crawlers is the registry
 	crawlers = map[string]crawler{
-		"membrosAtivos":                 newActiveMembers(),
-		"membrosInativos":               newInactiveMembers(),
-		"servidoresAtivos":              newActiveEmployees(),
-		"servidoresInativos":            newInactiveEmployees(),
-		"pensionista":                   newPensioner(),
-		"colaborador":                   newCollaborator(),
 		"exerciciosAnteriores":          newPreviousYears(),
 		"indenizacoesEOutrosPagamentos": newIndemnityAndOtherPayments(),
 	}
