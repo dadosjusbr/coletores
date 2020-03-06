@@ -68,6 +68,18 @@ func activeEmployeesPathResolver(month, year int) string {
 	return fmt.Sprintf(":servidores-ativos-%s-%d", correctMonth, year)
 }
 
+func inactiveEmployeesPathResolver(month, year int) string {
+	var correctMonth string
+
+	if month < 10 {
+		correctMonth = fmt.Sprintf("0%d", month)
+	} else {
+		correctMonth = fmt.Sprintf("%d", month)
+	}
+
+	return fmt.Sprintf(":servidores-inativos-%s-%d", correctMonth, year)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -133,6 +145,22 @@ var (
 				2018: 407,
 				2019: 446,
 				2020: 506,
+			},
+		},
+		"servidoresInativos": {
+			category:     "proventos-de-todos-os-servidores-inativos",
+			pathResolver: inactiveEmployeesPathResolver,
+			yearCodes: map[int]int{
+				2011: 297,
+				2012: 298,
+				2013: 299,
+				2014: 300,
+				2015: 301,
+				2016: 302,
+				2017: 345,
+				2018: 408,
+				2019: 448,
+				2020: 507,
 			},
 		},
 	}
