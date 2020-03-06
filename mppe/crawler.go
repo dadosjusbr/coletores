@@ -110,6 +110,12 @@ func previousYearsPatternToSearch(month, year int) string {
 	return fmt.Sprintf(":dea-%s%d", correctMonth, year)
 }
 
+func indemnityAndOtherPaymentsPatternToSearch(month, year int) string {
+	correctMonth := months[month]
+
+	return fmt.Sprintf(":virt-%s-%d", correctMonth, year)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -229,6 +235,15 @@ var (
 				2018: 411,
 				2019: 461,
 				2020: 509,
+			},
+		},
+		"indenizacoesEOutrosPagamentos": {
+			category:     "verbas-indenizatorias-e-outras-remuneracoes-temporarias",
+			pathResolver: indemnityAndOtherPaymentsPatternToSearch,
+			yearCodes: map[int]int{
+				2018: 415,
+				2019: 451,
+				2020: 510,
 			},
 		},
 	}
