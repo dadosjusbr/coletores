@@ -319,27 +319,16 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 		go func(member fileStructure, month, year int) {
 			defer wg.Done()
 			link := getURLForYear(year, member.category, member.yearCodes)
-			htmlPath := fmt.Sprintf("%s/%s_index.html", outputPath, member.category)
-			f, err := os.Create(htmlPath)
-			if err != nil {
-				errChannel <- fmt.Errorf("Error creating file: %q", err)
-			}
-			defer f.Close()
 			resp, err := http.Get(link)
 			if err != nil {
 				errChannel <- fmt.Errorf("Error getting downloading main html file :%q", err)
 			}
 			defer resp.Body.Close()
-			if _, err := io.Copy(f, resp.Body); err != nil {
-				errChannel <- fmt.Errorf("Error copying response content:%q", err)
-			}
-			fileAsHTML, err := fileToString(htmlPath)
+			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				errChannel <- err
+				errChannel <- fmt.Errorf("error reading response body: %q", err)
 			}
-			if err != nil {
-				errChannel <- err
-			}
+			fileAsHTML := string(b)
 			pattern := member.pathResolver(month, year)
 			fileCode, err := findFileIdentifier(fileAsHTML, pattern)
 			if err != nil {
@@ -355,10 +344,6 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
 				errChannel <- fmt.Errorf("Error downloading main file:%q", err)
-			}
-			err = os.Remove(htmlPath)
-			if err != nil {
-				errChannel <- fmt.Errorf("Error deleting html file: %q", err)
 			}
 			pathChannel <- filePath
 		}(member, month, year)
