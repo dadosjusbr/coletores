@@ -80,6 +80,18 @@ func inactiveEmployeesPathResolver(month, year int) string {
 	return fmt.Sprintf(":servidores-inativos-%s-%d", correctMonth, year)
 }
 
+func pensionersPathResolver(month, year int) string {
+	var correctMonth string
+
+	if month < 10 {
+		correctMonth = fmt.Sprintf("0%d", month)
+	} else {
+		correctMonth = fmt.Sprintf("%d", month)
+	}
+
+	return fmt.Sprintf(":pensionistas-%s-%d", correctMonth, year)
+}
+
 var (
 	baseURL = "https://transparencia.mppe.mp.br/contracheque/category/"
 
@@ -161,6 +173,22 @@ var (
 				2018: 408,
 				2019: 448,
 				2020: 507,
+			},
+		},
+		"pensionistas": {
+			category:     "valores-percebidos-por-todos-os-pensionistas",
+			pathResolver: pensionersPathResolver,
+			yearCodes: map[int]int{
+				2011: 303,
+				2012: 304,
+				2013: 305,
+				2014: 306,
+				2015: 307,
+				2016: 308,
+				2017: 346,
+				2018: 409,
+				2019: 449,
+				2020: 508,
 			},
 		},
 	}
