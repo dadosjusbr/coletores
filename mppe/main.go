@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"mppe/crawler"
 	"os"
 	"time"
 
@@ -47,7 +46,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	paths, err := crawler.Crawl(outputFolder, *month, *year)
+	paths, err := Crawl(outputFolder, *month, *year)
 	if err != nil {
 		logError("Error on crawling: ", err.Error())
 		os.Exit(1)
@@ -60,4 +59,3 @@ func logError(format string, args ...interface{}) {
 	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
 	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
 }
-

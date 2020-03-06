@@ -249,8 +249,8 @@ var (
 	}
 )
 
-// C bla
-func C(outputPath string, month, year int) ([]string, error) {
+// Crawl blabla
+func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
 
 	for _, member := range members {
