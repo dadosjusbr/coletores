@@ -43,17 +43,14 @@ type fileStructure struct {
  */
 func activeMembersPathResolver(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	if year != 2017 {
 		return fmt.Sprintf(":membros-ativos-%s-%d", correctMonth, year)
 	}
-
 	correctMonth = months[month]
 	return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", correctMonth, year)
 }
@@ -67,17 +64,14 @@ func activeMembersPathResolver(month, year int) string {
  */
 func inactiveMembersPathResolver(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	if year == 2014 && month != 1 {
 		return fmt.Sprintf(":membros-inativos-%s-%d", correctMonth, year+1)
 	}
-
 	return fmt.Sprintf(":membros-inativos-%s-%d", correctMonth, year)
 }
 
@@ -88,13 +82,11 @@ func inactiveMembersPathResolver(month, year int) string {
  */
 func activeEmployeesPathResolver(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	return fmt.Sprintf(":servidores-ativos-%s-%d", correctMonth, year)
 }
 
@@ -105,13 +97,11 @@ func activeEmployeesPathResolver(month, year int) string {
  */
 func inactiveEmployeesPathResolver(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	return fmt.Sprintf(":servidores-inativos-%s-%d", correctMonth, year)
 }
 
@@ -122,13 +112,11 @@ func inactiveEmployeesPathResolver(month, year int) string {
  */
 func pensionersPathResolver(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	return fmt.Sprintf(":pensionistas-%s-%d", correctMonth, year)
 }
 
@@ -139,7 +127,6 @@ func pensionersPathResolver(month, year int) string {
  */
 func partnersPathResolver(month, year int) string {
 	correctMonth := months[month]
-
 	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", correctMonth)
 }
 
@@ -150,13 +137,11 @@ func partnersPathResolver(month, year int) string {
  */
 func previousYearsPatternToSearch(month, year int) string {
 	var correctMonth string
-
 	if month < 10 {
 		correctMonth = fmt.Sprintf("0%d", month)
 	} else {
 		correctMonth = fmt.Sprintf("%d", month)
 	}
-
 	return fmt.Sprintf(":dea-%s%d", correctMonth, year)
 }
 
@@ -167,7 +152,6 @@ func previousYearsPatternToSearch(month, year int) string {
  */
 func indemnityAndOtherPaymentsPatternToSearch(month, year int) string {
 	correctMonth := months[month]
-
 	return fmt.Sprintf(":virt-%s-%d", correctMonth, year)
 }
 
