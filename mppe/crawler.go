@@ -12,99 +12,9 @@ import (
 	"sync"
 )
 
-type pathResolver func(int, int) string
-
 type employeeDescriptor struct {
-	category     string
-	pathResolver pathResolver
-	yearCodes    map[int]int
-}
-
-//	All '...Pathresolver' functions has the aim to
-// create a pattern to be searched on the HTML file of
-// year pages in order to get a specif number that actualy
-// helps us to download the file.
-//
-//	At every HMLT there are some patter like:
-//
-//	download=${4 DIGITS HERE}:${SOME TEXT WITH MONTH AND YEAR}
-//
-// so what all these below functions do is just create
-// the string for the appropriate situation.
-
-//	Active members path resolver
-//
-// 	This function has a particular case for the year 2017,
-// where we need to change the pattern string.
-func activeMembersPathResolver(month, year int) string {
-	if year != 2017 {
-		return fmt.Sprintf(":membros-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", months[month], year)
-}
-
-//	Inactive members path resolver
-//
-// 	This function has a particular case for months greater
-// than 1 in 2014 in such a way the year on HTML page is
-// 2015.
-func inactiveMembersPathResolver(month, year int) string {
-	if year == 2014 && month != 1 {
-		return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year+1)
-	}
-	return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-}
-
-//	Active Employees path resolver
-//
-// 	This function has no particular cases for its path.
-//
-func activeEmployeesPathResolver(month, year int) string {
-	return fmt.Sprintf(":servidores-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
-}
-
-//	Inactive Employees path resolver
-//
-// 	This function has no particular cases for its path.
-//
-func inactiveEmployeesPathResolver(month, year int) string {
-	return fmt.Sprintf(":servidores-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-}
-
-//	Pensioners path resolver
-//
-// 	This function has no particular cases for its path.
-//
-func pensionersPathResolver(month, year int) string {
-	return fmt.Sprintf(":pensionistas-%s-%d", fmt.Sprintf("%02d", month), year)
-}
-
-//	Partners path resolver
-//
-// 	This function has no particular cases for its path.
-func partnersPathResolver(month, year int) string {
-	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", months[month])
-}
-
-//	Previous years path resolver
-//
-// 	This function has no particular cases for its path.
-func previousYearsPatternToSearch(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
-	return fmt.Sprintf(":dea-%s%d", correctMonth, year)
-}
-
-//	Idemnity and other payments  path resolver
-//
-// 	This function has no particular cases for its path.
-func indemnityAndOtherPaymentsPatternToSearch(month, year int) string {
-	correctMonth := months[month]
-	return fmt.Sprintf(":virt-%s-%d", correctMonth, year)
+	category  string
+	yearCodes map[int]int
 }
 
 var (
@@ -127,8 +37,7 @@ var (
 
 	members = map[string]employeeDescriptor{
 		"membrosAtivos": {
-			category:     "remuneracao-de-todos-os-membros-ativos",
-			pathResolver: activeMembersPathResolver,
+			category: "remuneracao-de-todos-os-membros-ativos",
 			yearCodes: map[int]int{
 				2011: 280,
 				2012: 281,
@@ -143,8 +52,7 @@ var (
 			},
 		},
 		"membrosInativos": {
-			category:     "proventos-de-todos-os-membros-inativos",
-			pathResolver: inactiveMembersPathResolver,
+			category: "proventos-de-todos-os-membros-inativos",
 			yearCodes: map[int]int{
 				2011: 285,
 				2012: 286,
@@ -159,8 +67,7 @@ var (
 			},
 		},
 		"servidoresAtivos": {
-			category:     "remuneracao-de-todos-os-servidores-atuvos",
-			pathResolver: activeEmployeesPathResolver,
+			category: "remuneracao-de-todos-os-servidores-atuvos",
 			yearCodes: map[int]int{
 				2011: 291,
 				2012: 292,
@@ -175,8 +82,7 @@ var (
 			},
 		},
 		"servidoresInativos": {
-			category:     "proventos-de-todos-os-servidores-inativos",
-			pathResolver: inactiveEmployeesPathResolver,
+			category: "proventos-de-todos-os-servidores-inativos",
 			yearCodes: map[int]int{
 				2011: 297,
 				2012: 298,
@@ -191,8 +97,7 @@ var (
 			},
 		},
 		"pensionistas": {
-			category:     "valores-percebidos-por-todos-os-pensionistas",
-			pathResolver: pensionersPathResolver,
+			category: "valores-percebidos-por-todos-os-pensionistas",
 			yearCodes: map[int]int{
 				2011: 303,
 				2012: 304,
@@ -207,8 +112,7 @@ var (
 			},
 		},
 		"colaboradores": {
-			category:     "valores-percebidos-por-todos-os-colaboradores",
-			pathResolver: partnersPathResolver,
+			category: "valores-percebidos-por-todos-os-colaboradores",
 			yearCodes: map[int]int{
 				2016: 365,
 				2017: 366,
@@ -218,8 +122,7 @@ var (
 			},
 		},
 		"exerciciosAnteriores": {
-			category:     "verbas-referentes-a-exercicios-anteriores",
-			pathResolver: previousYearsPatternToSearch,
+			category: "verbas-referentes-a-exercicios-anteriores",
 			yearCodes: map[int]int{
 				2016: 348,
 				2017: 349,
@@ -229,8 +132,7 @@ var (
 			},
 		},
 		"indenizacoesEOutrosPagamentos": {
-			category:     "verbas-indenizatorias-e-outras-remuneracoes-temporarias",
-			pathResolver: indemnityAndOtherPaymentsPatternToSearch,
+			category: "verbas-indenizatorias-e-outras-remuneracoes-temporarias",
 			yearCodes: map[int]int{
 				2018: 415,
 				2019: 451,
@@ -261,7 +163,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 				errChannel <- fmt.Errorf("error reading response body: %q", err)
 			}
 			htmlAsString := string(b)
-			pattern := member.pathResolver(month, year)
+			pattern := pathResolver(month, year, member.category)
 			fileCode, err := findFileIdentifier(htmlAsString, pattern)
 			if err != nil {
 				errChannel <- err
@@ -280,23 +182,19 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			pathChannel <- filePath
 		}(member, month, year)
 	}
-
 	go func() {
 		wg.Wait()
 		close(errChannel)
 		close(pathChannel)
 	}()
-
 	for err := range errChannel {
 		if err != nil {
 			return nil, err
 		}
 	}
-
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
-
 	return paths, nil
 }
 
@@ -331,4 +229,36 @@ func donwloadFile(url string, w io.Writer) error {
 		return fmt.Errorf("error copying response content:%q", err)
 	}
 	return nil
+}
+
+// it returns the proper search path for a given member
+func pathResolver(month, year int, member string) string {
+	if member == "remuneracao-de-todos-os-membros-ativos" {
+		if year != 2017 {
+			return fmt.Sprintf(":membros-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
+		}
+		return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", months[month], year)
+	}
+	if member == "proventos-de-todos-os-membros-inativos" {
+		if year == 2014 && month != 1 {
+			return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year+1)
+		}
+		return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
+	}
+	if member == "remuneracao-de-todos-os-servidores-atuvos" {
+		return fmt.Sprintf(":servidores-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
+	}
+	if member == "proventos-de-todos-os-servidores-inativos" {
+		return fmt.Sprintf(":servidores-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
+	}
+	if member == "valores-percebidos-por-todos-os-pensionistas" {
+		return fmt.Sprintf(":pensionistas-%s-%d", fmt.Sprintf("%02d", month), year)
+	}
+	if member == "valores-percebidos-por-todos-os-colaboradores" {
+		return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", months[month])
+	}
+	if member == "verbas-referentes-a-exercicios-anteriores" {
+		return fmt.Sprintf(":dea-%s%d", fmt.Sprintf("%02d", month), year)
+	}
+	return fmt.Sprintf(":virt-%s-%d", months[month], year)
 }
