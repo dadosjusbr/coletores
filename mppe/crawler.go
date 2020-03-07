@@ -332,11 +332,12 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			pathChannel <- filePath
 		}(member, month, year)
 	}
-	wg.Wait()
 
-	close(errChannel)
-
-	close(pathChannel)
+	go func() {
+		wg.Wait()
+		close(errChannel)
+		close(pathChannel)
+	}()
 
 	for err := range errChannel {
 		if err != nil {
