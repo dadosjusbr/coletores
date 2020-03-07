@@ -14,127 +14,81 @@ import (
 
 type pathResolver func(int, int) string
 
-type fileStructure struct {
+type employeeDescriptor struct {
 	category     string
 	pathResolver pathResolver
 	yearCodes    map[int]int
 }
 
-/*
- *	All '...Pathresolver' functions has the aim to
- * create a pattern to be searched on the HTML file of
- * year pages in order to get a specif number that actualy
- * helps us to download the file.
- *
- *	At every HMLT there are some patter like:
- *
- *	download=${4 DIGITS HERE}:${SOME TEXT WITH MONTH AND YEAR}
- *
- * so what all these below functions do is just create
- * the string for the appropriate situation.
- *
- */
+//	All '...Pathresolver' functions has the aim to
+// create a pattern to be searched on the HTML file of
+// year pages in order to get a specif number that actualy
+// helps us to download the file.
+//
+//	At every HMLT there are some patter like:
+//
+//	download=${4 DIGITS HERE}:${SOME TEXT WITH MONTH AND YEAR}
+//
+// so what all these below functions do is just create
+// the string for the appropriate situation.
 
-/*
- *	Active members path resolver
- *
- * 	This function has a particular case for the year 2017,
- * where we need to change the pattern string.
- */
+//	Active members path resolver
+//
+// 	This function has a particular case for the year 2017,
+// where we need to change the pattern string.
 func activeMembersPathResolver(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
 	if year != 2017 {
-		return fmt.Sprintf(":membros-ativos-%s-%d", correctMonth, year)
+		return fmt.Sprintf(":membros-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
 	}
-	correctMonth = months[month]
-	return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", correctMonth, year)
+	return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", months[month], year)
 }
 
-/*
- *	Inactive members path resolver
- *
- * 	This function has a particular case for months greater
- * than 1 in 2014 in such a way the year on HTML page is
- * 2015.
- */
+//	Inactive members path resolver
+//
+// 	This function has a particular case for months greater
+// than 1 in 2014 in such a way the year on HTML page is
+// 2015.
 func inactiveMembersPathResolver(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
 	if year == 2014 && month != 1 {
-		return fmt.Sprintf(":membros-inativos-%s-%d", correctMonth, year+1)
+		return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year+1)
 	}
-	return fmt.Sprintf(":membros-inativos-%s-%d", correctMonth, year)
+	return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
 }
 
-/*
- *	Active Employees path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Active Employees path resolver
+//
+// 	This function has no particular cases for its path.
+//
 func activeEmployeesPathResolver(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
-	return fmt.Sprintf(":servidores-ativos-%s-%d", correctMonth, year)
+	return fmt.Sprintf(":servidores-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
 }
 
-/*
- *	Inactive Employees path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Inactive Employees path resolver
+//
+// 	This function has no particular cases for its path.
+//
 func inactiveEmployeesPathResolver(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
-	return fmt.Sprintf(":servidores-inativos-%s-%d", correctMonth, year)
+	return fmt.Sprintf(":servidores-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
 }
 
-/*
- *	Pensioners path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Pensioners path resolver
+//
+// 	This function has no particular cases for its path.
+//
 func pensionersPathResolver(month, year int) string {
-	var correctMonth string
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
-	return fmt.Sprintf(":pensionistas-%s-%d", correctMonth, year)
+	return fmt.Sprintf(":pensionistas-%s-%d", fmt.Sprintf("%02d", month), year)
 }
 
-/*
- *	Parteners path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Partners path resolver
+//
+// 	This function has no particular cases for its path.
 func partnersPathResolver(month, year int) string {
-	correctMonth := months[month]
-	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", correctMonth)
+	return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", months[month])
 }
 
-/*
- *	Previous years path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Previous years path resolver
+//
+// 	This function has no particular cases for its path.
 func previousYearsPatternToSearch(month, year int) string {
 	var correctMonth string
 	if month < 10 {
@@ -145,11 +99,9 @@ func previousYearsPatternToSearch(month, year int) string {
 	return fmt.Sprintf(":dea-%s%d", correctMonth, year)
 }
 
-/*
- *	Indenity and other payments  path resolver
- *
- * 	This function has no particular cases for its path.
- */
+//	Idemnity and other payments  path resolver
+//
+// 	This function has no particular cases for its path.
 func indemnityAndOtherPaymentsPatternToSearch(month, year int) string {
 	correctMonth := months[month]
 	return fmt.Sprintf(":virt-%s-%d", correctMonth, year)
@@ -173,7 +125,7 @@ var (
 		12: "dezembro",
 	}
 
-	members = map[string]fileStructure{
+	members = map[string]employeeDescriptor{
 		"membrosAtivos": {
 			category:     "remuneracao-de-todos-os-membros-ativos",
 			pathResolver: activeMembersPathResolver,
@@ -291,18 +243,14 @@ var (
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
-
 	pathChannel := make(chan string, 8)
-
 	errChannel := make(chan error, 8)
-
 	var wg sync.WaitGroup
-
 	for _, member := range members {
 		wg.Add(1)
-		go func(member fileStructure, month, year int) {
+		go func(member employeeDescriptor, month, year int) {
 			defer wg.Done()
-			link := getURLForYear(year, member.category, member.yearCodes)
+			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
 				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
@@ -318,8 +266,8 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			if err != nil {
 				errChannel <- err
 			}
-			urlToDownload := getURLToDownloadSheet(year, member.category, fileCode, member.yearCodes)
-			filePath := getFileName(member.category, outputPath, month, year)
+			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", baseURL, member.yearCodes[year], member.category, fileCode)
+			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
 				errChannel <- fmt.Errorf("error creating sheet file:%q", err)
@@ -352,12 +300,6 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 	return paths, nil
 }
 
-// it returns the url for a specific year webpage to do crawling
-func getURLForYear(year int, category string, yearCodes map[int]int) string {
-	code := yearCodes[year]
-	return fmt.Sprintf("%s%d-%s", baseURL, code, category)
-}
-
 // it gets a HTML file as a string and searchs inside of it a pattern
 // with only numbers
 func findFileIdentifier(htmlAsString, pattern string) (string, error) {
@@ -378,24 +320,7 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	return "nil", fmt.Errorf("was not found anny pattern")
 }
 
-// returns the URL to download the file
-func getURLToDownloadSheet(year int, category, fileCode string, yearCodes map[int]int) string {
-	yearCode := yearCodes[year]
-	return fmt.Sprintf("%s%d-%s?download=%s", baseURL, yearCode, category, fileCode)
-}
-
-// it just returns the name of xlsx to be saved
-func getFileName(category, outputFolder string, month, year int) string {
-	correctMonth := ""
-	if month < 10 {
-		correctMonth = fmt.Sprintf("0%d", month)
-	} else {
-		correctMonth = fmt.Sprintf("%d", month)
-	}
-	return fmt.Sprintf("%s/%s-%s-%d.xlsx", outputFolder, category, correctMonth, year)
-}
-
-// download a file and put its bytes into a buffer
+// download a file and writes on the given writer
 func donwloadFile(url string, w io.Writer) error {
 	resp, err := http.Get(url)
 	if err != nil {
