@@ -12,7 +12,8 @@ import (
 	"sync"
 )
 
-var re = regexp.MustCompile("[0-9]+")
+// regexp to extract 4 sequential numbers
+var re = regexp.MustCompile("\\b\\d{4}\\b")
 
 // it wraps data about a employee category, where category
 // is the category name and yearCodes is a map that
@@ -170,7 +171,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
-			fileCode, err := findFileIdentifier(htmlAsString, pattern)
+			fileCode, err := findFileIdentifier(member.category, htmlAsString, pattern)
 			if err != nil {
 				errChannel <- err
 			}
@@ -209,7 +210,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 // with only numbers. Once pattern is found we get its index and then
 // get a substring with the n previus chars of that index. The value
 // of n previous chars should be provided by environment.
-func findFileIdentifier(htmlAsString, pattern string) (string, error) {
+func findFileIdentifier(category, htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
@@ -219,12 +220,12 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
 		possibleMatches := re.FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
-			return "nil", fmt.Errorf("was not possible to get file indetifier")
+			return "nil", fmt.Errorf("failed to get file identifier number using pattern %s at substring %s using regexp %s for category %s", pattern, substringWithFileIdentifier, re.String(), category)
 		}
 		fileIdentifier := possibleMatches[0]
 		return fileIdentifier, nil
 	}
-	return "nil", fmt.Errorf("was not found anny pattern")
+	return "nil", fmt.Errorf("failed to find pattern %s on HTML file for category %s, due to that could not be found any file sheet identifier", pattern, category)
 }
 
 // download a file and writes on the given writer
