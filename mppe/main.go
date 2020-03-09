@@ -3,17 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("error loading .env file")
-	}
 	month := flag.Int("mes", 0, "Mês a ser analisado")
 	year := flag.Int("ano", 0, "Ano a ser analisado")
 	flag.Parse()

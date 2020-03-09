@@ -155,7 +155,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
+				errChannel <- fmt.Errorf("error downloading main html file :%q", err)
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
@@ -204,7 +204,7 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
-		return "nil", fmt.Errorf("not possible to get previous n chars from environment %q", err)
+		nPreviousChars = 10
 	}
 	if indexOfPattern > 0 {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
