@@ -23,7 +23,6 @@ docker build -t mppe .
 
 
 ```sh
-docker volume create dadosjus
 
 docker run \
 --mount type=bind,source="$(pwd)"/DIRETORIO_DE_SAIDA,target=/OUTPUT_DIR \
