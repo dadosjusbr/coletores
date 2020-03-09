@@ -31,7 +31,6 @@ docker run \
 mppe --mes=${MES} --ano=${ANO}
 ```
 
-- ```docker volume create dadosjus``` cria um volume local que pode ser usado pelos containers com o nome "dadosjus".
 - No comando de run:
 	- ```--mount source=dadosjus,target=/dadojus_crawling_output/``` monta o volume que criamos anteriormente no path "/dadojus_crawling_output/", dessa forma, qualquer coisa que salvarmos dentro desse path será persistida após  o container ser derrubado.
 	- ```--env-file=.env``` especifica o path para o env-file.
