@@ -25,15 +25,15 @@ docker build -t mppe .
 ```sh
 
 docker run \
---mount type=bind,source="$(pwd)"/DIRETORIO_DE_SAIDA,target=/OUTPUT_DIR \
+--mount type=bind,source="$(pwd)"/FILES_DIR,target=/OUTPUT_DIR \
 --env-file=.env \
 mppe --mes=${MES} --ano=${ANO}
 ```
 
 - No comando de run:
-	- ```--mount source=dadosjus,target=/dadojus_crawling_output/``` monta o volume que criamos anteriormente no path "/dadojus_crawling_output/", dessa forma, qualquer coisa que salvarmos dentro desse path será persistida após  o container ser derrubado.
+	- ``--mount type=bind,source="$(pwd)"/FILES_DIR,target=/OUTPUT_DIR``` faz o bind de um diretório existente em sua máquina chamado FILES_DIR e um dentro container chamado OUTPUT_DIR, o mesmo passado dentro do .env.
 	- ```--env-file=.env``` especifica o path para o env-file.
-	- ```mppb --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
+	- ```mppe --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
 
   
 ### Executando sem uso do docker:
@@ -46,8 +46,8 @@ mppe --mes=${MES} --ano=${ANO}
 
 ```sh
 go get
-go build -ldflags "-X main.gitCommit=$(git rev-parse -1 HEAD)"
-./mppb --mes=${MES} --ano=${ANO}
+go build
+./mppe --mes=${MES} --ano=${ANO}
 ```
 
 
