@@ -230,32 +230,28 @@ func donwloadFile(url string, w io.Writer) error {
 
 // it returns the proper search path for a given member
 func pathResolver(month, year int, member string) string {
-	if member == "remuneracao-de-todos-os-membros-ativos" {
+	switch member {
+	case "remuneracao-de-todos-os-membros-ativos":
 		if year != 2017 {
 			return fmt.Sprintf(":membros-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
 		}
 		return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", months[month], year)
-	}
-	if member == "proventos-de-todos-os-membros-inativos" {
+	case "proventos-de-todos-os-membros-inativos":
 		if year == 2014 && month != 1 {
 			return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year+1)
 		}
 		return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "remuneracao-de-todos-os-servidores-atuvos" {
+	case "remuneracao-de-todos-os-servidores-atuvos":
 		return fmt.Sprintf(":servidores-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "proventos-de-todos-os-servidores-inativos" {
+	case "proventos-de-todos-os-servidores-inativos":
 		return fmt.Sprintf(":servidores-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "valores-percebidos-por-todos-os-pensionistas" {
+	case "valores-percebidos-por-todos-os-pensionistas":
 		return fmt.Sprintf(":pensionistas-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "valores-percebidos-por-todos-os-colaboradores" {
+	case "valores-percebidos-por-todos-os-colaboradores":
 		return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", months[month])
-	}
-	if member == "verbas-referentes-a-exercicios-anteriores" {
+	case "verbas-referentes-a-exercicios-anteriores":
 		return fmt.Sprintf(":dea-%s%d", fmt.Sprintf("%02d", month), year)
+	default:
+		return fmt.Sprintf(":virt-%s-%d", months[month], year)
 	}
-	return fmt.Sprintf(":virt-%s-%d", months[month], year)
 }
