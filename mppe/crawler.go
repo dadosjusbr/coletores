@@ -152,6 +152,7 @@ var (
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
 	pathChannel := make(chan string, 8)
+	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
 	for _, member := range members {
 		wg.Add(1)
@@ -160,29 +161,29 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				return
+				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				return
+				errChannel <- fmt.Errorf("error reading response body: %q", err)
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
 			fileCode, err := findFileIdentifier(htmlAsString, pattern)
 			if err != nil {
-				return
+				errChannel <- err
 			}
 			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", baseURL, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				return
+				errChannel <- fmt.Errorf("error creating sheet file:%q", err)
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				return
+				errChannel <- fmt.Errorf("error downloading main file: %s %q", filePath, err)
 			}
 			pathChannel <- filePath
 		}(member, month, year)
@@ -190,7 +191,14 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 	go func() {
 		wg.Wait()
 		close(pathChannel)
+		close(errChannel)
 	}()
+	for err := range errChannel {
+		if err != nil {
+			logError("error on crawling: ", err.Error())
+			os.Exit(1)
+		}
+	}
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
