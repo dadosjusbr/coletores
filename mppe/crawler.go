@@ -12,6 +12,8 @@ import (
 	"sync"
 )
 
+var re = regexp.MustCompile("[0-9]+")
+
 type employeeDescriptor struct {
 	category  string
 	yearCodes map[int]int
@@ -192,7 +194,9 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 }
 
 // it gets a HTML file as a string and searchs inside of it a pattern
-// with only numbers
+// with only numbers. Once pattern is found we get its index and then
+// get a substring with the n previus chars of that index. The value
+// of n previous chars should be provided by environment.
 func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
@@ -201,7 +205,7 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	}
 	if indexOfPattern > 0 {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
-		possibleMatches := regexp.MustCompile("[0-9]+").FindAllString(substringWithFileIdentifier, -1)
+		possibleMatches := re.FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
 			return "nil", fmt.Errorf("was not possible to get file indetifier")
 		}
