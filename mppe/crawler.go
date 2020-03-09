@@ -204,7 +204,7 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
-		return "nil", fmt.Errorf("not possible to get previous n chars from environment %q", err)
+		nPreviousChars = 10
 	}
 	if indexOfPattern > 0 {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
