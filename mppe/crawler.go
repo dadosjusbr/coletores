@@ -14,6 +14,10 @@ import (
 
 var re = regexp.MustCompile("[0-9]+")
 
+// it wraps data about a employee category, where category
+// is the category name and yearCodes is a map that
+// translates the desired year of search to a number that
+// represents the desired file, like an id, on the MPPE system.
 type employeeDescriptor struct {
 	category  string
 	yearCodes map[int]int
