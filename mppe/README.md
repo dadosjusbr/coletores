@@ -31,7 +31,7 @@ mppe --mes=${MES} --ano=${ANO}
 ```
 
 - No comando de run:
-	- ``--mount type=bind,source="$(pwd)"/FILES_DIR,target=/OUTPUT_DIR``` faz o bind de um diretório existente em sua máquina chamado FILES_DIR e um dentro container chamado OUTPUT_DIR, o mesmo passado dentro do .env.
+	- ```--mount type=bind,source="$(pwd)"/FILES_DIR,target=/OUTPUT_DIR``` faz o bind de um diretório existente em sua máquina chamado FILES_DIR e um dentro container chamado OUTPUT_DIR, o mesmo passado dentro do .env.
 	- ```--env-file=.env``` especifica o path para o env-file.
 	- ```mppe --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
 
