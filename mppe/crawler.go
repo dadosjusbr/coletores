@@ -12,6 +12,13 @@ import (
 	"sync"
 )
 
+// regexp to extract 4 sequential numbers
+var re = regexp.MustCompile("\\b\\d{4}\\b")
+
+// it wraps data about a employee category, where category
+// is the category name and yearCodes is a map that
+// translates the desired year of search to a number that
+// represents the desired file, like an id, on the MPPE system.
 type employeeDescriptor struct {
 	category  string
 	yearCodes map[int]int
@@ -145,6 +152,7 @@ var (
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
+	errors := make([]string, 0)
 	pathChannel := make(chan string, 8)
 	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
@@ -155,29 +163,34 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
+				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
+				return
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				errChannel <- fmt.Errorf("error reading response body: %q", err)
+				errChannel <- fmt.Errorf("error for category %s reading response body: %q", err, member.category)
+				return
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
-			fileCode, err := findFileIdentifier(htmlAsString, pattern)
+			fileCode, err := findFileIdentifier(member.category, htmlAsString, pattern)
 			if err != nil {
 				errChannel <- err
+				return
 			}
 			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", baseURL, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				errChannel <- fmt.Errorf("error creating sheet file:%q", err)
+				errChannel <- fmt.Errorf("error creating sheet file:%q for category %s", err, member.category)
+				return
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				errChannel <- fmt.Errorf("error downloading main file: %s %q", filePath, err)
+				errChannel <- fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err)
+				return
 			}
 			pathChannel <- filePath
 		}(member, month, year)
@@ -187,15 +200,35 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 		close(pathChannel)
 		close(errChannel)
 	}()
+	for err := range errChannel {
+		if err != nil {
+			errors = append(errors, err.Error())
+		}
+	}
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
-	return paths, nil
+	return paths, processErrorMessages(errors)
+}
+
+// get the error messages to build a clear
+// string message containing them
+func processErrorMessages(errors []string) error {
+	if len(errors) == 0 {
+		return nil
+	}
+	errorMessage := ""
+	for _, e := range errors {
+		errorMessage = fmt.Sprintf("%s\n%s\n", errorMessage, e)
+	}
+	return fmt.Errorf("%s", errorMessage)
 }
 
 // it gets a HTML file as a string and searchs inside of it a pattern
-// with only numbers
-func findFileIdentifier(htmlAsString, pattern string) (string, error) {
+// with only numbers. Once pattern is found we get its index and then
+// get a substring with the n previus chars of that index. The value
+// of n previous chars should be provided by environment.
+func findFileIdentifier(category, htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
 	nPreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
@@ -203,14 +236,14 @@ func findFileIdentifier(htmlAsString, pattern string) (string, error) {
 	}
 	if indexOfPattern > 0 {
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
-		possibleMatches := regexp.MustCompile("[0-9]+").FindAllString(substringWithFileIdentifier, -1)
+		possibleMatches := re.FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
-			return "nil", fmt.Errorf("was not possible to get file indetifier")
+			return "nil", fmt.Errorf("failed to get file identifier for category %s: number using pattern %s at substring %s using regexp %s", category, pattern, substringWithFileIdentifier, re.String())
 		}
 		fileIdentifier := possibleMatches[0]
 		return fileIdentifier, nil
 	}
-	return "nil", fmt.Errorf("was not found anny pattern")
+	return "nil", fmt.Errorf("failed to find pattern %s on HTML file for category %s, due to that could not be found any file sheet identifier", pattern, category)
 }
 
 // download a file and writes on the given writer
@@ -228,32 +261,28 @@ func donwloadFile(url string, w io.Writer) error {
 
 // it returns the proper search path for a given member
 func pathResolver(month, year int, member string) string {
-	if member == "remuneracao-de-todos-os-membros-ativos" {
+	switch member {
+	case "remuneracao-de-todos-os-membros-ativos":
 		if year != 2017 {
 			return fmt.Sprintf(":membros-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
 		}
 		return fmt.Sprintf(":quadro-de-membros-ativos-%s-%d", months[month], year)
-	}
-	if member == "proventos-de-todos-os-membros-inativos" {
+	case "proventos-de-todos-os-membros-inativos":
 		if year == 2014 && month != 1 {
 			return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year+1)
 		}
 		return fmt.Sprintf(":membros-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "remuneracao-de-todos-os-servidores-atuvos" {
+	case "remuneracao-de-todos-os-servidores-atuvos":
 		return fmt.Sprintf(":servidores-ativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "proventos-de-todos-os-servidores-inativos" {
+	case "proventos-de-todos-os-servidores-inativos":
 		return fmt.Sprintf(":servidores-inativos-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "valores-percebidos-por-todos-os-pensionistas" {
+	case "valores-percebidos-por-todos-os-pensionistas":
 		return fmt.Sprintf(":pensionistas-%s-%d", fmt.Sprintf("%02d", month), year)
-	}
-	if member == "valores-percebidos-por-todos-os-colaboradores" {
+	case "valores-percebidos-por-todos-os-colaboradores":
 		return fmt.Sprintf(":contracheque-valores-percebidos-colaboradores-%s", months[month])
-	}
-	if member == "verbas-referentes-a-exercicios-anteriores" {
+	case "verbas-referentes-a-exercicios-anteriores":
 		return fmt.Sprintf(":dea-%s%d", fmt.Sprintf("%02d", month), year)
+	default:
+		return fmt.Sprintf(":virt-%s-%d", months[month], year)
 	}
-	return fmt.Sprintf(":virt-%s-%d", months[month], year)
 }
