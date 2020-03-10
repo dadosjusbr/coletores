@@ -12,7 +12,6 @@ import (
 	"sync"
 )
 
-// regexp to extract 4 sequential numbers
 var re = regexp.MustCompile("\\b\\d{4}\\b")
 
 // it wraps data about a employee category, where category
@@ -224,18 +223,15 @@ func processErrorMessages(errors []string) error {
 	return fmt.Errorf("%s", errorMessage)
 }
 
-// it gets a HTML file as a string and searchs inside of it a pattern
-// with only numbers. Once pattern is found we get its index and then
-// get a substring with some previus chars of that index. The value
-// of n previous chars should be provided by environment.
+// it gets a HTML file as string and search for the file identifier code
 func findFileIdentifier(category, htmlAsString, pattern string) (string, error) {
 	indexOfPattern := strings.Index(htmlAsString, pattern)
-	somePreviousChars, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
+	somePreviousCharsBeforeIndexOfPattern, err := strconv.Atoi(os.Getenv("PREVIOUS_N_CHARS"))
 	if err != nil {
-		somePreviousChars = 10
+		somePreviousCharsBeforeIndexOfPattern = 10
 	}
 	if indexOfPattern > 0 {
-		substringWithFileIdentifier := htmlAsString[indexOfPattern-somePreviousChars : indexOfPattern]
+		substringWithFileIdentifier := htmlAsString[indexOfPattern-somePreviousCharsBeforeIndexOfPattern : indexOfPattern]
 		possibleMatches := re.FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
 			return "nil", fmt.Errorf("failed to get file identifier for category %s: number using pattern %s at substring %s using regexp %s", category, pattern, substringWithFileIdentifier, re.String())
