@@ -152,6 +152,7 @@ var (
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	paths := make([]string, 8)
+	errors := make([]string, 0)
 	pathChannel := make(chan string, 8)
 	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
@@ -162,29 +163,34 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("error getting downloading main html file :%q", err)
+				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
+				return
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				errChannel <- fmt.Errorf("error reading response body: %q", err)
+				errChannel <- fmt.Errorf("error for category %s reading response body: %q", err, member.category)
+				return
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
 			fileCode, err := findFileIdentifier(member.category, htmlAsString, pattern)
 			if err != nil {
 				errChannel <- err
+				return
 			}
 			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", baseURL, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				errChannel <- fmt.Errorf("error creating sheet file:%q", err)
+				errChannel <- fmt.Errorf("error creating sheet file:%q for category %s", err, member.category)
+				return
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				errChannel <- fmt.Errorf("error downloading main file: %s %q", filePath, err)
+				errChannel <- fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err)
+				return
 			}
 			pathChannel <- filePath
 		}(member, month, year)
@@ -196,14 +202,26 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 	}()
 	for err := range errChannel {
 		if err != nil {
-			logError("error on crawling: ", err.Error())
-			os.Exit(1)
+			errors = append(errors, err.Error())
 		}
 	}
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
-	return paths, nil
+	return paths, processErrorMessages(errors)
+}
+
+// get the error messages to build a clear
+// string message containing them
+func processErrorMessages(errors []string) error {
+	if len(errors) == 0 {
+		return nil
+	}
+	errorMessage := ""
+	for _, e := range errors {
+		errorMessage = fmt.Sprintf("%s\n%s\n", errorMessage, e)
+	}
+	return fmt.Errorf("%s", errorMessage)
 }
 
 // it gets a HTML file as a string and searchs inside of it a pattern
@@ -220,7 +238,7 @@ func findFileIdentifier(category, htmlAsString, pattern string) (string, error) 
 		substringWithFileIdentifier := htmlAsString[indexOfPattern-nPreviousChars : indexOfPattern]
 		possibleMatches := re.FindAllString(substringWithFileIdentifier, -1)
 		if len(possibleMatches) == 0 {
-			return "nil", fmt.Errorf("failed to get file identifier number using pattern %s at substring %s using regexp %s for category %s", pattern, substringWithFileIdentifier, re.String(), category)
+			return "nil", fmt.Errorf("failed to get file identifier for category %s: number using pattern %s at substring %s using regexp %s", category, pattern, substringWithFileIdentifier, re.String())
 		}
 		fileIdentifier := possibleMatches[0]
 		return fileIdentifier, nil
