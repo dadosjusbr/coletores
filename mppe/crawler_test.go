@@ -21,6 +21,9 @@ var flagtests = []struct {
 	{"Should get right code for servidores ativos", "servidoresAtivos", ":servidores-ativos-01-2015", ".../31342sas2/endpoint:download=9999:servidores-ativos-01-2015", "9999"},
 	{"Should get right code for servidores inativos", "servidoresInativos", ":servidores-inativos-01-2015", ".../ghytr6/resource:download=1098:servidores-inativos-01-2015", "1098"},
 	{"Should get right code for pensionistas", "pensionistas", ":pensionistas-01-2015", ".../5tghjuw2/Controller:random=5453:pensionistas-01-2015", "5453"},
+	{"Should get right code for colaboradores", "colaboradores", ":contracheque-valores-percebidos-colaboradores-fevereiro", ".../random/servlet:code=3490:contracheque-valores-percebidos-colaboradores-fevereiro", "3490"},
+	{"Should get right code for exercicios anteriores", "exerciciosAnteriores", ":dea-022019", ".../controller_servlet:download=5378:dea-022019", "5378"},
+	{"Should get right code for indenizacoes e outros pagamentos", "indenizacoesEOutrosPagamentos", ":virt-abril-2019", ".../members_controller:code=8712:virt-abril-2019", "8712"},
 }
 
 func TestFindFileIdentifier(t *testing.T) {
