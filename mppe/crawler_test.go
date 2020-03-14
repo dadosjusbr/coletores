@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var flagtests = []struct {
+var findFileIdentifierSucessTestCases = []struct {
 	name            string
 	memberType      string
 	patternToSearch string
@@ -24,8 +24,8 @@ var flagtests = []struct {
 	{"Should get right code for indenizacoes e outros pagamentos", "indenizacoesEOutrosPagamentos", ":virt-abril-2019", ".../members_controller:code=8712:virt-abril-2019", "8712"},
 }
 
-func TestFindFileIdentifier(t *testing.T) {
-	for _, tt := range flagtests {
+func TestFindFileIdentifier_Success(t *testing.T) {
+	for _, tt := range findFileIdentifierSucessTestCases {
 		t.Run(tt.name, func(t *testing.T) {
 			code, _ := findFileIdentifier(tt.memberType, tt.fakeHTMLFile, tt.patternToSearch)
 			if code != tt.desiredOutput {
