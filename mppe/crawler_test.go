@@ -15,9 +15,12 @@ var flagtests = []struct {
 	{"Should fail gettting code for membros ativos for years differente of 2017", "membrosAtivos", ":membros-ativos-fevereiro-2019", ".../4554/status:download=5051:membros-ativos-02-2019", "nil"},
 	{"Should fail gettting code for membros ativos for year 2017", "membrosAtivos", ":membros-ativos-fevereiro-2017", ".../4554/recursos:download=5051:membros-ativos-02-2019", "nil"},
 	{"Should get right code for membros ativos for year 2017", "membrosAtivos", ":quadro-de-membros-ativos-fevereiro-2017", ".../4554/resource-online:download=5051:quadro-de-membros-ativos-fevereiro-2017", "5051"},
-	{"Should get right code for membros in ativos for year differente of 2014", "membrosInativos", ":membros-inativos-03-2017", ".../4554/resource:download=4312:membros-inativos-03-2017", "4312"},
-	{"Should get right code for membros in ativos for year 2014 and month different of janeiro", "membrosInativos", ":membros-inativos-03-2014", ".../4554/resource:download=1234:membros-inativos-03-2014", "1234"},
-	{"Should get right code for membros in ativos for year 2014 and month janeiro", "membrosInativos", ":membros-inativos-01-2015", ".../4554/resource:download=4567:membros-inativos-01-2015", "4567"},
+	{"Should get right code for membros inativos for year differente of 2014", "membrosInativos", ":membros-inativos-03-2017", ".../4554/resource:download=4312:membros-inativos-03-2017", "4312"},
+	{"Should get right code for membros inativos for year 2014 and month different of janeiro", "membrosInativos", ":membros-inativos-03-2014", ".../4554/resource:download=1234:membros-inativos-03-2014", "1234"},
+	{"Should get right code for membros inativos for year 2014 and month janeiro", "membrosInativos", ":membros-inativos-01-2015", ".../4554/resource:download=4567:membros-inativos-01-2015", "4567"},
+	{"Should get right code for servidores ativos", "servidoresAtivos", ":servidores-ativos-01-2015", ".../31342sas2/endpoint:download=9999:servidores-ativos-01-2015", "9999"},
+	{"Should get right code for servidores inativos", "servidoresInativos", ":servidores-inativos-01-2015", ".../ghytr6/resource:download=1098:servidores-inativos-01-2015", "1098"},
+	{"Should get right code for pensionistas", "pensionistas", ":pensionistas-01-2015", ".../5tghjuw2/Controller:random=5453:pensionistas-01-2015", "5453"},
 }
 
 func TestFindFileIdentifier(t *testing.T) {
