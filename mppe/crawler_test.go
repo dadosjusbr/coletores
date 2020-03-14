@@ -35,18 +35,23 @@ func TestFindFileIdentifier_Success(t *testing.T) {
 	}
 }
 
-func TestProcessErrorMessageMustReturnNull(t *testing.T) {
-	emptyStringList := []string{}
-	err := processErrorMessages(emptyStringList)
-	if err != nil {
-		t.Error()
-	}
+var errorMessageSucessTestCases = []struct {
+	name       string
+	in         []string
+	outMessage string
+}{
+	{"two error strings", []string{"error1", "error2"}, "\nerror1\n\nerror2\n"},
+	{"one error string", []string{"error1"}, "\nerror1\n"},
+	{"three error strings", []string{"error1", "error2", "error3"}, "\nerror1\n\nerror2\n\nerror3\n"},
 }
 
-func TestProcessErrorMessageMustNotReturnNull(t *testing.T) {
-	fakeErrorMessages := []string{"error1"}
-	err := processErrorMessages(fakeErrorMessages)
-	if err == nil {
-		t.Error()
+func TestProcessErrorMessage(t *testing.T) {
+	for _, tt := range errorMessageSucessTestCases {
+		t.Run(tt.name, func(t *testing.T) {
+			err := processErrorMessages(tt.in)
+			if err.Error() != tt.outMessage {
+				t.Errorf("got %s, want %s", err.Error(), tt.outMessage)
+			}
+		})
 	}
 }
