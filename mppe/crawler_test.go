@@ -55,3 +55,28 @@ func TestProcessErrorMessage(t *testing.T) {
 		})
 	}
 }
+
+var pathResolverTestCases = []struct {
+	name   string
+	month  int
+	year   int
+	member string
+	out    string
+}{
+	{"should get path for membros ativos for year differente of 2017", 2, 2019, "remuneracao-de-todos-os-membros-ativos", ":membros-ativos-02-2019"},
+	{"should get path for membros ativos for year 2017", 2, 2017, "remuneracao-de-todos-os-membros-ativos", ":quadro-de-membros-ativos-fevereiro-2017"},
+	{"should get path for membros inativos for different of year 2014 and month different of january", 2, 2017, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2017"},
+	{"should get path for membros inativos for year 2014 and month different of january", 2, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2015"},
+	{"should get path for membros inativos for year 2014 and month january", 1, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-01-2014"},
+}
+
+func TestPathResolverSucess(t *testing.T) {
+	for _, tt := range pathResolverTestCases {
+		t.Run(tt.name, func(t *testing.T) {
+			path := pathResolver(tt.month, tt.year, tt.member)
+			if path != tt.out {
+				t.Errorf("got %s, want %s", path, tt.out)
+			}
+		})
+	}
+}
