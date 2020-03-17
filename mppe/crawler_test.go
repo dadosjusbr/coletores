@@ -56,7 +56,7 @@ func TestProcessErrorMessage(t *testing.T) {
 	}
 }
 
-var pathResolverTestCases = []struct {
+var pathResolverSucessTestCases = []struct {
 	name   string
 	month  int
 	year   int
@@ -65,17 +65,74 @@ var pathResolverTestCases = []struct {
 }{
 	{"should get path for membros ativos for year differente of 2017", 2, 2019, "remuneracao-de-todos-os-membros-ativos", ":membros-ativos-02-2019"},
 	{"should get path for membros ativos for year 2017", 2, 2017, "remuneracao-de-todos-os-membros-ativos", ":quadro-de-membros-ativos-fevereiro-2017"},
-	{"should get path for membros inativos for different of year 2014 and month different of january", 2, 2017, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2017"},
+	{"should get path for membros inativos for different year of 2014 and month different of january", 2, 2017, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2017"},
 	{"should get path for membros inativos for year 2014 and month different of january", 2, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2015"},
 	{"should get path for membros inativos for year 2014 and month january", 1, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-01-2014"},
 }
 
-func TestPathResolverSucess(t *testing.T) {
-	for _, tt := range pathResolverTestCases {
+func TestPathResolver_Sucess(t *testing.T) {
+	for _, tt := range pathResolverSucessTestCases {
 		t.Run(tt.name, func(t *testing.T) {
 			path := pathResolver(tt.month, tt.year, tt.member)
 			if path != tt.out {
 				t.Errorf("got %s, want %s", path, tt.out)
+			}
+		})
+	}
+}
+
+var pathResolverErrorTestCases = []struct {
+	name   string
+	month  int
+	year   int
+	member string
+	out    string
+}{
+	{"should fail for membros ativos for year differente of 2017", 2, 2019, "remuneracao-de-todos-os-membros-ativos", ":quadro-de-membros-ativos-fevereiro-2019"},
+	{"should fail for membros ativos for year 2017", 2, 2017, "remuneracao-de-todos-os-membros-ativos", ":membros-ativos-2-2017"},
+	{"should fail for membros inativos for year different of 2014 and month different of january", 2, 2017, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2015"},
+	{"should fail for membros inativos for year 2014 and month different of january", 2, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-01-2015"},
+	{"should fail for membros inativos for year 2014 and month january", 1, 2014, "proventos-de-todos-os-membros-inativos", ":membros-inativos-02-2014"},
+}
+
+func TestPathResolver_Error(t *testing.T) {
+	for _, tt := range pathResolverErrorTestCases {
+		t.Run(tt.name, func(t *testing.T) {
+			path := pathResolver(tt.month, tt.year, tt.member)
+			if path == tt.out {
+				t.Errorf("got %s, want %s", path, tt.out)
+			}
+		})
+	}
+}
+
+var crawlTestCases = []struct {
+	name       string
+	outputPath string
+	month      int
+	year       int
+	out        map[string]bool
+}{
+	{"should get 8 files for february of 2019", "files", 2, 2019, map[string]bool{
+		"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  true,
+		"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               true,
+		"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  true,
+		"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               true,
+		"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           true,
+		"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            true,
+		"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": true,
+		"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               true,
+	}},
+}
+
+func TestCrawl(t *testing.T) {
+	for _, tt := range crawlTestCases {
+		t.Run(tt.name, func(t *testing.T) {
+			outs, _ := Crawl(tt.outputPath, tt.month, tt.year)
+			for _, out := range outs {
+				if !tt.out[out] {
+					t.Errorf("got %s and it is not present on list", out)
+				}
 			}
 		})
 	}
