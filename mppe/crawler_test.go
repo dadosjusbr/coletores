@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
@@ -126,14 +127,22 @@ var crawlTestCases = []struct {
 }
 
 func TestCrawl(t *testing.T) {
+	var pathsReference []string
 	for _, tt := range crawlTestCases {
 		t.Run(tt.name, func(t *testing.T) {
 			outs, _ := Crawl(tt.outputPath, tt.month, tt.year)
+			pathsReference = outs
 			for _, out := range outs {
 				if !tt.out[out] {
 					t.Errorf("got %s and it is not present on list", out)
 				}
 			}
 		})
+	}
+	for _, path := range pathsReference {
+		err := os.Remove(path)
+		if err != nil {
+			panic("failed to remove file at path: " + path)
+		}
 	}
 }
