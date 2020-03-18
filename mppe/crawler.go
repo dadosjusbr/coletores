@@ -151,7 +151,7 @@ var (
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int) ([]string, error) {
 	var paths []string
-	errors := make([]string, 0)
+	var errors []string
 	pathChannel := make(chan string, 8)
 	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
