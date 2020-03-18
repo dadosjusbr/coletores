@@ -36,7 +36,7 @@ $ docker run docker run --mount source=dadosjus,target=/dadojusbr_data/ --env-fi
 
 - Em que linguagens posso escrever meu coletor?
 
-Apesar da definição da API e da utilização de contêiners Docker permitir a escrita em muitas linguagens, o time DadosJusBR optou por restringir para Python e Go. As razões para isso é que acreditamos que a revisão do código do coletor precisa ser feita por uma pessoa que tenha experiência com coletores/tradutores e também na linguagem. Isso evitará vários.
+Apesar da definição da API e da utilização de contêiners Docker permitir a escrita em muitas linguagens, o time DadosJusBR optou por restringir para Python e Go. A principal razão para isso é que acreditamos que a revisão do código do coletor precisa ser feita por pessoas que tenham experiência com coletores/tradutores e também na linguagem. Isso evitará que vários problemas cheguem em produção, bem como contribuirá bastante para disseminar conhecimento.
 
 - Preciso escrever testes para o coletor?
 
