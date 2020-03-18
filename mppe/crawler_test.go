@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 )
@@ -106,27 +109,41 @@ func TestPathResolver_Error(t *testing.T) {
 
 func TestCrawl(t *testing.T) {
 	var testCases = []struct {
-		name       string
-		outputPath string
-		month      int
-		year       int
-		out        map[string]bool
+		name           string
+		outputPath     string
+		month          int
+		year           int
+		crawlingServer *httptest.Server
+		out            map[string]bool
 	}{
-		{"should get 8 files for february of 2019", "files", 2, 2019, map[string]bool{
-			"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  true,
-			"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               true,
-			"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  true,
-			"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               true,
-			"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           true,
-			"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            true,
-			"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": true,
-			"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               true,
-		}},
+		{"should get 8 files for february of 2019", "files", 2, 2019,
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				fmt.Fprint(w,
+					"<div><link src=\".../4554/resource-fevereiro:download=5051:membros-ativos-02-2019\"/></div>"+
+						"<div><link src=\".../4554/resource:download=4312:membros-inativos-02-2019\"/></div>"+
+						"<div><link src=\".../31342sas2/endpoint:download=9999:servidores-ativos-02-2019\"/></div>"+
+						"<div><link src=\".../ghytr6/resource:download=1098:servidores-inativos-02-2019\"/></div>"+
+						"<div><link src=\".../5tghjuw2/Controller:random=5453:pensionistas-02-2019\"/></div>"+
+						"<div><link src=\".../random/servlet:code=3490:contracheque-valores-percebidos-colaboradores-fevereiro\"/></div>"+
+						"<div><link src=\".../controller_servlet:download=5378:dea-022019\"/></div>"+
+						"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
+			})),
+			map[string]bool{
+				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  true,
+				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               true,
+				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  true,
+				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               true,
+				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           true,
+				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            true,
+				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": true,
+				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               true,
+			}},
 	}
+	//defer serverActiveMembers.Close()
 	var pathsReference []string
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			outs, _ := Crawl(tt.outputPath, tt.month, tt.year)
+			outs, _ := Crawl(tt.outputPath, tt.month, tt.year, tt.crawlingServer.URL+"/")
 			pathsReference = outs
 			for _, out := range outs {
 				if !tt.out[out] {

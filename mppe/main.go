@@ -35,7 +35,7 @@ func main() {
 		logError("error creating output folder(%s): %q", outputFolder, err)
 		os.Exit(1)
 	}
-	paths, err := Crawl(outputFolder, *month, *year)
+	paths, err := Crawl(outputFolder, *month, *year, baseURL)
 	if err != nil {
 		logError("error on crawling: ", err.Error())
 		os.Exit(1)

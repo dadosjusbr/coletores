@@ -149,7 +149,7 @@ var (
 )
 
 // Crawl download all files related to the MPPE salaries and return their local paths
-func Crawl(outputPath string, month, year int) ([]string, error) {
+func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 	var paths []string
 	var errors []string
 	pathChannel := make(chan string, 8)
@@ -159,7 +159,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 		wg.Add(1)
 		go func(member employeeDescriptor, month, year int) {
 			defer wg.Done()
-			link := fmt.Sprintf("%s%d-%s", baseURL, member.yearCodes[year], member.category)
+			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
 				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
@@ -178,7 +178,7 @@ func Crawl(outputPath string, month, year int) ([]string, error) {
 				errChannel <- err
 				return
 			}
-			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", baseURL, member.yearCodes[year], member.category, fileCode)
+			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", host, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
