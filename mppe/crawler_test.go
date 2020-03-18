@@ -114,7 +114,7 @@ func TestCrawl(t *testing.T) {
 		month          int
 		year           int
 		crawlingServer *httptest.Server
-		out            map[string]bool
+		out            map[string]struct{}
 	}{
 		{"should get 8 files for february of 2019", "files", 2, 2019,
 			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -128,25 +128,25 @@ func TestCrawl(t *testing.T) {
 						"<div><link src=\".../controller_servlet:download=5378:dea-022019\"/></div>"+
 						"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
 			})),
-			map[string]bool{
-				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  true,
-				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               true,
-				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  true,
-				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               true,
-				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           true,
-				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            true,
-				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": true,
-				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               true,
+			map[string]struct{}{
+				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  struct{}{},
+				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               struct{}{},
+				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  struct{}{},
+				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               struct{}{},
+				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           struct{}{},
+				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            struct{}{},
+				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": struct{}{},
+				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               struct{}{},
 			}},
 	}
-	//defer serverActiveMembers.Close()
 	var pathsReference []string
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			outs, _ := Crawl(tt.outputPath, tt.month, tt.year, tt.crawlingServer.URL+"/")
 			pathsReference = outs
 			for _, out := range outs {
-				if !tt.out[out] {
+				_, ok := tt.out[out]
+				if !ok {
 					t.Errorf("got %s and it is not present on list", out)
 				}
 			}
