@@ -13,3 +13,4 @@ Quer contribuir com a libertação de dados do sistema de justiça do seu estado
 | [mppb](https://github.com/dadosjusbr/coletores/tree/master/mppb)             | X             | X                |
 | [trt13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
 | [trepb](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
+| [mppe](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |                 |
