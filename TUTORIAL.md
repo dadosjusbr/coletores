@@ -2,7 +2,7 @@
 
 Na nomenclatura do DadosJusBR, um coletor (_crawler_) de remunerações é responsável por duas tarefas: baixar os dados do site oficial do órgão e convertê-los para o formato padronizado de [resultado de coleta](https://github.com/dadosjusbr/storage/blob/master/agency.go#L27) (_crawling result_). Para facilitar o processo de revisão, aconselhamos que separe o coletor em dois [PRs](https://help.github.com/pt/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), sendo o segundo aberto depois do primeiro ter sido aprovado. Assim, acreditamos que o processo de revisão fica mais simples e rápido.
 
-Outro esclarecimento importante é que o DadosJusBR se refere a órgãos do *sistema de justiça* e não apenas do judiciário. Também estamos interessados em órgãos regionais e federais. Isso quer dizer que é do interesse e escopo do projeto libertar remunerações de tribunais (por exemplo, TRF1, TRT13, TREPB e TJPB), Ministérios Públicos (por exemplo, MPF e MPPB), Defensorias e Procuradorias.
+Outro esclarecimento importante é que buscamos todos os órgãos do *sistema de justiça* e não apenas do Judiciário. Também estamos interessados em órgãos regionais e federais. Isso quer dizer que é do interesse e escopo do projeto libertar remunerações de tribunais (por exemplo, TRF1, TRT13, TREPB e TJPB), Ministérios Públicos (por exemplo, MPF e MPPB), Defensorias e Procuradorias.
 
 Feitos os devidos esclarecimentos preliminares, mãos a obra!
 
