@@ -23,7 +23,7 @@ E são esperadas as seguintes saídas:
 
 Coletores podem precisar de mais configuração além do mês e do ano da coleta. Como visto [aqui](https://github.com/dadosjusbr/coletores/tree/master/mppb) e [aqui](https://github.com/dadosjusbr/coletores/tree/master/trepb), recomendamos a utilização de [variávias de ambiente](https://pt.wikipedia.org/wiki/Vari%C3%A1vel_de_ambiente) para esse fim.
 
-Para dar liberdade de desenvolvimento e facilitar o gerenciamento de dependências, coletores do DadosJusBR são executados em um [contêiner Docker](https://aws.amazon.com/pt/containers/?nc1=f_ccr). Dentre outras vantagens, isso permite que coletores sejam escritos diferentes linguagens. Sendo assim, você pode esperar que seu coletor será executado da seguinte forma:
+Para dar liberdade de desenvolvimento e facilitar o gerenciamento de dependências, coletores do DadosJusBR são executados em um [contêiner Docker](https://aws.amazon.com/pt/containers/?nc1=f_ccr). Dentre outras vantagens, isso permite que coletores sejam escritos em diferentes linguagens. Sendo assim, você pode esperar que seu coletor será executado da seguinte forma:
 
 ```sh
 $ git clone https://github.com/dadosjusbr/coletores
