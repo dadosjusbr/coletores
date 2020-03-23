@@ -46,7 +46,7 @@ Na execução do coletor `docker run`:
 
 
 
-As pessoas desenvolvedoras de coletores devem sempre ter o cuidado de setar o campo [Crawler](https://github.com/dadosjusbr/storage/blob/master/agency.go#L31) (sim teremos um teste de integração que garanta isso). Esse campo possui atributos que identificam unicamente o coletor e a coleta. Essa informações são muito importantes pois além de facilitar a depuração/detecção de problemas, elas tornam as informações publicadas pelo DadosJusBR completamente auditáveis. A variável de ambiente `GIT_COMMIT` deve ser utilizada para setar a versão do coletor executado para extrair os dados ([Crawler.CrawlerID](https://github.com/dadosjusbr/storage/blob/master/agency.go#L22)).
+As pessoas desenvolvedoras de coletores devem sempre ter o cuidado de setar o campo [Crawler](https://github.com/dadosjusbr/storage/blob/master/agency.go#L31) (sim teremos um teste de integração que garanta isso). Esse campo possui atributos que identificam unicamente o coletor e a coleta. Essas informações são muito importantes pois além de facilitar a depuração/detecção de problemas, elas tornam as informações publicadas pelo DadosJusBR completamente auditáveis. A variável de ambiente `GIT_COMMIT` deve ser utilizada para setar a versão do coletor executado para extrair os dados ([Crawler.CrawlerID](https://github.com/dadosjusbr/storage/blob/master/agency.go#L22)).
 
 Após a execução do coletor, os dados serão validados e armazenados num banco de dados do DadosJusBR. Esse banco de dados é utilizado para servir a página dadosjusbr.org.
 
