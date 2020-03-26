@@ -13,7 +13,7 @@ O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e an
 - Construção da imagem:
 
 ```sh
-docker build -t mppe .
+docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mppe .
 ```
 
 - Execução:
