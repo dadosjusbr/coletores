@@ -10,7 +10,6 @@ import (
 var gitCommit string
 
 func main() {
-	fmt.Println("gitCommit: ", gitCommit)
 	month := flag.Int("mes", 0, "Mês a ser analisado")
 	year := flag.Int("ano", 0, "Ano a ser analisado")
 	flag.Parse()
