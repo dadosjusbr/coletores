@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var gitCommit string
+
 func main() {
 	month := flag.Int("mes", 0, "Mês a ser analisado")
 	year := flag.Int("ano", 0, "Ano a ser analisado")
