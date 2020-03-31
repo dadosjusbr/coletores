@@ -13,7 +13,7 @@ func TestGetTypeOfFile_Sucess(t *testing.T) {
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			res := getTypeOfFile(tt.in)
+			res := getFileDocumentation(tt.in)
 			if res != tt.out {
 				t.Errorf("got %s, want %s", res, tt.out)
 			}
