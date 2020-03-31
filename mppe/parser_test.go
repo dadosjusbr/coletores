@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestGetTypeOfFile_Sucess(t *testing.T) {
+func TestGetTypeOfFile(t *testing.T) {
 	testCases := []struct {
 		name string
 		in   string
