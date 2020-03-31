@@ -50,7 +50,6 @@ func main() {
 		logError("error on parsing: ", err.Error())
 		os.Exit(1)
 	}
-	fmt.Println(employees)
 	crawlingResult := newCrawlingResult(employees, paths, *month, *year)
 	crJSON, err := json.MarshalIndent(crawlingResult, "", "  ")
 	if err != nil {
