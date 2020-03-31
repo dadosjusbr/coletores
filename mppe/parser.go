@@ -25,16 +25,16 @@ const (
 func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
-		fmt.Println(">> 1. path: ", path)
 		documentIdentification := getFileDocumentation(path)
 		file, err := excelize.OpenFile(path)
 		if err != nil {
 			return nil, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err)
 		}
 		rows := file.GetRows(sheetName)
+		numberOfRows := len(rows)
 		var employee storage.Employee
 		for index, row := range rows {
-			if index == 1 || index == 2 || index == 3 {
+			if index == 1 || index == 2 || index == 3 || index == numberOfRows-1 {
 				continue
 			}
 			employee = storage.Employee{
@@ -50,7 +50,6 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			employees = append(employees, employee)
 		}
 	}
-	fmt.Println(len(employees))
 	return employees, nil
 }
 
