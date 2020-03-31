@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/dadosjusbr/storage"
@@ -19,6 +20,18 @@ const (
 
 	// index of role on the row
 	roleIndex = 2
+
+	// index of total discount
+	totalDiscountIndex = 14
+
+	// index of ceil retention
+	ceilRetentionIndex = 13
+
+	// index of income tax
+	incomeTaxIndex = 12
+
+	// index of prev contribution
+	prevContributionIndex = 11
 )
 
 // Parse parses the xlsx tables
@@ -34,8 +47,12 @@ func Parse(paths []string) ([]storage.Employee, error) {
 		numberOfRows := len(rows)
 		var employee storage.Employee
 		for index, row := range rows {
-			if index == 1 || index == 2 || index == 3 || index == numberOfRows-1 {
+			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 {
 				continue
+			}
+			discounts, err := getDiscounts(row, documentIdentification)
+			if err != nil {
+				return nil, err
 			}
 			employee = storage.Employee{
 				Reg:       row[registerCodeIndex],
@@ -45,7 +62,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 				Workplace: "mppe",
 				Active:    isActive(documentIdentification),
 				Income:    getIncome(row),
-				Discounts: getDiscounts(row),
+				Discounts: discounts,
 			}
 			employees = append(employees, employee)
 		}
@@ -53,8 +70,31 @@ func Parse(paths []string) ([]storage.Employee, error) {
 	return employees, nil
 }
 
-func getDiscounts(row []string) *storage.Discount {
-	return nil
+// it returns the total discounts sumary
+func getDiscounts(row []string, documentIdentification string) (*storage.Discount, error) {
+	fmt.Println(row)
+	totalDiscount, err := strconv.ParseFloat(row[totalDiscountIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	ceilRetention, err := strconv.ParseFloat(row[ceilRetentionIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing ceil retention from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	incomeTax, err := strconv.ParseFloat(row[incomeTaxIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing income tax from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	prevContribution, err := strconv.ParseFloat(row[prevContributionIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing prev contribution from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	return &storage.Discount{
+		Total:            totalDiscount,
+		CeilRetention:    &ceilRetention,
+		IncomeTax:        &incomeTax,
+		PrevContribution: &prevContribution,
+	}, nil
 }
 
 func getIncome(row []string) *storage.IncomeDetails {
