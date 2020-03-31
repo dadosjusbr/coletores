@@ -11,20 +11,21 @@ const (
 	// page name to process
 	sheetName = "Sheet"
 
-	// it is the column of unique code indentifier
-	registerCodeColumm = "A"
+	// index of unique register code on the row
+	registerCodeIndex = 0
 
-	// it is the column of employee name
-	nameColumn = "B"
+	// index of name on the row
+	nameIndex = 1
 
-	// it is the column of roles
-	roleColumn = "C"
+	// index of role on the row
+	roleIndex = 2
 )
 
 // Parse parses the xlsx tables
 func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
+		fmt.Println(">> 1. path: ", path)
 		documentIdentification := getFileDocumentation(path)
 		file, err := excelize.OpenFile(path)
 		if err != nil {
@@ -37,18 +38,19 @@ func Parse(paths []string) ([]storage.Employee, error) {
 				continue
 			}
 			employee = storage.Employee{
-				Reg:       file.GetCellValue(sheetName, fmt.Sprintf("%s%d", registerCodeColumm, index)), //getRegisterCode(file),
-				Name:      file.GetCellValue(sheetName, fmt.Sprintf("%s%d", nameColumn, index)),         //getName(file),
-				Role:      file.GetCellValue(sheetName, fmt.Sprintf("%s%d", roleColumn, index)),         //getRole(file),
+				Reg:       row[registerCodeIndex],
+				Name:      row[nameIndex],
+				Role:      row[roleIndex],
 				Type:      getType(documentIdentification),
 				Workplace: "mppe",
 				Active:    isActive(documentIdentification),
 				Income:    getIncome(row),
 				Discounts: getDiscounts(row),
 			}
+			employees = append(employees, employee)
 		}
-		employees = append(employees, employee)
 	}
+	fmt.Println(len(employees))
 	return employees, nil
 }
 
