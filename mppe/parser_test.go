@@ -1,6 +1,83 @@
 package main
 
-import "testing"
+import (
+	"math"
+	"testing"
+
+	"github.com/dadosjusbr/storage"
+)
+
+func getPointer(n float64) *float64 {
+	return &n
+}
+
+func TestGetPointer(t *testing.T) {
+	value := 10.0
+	pointerValue := getPointer(value)
+	if *pointerValue != value {
+		t.Errorf("got %f, want %v", *pointerValue, value)
+	}
+}
+
+func areFloatsEqual(a, b float64) bool {
+	tolerance := 0.001
+	diff := math.Abs(a - b)
+	if diff < tolerance {
+		return true
+	}
+	return false
+}
+
+func TestAreFloatsEqual(t *testing.T) {
+	testCases := []struct {
+		name string
+		a    float64
+		b    float64
+		out  bool
+	}{
+		{"Should get true for comparison", 3.14, 3.141, true},
+		{"Should get false for comparison", 3.14, 3.142, false},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			res := areFloatsEqual(tt.a, tt.b)
+			if res != tt.out {
+				t.Errorf("got %t, want %t", res, tt.out)
+			}
+		})
+	}
+}
+
+func TestGetDiscounts_Sucess(t *testing.T) {
+	testCases := []struct {
+		name           string
+		row            []string
+		identification string
+		discount       *storage.Discount
+	}{
+		{"should get a discount with total R$ 10.597,33, ceil retention R$ 0,0, income tax R$ 6.837,63 and prev contribution R$ 3.759,7",
+			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "0.00", "0.00", "0.00", "0.00", "0.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
+			"proventos-de-todos-os-membros-inativos",
+			&storage.Discount{Total: 10597.33, PrevContribution: getPointer(3759.7), CeilRetention: getPointer(0), IncomeTax: getPointer(6837.63)}},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			discount, _ := getDiscounts(tt.row, tt.identification)
+			if !areFloatsEqual(discount.Total, tt.discount.Total) {
+				t.Errorf("got %f, want %f", discount.Total, tt.discount.Total)
+			}
+			if !areFloatsEqual(*discount.PrevContribution, *tt.discount.PrevContribution) {
+				t.Errorf("got %f, want %f", *discount.PrevContribution, *tt.discount.PrevContribution)
+			}
+			if !areFloatsEqual(*discount.CeilRetention, *tt.discount.CeilRetention) {
+				t.Errorf("got %f, want %f", *discount.CeilRetention, *tt.discount.CeilRetention)
+			}
+			if !areFloatsEqual(*discount.IncomeTax, *tt.discount.IncomeTax) {
+				t.Errorf("got %f, want %f", *discount.IncomeTax, *tt.discount.IncomeTax)
+			}
+		})
+	}
+}
 
 func TestGetType(t *testing.T) {
 	testCases := []struct {

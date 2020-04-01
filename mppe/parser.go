@@ -50,6 +50,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 {
 				continue
 			}
+			fmt.Println(row)
 			discounts, err := getDiscounts(row, documentIdentification)
 			if err != nil {
 				return nil, err
@@ -72,7 +73,6 @@ func Parse(paths []string) ([]storage.Employee, error) {
 
 // it returns the total discounts sumary
 func getDiscounts(row []string, documentIdentification string) (*storage.Discount, error) {
-	fmt.Println(row)
 	totalDiscount, err := strconv.ParseFloat(row[totalDiscountIndex], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
