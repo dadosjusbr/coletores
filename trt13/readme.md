@@ -52,3 +52,7 @@ Para cada funcionário, o JSON possui os seguintes campos:
 - **URL Base**: [https://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?](https://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?)
     - **Parâmetros da URL**: mes=${MES}&ano=${ANO}
 - **Formato**: Json
+
+## Dificuldades para libertação dos dados
+
+O TRT13 é um ótimo exemplo de API para acesso aos dados de remuneração. Existe uma API própria para isso e os dados são exportados em formato aberto fácil de ser manipulado por programas de computador (JSON).
