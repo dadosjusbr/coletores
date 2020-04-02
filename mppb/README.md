@@ -124,3 +124,7 @@ As planilhas possuem as seguintes colunas:
 	- [Exemplo](https://pitagoras.mppb.mp.br/PTMP/FolhaVerbaIndenizRemTemporariaOds?mes=1&exercicio=2019)
 - **Formato da tabela:** [Tipo III](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
 - **Obs**: Indenizações disponíveis apenas para o ano de 2019.
+
+## Dificuldades para libertação dos dados
+
+- Não há API para acesso aos dados
