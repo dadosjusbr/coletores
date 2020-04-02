@@ -41,6 +41,21 @@ const (
 
 	// index of total perks
 	totalPerkIndex = 6
+
+	// index for "Outras Verbas Remuneratórias, Legais ou Judiciais" at sheet
+	otherAmmountsIndex = 5
+
+	// index for "Função de Confiança" at sheet
+	loyaltyJobIndex = 6
+
+	// index for "Gratificação Natalina" at sheet
+	christmasPerkIndex = 7
+
+	// index of "Férias (1/3 constitucional)" at sheet
+	vacacionPerkIndex = 8
+
+	// index of "Abono de Permanência" at sheet
+	permanencePerkIndex = 9
 )
 
 // Parse parses the xlsx tables
@@ -137,8 +152,44 @@ func getPerks(row []string, documentIdentification string) (*storage.Perks, erro
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total of perks from string to float64 for document %s: %q", documentIdentification, err)
 	}
+	others, err := getOthers(row, documentIdentification)
+	if err != nil {
+		return nil, err
+	}
 	return &storage.Perks{
-		Total: total,
+		Total:  total,
+		Others: others,
+	}, nil
+}
+
+// get others information about perks
+func getOthers(row []string, documentIdentification string) (map[string]float64, error) {
+	otherAmmounts, err := strconv.ParseFloat(row[otherAmmountsIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing other ammounts from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	loyaltyJob, err := strconv.ParseFloat(row[loyaltyJobIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing loyalty job from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	christmasPerk, err := strconv.ParseFloat(row[christmasPerkIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing christmas perk from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	vacacionPerk, err := strconv.ParseFloat(row[vacacionPerkIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing vacation perk from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	permanencePerk, err := strconv.ParseFloat(row[permanencePerkIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing permanence perk from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	return map[string]float64{
+		"otherAmmounts":  otherAmmounts,
+		"loyaltyJob":     loyaltyJob,
+		"christmasPerk":  christmasPerk,
+		"vacacionPerk":   vacacionPerk,
+		"permanencePerk": permanencePerk,
 	}, nil
 }
 
