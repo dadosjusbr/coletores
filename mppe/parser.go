@@ -32,6 +32,15 @@ const (
 
 	// index of prev contribution
 	prevContributionIndex = 11
+
+	// index of income details
+	totalIncomeDetailsIndex = 10
+
+	// index of wage
+	wageIndex = 4
+
+	// index of total perks
+	totalPerkIndex = 6
 )
 
 // Parse parses the xlsx tables
@@ -50,8 +59,11 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 {
 				continue
 			}
-			fmt.Println(row)
 			discounts, err := getDiscounts(row, documentIdentification)
+			if err != nil {
+				return nil, err
+			}
+			incomeDetails, err := getIncome(row, documentIdentification)
 			if err != nil {
 				return nil, err
 			}
@@ -62,7 +74,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 				Type:      getType(documentIdentification),
 				Workplace: "mppe",
 				Active:    isActive(documentIdentification),
-				Income:    getIncome(row),
+				Income:    incomeDetails,
 				Discounts: discounts,
 			}
 			employees = append(employees, employee)
@@ -97,8 +109,37 @@ func getDiscounts(row []string, documentIdentification string) (*storage.Discoun
 	}, nil
 }
 
-func getIncome(row []string) *storage.IncomeDetails {
-	return nil
+// it returns the incomes sumary
+func getIncome(row []string, documentIdentification string) (*storage.IncomeDetails, error) {
+	total, err := strconv.ParseFloat(row[totalIncomeDetailsIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing total of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	wage, err := strconv.ParseFloat(row[wageIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	perks, err := getPerks(row, documentIdentification)
+	if err != nil {
+		return nil, err
+	}
+	return &storage.IncomeDetails{
+		Total: total,
+		Wage:  &wage,
+		Perks: perks,
+		Other: nil,
+	}, nil
+}
+
+// it retrieves employee perks
+func getPerks(row []string, documentIdentification string) (*storage.Perks, error) {
+	total, err := strconv.ParseFloat(row[totalPerkIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing total of perks from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	return &storage.Perks{
+		Total: total,
+	}, nil
 }
 
 // it returns the employee type
