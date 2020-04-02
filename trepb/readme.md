@@ -94,3 +94,9 @@ Para cada funcionário, o JSON possui os seguintes campos:
     - **Parâmetros da URL**: mes=${MES}&ano=${ANO}&chaveDeAcesso=${CHAVE}
     - **Parâmetros fixos**: acao=AnexoVIII&folha=&valida=true&toExcel=false
 - **Formato**: Table html
+
+## Dificuldades para libertação dos dados
+
+- É necessário realizar um login para ter acesso as remunerações
+- É necessário passar por um [CAPTCHA](https://pt.wikipedia.org/wiki/CAPTCHA) para ter acesso as remunerações 
+- Formato dos dados é aberto, porém um pouco difícil de ser traduzido por computador (HTML)
