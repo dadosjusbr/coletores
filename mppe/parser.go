@@ -56,6 +56,12 @@ const (
 
 	// index of "Abono de Permanência" at sheet
 	permanencePerkIndex = 9
+
+	//index of indemnity
+	indemnityIndex = 16
+
+	// index of "Outras Remunerações Retroativas/Temporárias"
+	temporaryRemunerationIndex = 17
 )
 
 // Parse parses the xlsx tables
@@ -126,7 +132,7 @@ func getDiscounts(row []string, documentIdentification string) (*storage.Discoun
 
 // it returns the incomes sumary
 func getIncome(row []string, documentIdentification string) (*storage.IncomeDetails, error) {
-	total, err := strconv.ParseFloat(row[totalIncomeDetailsIndex], 64)
+	grossSalary, err := strconv.ParseFloat(row[totalIncomeDetailsIndex], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total of income details from string to float64 for document %s: %q", documentIdentification, err)
 	}
@@ -138,27 +144,53 @@ func getIncome(row []string, documentIdentification string) (*storage.IncomeDeta
 	if err != nil {
 		return nil, err
 	}
+	funds, err := getFunds(row, documentIdentification)
+	if err != nil {
+		return nil, err
+	}
+	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
+	}
 	return &storage.IncomeDetails{
-		Total: total,
+		Total: grossSalary + indemnity + temporaryRemuneration,
 		Wage:  &wage,
 		Perks: perks,
-		Other: nil,
+		Other: funds,
 	}, nil
 }
 
 // it retrieves employee perks
 func getPerks(row []string, documentIdentification string) (*storage.Perks, error) {
-	total, err := strconv.ParseFloat(row[totalPerkIndex], 64)
+	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
 	if err != nil {
-		return nil, fmt.Errorf("error on parsing total of perks from string to float64 for document %s: %q", documentIdentification, err)
+		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
 	}
 	others, err := getOthers(row, documentIdentification)
 	if err != nil {
 		return nil, err
 	}
 	return &storage.Perks{
-		Total:  total,
+		Total:  indemnity + temporaryRemuneration,
 		Others: others,
+	}, nil
+}
+
+func getFunds(row []string, documentIdentification string) (*storage.Funds, error) {
+	wage, err := strconv.ParseFloat(row[wageIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	return &storage.Funds{
+		Total: wage,
 	}, nil
 }
 
@@ -184,12 +216,22 @@ func getOthers(row []string, documentIdentification string) (map[string]float64,
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing permanence perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
+	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
+	}
 	return map[string]float64{
-		"otherAmmounts":  otherAmmounts,
-		"loyaltyJob":     loyaltyJob,
-		"christmasPerk":  christmasPerk,
-		"vacacionPerk":   vacacionPerk,
-		"permanencePerk": permanencePerk,
+		"otherAmmounts":         otherAmmounts,
+		"loyaltyJob":            loyaltyJob,
+		"christmasPerk":         christmasPerk,
+		"vacacionPerk":          vacacionPerk,
+		"permanencePerk":        permanencePerk,
+		"indemnity":             indemnity,
+		"temporaryRemuneration": temporaryRemuneration,
 	}, nil
 }
 

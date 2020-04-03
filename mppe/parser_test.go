@@ -48,6 +48,53 @@ func TestAreFloatsEqual(t *testing.T) {
 	}
 }
 
+func TestGetOthers(t *testing.T) {
+	testCases := []struct {
+		name           string
+		row            []string
+		identification string
+		out            map[string]float64
+	}{
+		{"Should get other ammounts with total R$ 90,00, loyalty job R$ 50,0, christmas perk R$ 30,0, vacacion Perk R$ 20,0 and permanence perk R$ 10",
+			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "90.0", "50.00", "30.00", "20.00", "10.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
+			"proventos-de-todos-os-membros-inativos",
+			map[string]float64{
+				"otherAmmounts":         90.0,
+				"loyaltyJob":            50.0,
+				"christmasPerk":         30.0,
+				"vacacionPerk":          20.0,
+				"permanencePerk":        10.0,
+				"indemnity":             500.0,
+				"temporaryRemuneration": 500.0}},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			others, _ := getOthers(tt.row, tt.identification)
+			if !areFloatsEqual(others["otherAmmounts"], tt.out["otherAmmounts"]) {
+				t.Errorf("got %f, want %f", others["otherAmmounts"], tt.out["otherAmmounts"])
+			}
+			if !areFloatsEqual(others["loyaltyJob"], tt.out["loyaltyJob"]) {
+				t.Errorf("got %f, want %f", others["loyaltyJob"], tt.out["loyaltyJob"])
+			}
+			if !areFloatsEqual(others["christmasPerk"], tt.out["christmasPerk"]) {
+				t.Errorf("got %f, want %f", others["christmasPerk"], tt.out["christmasPerk"])
+			}
+			if !areFloatsEqual(others["vacacionPerk"], tt.out["vacacionPerk"]) {
+				t.Errorf("got %f, want %f", others["vacacionPerk"], tt.out["vacacionPerk"])
+			}
+			if !areFloatsEqual(others["permanencePerk"], tt.out["permanencePerk"]) {
+				t.Errorf("got %f, want %f", others["permanencePerk"], tt.out["permanencePerk"])
+			}
+			if !areFloatsEqual(others["indemnity"], tt.out["indemnity"]) {
+				t.Errorf("got %f, want %f", others["indemnity"], tt.out["indemnity"])
+			}
+			if !areFloatsEqual(others["temporaryRemuneration"], tt.out["temporaryRemuneration"]) {
+				t.Errorf("got %f, want %f", others["temporaryRemuneration"], tt.out["temporaryRemuneration"])
+			}
+		})
+	}
+}
+
 func TestGetDiscounts_Sucess(t *testing.T) {
 	testCases := []struct {
 		name           string
@@ -99,6 +146,32 @@ func TestGetType(t *testing.T) {
 			res := getType(tt.in)
 			if res != tt.out {
 				t.Errorf("got %s, want %s", res, tt.out)
+			}
+		})
+	}
+}
+
+func TestGetFunds(t *testing.T) {
+	testCases := []struct {
+		name            string
+		row             []string
+		indentification string
+		funds           *storage.Funds
+	}{
+		{
+			"Should get the right Total for employee with R$ 33689.11 as total ammount",
+			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "90.0", "50.00", "30.00", "20.00", "10.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
+			"proventos-de-todos-os-membros-inativos",
+			&storage.Funds{
+				Total: 33689.11,
+			},
+		},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			res, _ := getFunds(tt.row, tt.indentification)
+			if !areFloatsEqual(res.Total, tt.funds.Total) {
+				t.Errorf("got %f, want %f", res.Total, tt.funds.Total)
 			}
 		})
 	}
