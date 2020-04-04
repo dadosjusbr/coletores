@@ -31,3 +31,42 @@ func TestText(t *testing.T) {
 		})
 	}
 }
+
+func TestNewStatusError(t *testing.T) {
+	testCases := []struct {
+		name    string
+		message string
+		code    Code
+		out     *StatusError
+	}{
+		{
+			"Should create a status error for time out",
+			"request timed out",
+			RequestTimeout,
+			&StatusError{
+				Message: "request timed out",
+				Code:    RequestTimeout,
+			},
+		},
+		{
+			"Should create a status error for data unavailable",
+			"data is not present",
+			DataUnavailable,
+			&StatusError{
+				Message: "data is not present",
+				Code:    DataUnavailable,
+			},
+		},
+	}
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			se := NewStatusError(tt.code, tt.message)
+			if se.Code != tt.out.Code {
+				t.Errorf("got %d, want %d", se.Code, tt.out.Code)
+			}
+			if se.Message != tt.out.Message {
+				t.Errorf("got %s, want %s", se.Message, tt.out.Message)
+			}
+		})
+	}
+}
