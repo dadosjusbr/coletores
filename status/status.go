@@ -1,5 +1,10 @@
 package status
 
+import (
+	"log"
+	"os"
+)
+
 // Code is a custom type to represent ints
 type Code int
 
@@ -67,4 +72,11 @@ var (
 // string if the code is unknown.
 func Text(code Code) string {
 	return statusText[code]
+}
+
+// ExitFromError exits the program logging a message an
+// setting the process code
+func ExitFromError(statusError *StatusError) {
+	log.Println(statusError.Message)
+	os.Exit(int(statusError.Code))
 }

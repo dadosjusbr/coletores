@@ -1,6 +1,8 @@
 package status
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestText(t *testing.T) {
 	testCases := []struct {
