@@ -5,7 +5,7 @@ import "testing"
 func TestText(t *testing.T) {
 	testCases := []struct {
 		name string
-		in   int
+		in   Code
 		out  string
 	}{
 		{"Testing status OK", 0, "OK"},
