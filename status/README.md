@@ -1,32 +1,32 @@
 # Status Package
 
-Status package aims to create standard status codes for the colectors.
+Esse pacote tem o objetivo de padronizar os status de execução dos coletores.
 
-## Getting it
-```
-go get https://github.com/dadosjusbr/coletores
-```
+## Status disponíveis
 
-## Available status codes
-
-| Status code | Meaning |
+| Status code | Significado |
 --------------|----------
-|OK| The process has occurred with no errors.|
-|ServiceUnavailable|The website that provides the data is not available.|
-|RequestTimeout|The request to retrieve data timedout.|
-|DataUnavailable|Requested data is not available, maybe because the website does not provides that information yet.|
-|ParsingError| An error has occurred doing parsing|
+|OK| O processo ocorreu sem erros.|
+|ServiceUnavailable|O website que fornece a informação está fora do ar.|
+|RequestTimeout|A requisição dos dados resultou em um timeout.|
+|DataUnavailable|A informação solicitada não foi encontrada, provavelmente o órgão não o disponibiliou ainda.|
+|ParsingError| Algum erro não específico ocorreu durante o processo de parsing.|
 ______________
 
-## Usage example
+## Exemplo de uso
 ```
 import (
 	"fmt"
     "https://github.com/dadosjusbr/coletores"
 )
 
+func myFunc() error {
+  // code
+  return status.WrapError(status.DataUnavailable, err)
+}
+
 func main() {
-    statusText := status.Text(status.DataUnavailable)
-    fmt.Println(statusText)
+  err := myFunc()
+  status.ExitFromError(err)
 }
 ```
