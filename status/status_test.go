@@ -9,12 +9,18 @@ func TestText(t *testing.T) {
 		out  string
 	}{
 		{"Testing status OK", 0, "OK"},
-		{"Testing status ServiceUnavailable", 1, "Service Unavailable"},
-		{"Testing status RequestTimeout", 2, "Request Timedout"},
-		{"Testing status DataUnavailable", 3, "Data Unavailable"},
-		{"Testing status ParsingError", 4, "Parsing Error"},
+
+		{"Testing status MonthAndYearNotProvided", 100, "Month and year not provided"},
+		{"Testing status InvalidMonth", 101, "Invalid Month"},
+		{"Testing status InvalidYear", 102, "Invalid Year"},
+		{"Testing status CouldNotCreateDirectory", 103, "Could not create directory"},
+
+		{"Testing status ServiceUnavailable", 200, "Service Unavailable"},
+		{"Testing status RequestTimeout", 201, "Request Timedout"},
+		{"Testing status DataUnavailable", 202, "Data Unavailable"},
+
 		{"Testing unknow status", 505, ""},
-		{"Testing status Unexpected", 5, "Unexpected"},
+		{"Testing status Unexpected", 400, "Unexpected"},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
