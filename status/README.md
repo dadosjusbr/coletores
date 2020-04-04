@@ -20,9 +20,9 @@ import (
     "https://github.com/dadosjusbr/coletores"
 )
 
-func myFunc() error {
+func myFunc() *StatusError {
   // code
-  return status.WrapError(status.DataUnavailable, err)
+  return status.NewStatusError(status.DataUnavailable, err.Error())
 }
 
 func main() {
