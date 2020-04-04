@@ -18,6 +18,9 @@ const (
 
 	// ParsingError means that an error has occurred during parse
 	ParsingError Code = 4
+
+	// Unexpected means that something no expected has happend
+	Unexpected Code = 5
 )
 
 var (
@@ -27,6 +30,7 @@ var (
 		RequestTimeout:     "Request Timedout",
 		DataUnavailable:    "Data Unavailable",
 		ParsingError:       "Parsing Error",
+		Unexpected:         "Unexpected",
 	}
 )
 

@@ -14,6 +14,7 @@ func TestText(t *testing.T) {
 		{"Testing status DataUnavailable", 3, "Data Unavailable"},
 		{"Testing status ParsingError", 4, "Parsing Error"},
 		{"Testing unknow status", 505, ""},
+		{"Testing status Unexpected", 5, "Unexpected"},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
