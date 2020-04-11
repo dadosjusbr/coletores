@@ -1,6 +1,12 @@
 package status
 
 import (
+	"errors"
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"syscall"
 	"testing"
 )
 
@@ -11,18 +17,13 @@ func TestText(t *testing.T) {
 		out  string
 	}{
 		{"Testing status OK", 0, "OK"},
-
-		{"Testing status MonthAndYearNotProvided", 100, "Month and year not provided"},
-		{"Testing status InvalidMonth", 101, "Invalid Month"},
-		{"Testing status InvalidYear", 102, "Invalid Year"},
-		{"Testing status CouldNotCreateDirectory", 103, "Could not create directory"},
-
-		{"Testing status ServiceUnavailable", 200, "Service Unavailable"},
-		{"Testing status RequestTimeout", 201, "Request Timedout"},
-		{"Testing status DataUnavailable", 202, "Data Unavailable"},
-
-		{"Testing unknow status", 505, ""},
-		{"Testing status Unexpected", 400, "Unexpected"},
+		{"Testing status InvalidParameters", 1, "Invalid Parameters"},
+		{"Testing status SystemError", 2, "System Error"},
+		{"Testing status ConnectionError", 3, "Connection Error"},
+		{"Testing status DataUnavailable", 4, "Data Unavailable"},
+		{"Testing status InvalidFile", 5, "Invalid File"},
+		{"Testing Unknown status", 6, "Unknown"},
+		{"Testing status Unexpected", -505, ""},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -34,41 +35,24 @@ func TestText(t *testing.T) {
 	}
 }
 
-func TestNewStatusError(t *testing.T) {
-	testCases := []struct {
-		name    string
-		message string
-		code    Code
-		out     *StatusError
-	}{
-		{
-			"Should create a status error for time out",
-			"request timed out",
-			RequestTimeout,
-			&StatusError{
-				Message: "request timed out",
-				Code:    RequestTimeout,
-			},
-		},
-		{
-			"Should create a status error for data unavailable",
-			"data is not present",
-			DataUnavailable,
-			&StatusError{
-				Message: "data is not present",
-				Code:    DataUnavailable,
-			},
-		},
+func TestExitFromError(t *testing.T) {
+	testCode := int(InvalidFile)
+	if os.Getenv("FLAG") == "1" {
+		ExitFromError(NewStatusError(InvalidFile, errors.New("Invalid Parameters")))
+		return
 	}
-	for _, tt := range testCases {
-		t.Run(tt.name, func(t *testing.T) {
-			se := NewStatusError(tt.code, tt.message)
-			if se.Code != tt.out.Code {
-				t.Errorf("got %d, want %d", se.Code, tt.out.Code)
-			}
-			if se.Message != tt.out.Message {
-				t.Errorf("got %s, want %s", se.Message, tt.out.Message)
-			}
-		})
+	cmd := exec.Command(os.Args[0], "-test.run=TestExitFromError")
+	cmd.Env = append(os.Environ(), "FLAG=1")
+	err := cmd.Run()
+	e, ok := err.(*exec.ExitError)
+	if !ok {
+		log.Fatal("failed to get ExitError")
+	}
+	status, ok := e.Sys().(syscall.WaitStatus)
+	if !ok {
+		log.Fatal("failed to status from execution")
+	}
+	if status.ExitStatus() != testCode {
+		log.Fatal(fmt.Sprintf("want %d, got %d", status.ExitStatus(), testCode))
 	}
 }

@@ -1,15 +1,21 @@
 package status
 
+import "fmt"
+
 // StatusError wraps a code and a error messager
 type StatusError struct {
-	Message string
-	Code    Code
+	Err  error
+	Code Code
 }
 
 // NewStatusError creates a new StatusError
-func NewStatusError(code Code, message string) *StatusError {
+func NewStatusError(code Code, error error) error {
 	return &StatusError{
-		Message: message,
-		Code:    code,
+		Err:  error,
+		Code: code,
 	}
+}
+
+func (se *StatusError) Error() string {
+	return fmt.Sprintf("error %v , %v", se.Code, se.Err.Error())
 }
