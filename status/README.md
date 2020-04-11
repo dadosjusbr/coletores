@@ -4,27 +4,16 @@ Esse pacote tem o objetivo de padronizar os status de execução dos coletores.
 
 ## Status disponíveis
 
-Os códigos de status disponíveis seguem uma ordem semântica:
-+ Em caso de sucesso tem-se valor 0;
-+ Em caso de erro durante o processo de setup, out seja, antes do crawling, os erros pertecem iniciam em 100 e podem ir até 199;
-+ Em caso de erro durante o crawling os erros iniciam em 200;
-+ Em caso de erro durante do parsing os erros iniciam em 300;
-+ Erros não previstos iniciam em 400;
-
 Abaixo segue uma tabela com os status disponíveis:
 
 | Status code | Significado |
 --------------|----------
 |OK| O processo ocorreu sem erros.|
-|MonthAndYearNotProvided|Deve ser usado quando o mês e ano para serem consultados não forem informados|
-|InvalidMonth|Deve ser usado quando o mês informado for inválido|
-|InvalidYear|Deve ser usado quando o ano informado for inválido|
-|CouldNotCreateDirectory|Deve ser usado quando ocorrer um erro criando o diretório de arquivos do coletor|
-|ServiceUnavailable|O website que fornece a informação está fora do ar.|
-|RequestTimeout|A requisição dos dados resultou em um timeout.|
+|InvalidParameters|Deve ser utilizado em caso de parâmetros inválidos, como ano e mês.|
+|SystemError|Deve ser usado em casos como falha ao criar o diretório dos arquivos ou na leitura de arquivos.|
+|ConnectionError|Deve ser usado em problemas de conexão, como timeout ou serviço fora do ar.|
 |DataUnavailable|A informação solicitada não foi encontrada, provavelmente o órgão não o disponibiliou ainda.|
-|CouldNotOpenFile| Deve ser usado quando não for possível abrir o arquivo durante o parsing.|
-|CouldNotExtractData|Deve ser usado quando ocorrer erro extraingo algum dado do arquivo durante o parsing.|
+|InvalidFile| Deve ser usado para cenários onde o arquivo não é o esperado ou em caso de falhas na extração de dados.|
 |Unexpected|Deve ser usando quando um erro inesperado ocorrer.|
 ______________
 
@@ -32,7 +21,7 @@ ______________
 ```
 import (
 	"fmt"
-    "https://github.com/dadosjusbr/coletores"
+    "https://github.com/dadosjusbr/coletores/status"
 )
 
 func myFunc() *StatusError {
