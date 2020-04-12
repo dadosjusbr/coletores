@@ -18,7 +18,7 @@ const (
 
 // Mapping of headers to indexes
 var headersMap = []map[string]int{
-	ESTAGIARIOS: map[string]int{
+	ESTAGIARIOS: {
 		"NOME":                0,
 		"CARGO":               1,
 		"LOTAÇÃO":             2,
@@ -35,7 +35,7 @@ var headersMap = []map[string]int{
 		"INDENIZAÇÕES":        15,
 	},
 
-	INDENIZACOES: map[string]int{
+	INDENIZACOES: {
 		"MATRÍCULA":      0,
 		"ALIMENTAÇÃO":    4,
 		"SAÚDE":          5,
@@ -46,7 +46,7 @@ var headersMap = []map[string]int{
 		"DESPESA":        21,
 	},
 
-	REMUNERACOES: map[string]int{
+	REMUNERACOES: {
 		"MATRÍCULA":             0,
 		"NOME":                  1,
 		"CARGO":                 2,

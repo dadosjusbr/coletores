@@ -129,14 +129,14 @@ func TestCrawl(t *testing.T) {
 						"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
 			})),
 			map[string]struct{}{
-				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  struct{}{},
-				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               struct{}{},
-				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  struct{}{},
-				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               struct{}{},
-				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           struct{}{},
-				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            struct{}{},
-				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": struct{}{},
-				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               struct{}{},
+				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  {},
+				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               {},
+				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  {},
+				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               {},
+				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           {},
+				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            {},
+				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": {},
+				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               {},
 			}},
 	}
 	var pathsReference []string
