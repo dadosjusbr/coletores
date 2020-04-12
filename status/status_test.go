@@ -38,7 +38,7 @@ func TestText(t *testing.T) {
 func TestExitFromError(t *testing.T) {
 	testCode := int(InvalidFile)
 	if os.Getenv("FLAG") == "1" {
-		ExitFromError(NewStatusError(InvalidFile, errors.New("Invalid Parameters")))
+		ExitFromError(NewError(InvalidFile, errors.New("Invalid Parameters")))
 		return
 	}
 	cmd := exec.Command(os.Args[0], "-test.run=TestExitFromError")
