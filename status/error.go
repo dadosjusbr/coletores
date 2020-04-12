@@ -2,7 +2,7 @@ package status
 
 import "fmt"
 
-// StatusError wraps a code and a error messager
+// Error wraps a code and a error messager
 type Error struct {
 	Err  error
 	Code Code
