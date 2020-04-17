@@ -146,10 +146,10 @@ func getGitCommit() (string, error) {
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
 func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
-	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --env-file=.env %s --mes=%d --ano=%d`, filepath.Base(path), month, year), " ")
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path))
+	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(path), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
-	cmd.Env = append(cmd.Env, fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path)))
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
