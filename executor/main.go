@@ -79,6 +79,7 @@ func main() {
 			backup(job, "build.stderr", stdErr)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
+				return
 			}
 
 			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
@@ -94,8 +95,10 @@ func main() {
 			err = store(stdOut, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
+				return
 			}
 			log(" -- Store executed for %s --\n", job)
+			return
 		}(job)
 	}
 	wg.Wait()
@@ -143,7 +146,7 @@ func getGitCommit() (string, error) {
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
 func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
-	cmdList := strings.Split(fmt.Sprintf("./%s --mes=%d --ano=%d", filepath.Base(path), month, year), " ")
+	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --env-file=.env %s --mes=%d --ano=%d`, filepath.Base(path), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
 	cmd.Env = append(cmd.Env, fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path)))
@@ -156,7 +159,8 @@ func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
 func build(path, commit string) ([]byte, []byte, error) {
-	cmd := exec.Command("go", "build", "-ldflags", fmt.Sprintf("-X main.gitCommit=%s", commit))
+	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(path)), " ")
+	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
