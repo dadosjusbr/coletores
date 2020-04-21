@@ -16,7 +16,7 @@ var gitCommit string
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file to load.")
+		log.Fatal("Error loading .env file")
 	}
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
 

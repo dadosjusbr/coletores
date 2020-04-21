@@ -1,5 +1,7 @@
 FROM golang:1.14.0-alpine AS builder
 
+ARG GIT_COMMIT=unspecified
+
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -18,7 +20,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o main .
+RUN go build -ldflags "-X main.gitCommit=$GIT_COMMIT" -o main
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
