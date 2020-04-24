@@ -33,6 +33,25 @@ type config struct {
 	SwiftDomain    string `envconfig:"SWIFT_DOMAIN"`
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
 }
+type procInfo struct {
+	Stdout     string   `json:"stdout" bson:"stdout,omitempty"`           // String containing the standard output of the process.
+	Stderr     string   `json:"stdin" bson:"stderr,omitempty"`            // String containing the standard error of the process.
+	Cmd        string   `json:"cmd" bson:"cmd,omitempty"`                 // Command that has been executed
+	CmdDir     string   `json:"cmddir" bson:"cmdir,omitempty"`            // Local directory, in which the command has been executed
+	ExitStatus int      `json:"status,omitempty" bson:"status,omitempty"` // Exit code of the process executed
+	Env        []string `json:"env,omitempty" bson:"env,omitempty"`       // Copy of strings representing the environment variables in the form ke=value
+}
+
+type crawlingResult struct {
+	AgencyID  string             `json:"aid"`
+	Month     int                `json:"month"`
+	Year      int                `json:"year"`
+	Crawler   storage.Crawler    `json:"crawler"`
+	Files     []string           `json:"files"`
+	Employees []storage.Employee `json:"employees"`
+	Timestamp time.Time          `json:"timestamp"`
+	ProcInfo  procInfo           `json:"procinfo,omitempty"`
+}
 
 var c config
 
@@ -74,15 +93,17 @@ func main() {
 	for _, job := range c.JobList {
 		go func(job string) {
 			defer wg.Done()
-			stdOut, stdErr, err := build(job, commit)
+			stdOut, stdErr, cmdListBuild, err := build(job, commit)
+			exitStatus := statusCode(err)
 			backup(job, "build.stdout", stdOut)
 			backup(job, "build.stderr", stdErr)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
 				return
 			}
+			procInfo := makeProcInfo(stdOut, stdErr, cmdListBuild, job, exitStatus)
 
-			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
+			stdOut, stdErr, cmdListExec, err := execDataCollector(job, c.Month, c.Year)
 			backup(job, "exec.stdout", stdOut)
 			backup(job, "exec.stderr", stdErr)
 			// Data collection execution exited with error. Abort job.
@@ -91,8 +112,9 @@ func main() {
 				return
 			}
 			log(" -- Data collector executed for %s --\n", job)
+			procInfo = makeProcInfo(stdOut, stdErr, cmdListExec, job, exitStatus)
 
-			err = store(stdOut, client)
+			err = store(procInfo, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
 				return
@@ -121,12 +143,13 @@ func newClient() (*storage.Client, error) {
 }
 
 // store stores crawling results to db in storageClient
-func store(content []byte, storageClient *storage.Client) error {
-	var cr storage.CrawlingResult
-	err := json.Unmarshal(content, &cr)
+func store(procInfo procInfo, storageClient *storage.Client) error {
+	var cr crawlingResult
+	err := json.Unmarshal([]byte(procInfo.Stdout), &cr)
 	if err != nil {
 		return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
+	cr.ProcInfo = procInfo
 	err = storageClient.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
@@ -145,7 +168,7 @@ func getGitCommit() (string, error) {
 }
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
-func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
+func execDataCollector(path string, month, year int) ([]byte, []byte, []string, error) {
 	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path))
 	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(path), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
@@ -154,11 +177,11 @@ func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), err
+	return outb.Bytes(), errb.Bytes(), cmdList, err
 }
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func build(path, commit string) ([]byte, []byte, error) {
+func build(path, commit string) ([]byte, []byte, []string, error) {
 	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(path)), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = path
@@ -166,7 +189,7 @@ func build(path, commit string) ([]byte, []byte, error) {
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), err
+	return outb.Bytes(), errb.Bytes(), cmdList, err
 }
 
 // statusCode returns the exit code returned for the cmd execution.
@@ -213,4 +236,16 @@ func backup(job string, desc string, content []byte) {
 		logError("backup error: error writing to file: %s", err)
 		os.Exit(1)
 	}
+}
+
+// makeProcInfo creates a ProcInfo error
+func makeProcInfo(stdOut []byte, stdErr []byte, cmdListExec []string, job string, exitStatus int) procInfo {
+	return procInfo{
+		Stdout:     string(stdOut),
+		Stderr:     string(stdErr),
+		Cmd:        strings.Join(cmdListExec[:], " "),
+		CmdDir:     job,
+		ExitStatus: exitStatus,
+	}
+
 }
