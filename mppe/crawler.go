@@ -132,7 +132,6 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 		go func(member employeeDescriptor, month, year int) {
 			defer wg.Done()
 			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
-			fmt.Println(link)
 			resp, err := http.Get(link)
 			if err != nil {
 				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
