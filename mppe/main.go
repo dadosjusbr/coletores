@@ -45,7 +45,6 @@ func main() {
 		logError("error on crawling: ", err.Error())
 		os.Exit(1)
 	}
-	//paths := []string{"output/proventos-de-todos-os-membros-inativos-02-2019.xlsx"}
 	employees, err := Parse(paths)
 	if err != nil {
 		logError("error on parsing: ", err.Error())
@@ -58,7 +57,6 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("%s", string(crJSON))
-
 }
 
 func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
