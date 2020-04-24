@@ -117,34 +117,6 @@ var (
 				2020: 508,
 			},
 		},
-		"colaboradores": {
-			category: "valores-percebidos-por-todos-os-colaboradores",
-			yearCodes: map[int]int{
-				2016: 365,
-				2017: 366,
-				2018: 410,
-				2019: 450,
-				2020: 496,
-			},
-		},
-		"exerciciosAnteriores": {
-			category: "verbas-referentes-a-exercicios-anteriores",
-			yearCodes: map[int]int{
-				2016: 348,
-				2017: 349,
-				2018: 411,
-				2019: 461,
-				2020: 509,
-			},
-		},
-		"indenizacoesEOutrosPagamentos": {
-			category: "verbas-indenizatorias-e-outras-remuneracoes-temporarias",
-			yearCodes: map[int]int{
-				2018: 415,
-				2019: 451,
-				2020: 510,
-			},
-		},
 	}
 )
 
@@ -160,6 +132,7 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 		go func(member employeeDescriptor, month, year int) {
 			defer wg.Done()
 			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
+			fmt.Println(link)
 			resp, err := http.Get(link)
 			if err != nil {
 				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
