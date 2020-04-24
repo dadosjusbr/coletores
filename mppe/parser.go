@@ -19,7 +19,7 @@ const (
 	roleIndex = 2
 
 	// index of total discount
-	totalDiscountIndex = 14
+	totalDiscountIndex = 16
 
 	// index of ceil retention
 	ceilRetentionIndex = 13
@@ -59,6 +59,26 @@ const (
 
 	// index of "Outras Remunerações Retroativas/Temporárias"
 	temporaryRemunerationIndex = 17
+)
+
+var (
+	indexies = map[string]map[string]int{
+		"remuneracao-de-todos-os-servidores-atuvos": map[string]int{
+			"totalDiscountsIndex":        14,
+			"ceilRetentionIndex":         13,
+			"incomeTaxIndex":             12,
+			"prevContributionIndex":      11,
+			"totalIncomeDetailsIndex":    10,
+			"wageIndex":                  4,
+			"indemnityIndex":             16,
+			"temporaryRemunerationIndex": 17,
+			"otherAmmountsIndex":         5,
+			"loyaltyJobIndex":            6,
+			"christmasPerkIndex":         7,
+			"vacacionPerkIndex":          8,
+			"permanencePerkIndex":        9,
+		},
+	}
 )
 
 // Parse parses the xlsx tables
