@@ -9,9 +9,6 @@ import (
 )
 
 const (
-	// page name to process
-	sheetName = "Sheet"
-
 	// index of unique register code on the row
 	registerCodeIndex = 0
 
@@ -73,11 +70,12 @@ func Parse(paths []string) ([]storage.Employee, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err)
 		}
-		rows := file.GetRows(sheetName)
+		fileMap := file.GetSheetMap()
+		rows := file.GetRows(fileMap[1])
 		numberOfRows := len(rows)
 		var employee storage.Employee
 		for index, row := range rows {
-			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 {
+			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 || index == numberOfRows-2 || index == numberOfRows-3 {
 				continue
 			}
 			discounts, err := getDiscounts(row, documentIdentification)
