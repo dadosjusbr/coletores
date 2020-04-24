@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/dadosjusbr/storage"
@@ -86,6 +87,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
 		documentIdentification := getFileDocumentation(path)
+		fmt.Println(documentIdentification)
 		file, err := excelize.OpenFile(path)
 		if err != nil {
 			return nil, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err)
@@ -255,6 +257,7 @@ func getOthers(row []string, documentIdentification string) (map[string]float64,
 
 // it returns the employee type
 func getType(documentIdentification string) string {
+	fmt.Println("get type: ", documentIdentification)
 	switch documentIdentification {
 	case "proventos-de-todos-os-membros-inativos":
 		return "membro"
@@ -275,6 +278,7 @@ func getType(documentIdentification string) string {
 
 // it checks if the document is of active members or not
 func isActive(documentIdentification string) bool {
+	fmt.Println("in iscative: ", documentIdentification)
 	switch documentIdentification {
 	case "proventos-de-todos-os-membros-inativos":
 		return false
@@ -296,5 +300,5 @@ func isActive(documentIdentification string) bool {
 func getFileDocumentation(fileName string) string {
 	fileSize := len(fileName)
 	name := fileName[0 : fileSize-13]
-	return name
+	return strings.Split(name, "/")[2]
 }
