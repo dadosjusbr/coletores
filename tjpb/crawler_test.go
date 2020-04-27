@@ -129,10 +129,10 @@ func TestSave(t *testing.T) {
 		fmt.Fprint(w, "Hello")
 	}))
 	defer ts.Close()
-
-	assert.NoError(t, save("testFile", ts.URL))
-	assert.FileExists(t, "testFile.pdf")
-	assert.NoError(t, os.Remove("testFile.pdf"))
+	fp, err := save("./", "testFile", ts.URL)
+	assert.NoError(t, err)
+	assert.FileExists(t, fp)
+	assert.NoError(t, os.Remove(fp))
 }
 
 // Test if the file is erased if save returns an error.
@@ -142,8 +142,8 @@ func TestSave_Error(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	err := save("testFile", ts.URL)
+	fp, err := save("./", "testFile", ts.URL)
 	assert.Error(t, err)
-	_, err = os.Stat("testFile.pdf")
+	_, err = os.Stat(fp)
 	assert.Error(t, err)
 }
