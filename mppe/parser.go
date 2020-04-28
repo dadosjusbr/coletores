@@ -64,7 +64,7 @@ const (
 
 var (
 	indexies = map[string]map[string]int{
-		"remuneracao-de-todos-os-servidores-atuvos": map[string]int{
+		"remuneracao-de-todos-os-membros-ativos": map[string]int{
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,
@@ -78,6 +78,9 @@ var (
 			"christmasPerkIndex":         7,
 			"vacacionPerkIndex":          8,
 			"permanencePerkIndex":        9,
+			"nameIndex":                  1,
+			"roleIndex":                  2,
+			"registerCodeIndex":          0,
 		},
 	}
 )
@@ -87,6 +90,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
 		documentIdentification := getFileDocumentation(path)
+		indexMap := indexies[documentIdentification]
 		fmt.Println(documentIdentification)
 		file, err := excelize.OpenFile(path)
 		if err != nil {
@@ -100,18 +104,18 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 || index == numberOfRows-2 || index == numberOfRows-3 {
 				continue
 			}
-			discounts, err := getDiscounts(row, documentIdentification)
+			discounts, err := getDiscounts(row, documentIdentification, indexMap)
 			if err != nil {
 				return nil, err
 			}
-			incomeDetails, err := getIncome(row, documentIdentification)
+			incomeDetails, err := getIncome(row, documentIdentification, indexMap)
 			if err != nil {
 				return nil, err
 			}
 			employee = storage.Employee{
-				Reg:       row[registerCodeIndex],
-				Name:      row[nameIndex],
-				Role:      row[roleIndex],
+				Reg:       row[indexMap["registerCodeIndex"]],
+				Name:      row[indexMap["nameIndex"]],
+				Role:      row[indexMap["roleIndex"]],
 				Type:      getType(documentIdentification),
 				Workplace: "mppe",
 				Active:    isActive(documentIdentification),
@@ -125,20 +129,20 @@ func Parse(paths []string) ([]storage.Employee, error) {
 }
 
 // it returns the total discounts sumary
-func getDiscounts(row []string, documentIdentification string) (*storage.Discount, error) {
-	totalDiscount, err := strconv.ParseFloat(row[totalDiscountIndex], 64)
+func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*storage.Discount, error) {
+	totalDiscount, err := strconv.ParseFloat(row[indexMap["totalDiscountIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	ceilRetention, err := strconv.ParseFloat(row[ceilRetentionIndex], 64)
+	ceilRetention, err := strconv.ParseFloat(row[indexMap["ceilRetentionIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing ceil retention from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	incomeTax, err := strconv.ParseFloat(row[incomeTaxIndex], 64)
+	incomeTax, err := strconv.ParseFloat(row[indexMap["incomeTaxIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing income tax from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	prevContribution, err := strconv.ParseFloat(row[prevContributionIndex], 64)
+	prevContribution, err := strconv.ParseFloat(row[indexMap["prevContributionIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing prev contribution from string to float64 for document %s: %q", documentIdentification, err)
 	}
@@ -151,28 +155,28 @@ func getDiscounts(row []string, documentIdentification string) (*storage.Discoun
 }
 
 // it returns the incomes sumary
-func getIncome(row []string, documentIdentification string) (*storage.IncomeDetails, error) {
-	grossSalary, err := strconv.ParseFloat(row[totalIncomeDetailsIndex], 64)
+func getIncome(row []string, documentIdentification string, indexMap map[string]int) (*storage.IncomeDetails, error) {
+	grossSalary, err := strconv.ParseFloat(row[indexMap["totalIncomeDetailsIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total of income details from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	wage, err := strconv.ParseFloat(row[wageIndex], 64)
+	wage, err := strconv.ParseFloat(row[indexMap["wageIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	perks, err := getPerks(row, documentIdentification)
+	perks, err := getPerks(row, documentIdentification, indexMap)
 	if err != nil {
 		return nil, err
 	}
-	funds, err := getFunds(row, documentIdentification)
+	funds, err := getFunds(row, documentIdentification, indexMap)
 	if err != nil {
 		return nil, err
 	}
-	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
+	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	temporaryRemuneration, err := strconv.ParseFloat(row[indexMap["temporaryRemunerationIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
 	}
@@ -185,16 +189,16 @@ func getIncome(row []string, documentIdentification string) (*storage.IncomeDeta
 }
 
 // it retrieves employee perks
-func getPerks(row []string, documentIdentification string) (*storage.Perks, error) {
-	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
+func getPerks(row []string, documentIdentification string, indexMap map[string]int) (*storage.Perks, error) {
+	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	temporaryRemuneration, err := strconv.ParseFloat(row[indexMap["temporaryRemunerationIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	others, err := getOthers(row, documentIdentification)
+	others, err := getOthers(row, documentIdentification, indexMap)
 	if err != nil {
 		return nil, err
 	}
@@ -204,8 +208,8 @@ func getPerks(row []string, documentIdentification string) (*storage.Perks, erro
 	}, nil
 }
 
-func getFunds(row []string, documentIdentification string) (*storage.Funds, error) {
-	wage, err := strconv.ParseFloat(row[wageIndex], 64)
+func getFunds(row []string, documentIdentification string, indexMap map[string]int) (*storage.Funds, error) {
+	wage, err := strconv.ParseFloat(row[indexMap["wageIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
 	}
@@ -215,32 +219,32 @@ func getFunds(row []string, documentIdentification string) (*storage.Funds, erro
 }
 
 // get others information about perks
-func getOthers(row []string, documentIdentification string) (map[string]float64, error) {
-	otherAmmounts, err := strconv.ParseFloat(row[otherAmmountsIndex], 64)
+func getOthers(row []string, documentIdentification string, indexMap map[string]int) (map[string]float64, error) {
+	otherAmmounts, err := strconv.ParseFloat(row[indexMap["otherAmmountsIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing other ammounts from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	loyaltyJob, err := strconv.ParseFloat(row[loyaltyJobIndex], 64)
+	loyaltyJob, err := strconv.ParseFloat(row[indexMap["loyaltyJobIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing loyalty job from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	christmasPerk, err := strconv.ParseFloat(row[christmasPerkIndex], 64)
+	christmasPerk, err := strconv.ParseFloat(row[indexMap["christmasPerkIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing christmas perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	vacacionPerk, err := strconv.ParseFloat(row[vacacionPerkIndex], 64)
+	vacacionPerk, err := strconv.ParseFloat(row[indexMap["vacacionPerkIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing vacation perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	permanencePerk, err := strconv.ParseFloat(row[permanencePerkIndex], 64)
+	permanencePerk, err := strconv.ParseFloat(row[indexMap["permanencePerkIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing permanence perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	indemnity, err := strconv.ParseFloat(row[indemnityIndex], 64)
+	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	temporaryRemuneration, err := strconv.ParseFloat(row[temporaryRemunerationIndex], 64)
+	temporaryRemuneration, err := strconv.ParseFloat(row[indexMap["temporaryRemunerationIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
 	}
@@ -257,7 +261,6 @@ func getOthers(row []string, documentIdentification string) (map[string]float64,
 
 // it returns the employee type
 func getType(documentIdentification string) string {
-	fmt.Println("get type: ", documentIdentification)
 	switch documentIdentification {
 	case "proventos-de-todos-os-membros-inativos":
 		return "membro"
@@ -278,7 +281,6 @@ func getType(documentIdentification string) string {
 
 // it checks if the document is of active members or not
 func isActive(documentIdentification string) bool {
-	fmt.Println("in iscative: ", documentIdentification)
 	switch documentIdentification {
 	case "proventos-de-todos-os-membros-inativos":
 		return false
