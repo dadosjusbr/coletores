@@ -1,5 +1,5 @@
-github.com/dadosjusbr/storage v0.0.0-20200302174211-3a8750fdc72d h1:ZygjiyeMN4QoQXIRWhw2mZ3fThGpK/6FgUwa9nbZR+g=
-github.com/dadosjusbr/storage v0.0.0-20200302174211-3a8750fdc72d/go.mod h1:xvMAekicIYj4p7cJSyu77Yu6IIZRzZtGWn010WaFwvo=
+github.com/dadosjusbr/storage v0.0.0-20200424101958-825485c29b40 h1:ZlvQwj5fwkTHEKw0P2zVXrNEOqvR5wYn9JP+Tx8w4DE=
+github.com/dadosjusbr/storage v0.0.0-20200424101958-825485c29b40/go.mod h1:xvMAekicIYj4p7cJSyu77Yu6IIZRzZtGWn010WaFwvo=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
