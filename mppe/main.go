@@ -57,6 +57,7 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("%s", string(crJSON))
+	fmt.Println(len(employees))
 }
 
 func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
