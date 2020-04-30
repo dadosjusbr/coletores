@@ -9,59 +9,6 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-const (
-	// index of unique register code on the row
-	registerCodeIndex = 0
-
-	// index of name on the row
-	nameIndex = 1
-
-	// index of role on the row
-	roleIndex = 2
-
-	// index of total discount
-	totalDiscountIndex = 16
-
-	// index of ceil retention
-	ceilRetentionIndex = 13
-
-	// index of income tax
-	incomeTaxIndex = 12
-
-	// index of prev contribution
-	prevContributionIndex = 11
-
-	// index of income details
-	totalIncomeDetailsIndex = 10
-
-	// index of wage
-	wageIndex = 4
-
-	// index of total perks
-	totalPerkIndex = 6
-
-	// index for "Outras Verbas Remuneratórias, Legais ou Judiciais" at sheet
-	otherAmmountsIndex = 5
-
-	// index for "Função de Confiança" at sheet
-	loyaltyJobIndex = 6
-
-	// index for "Gratificação Natalina" at sheet
-	christmasPerkIndex = 7
-
-	// index of "Férias (1/3 constitucional)" at sheet
-	vacacionPerkIndex = 8
-
-	// index of "Abono de Permanência" at sheet
-	permanencePerkIndex = 9
-
-	//index of indemnity
-	indemnityIndex = 16
-
-	// index of "Outras Remunerações Retroativas/Temporárias"
-	temporaryRemunerationIndex = 17
-)
-
 var (
 	indexies = map[string]map[string]int{
 		"remuneracao-de-todos-os-membros-ativos": map[string]int{
@@ -136,6 +83,24 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
+		"valores-percebidos-por-todos-os-pensionistas": map[string]int{
+			"totalDiscountsIndex":        14,
+			"ceilRetentionIndex":         13,
+			"incomeTaxIndex":             12,
+			"prevContributionIndex":      11,
+			"totalIncomeDetailsIndex":    10,
+			"wageIndex":                  4,
+			"indemnityIndex":             16,
+			"temporaryRemunerationIndex": 17,
+			"otherAmmountsIndex":         5,
+			"loyaltyJobIndex":            6,
+			"christmasPerkIndex":         7,
+			"vacacionPerkIndex":          8,
+			"permanencePerkIndex":        9,
+			"nameIndex":                  1,
+			"roleIndex":                  2,
+			"registerCodeIndex":          0,
+		},
 	}
 )
 
@@ -145,7 +110,6 @@ func Parse(paths []string) ([]storage.Employee, error) {
 	for _, path := range paths {
 		documentIdentification := getFileDocumentation(path)
 		indexMap := indexies[documentIdentification]
-		fmt.Println(documentIdentification)
 		file, err := excelize.OpenFile(path)
 		if err != nil {
 			return nil, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err)
@@ -184,6 +148,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 
 // it returns the total discounts sumary
 func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*storage.Discount, error) {
+	println(row[indexMap["totalDiscountIndex"]])
 	totalDiscount, err := strconv.ParseFloat(row[indexMap["totalDiscountIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
