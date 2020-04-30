@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/dadosjusbr/storage"
 )
 
 var gitCommit string
@@ -42,7 +45,36 @@ func main() {
 		logError("error on crawling: ", err.Error())
 		os.Exit(1)
 	}
-	fmt.Println(paths)
+	employees, err := Parse(paths)
+	if err != nil {
+		logError("error on parsing: ", err.Error())
+		os.Exit(1)
+	}
+	crawlingResult := newCrawlingResult(employees, paths, *month, *year)
+	crJSON, err := json.MarshalIndent(crawlingResult, "", "  ")
+	if err != nil {
+		logError("JSON marshaling error: %q", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s", string(crJSON))
+	fmt.Println(len(employees))
+}
+
+func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
+	crawlerInfo := storage.Crawler{
+		CrawlerID:      "mppe",
+		CrawlerVersion: gitCommit,
+	}
+	cr := storage.CrawlingResult{
+		AgencyID:  "mppe",
+		Month:     month,
+		Year:      year,
+		Files:     files,
+		Employees: emps,
+		Crawler:   crawlerInfo,
+		Timestamp: time.Now(),
+	}
+	return cr
 }
 
 func logError(format string, args ...interface{}) {
