@@ -118,6 +118,24 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
+		"proventos-de-todos-os-servidores-inativos": map[string]int{
+			"totalDiscountsIndex":        14,
+			"ceilRetentionIndex":         13,
+			"incomeTaxIndex":             12,
+			"prevContributionIndex":      11,
+			"totalIncomeDetailsIndex":    10,
+			"wageIndex":                  4,
+			"indemnityIndex":             16,
+			"temporaryRemunerationIndex": 17,
+			"otherAmmountsIndex":         5,
+			"loyaltyJobIndex":            6,
+			"christmasPerkIndex":         7,
+			"vacacionPerkIndex":          8,
+			"permanencePerkIndex":        9,
+			"nameIndex":                  1,
+			"roleIndex":                  2,
+			"registerCodeIndex":          0,
+		},
 	}
 )
 
