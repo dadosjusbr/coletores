@@ -116,10 +116,10 @@ func Parse(paths []string) ([]storage.Employee, error) {
 		}
 		fileMap := file.GetSheetMap()
 		rows := file.GetRows(fileMap[1])
-		numberOfRows := len(rows)
+		lastIndex := detectLastIndexToWork(rows)
 		var employee storage.Employee
 		for index, row := range rows {
-			if index == 0 || index == 1 || index == 2 || index == numberOfRows-1 || index == numberOfRows-2 || index == numberOfRows-3 {
+			if index == 0 || index == 1 || index == 2 || index >= lastIndex {
 				continue
 			}
 			discounts, err := getDiscounts(row, documentIdentification, indexMap)
@@ -146,9 +146,22 @@ func Parse(paths []string) ([]storage.Employee, error) {
 	return employees, nil
 }
 
+func detectLastIndexToWork(rows [][]string) int {
+	pivot := 5
+	size := len(rows)
+	lastRows := rows[size-pivot:]
+	lastValueRow := pivot
+	for _, row := range lastRows {
+		lastValueRow--
+		if row[0] == "TOTAL GERAL" {
+			return size - lastValueRow - 1
+		}
+	}
+	return size - 1
+}
+
 // it returns the total discounts sumary
 func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*storage.Discount, error) {
-	println(row[indexMap["totalDiscountIndex"]])
 	totalDiscount, err := strconv.ParseFloat(row[indexMap["totalDiscountIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
