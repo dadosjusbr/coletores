@@ -74,25 +74,17 @@ func main() {
 	for _, job := range c.JobList {
 		go func(job string) {
 			defer wg.Done()
-			stdOut, stdErr, err := build(job, commit)
-			backup(job, "build.stdout", stdOut)
-			backup(job, "build.stderr", stdErr)
+			procInfo, err := build(job, commit)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
-				return
-			}
-
-			stdOut, stdErr, err = execDataCollector(job, c.Month, c.Year)
-			backup(job, "exec.stdout", stdOut)
-			backup(job, "exec.stderr", stdErr)
-			// Data collection execution exited with error. Abort job.
-			if err != nil {
-				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
-				return
+			} else {
+				procInfo, err = execDataCollector(job, c.Month, c.Year)
+				if err != nil {
+					logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+				}
 			}
 			log(" -- Data collector executed for %s --\n", job)
-
-			err = store(stdOut, client)
+			err = store(job, c.Month, c.Year, procInfo, commit, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
 				return
@@ -121,12 +113,18 @@ func newClient() (*storage.Client, error) {
 }
 
 // store stores crawling results to db in storageClient
-func store(content []byte, storageClient *storage.Client) error {
+func store(job string, month int, year int, procInfo storage.ProcInfo, commit string, storageClient *storage.Client) error {
 	var cr storage.CrawlingResult
-	err := json.Unmarshal(content, &cr)
-	if err != nil {
-		return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
+	var err error
+	if procInfo.ExitStatus == 1 {
+		cr = newCRError(job, procInfo, commit, month, year)
+	} else {
+		err := json.Unmarshal([]byte(procInfo.Stdout), &cr)
+		if err != nil {
+			return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
+		}
 	}
+	cr.ProcInfo = procInfo
 	err = storageClient.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
@@ -145,28 +143,46 @@ func getGitCommit() (string, error) {
 }
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
-func execDataCollector(path string, month, year int) ([]byte, []byte, error) {
-	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path))
-	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(path), month, year), " ")
+func execDataCollector(dir string, month, year int) (storage.ProcInfo, error) {
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(dir))
+	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(dir), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = path
+	cmd.Dir = dir
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), err
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func build(path, commit string) ([]byte, []byte, error) {
-	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(path)), " ")
+func build(dir, commit string) (storage.ProcInfo, error) {
+	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = path
+	cmd.Dir = dir
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), err
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // statusCode returns the exit code returned for the cmd execution.
@@ -195,22 +211,19 @@ func log(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
 }
 
-// backup will log content of job-description when content is not empty
-func backup(job string, desc string, content []byte) {
-	if len(content) == 0 {
-		return
+// newCRError creates a crawling result when a Exis Status is != 0
+func newCRError(job string, procInfo storage.ProcInfo, commit string, month, year int) storage.CrawlingResult {
+	crawlerInfo := storage.Crawler{
+		CrawlerID:      strings.Split(job, "/")[1],
+		CrawlerVersion: commit,
 	}
-	path := fmt.Sprintf("%s/%s(%d-%d)-%s-%s", c.OutputFolder, filepath.Base(job), c.Month, c.Year, desc, time.Now().Format(time.RFC3339))
-	f, err := os.Create(path)
-	if err != nil {
-		logError("backup error: error creating file: %s", err)
-		os.Exit(1)
+	cr := storage.CrawlingResult{
+		AgencyID:  strings.Split(job, "/")[1],
+		Month:     month,
+		Year:      year,
+		Crawler:   crawlerInfo,
+		Timestamp: time.Now(),
+		ProcInfo:  procInfo,
 	}
-	defer f.Close()
-
-	_, err = f.Write(content)
-	if err != nil {
-		logError("backup error: error writing to file: %s", err)
-		os.Exit(1)
-	}
+	return cr
 }
