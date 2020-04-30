@@ -135,7 +135,6 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				fmt.Println("falhou hein")
 				errChannel <- status.NewError(status.ConnectionError, fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)) //fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
 				return
 			}
