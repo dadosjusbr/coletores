@@ -74,24 +74,16 @@ func main() {
 	for _, job := range c.JobList {
 		go func(job string) {
 			defer wg.Done()
-			stdOut, stdErr, cmdListBuild, err := build(job, commit)
-			exitStatus := statusCode(err)
-			backup(job, "build.stdout", stdOut)
-			backup(job, "build.stderr", stdErr)
+			procInfo, err := build(job, commit)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
-			}
-			procInfo := makeProcInfo(stdOut, stdErr, cmdListBuild, job, exitStatus)
-			stdOut, stdErr, cmdListExec, err := execDataCollector(job, c.Month, c.Year)
-			exitStatus = statusCode(err)
-			backup(job, "exec.stdout", stdOut)
-			backup(job, "exec.stderr", stdErr)
-			// Data collection execution exited with error. Abort job.
-			if err != nil {
-				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+			} else {
+				procInfo, err = execDataCollector(job, c.Month, c.Year)
+				if err != nil {
+					logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+				}
 			}
 			log(" -- Data collector executed for %s --\n", job)
-			procInfo = makeProcInfo(stdOut, stdErr, cmdListExec, job, exitStatus)
 			err = store(job, c.Month, c.Year, procInfo, commit, client)
 			if err != nil {
 				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
@@ -151,28 +143,46 @@ func getGitCommit() (string, error) {
 }
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
-func execDataCollector(path string, month, year int) ([]byte, []byte, []string, error) {
-	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(path))
-	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(path), month, year), " ")
+func execDataCollector(dir string, month, year int) (storage.ProcInfo, error) {
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s/%s", c.OutputFolder, filepath.Base(dir))
+	cmdList := strings.Split(fmt.Sprintf(`docker run -v dadosjusbr:/output --rm -e %s --env-file=.env %s --mes=%d --ano=%d`, outPath, filepath.Base(dir), month, year), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = path
+	cmd.Dir = dir
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), cmdList, err
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func build(path, commit string) ([]byte, []byte, []string, error) {
-	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(path)), " ")
+func build(dir, commit string) (storage.ProcInfo, error) {
+	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = path
+	cmd.Dir = dir
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 	err := cmd.Run()
-	return outb.Bytes(), errb.Bytes(), cmdList, err
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // statusCode returns the exit code returned for the cmd execution.
@@ -201,43 +211,15 @@ func log(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
 }
 
-// backup will log content of job-description when content is not empty
-func backup(job string, desc string, content []byte) {
-	if len(content) == 0 {
-		return
-	}
-	path := fmt.Sprintf("%s/%s(%d-%d)-%s-%s", c.OutputFolder, filepath.Base(job), c.Month, c.Year, desc, time.Now().Format(time.RFC3339))
-	f, err := os.Create(path)
-	if err != nil {
-		logError("backup error: error creating file: %s", err)
-		os.Exit(1)
-	}
-	defer f.Close()
-
-	_, err = f.Write(content)
-	if err != nil {
-		logError("backup error: error writing to file: %s", err)
-		os.Exit(1)
-	}
-}
-
 // makeProcInfo creates a ProcInfo error
-func makeProcInfo(stdOut []byte, stdErr []byte, cmdListExec []string, job string, exitStatus int) storage.ProcInfo {
-	myEnv, err := godotenv.Read()
-	if err != nil {
-		logError("Error loading env file: %s", err)
-	}
-	pairs := []string{}
-	for key, value := range myEnv {
-		pairs = append(pairs, string(key)+"="+string(value))
-	}
+func makeProcInfo(stdOut []byte, stdErr []byte, cmdListExec []string, dir string, exitStatus int) storage.ProcInfo {
 	return storage.ProcInfo{
 		Stdout:     string(stdOut),
 		Stderr:     string(stdErr),
-		Cmd:        strings.Join(cmdListExec[:], " "),
-		CmdDir:     job,
+		Cmd:        strings.Join(cmdListExec, " "),
+		CmdDir:     dir,
 		ExitStatus: exitStatus,
-		Env:        pairs,
+		Env:        os.Environ(),
 	}
 }
 
