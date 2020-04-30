@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 )
 
@@ -112,7 +113,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 		indexMap := indexies[documentIdentification]
 		file, err := excelize.OpenFile(path)
 		if err != nil {
-			return nil, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err)
+			return nil, status.NewError(status.InvalidFile, fmt.Errorf("error opening document %s for parse: %q", documentIdentification, err))
 		}
 		fileMap := file.GetSheetMap()
 		rows := file.GetRows(fileMap[1])
@@ -124,11 +125,11 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			}
 			discounts, err := getDiscounts(row, documentIdentification, indexMap)
 			if err != nil {
-				return nil, err
+				return nil, status.NewError(status.DataUnavailable, err)
 			}
 			incomeDetails, err := getIncome(row, documentIdentification, indexMap)
 			if err != nil {
-				return nil, err
+				return nil, status.NewError(status.DataUnavailable, err)
 			}
 			employee = storage.Employee{
 				Reg:       row[indexMap["registerCodeIndex"]],

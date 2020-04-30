@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/dadosjusbr/coletores/status"
 )
 
 var re = regexp.MustCompile("\\b\\d{4}\\b")
@@ -57,73 +59,73 @@ var (
 				2020: 504,
 			},
 		},
-		"membrosInativos": {
-			category: "proventos-de-todos-os-membros-inativos",
-			yearCodes: map[int]int{
-				2011: 285,
-				2012: 286,
-				2013: 287,
-				2014: 288,
-				2015: 289,
-				2016: 290,
-				2017: 343,
-				2018: 406,
-				2019: 447,
-				2020: 505,
-			},
-		},
-		"servidoresAtivos": {
-			category: "remuneracao-de-todos-os-servidores-atuvos",
-			yearCodes: map[int]int{
-				2011: 291,
-				2012: 292,
-				2013: 293,
-				2014: 294,
-				2015: 295,
-				2016: 296,
-				2017: 344,
-				2018: 407,
-				2019: 446,
-				2020: 506,
-			},
-		},
-		"servidoresInativos": {
-			category: "proventos-de-todos-os-servidores-inativos",
-			yearCodes: map[int]int{
-				2011: 297,
-				2012: 298,
-				2013: 299,
-				2014: 300,
-				2015: 301,
-				2016: 302,
-				2017: 345,
-				2018: 408,
-				2019: 448,
-				2020: 507,
-			},
-		},
-		"pensionistas": {
-			category: "valores-percebidos-por-todos-os-pensionistas",
-			yearCodes: map[int]int{
-				2011: 303,
-				2012: 304,
-				2013: 305,
-				2014: 306,
-				2015: 307,
-				2016: 308,
-				2017: 346,
-				2018: 409,
-				2019: 449,
-				2020: 508,
-			},
-		},
+		// "membrosInativos": {
+		// 	category: "proventos-de-todos-os-membros-inativos",
+		// 	yearCodes: map[int]int{
+		// 		2011: 285,
+		// 		2012: 286,
+		// 		2013: 287,
+		// 		2014: 288,
+		// 		2015: 289,
+		// 		2016: 290,
+		// 		2017: 343,
+		// 		2018: 406,
+		// 		2019: 447,
+		// 		2020: 505,
+		// 	},
+		// },
+		// "servidoresAtivos": {
+		// 	category: "remuneracao-de-todos-os-servidores-atuvos",
+		// 	yearCodes: map[int]int{
+		// 		2011: 291,
+		// 		2012: 292,
+		// 		2013: 293,
+		// 		2014: 294,
+		// 		2015: 295,
+		// 		2016: 296,
+		// 		2017: 344,
+		// 		2018: 407,
+		// 		2019: 446,
+		// 		2020: 506,
+		// 	},
+		// },
+		// "servidoresInativos": {
+		// 	category: "proventos-de-todos-os-servidores-inativos",
+		// 	yearCodes: map[int]int{
+		// 		2011: 297,
+		// 		2012: 298,
+		// 		2013: 299,
+		// 		2014: 300,
+		// 		2015: 301,
+		// 		2016: 302,
+		// 		2017: 345,
+		// 		2018: 408,
+		// 		2019: 448,
+		// 		2020: 507,
+		// 	},
+		// },
+		// "pensionistas": {
+		// 	category: "valores-percebidos-por-todos-os-pensionistas",
+		// 	yearCodes: map[int]int{
+		// 		2011: 303,
+		// 		2012: 304,
+		// 		2013: 305,
+		// 		2014: 306,
+		// 		2015: 307,
+		// 		2016: 308,
+		// 		2017: 346,
+		// 		2018: 409,
+		// 		2019: 449,
+		// 		2020: 508,
+		// 	},
+		// },
 	}
 )
 
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 	var paths []string
-	var errors []string
+	//var errors []string
 	pathChannel := make(chan string, 8)
 	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
@@ -134,33 +136,34 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
+				fmt.Println("falhou hein")
+				errChannel <- status.NewError(status.ConnectionError, fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)) //fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
 				return
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s reading response body: %q", err, member.category)
+				errChannel <- status.NewError(status.SystemError, fmt.Errorf("error for category %s reading response body: %q", err, member.category))
 				return
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
 			fileCode, err := findFileIdentifier(member.category, htmlAsString, pattern)
 			if err != nil {
-				errChannel <- err
+				errChannel <- status.NewError(status.DataUnavailable, err)
 				return
 			}
 			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", host, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				errChannel <- fmt.Errorf("error creating sheet file:%q for category %s", err, member.category)
+				errChannel <- status.NewError(status.SystemError, fmt.Errorf("error creating sheet file:%q for category %s", err, member.category))
 				return
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err)
+				errChannel <- status.NewError(status.DataUnavailable, fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err))
 				return
 			}
 			pathChannel <- filePath
@@ -173,26 +176,13 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 	}()
 	for err := range errChannel {
 		if err != nil {
-			errors = append(errors, err.Error())
+			return nil, err
 		}
 	}
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
-	return paths, processErrorMessages(errors)
-}
-
-// get the error messages to build a clear
-// string message containing them
-func processErrorMessages(errors []string) error {
-	if len(errors) == 0 {
-		return nil
-	}
-	errorMessage := ""
-	for _, e := range errors {
-		errorMessage = fmt.Sprintf("%s\n%s\n", errorMessage, e)
-	}
-	return fmt.Errorf("%s", errorMessage)
+	return paths, nil
 }
 
 // it gets a HTML file as string and search for the file identifier code
