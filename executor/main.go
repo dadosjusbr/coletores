@@ -225,11 +225,11 @@ func makeProcInfo(stdOut []byte, stdErr []byte, cmdListExec []string, dir string
 
 func newCRError(job string, procInfo storage.ProcInfo, commit string, month, year int) storage.CrawlingResult {
 	crawlerInfo := storage.Crawler{
-		CrawlerID:      job,
+		CrawlerID:      strings.Split(job, "/")[1],
 		CrawlerVersion: commit,
 	}
 	cr := storage.CrawlingResult{
-		AgencyID:  job,
+		AgencyID:  strings.Split(job, "/")[1],
 		Month:     month,
 		Year:      year,
 		Crawler:   crawlerInfo,
