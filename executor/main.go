@@ -211,18 +211,7 @@ func log(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
 }
 
-// makeProcInfo creates a ProcInfo error
-func makeProcInfo(stdOut []byte, stdErr []byte, cmdListExec []string, dir string, exitStatus int) storage.ProcInfo {
-	return storage.ProcInfo{
-		Stdout:     string(stdOut),
-		Stderr:     string(stdErr),
-		Cmd:        strings.Join(cmdListExec, " "),
-		CmdDir:     dir,
-		ExitStatus: exitStatus,
-		Env:        os.Environ(),
-	}
-}
-
+// newCRError creates a crawling result when a Exis Status is != 0
 func newCRError(job string, procInfo storage.ProcInfo, commit string, month, year int) storage.CrawlingResult {
 	crawlerInfo := storage.Crawler{
 		CrawlerID:      strings.Split(job, "/")[1],
