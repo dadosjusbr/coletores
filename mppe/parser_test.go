@@ -39,6 +39,7 @@ func TestGetOthers(t *testing.T) {
 		row            []string
 		identification string
 		out            map[string]float64
+		indexMap       map[string]int
 	}{
 		{"Should get other ammounts with total R$ 90,00, loyalty job R$ 50,0, christmas perk R$ 30,0, vacacion Perk R$ 20,0 and permanence perk R$ 10",
 			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "90.0", "50.00", "30.00", "20.00", "10.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
@@ -50,11 +51,13 @@ func TestGetOthers(t *testing.T) {
 				"vacacionPerk":          20.0,
 				"permanencePerk":        10.0,
 				"indemnity":             500.0,
-				"temporaryRemuneration": 500.0}},
+				"temporaryRemuneration": 500.0},
+			indexies["proventos-de-todos-os-membros-inativos"],
+		},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			others, _ := getOthers(tt.row, tt.identification)
+			others, _ := getOthers(tt.row, tt.identification, tt.indexMap)
 			if !areFloatsEqual(others["otherAmmounts"], tt.out["otherAmmounts"]) {
 				t.Errorf("got %f, want %f", others["otherAmmounts"], tt.out["otherAmmounts"])
 			}
@@ -80,35 +83,8 @@ func TestGetOthers(t *testing.T) {
 	}
 }
 
-func TestGetDiscounts_Sucess(t *testing.T) {
-	testCases := []struct {
-		name           string
-		row            []string
-		identification string
-		discount       *storage.Discount
-	}{
-		{"should get a discount with total R$ 10.597,33, ceil retention R$ 0,0, income tax R$ 6.837,63 and prev contribution R$ 3.759,7",
-			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "0.00", "0.00", "0.00", "0.00", "0.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
-			"proventos-de-todos-os-membros-inativos",
-			&storage.Discount{Total: 10597.33, PrevContribution: getPointer(3759.7), CeilRetention: getPointer(0), IncomeTax: getPointer(6837.63)}},
-	}
-	for _, tt := range testCases {
-		t.Run(tt.name, func(t *testing.T) {
-			discount, _ := getDiscounts(tt.row, tt.identification)
-			if !areFloatsEqual(discount.Total, tt.discount.Total) {
-				t.Errorf("got %f, want %f", discount.Total, tt.discount.Total)
-			}
-			if !areFloatsEqual(*discount.PrevContribution, *tt.discount.PrevContribution) {
-				t.Errorf("got %f, want %f", *discount.PrevContribution, *tt.discount.PrevContribution)
-			}
-			if !areFloatsEqual(*discount.CeilRetention, *tt.discount.CeilRetention) {
-				t.Errorf("got %f, want %f", *discount.CeilRetention, *tt.discount.CeilRetention)
-			}
-			if !areFloatsEqual(*discount.IncomeTax, *tt.discount.IncomeTax) {
-				t.Errorf("got %f, want %f", *discount.IncomeTax, *tt.discount.IncomeTax)
-			}
-		})
-	}
+func getPointer(n float64) *float64 {
+	return &n
 }
 
 func TestGetType(t *testing.T) {
@@ -142,6 +118,7 @@ func TestGetFunds(t *testing.T) {
 		row             []string
 		indentification string
 		funds           *storage.Funds
+		indexMap        map[string]int
 	}{
 		{
 			"Should get the right Total for employee with R$ 33689.11 as total ammount",
@@ -150,11 +127,12 @@ func TestGetFunds(t *testing.T) {
 			&storage.Funds{
 				Total: 33689.11,
 			},
+			indexies["proventos-de-todos-os-membros-inativos"],
 		},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			res, _ := getFunds(tt.row, tt.indentification)
+			res, _ := getFunds(tt.row, tt.indentification, tt.indexMap)
 			if !areFloatsEqual(res.Total, tt.funds.Total) {
 				t.Errorf("got %f, want %f", res.Total, tt.funds.Total)
 			}
@@ -193,8 +171,8 @@ func TestGetTypeOfFile(t *testing.T) {
 		in   string
 		out  string
 	}{
-		{"Should has sucess on getting file name", "fileName-02-2019.xlsx", "fileName"},
-		{"Should has sucess on getting file name", "01-29-february-file-name-02-2019.xlsx", "01-29-february-file-name"},
+		{"Should has sucess on getting file name", "./output/fileName-02-2019.xlsx", "fileName"},
+		{"Should has sucess on getting file name", "./output/01-29-february-file-name-02-2019.xlsx", "01-29-february-file-name"},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {

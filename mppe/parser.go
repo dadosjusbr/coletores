@@ -12,7 +12,7 @@ import (
 
 var (
 	indexies = map[string]map[string]int{
-		"remuneracao-de-todos-os-membros-ativos": map[string]int{
+		"remuneracao-de-todos-os-membros-ativos": {
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,
@@ -30,7 +30,7 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
-		"proventos-de-todos-os-membros-inativos": map[string]int{
+		"proventos-de-todos-os-membros-inativos": {
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,
@@ -48,7 +48,7 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
-		"remuneracao-de-todos-os-servidores-atuvos": map[string]int{
+		"remuneracao-de-todos-os-servidores-atuvos": {
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,
@@ -66,7 +66,7 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
-		"proventos-de-todos-os-servidores-inativos": map[string]int{
+		"proventos-de-todos-os-servidores-inativos": {
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,
@@ -84,7 +84,7 @@ var (
 			"roleIndex":                  2,
 			"registerCodeIndex":          0,
 		},
-		"valores-percebidos-por-todos-os-pensionistas": map[string]int{
+		"valores-percebidos-por-todos-os-pensionistas": {
 			"totalDiscountsIndex":        14,
 			"ceilRetentionIndex":         13,
 			"incomeTaxIndex":             12,

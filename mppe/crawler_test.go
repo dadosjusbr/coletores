@@ -38,26 +38,6 @@ func TestFindFileIdentifier_Success(t *testing.T) {
 	}
 }
 
-func TestProcessErrorMessage(t *testing.T) {
-	var testCases = []struct {
-		name       string
-		in         []string
-		outMessage string
-	}{
-		{"two error strings", []string{"error1", "error2"}, "\nerror1\n\nerror2\n"},
-		{"one error string", []string{"error1"}, "\nerror1\n"},
-		{"three error strings", []string{"error1", "error2", "error3"}, "\nerror1\n\nerror2\n\nerror3\n"},
-	}
-	for _, tt := range testCases {
-		t.Run(tt.name, func(t *testing.T) {
-			err := processErrorMessages(tt.in)
-			if err.Error() != tt.outMessage {
-				t.Errorf("got %s, want %s", err.Error(), tt.outMessage)
-			}
-		})
-	}
-}
-
 func TestPathResolver_Sucess(t *testing.T) {
 	var testCases = []struct {
 		name   string
@@ -129,14 +109,14 @@ func TestCrawl(t *testing.T) {
 						"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
 			})),
 			map[string]struct{}{
-				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  struct{}{},
-				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               struct{}{},
-				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  struct{}{},
-				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               struct{}{},
-				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           struct{}{},
-				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            struct{}{},
-				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": struct{}{},
-				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               struct{}{},
+				"files/proventos-de-todos-os-membros-inativos-02-2019.xlsx":                  {},
+				"files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx":               {},
+				"files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx":                  {},
+				"files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx":               {},
+				"files/valores-percebidos-por-todos-os-colaboradores-02-2019.xlsx":           {},
+				"files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx":            {},
+				"files/verbas-indenizatorias-e-outras-remuneracoes-temporarias-02-2019.xlsx": {},
+				"files/verbas-referentes-a-exercicios-anteriores-02-2019.xlsx":               {},
 			}},
 	}
 	var pathsReference []string
