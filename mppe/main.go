@@ -50,30 +50,24 @@ func main() {
 	if err != nil {
 		status.ExitFromError(err)
 	}
-	crawlingResult := newCrawlingResult(employees, paths, *month, *year)
-	crJSON, err := json.MarshalIndent(crawlingResult, "", "  ")
+	cr := storage.CrawlingResult{
+		AgencyID:  "mppe",
+		Month:     *month,
+		Year:      *year,
+		Files:     paths,
+		Employees: employees,
+		Crawler: storage.Crawler{
+			CrawlerID:      "mppe",
+			CrawlerVersion: gitCommit,
+		},
+		Timestamp: time.Now(),
+	}
+	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
 		e := status.NewError(status.InvalidParameters, fmt.Errorf("JSON marshaling error: %q", err))
 		status.ExitFromError(e)
 	}
 	fmt.Printf("%s", string(crJSON))
-}
-
-func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
-		CrawlerID:      "mppe",
-		CrawlerVersion: gitCommit,
-	}
-	cr := storage.CrawlingResult{
-		AgencyID:  "mppe",
-		Month:     month,
-		Year:      year,
-		Files:     files,
-		Employees: emps,
-		Crawler:   crawlerInfo,
-		Timestamp: time.Now(),
-	}
-	return cr
 }
 
 func logError(format string, args ...interface{}) {

@@ -7,25 +7,10 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-func getPointer(n float64) *float64 {
-	return &n
-}
-
-func TestGetPointer(t *testing.T) {
-	value := 10.0
-	pointerValue := getPointer(value)
-	if *pointerValue != value {
-		t.Errorf("got %f, want %v", *pointerValue, value)
-	}
-}
-
 func areFloatsEqual(a, b float64) bool {
 	tolerance := 0.001
 	diff := math.Abs(a - b)
-	if diff < tolerance {
-		return true
-	}
-	return false
+	return diff < tolerance
 }
 
 func TestAreFloatsEqual(t *testing.T) {
