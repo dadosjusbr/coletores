@@ -109,6 +109,7 @@ var (
 func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
+		fmt.Println("c: ", path)
 		documentIdentification := getFileDocumentation(path)
 		indexMap := indexies[documentIdentification]
 		file, err := excelize.OpenFile(path)
@@ -148,7 +149,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 }
 
 func detectLastIndexToWork(rows [][]string) int {
-	pivot := 5
+	pivot := 2
 	size := len(rows)
 	lastRows := rows[size-pivot:]
 	lastValueRow := pivot

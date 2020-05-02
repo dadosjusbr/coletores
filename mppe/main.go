@@ -42,10 +42,11 @@ func main() {
 		e := status.NewError(status.SystemError, fmt.Errorf("error creating output folder(%s): %q", outputFolder, err))
 		status.ExitFromError(e)
 	}
-	paths, err := Crawl(outputFolder, *month, *year, baseURL)
-	if err != nil {
-		status.ExitFromError(err)
-	}
+	// paths, err := Crawl(outputFolder, *month, *year, baseURL)
+	// if err != nil {
+	// 	status.ExitFromError(err)
+	// }
+	paths := []string{"./output/psit.xlsx"}
 	employees, err := Parse(paths)
 	if err != nil {
 		status.ExitFromError(err)
