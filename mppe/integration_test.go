@@ -82,6 +82,99 @@ func TestIntegration(t *testing.T) {
 				Workplace: "mppe",
 				Role:      "PROCURADOR DE JUSTICA                             ",
 			}},
+		{"Test for remuneracao-de-todos-os-servidores-atuvos-02-2019", 2, 2019,
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				// it was call to download the file
+				uri := r.URL.RequestURI()
+				if strings.Contains(uri, "download") {
+					path := "./output/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx"
+					b, err := ioutil.ReadFile(path)
+					if err != nil {
+						t.Errorf("expecting null err, got %q", err)
+					}
+					w.Write(b)
+					return
+				}
+				// it was call to make crawl
+				fmt.Fprint(w, "<div><link src=\".../4554/resource-fevereiro:download=5051:membros-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../4554/resource:download=4312:membros-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../31342sas2/endpoint:download=9999:servidores-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../ghytr6/resource:download=1098:servidores-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../5tghjuw2/Controller:random=5453:pensionistas-02-2019\"/></div>"+
+					"<div><link src=\".../random/servlet:code=3490:contracheque-valores-percebidos-colaboradores-fevereiro\"/></div>"+
+					"<div><link src=\".../controller_servlet:download=5378:dea-022019\"/></div>"+
+					"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
+				return
+			})), storage.Employee{
+				Reg:       "1894196",
+				Name:      "AARÃO GOMES DE SOUZA",
+				Active:    false,
+				Type:      "membro",
+				Workplace: "mppe",
+				Role:      "TECNICO MINISTERIAL                               ",
+			}},
+		{"Test for rvalores-percebidos-por-todos-os-pensionistas-02-2019", 2, 2019,
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				// it was call to download the file
+				uri := r.URL.RequestURI()
+				if strings.Contains(uri, "download") {
+					path := "./output/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx"
+					b, err := ioutil.ReadFile(path)
+					if err != nil {
+						t.Errorf("expecting null err, got %q", err)
+					}
+					w.Write(b)
+					return
+				}
+				// it was call to make crawl
+				fmt.Fprint(w, "<div><link src=\".../4554/resource-fevereiro:download=5051:membros-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../4554/resource:download=4312:membros-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../31342sas2/endpoint:download=9999:servidores-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../ghytr6/resource:download=1098:servidores-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../5tghjuw2/Controller:random=5453:pensionistas-02-2019\"/></div>"+
+					"<div><link src=\".../random/servlet:code=3490:contracheque-valores-percebidos-colaboradores-fevereiro\"/></div>"+
+					"<div><link src=\".../controller_servlet:download=5378:dea-022019\"/></div>"+
+					"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
+				return
+			})), storage.Employee{
+				Reg:       "219021101",
+				Name:      "ADALCINA VIEIRA LUCENA",
+				Active:    false,
+				Type:      "membro",
+				Workplace: "mppe",
+				Role:      "PENSIONISTA",
+			}},
+		{"Test for proventos-de-todos-os-membros-inativos-02-2019", 2, 2019,
+			httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				// it was call to download the file
+				uri := r.URL.RequestURI()
+				if strings.Contains(uri, "download") {
+					path := "./output/proventos-de-todos-os-membros-inativos-02-2019.xlsx"
+					b, err := ioutil.ReadFile(path)
+					if err != nil {
+						t.Errorf("expecting null err, got %q", err)
+					}
+					w.Write(b)
+					return
+				}
+				// it was call to make crawl
+				fmt.Fprint(w, "<div><link src=\".../4554/resource-fevereiro:download=5051:membros-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../4554/resource:download=4312:membros-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../31342sas2/endpoint:download=9999:servidores-ativos-02-2019\"/></div>"+
+					"<div><link src=\".../ghytr6/resource:download=1098:servidores-inativos-02-2019\"/></div>"+
+					"<div><link src=\".../5tghjuw2/Controller:random=5453:pensionistas-02-2019\"/></div>"+
+					"<div><link src=\".../random/servlet:code=3490:contracheque-valores-percebidos-colaboradores-fevereiro\"/></div>"+
+					"<div><link src=\".../controller_servlet:download=5378:dea-022019\"/></div>"+
+					"<div><link src=\".../members_controller:code=8712:virt-fevereiro-2019\"/></div>")
+				return
+			})), storage.Employee{
+				Reg:       "1885065",
+				Name:      "ADLLA RIJO FARIAS COSTA",
+				Active:    false,
+				Type:      "membro",
+				Workplace: "mppe",
+				Role:      "PROMOTOR 1. ENTRANCIA                             ",
+			}},
 	}
 	//proventos-de-todos-os-servidores-inativos.xlsx
 	for _, tt := range testCases {
