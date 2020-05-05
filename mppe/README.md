@@ -1,4 +1,4 @@
-# Ministério Público de Pernambuco - Crawler
+# Ministério Público de Pernambuco
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público de Pernambuco. O site com as informações pode ser acessado [aqui](https://transparencia.mppe.mp.br/contracheque).
 
@@ -51,4 +51,13 @@ go build
 ```
 
 
-## Dicionário de Dados
+## Dificuldades para libertação dos dados
+
+- Não há API;
+- Utilização de formato próprietário: as planilhas são baixadas no formato XLSX;
+- Números sem função aparente nas URLs: no meio das URLs existem números que muitas vezes parecem não ter função, pois os links funcionam com ou sem eles. Exemplo de url para baixar os membros ativos de 02/2019: se você tirar o `445-`, o download ainda acontece https://transparencia.mppe.mp.br/contracheque/category/445-remuneracao-de-todos-os-membros-ativos-2019?download=4936:membros-ativos-02-2019;
+- Falta de padrão nos nomes dos meses nas URLs: alguns estão com números, outros com o nome dos meses;
+- Inconsistências nas URLs: por exemplo os relatórios de 2014 a partir de fevereiro estarem com 2015 na URL, e não 2014;
+- Dados disponíveis somente a partir de 2011;
+- Alguns arquivos possuem uma variação absurdamente grande uns com outros de tal forma que torna muito dificil a criação coletores, isso hora criando arquivos com multiplas folhas sem se saber qual a que de fato possui os dados hora fornecendo planilhas vazias; 
+
