@@ -109,7 +109,6 @@ var (
 func Parse(paths []string) ([]storage.Employee, error) {
 	var employees []storage.Employee
 	for _, path := range paths {
-		fmt.Println("c: ", path)
 		documentIdentification := getFileDocumentation(path)
 		indexMap := indexies[documentIdentification]
 		file, err := excelize.OpenFile(path)
