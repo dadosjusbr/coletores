@@ -32,7 +32,6 @@ docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mppb .
 
 ```sh
 docker volume create dadosjus
-
 docker run \
 --mount source=dadosjus,target=/dadojus_crawling_output/ \
 --env-file=.env \
@@ -45,14 +44,12 @@ mppb --mes=${MES} --ano=${ANO}
 	- ```--env-file=.env``` especifica o path para o env-file.
 	- ```mppb --mes=${MES} --ano=${ANO}``` é o nome do container que queremos executar e os argumentos que serão passados para a função de entrada.
 
-  
+
 ### Executando sem uso do docker:
 
 - É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/).
-
 - Um arquivo .env.example na pasta raíz indica as variáveis de ambiente que precisam ser passadas para o coletor.
 - O resultado do coletor, [CrawlingResult](https://github.com/dadosjusbr/storage/blob/master/agency.go), possui um campo que indica o commit do git usado para dar o build. Para que ele seja setado adequadamente, é precisso passar o commit como argumento do build.
- 
 
 ```sh
 go get
@@ -124,3 +121,7 @@ As planilhas possuem as seguintes colunas:
 	- [Exemplo](https://pitagoras.mppb.mp.br/PTMP/FolhaVerbaIndenizRemTemporariaOds?mes=1&exercicio=2019)
 - **Formato da tabela:** [Tipo III](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
 - **Obs**: Indenizações disponíveis apenas para o ano de 2019.
+
+## Dificuldades para libertação dos dados
+
+- Não há API para acesso aos dados
