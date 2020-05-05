@@ -25,7 +25,7 @@ func TestIntegration(t *testing.T) {
 				// it was call to download the file
 				uri := r.URL.RequestURI()
 				if strings.Contains(uri, "download") {
-					path := "./output/proventos-de-todos-os-servidores-inativos-02-2019.xlsx"
+					path := "./test_files/proventos-de-todos-os-servidores-inativos-02-2019.xlsx"
 					b, err := ioutil.ReadFile(path)
 					if err != nil {
 						t.Errorf("expecting null err, got %q", err)
@@ -56,7 +56,7 @@ func TestIntegration(t *testing.T) {
 				// it was call to download the file
 				uri := r.URL.RequestURI()
 				if strings.Contains(uri, "download") {
-					path := "./output/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx"
+					path := "./test_files/remuneracao-de-todos-os-membros-ativos-02-2019.xlsx"
 					b, err := ioutil.ReadFile(path)
 					if err != nil {
 						t.Errorf("expecting null err, got %q", err)
@@ -87,7 +87,7 @@ func TestIntegration(t *testing.T) {
 				// it was call to download the file
 				uri := r.URL.RequestURI()
 				if strings.Contains(uri, "download") {
-					path := "./output/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx"
+					path := "./test_files/remuneracao-de-todos-os-servidores-atuvos-02-2019.xlsx"
 					b, err := ioutil.ReadFile(path)
 					if err != nil {
 						t.Errorf("expecting null err, got %q", err)
@@ -118,7 +118,7 @@ func TestIntegration(t *testing.T) {
 				// it was call to download the file
 				uri := r.URL.RequestURI()
 				if strings.Contains(uri, "download") {
-					path := "./output/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx"
+					path := "./test_files/valores-percebidos-por-todos-os-pensionistas-02-2019.xlsx"
 					b, err := ioutil.ReadFile(path)
 					if err != nil {
 						t.Errorf("expecting null err, got %q", err)
@@ -149,7 +149,7 @@ func TestIntegration(t *testing.T) {
 				// it was call to download the file
 				uri := r.URL.RequestURI()
 				if strings.Contains(uri, "download") {
-					path := "./output/proventos-de-todos-os-membros-inativos-02-2019.xlsx"
+					path := "./test_files/proventos-de-todos-os-membros-inativos-02-2019.xlsx"
 					b, err := ioutil.ReadFile(path)
 					if err != nil {
 						t.Errorf("expecting null err, got %q", err)
@@ -179,7 +179,7 @@ func TestIntegration(t *testing.T) {
 	//proventos-de-todos-os-servidores-inativos.xlsx
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			c, e := Crawl("./test_files", 2, 2019, tt.server.URL+"/")
+			c, e := Crawl("./output", 2, 2019, tt.server.URL+"/")
 			if e != nil {
 				t.Errorf("want error nil, got %q", e)
 			}
