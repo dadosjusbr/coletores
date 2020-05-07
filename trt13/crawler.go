@@ -20,7 +20,7 @@ func crawl(filePath string, month, year int) error {
 	}
 	defer f.Close()
 
-	reqURL := fmt.Sprintf("https://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?mes=%02d&ano=%04d", month, year)
+	reqURL := fmt.Sprintf("http://www.trt13.jus.br/transparenciars/api/anexoviii/anexoviii?mes=%02d&ano=%04d", month, year)
 	if err = download(reqURL, f); err != nil {
 		os.Remove(filePath)
 		return fmt.Errorf("Error while downloading content (%02d-%04d): %q", month, year, err)

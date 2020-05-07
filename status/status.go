@@ -55,7 +55,7 @@ func Text(code Code) string {
 // passing the code if err is of type StatusError
 func ExitFromError(err error) {
 	log.Println(fmt.Errorf("%q", err))
-	var se *StatusError
+	var se *Error
 	if errors.As(err, &se) {
 		os.Exit(int(se.Code))
 	}

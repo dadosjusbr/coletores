@@ -72,3 +72,10 @@ As planilhas apresentadas nos pdfs contém as seguintes colunas:
 - **Formato**: PDF
 - **Tipos**: Existe um arquivo referente aos servidores e um referente aos magistrados.
 	- **Obs**: Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
+	
+## Dificuldades para libertação dos dados
+
+- Não há API
+- Formato fechado até setembro de 2019 (PDF)
+- Formato fechado a partir de setembro de 2019 (XLS)
+- Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
