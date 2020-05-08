@@ -186,10 +186,6 @@ func getDiscounts(row []string, documentIdentification string, indexMap map[stri
 
 // it returns the incomes sumary
 func getIncome(row []string, documentIdentification string, indexMap map[string]int) (*storage.IncomeDetails, error) {
-	grossSalary, err := strconv.ParseFloat(row[indexMap["totalIncomeDetailsIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing total of income details from string to float64 for document %s: %q", documentIdentification, err)
-	}
 	wage, err := strconv.ParseFloat(row[indexMap["wageIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
@@ -202,16 +198,8 @@ func getIncome(row []string, documentIdentification string, indexMap map[string]
 	if err != nil {
 		return nil, err
 	}
-	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	temporaryRemuneration, err := strconv.ParseFloat(row[indexMap["temporaryRemunerationIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
-	}
 	return &storage.IncomeDetails{
-		Total: grossSalary + indemnity + temporaryRemuneration,
+		Total: wage + perks.Total + funds.Total,
 		Wage:  &wage,
 		Perks: perks,
 		Other: funds,
@@ -228,64 +216,44 @@ func getPerks(row []string, documentIdentification string, indexMap map[string]i
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	others, err := getOthers(row, documentIdentification, indexMap)
-	if err != nil {
-		return nil, err
-	}
-	return &storage.Perks{
-		Total:  indemnity + temporaryRemuneration,
-		Others: others,
-	}, nil
-}
-
-func getFunds(row []string, documentIdentification string, indexMap map[string]int) (*storage.Funds, error) {
-	wage, err := strconv.ParseFloat(row[indexMap["wageIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	return &storage.Funds{
-		Total: wage,
-	}, nil
-}
-
-// get others information about perks
-func getOthers(row []string, documentIdentification string, indexMap map[string]int) (map[string]float64, error) {
-	otherAmmounts, err := strconv.ParseFloat(row[indexMap["otherAmmountsIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing other ammounts from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	loyaltyJob, err := strconv.ParseFloat(row[indexMap["loyaltyJobIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing loyalty job from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	christmasPerk, err := strconv.ParseFloat(row[indexMap["christmasPerkIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing christmas perk from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	vacacionPerk, err := strconv.ParseFloat(row[indexMap["vacacionPerkIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing vacation perk from string to float64 for document %s: %q", documentIdentification, err)
-	}
 	permanencePerk, err := strconv.ParseFloat(row[indexMap["permanencePerkIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing permanence perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
+	vacationPerk, err := strconv.ParseFloat(row[indexMap["vacacionPerkIndex"]], 64)
 	if err != nil {
-		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
+		return nil, fmt.Errorf("error on parsing vacation perk from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	temporaryRemuneration, err := strconv.ParseFloat(row[indexMap["temporaryRemunerationIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing temporary remuneration from string to float64 for document %s: %q", documentIdentification, err)
-	}
-	return map[string]float64{
-		"otherAmmounts":         otherAmmounts,
-		"loyaltyJob":            loyaltyJob,
-		"christmasPerk":         christmasPerk,
-		"vacacionPerk":          vacacionPerk,
+	other := map[string]float64{
+		"vacationPerk":          vacationPerk,
 		"permanencePerk":        permanencePerk,
 		"indemnity":             indemnity,
 		"temporaryRemuneration": temporaryRemuneration,
+	}
+	return &storage.Perks{
+		Total:  vacationPerk + permanencePerk + indemnity + temporaryRemuneration,
+		Others: other,
+	}, nil
+}
+
+func getFunds(row []string, documentIdentification string, indexMap map[string]int) (*storage.Funds, error) {
+	otherAmmounts, err := strconv.ParseFloat(row[indexMap["otherAmmountsIndex"]], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing other ammounts of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	eventualBenefits, err := strconv.ParseFloat(row[indexMap["christmasPerkIndex"]], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing eventual benefits of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	positionOfTrust, err := strconv.ParseFloat(row[indexMap["loyaltyJobIndex"]], 64)
+	if err != nil {
+		return nil, fmt.Errorf("error on parsing posisition of trust of income details from string to float64 for document %s: %q", documentIdentification, err)
+	}
+	return &storage.Funds{
+		Total:            otherAmmounts + eventualBenefits + positionOfTrust,
+		PersonalBenefits: &otherAmmounts,
+		EventualBenefits: &eventualBenefits,
+		PositionOfTrust:  &positionOfTrust,
 	}, nil
 }
 
