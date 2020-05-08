@@ -163,10 +163,6 @@ func detectLastIndexToWork(rows [][]string) int {
 
 // it returns the total discounts sumary
 func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*storage.Discount, error) {
-	totalDiscount, err := strconv.ParseFloat(row[indexMap["totalDiscountIndex"]], 64)
-	if err != nil {
-		return nil, fmt.Errorf("error on parsing total discount from string to float64 for document %s: %q", documentIdentification, err)
-	}
 	ceilRetention, err := strconv.ParseFloat(row[indexMap["ceilRetentionIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing ceil retention from string to float64 for document %s: %q", documentIdentification, err)
@@ -179,6 +175,7 @@ func getDiscounts(row []string, documentIdentification string, indexMap map[stri
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing prev contribution from string to float64 for document %s: %q", documentIdentification, err)
 	}
+	totalDiscount := ceilRetention + incomeTax + prevContribution
 	return &storage.Discount{
 		Total:            totalDiscount,
 		CeilRetention:    &ceilRetention,
