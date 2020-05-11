@@ -41,7 +41,6 @@ func Pack(cr storage.CrawlingResult) (*bytes.Reader, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error closing zip file: %q", err)
 	}
-	fmt.Println("chegou aqui")
 	return bytes.NewReader(buf.Bytes()), nil
 }
 
