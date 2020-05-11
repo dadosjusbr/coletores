@@ -7,13 +7,16 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/dadosjusbr/coletores/packager"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/ncw/swift"
 )
 
 type config struct {
@@ -113,9 +116,10 @@ func newClient() (*storage.Client, error) {
 }
 
 // store stores crawling results to db in storageClient
-func store(job string, month int, year int, procInfo storage.ProcInfo, commit string, storageClient *storage.Client) error {
+func store(job string, month int, year int, procInfo storage.ProcInfo, commit string, sc *storage.Client) error {
 	var cr storage.CrawlingResult
 	var err error
+	var path = job + strconv.Itoa(month) + strconv.Itoa(year)
 	if procInfo.ExitStatus == 1 {
 		cr = newCRError(job, procInfo, commit, month, year)
 	} else {
@@ -123,9 +127,18 @@ func store(job string, month int, year int, procInfo storage.ProcInfo, commit st
 		if err != nil {
 			return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 		}
+		zipPackage, err := packager.Pack(cr)
+		if err != nil {
+			return fmt.Errorf("error trying to zip result: %q", err)
+		}
+		bcPackage, err := uploadFile(zipPackage, path, sc.Bc)
+		if err != nil {
+			return fmt.Errorf("error trying to upload package: %q", err)
+		}
+		cr.Package = bcPackage
 	}
 	cr.ProcInfo = procInfo
-	err = storageClient.Store(cr)
+	err = sc.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
 	}
@@ -226,4 +239,21 @@ func newCRError(job string, procInfo storage.ProcInfo, commit string, month, yea
 		ProcInfo:  procInfo,
 	}
 	return cr
+}
+
+// uploadDatapackage uploads a datapackage zip to cloud5
+func uploadFile(file *bytes.Reader, path string, bc *storage.BackupClient) (*storage.Backup, error) {
+	headers, err := bc.conn.ObjectPut(bc.container, filepath.Base(path+".zip"), file, true, "", "", nil)
+	if err != nil {
+		return nil, fmt.Errorf("error trying to upload file at %s to storage: %q\nHeaders: %v", path, err, headers)
+	}
+	return &storage.Backup{URL: fmt.Sprintf("%s/%s/%s", storageURL(bc), bc.container, filepath.Base(path+".zip")), Hash: headers["Etag"]}, nil
+}
+
+//storageURL finds cloud repository url
+func storageURL(bc *storage.Client) string {
+	if v, ok := bc.conn.(*swift.Connection); ok {
+		return v.StorageUrl
+	}
+	return ""
 }
