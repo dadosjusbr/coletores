@@ -10,6 +10,8 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
+type env int
+
 var (
 	indexies = map[string]map[string]int{
 		"remuneracao-de-todos-os-membros-ativos": {
