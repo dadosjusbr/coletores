@@ -1,47 +1,89 @@
-package packager
+package main
 
 import (
 	"archive/zip"
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/dadosjusbr/storage"
 )
 
-//Pack receives a crawling result, generate a zip file with a DataPackage, data and return cloud url.
-func Pack(cr storage.CrawlingResult) (*bytes.Reader, error) {
+type dataPackage struct {
+	AgencyID string
+	Year     int
+	Month    int
+	Schema   map[string]interface{}
+}
+
+func main() {
+	path := os.Getenv("OUTPUT_FOLDER")
+	var cr storage.CrawlingResult
+	teste, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		logError("error reading crawling result: %q", err)
+		os.Exit(1)
+	}
+	err = json.Unmarshal(teste, &cr)
+	if err != nil {
+		logError("error getting crawling result: %q", err)
+		os.Exit(1)
+	}
 	var bufCsv bytes.Buffer
 	csvwriter := csv.NewWriter(&bufCsv)
 	csvContent, err := writeAgencyMonthlyInfo(cr)
 	if err != nil {
-		return nil, fmt.Errorf("error logging agency: %q", err)
+		logError("error logging agency: %q", err)
+		os.Exit(1)
 	}
 	err = csvwriter.WriteAll(csvContent)
 	if err != nil {
-		return nil, fmt.Errorf("An error encountered while writing csv content %q", err)
+		logError("An error encountered while writing csv content %q", err)
+		os.Exit(1)
 	}
 	buf := new(bytes.Buffer)
 	w := zip.NewWriter(buf)
 	schema, err := os.Open("schema.json")
 	if err != nil {
-		return nil, fmt.Errorf("error openning schema: %q", err)
+		logError("error openning schema: %q", err)
+		os.Exit(1)
 	}
 	defer schema.Close()
 	byteSchema, err := ioutil.ReadAll(schema)
 	if err != nil {
-		return nil, fmt.Errorf("error reading schema: %q", err)
+		logError("error reading schema: %q", err)
+		os.Exit(1)
+	}
+	d := make(map[string]interface{})
+	if err := json.Unmarshal(byteSchema, &d); err != nil {
+		logError("Error unmarshaling schema: %q", err)
+		os.Exit(1)
+	}
+	dtpBytes, err := json.Marshal(
+		dataPackage{
+			AgencyID: cr.AgencyID,
+			Year:     cr.Year,
+			Month:    cr.Month,
+			Schema:   d,
+		},
+	)
+	if err != nil {
+		logError("Error getting DataPackage as bytes: %q", err)
+		os.Exit(1)
 	}
 	addFileToZip(w, "data.csv", bufCsv.Bytes())
-	addFileToZip(w, "datapackage.json", byteSchema)
-	err = w.Close()
-	if err != nil {
-		return nil, fmt.Errorf("error closing zip file: %q", err)
-	}
-	return bytes.NewReader(buf.Bytes()), nil
+	addFileToZip(w, "datapackage.json", dtpBytes)
+	w.Close()
+	fileName := fmt.Sprintf("%s-%d-%d.zip", cr.AgencyID, cr.Year, cr.Month)
+	filePath := filepath.Join(path, fileName)
+	ioutil.WriteFile(filePath, buf.Bytes(), 0777)
+	fmt.Print(filePath)
 }
 
 func addFileToZip(w *zip.Writer, name string, contents []byte) error {
@@ -64,12 +106,12 @@ func writeAgencyMonthlyInfo(cr storage.CrawlingResult) ([][]string, error) {
 		"perks_total", "perks_food", "perks_transportation", "perks_preschool", "perks_health", "perks_birthaid", "perks_housingaid", "perks_subsistence", "perks_others",
 		"others_total", "others_personalbenefits", "others_eventualbenefits", "others_positionoftrust", "others_daily", "others_gratification", "others_originposition", "others_others",
 		"discounts_total", "discounts_prevcontribution", "discounts_ceilretention", "discounts_incometax", "discounts_others"}
-	csvContent[0] = headers
-	for i, e := range cr.Employees {
+	csvContent = append(csvContent, headers)
+	for _, e := range cr.Employees {
 		basicInfo := fmt.Sprintf("%q, %d, %d,", cr.AgencyID, cr.Year, cr.Month)
 		empInfo := empInfo(e)
 		content := basicInfo + empInfo[:len(empInfo)-1]
-		csvContent[i+1] = strings.Split(content, ",")
+		csvContent = append(csvContent, strings.Split(content, ","))
 	}
 	return csvContent, nil
 }
@@ -137,4 +179,10 @@ func getMapTotal(m map[string]float64) string {
 		total += v
 	}
 	return fmt.Sprintf("%.2f,", total)
+}
+
+// logError prints to Stderr
+func logError(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
 }

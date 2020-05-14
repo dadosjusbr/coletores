@@ -4,19 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/dadosjusbr/coletores/packager"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/ncw/swift"
 )
 
 type config struct {
@@ -35,6 +33,11 @@ type config struct {
 	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL"`
 	SwiftDomain    string `envconfig:"SWIFT_DOMAIN"`
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
+}
+
+type executionResult struct {
+	Pr storage.PackagingResult
+	Cr storage.CrawlingResult
 }
 
 var c config
@@ -61,7 +64,7 @@ func init() {
 }
 
 func main() {
-	client, err := newClient()
+	_, err := newClient()
 	if err != nil {
 		logError("newClient() error: %s", err)
 		os.Exit(1)
@@ -72,12 +75,23 @@ func main() {
 		logError("%s", err)
 		os.Exit(1)
 	}
+	log("Starting do build package")
+	procInfo, err := buildDockerImage("../packager", commit)
+	if err != nil {
+		logError("Error trying to build package image %s", err)
+		testeBytes, _ := json.Marshal(&procInfo)
+		fmt.Fprintf(os.Stderr, "%s", string(testeBytes))
+		os.Exit(1)
+	}
+	log("Package Builded")
 	var wg sync.WaitGroup
 	wg.Add(len(c.JobList))
 	for _, job := range c.JobList {
 		go func(job string) {
 			defer wg.Done()
-			procInfo, err := build(job, commit)
+			//Collect Data
+			log("Starting to build Data Collect image for %s", job)
+			procInfo, err := buildDockerImage(job, commit)
 			if err != nil {
 				logError("Build error %s: %q", job, err)
 			} else {
@@ -87,13 +101,27 @@ func main() {
 				}
 			}
 			log(" -- Data collector executed for %s --\n", job)
-			err = store(job, c.Month, c.Year, procInfo, commit, client)
+			cr, err := genCR(job, procInfo, commit, c.Month, c.Year)
+			// Package Data
+			pckResult, err := execPack(*cr)
 			if err != nil {
-				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
-				return
+				logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
 			}
-			log(" -- Store executed for %s --\n", job)
-			return
+
+			log(" -- Package executed for %s --\n", job)
+			execResult := executionResult{Pr: *pckResult, Cr: *cr}
+			printarTeste, _ := json.MarshalIndent(&execResult, "", " ")
+			ioutil.WriteFile("testeTestando.json", printarTeste, 0777)
+			// Store Data and DataPackage
+			/*
+				err = store(job, c.Month, c.Year, procInfo, commit, client)
+				if err != nil {
+					logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
+					return
+				}
+				log(" -- Store executed for %s --\n", job)
+					return
+			*/
 		}(job)
 	}
 	wg.Wait()
@@ -116,34 +144,30 @@ func newClient() (*storage.Client, error) {
 }
 
 // store stores crawling results to db in storageClient
+/*
 func store(job string, month int, year int, procInfo storage.ProcInfo, commit string, sc *storage.Client) error {
 	var cr storage.CrawlingResult
 	var err error
 	var path = job + strconv.Itoa(month) + strconv.Itoa(year)
+	cr = genCR(job, procInfo, commit, month, year)
 	if procInfo.ExitStatus == 1 {
 		cr = newCRError(job, procInfo, commit, month, year)
+		if err != nil {
+			return fmt.Errorf("error trying to generate CR with status code != 0: %q", err)
+		}
 	} else {
-		err := json.Unmarshal([]byte(procInfo.Stdout), &cr)
+		cr, err = newCR(procInfo)
 		if err != nil {
-			return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
+			return fmt.Errorf("error trying to generate ProcInfo with status code = 0: %q", err)
 		}
-		zipPackage, err := packager.Pack(cr)
-		if err != nil {
-			return fmt.Errorf("error trying to zip result: %q", err)
-		}
-		bcPackage, err := uploadFile(zipPackage, path, sc.Bc)
-		if err != nil {
-			return fmt.Errorf("error trying to upload package: %q", err)
-		}
-		cr.Package = bcPackage
 	}
-	cr.ProcInfo = procInfo
 	err = sc.Store(cr)
 	if err != nil {
 		return fmt.Errorf("error trying to store crawling result: %q", err)
 	}
 	return nil
 }
+*/
 
 // getGitCommit returns the last git commit for the local repository.
 func getGitCommit() (string, error) {
@@ -153,6 +177,27 @@ func getGitCommit() (string, error) {
 		return "", fmt.Errorf("getGitCommit() error: %s", err)
 	}
 	return string(stdout[:len(stdout)-1]), nil
+}
+
+// build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
+func buildDockerImage(dir, commit string) (storage.ProcInfo, error) {
+	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
+	cmd := exec.Command(cmdList[0], cmdList[1:]...)
+	cmd.Dir = dir
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err := cmd.Run()
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
@@ -177,83 +222,57 @@ func execDataCollector(dir string, month, year int) (storage.ProcInfo, error) {
 	return procInfo, err
 }
 
-// build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func build(dir, commit string) (storage.ProcInfo, error) {
-	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
+// execPack executes the data collector located in path and returns it's stdin, stdout and exit error if any.
+func execPack(cr storage.CrawlingResult) (*storage.PackagingResult, error) {
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s", c.OutputFolder)
+	cmdList := strings.Split(fmt.Sprintf(`docker run -e %s -i -v dadosjusbr:/output --rm packager`, outPath), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = dir
+	crJSON, err := json.Marshal(cr)
+	if err != nil {
+		return nil, fmt.Errorf("Error trying to marshal cr %s", crJSON)
+	}
+	cmd.Stdin = strings.NewReader(string(crJSON))
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
-	err := cmd.Run()
+	err = cmd.Run()
 	exitStatus := statusCode(err)
 	procInfo := storage.ProcInfo{
 		Stdout:     string(outb.Bytes()),
 		Stderr:     string(errb.Bytes()),
 		Cmd:        strings.Join(cmdList, " "),
-		CmdDir:     dir,
+		CmdDir:     cmd.Dir,
 		ExitStatus: exitStatus,
 		Env:        os.Environ(),
 	}
-	return procInfo, err
+	PckResult := storage.PackagingResult{
+		ProcInfo: procInfo,
+		Package:  procInfo.Stdout,
+	}
+	return &PckResult, err
 }
 
-// statusCode returns the exit code returned for the cmd execution.
-// 0 if no error.
-// -1 if process was terminated by a signal or hasn't started.
-// -2 if error is not an ExitError.
-func statusCode(err error) int {
-	if err == nil {
-		return 0
+// genCR creates a crawling result
+func genCR(job string, procInfo storage.ProcInfo, commit string, month, year int) (*storage.CrawlingResult, error) {
+	var cr storage.CrawlingResult
+	if procInfo.ExitStatus == 1 {
+		crawlerInfo := storage.Crawler{
+			CrawlerID:      strings.Split(job, "/")[1],
+			CrawlerVersion: commit,
+		}
+		cr = storage.CrawlingResult{
+			AgencyID:  strings.Split(job, "/")[1],
+			Month:     month,
+			Year:      year,
+			Crawler:   crawlerInfo,
+			Timestamp: time.Now(),
+			ProcInfo:  procInfo,
+		}
+		return &cr, nil
 	}
-	if exitError, ok := err.(*exec.ExitError); ok {
-		return exitError.ExitCode()
+	if err := json.Unmarshal([]byte(procInfo.Stdout), &cr); err != nil {
+		return nil, fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
-	return -2
-}
-
-// fatalError prints to Stderr
-func logError(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
-}
-
-// log prints to Stdout
-func log(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
-}
-
-// newCRError creates a crawling result when a Exis Status is != 0
-func newCRError(job string, procInfo storage.ProcInfo, commit string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
-		CrawlerID:      strings.Split(job, "/")[1],
-		CrawlerVersion: commit,
-	}
-	cr := storage.CrawlingResult{
-		AgencyID:  strings.Split(job, "/")[1],
-		Month:     month,
-		Year:      year,
-		Crawler:   crawlerInfo,
-		Timestamp: time.Now(),
-		ProcInfo:  procInfo,
-	}
-	return cr
-}
-
-// uploadDatapackage uploads a datapackage zip to cloud5
-func uploadFile(file *bytes.Reader, path string, bc *storage.BackupClient) (*storage.Backup, error) {
-	headers, err := bc.conn.ObjectPut(bc.container, filepath.Base(path+".zip"), file, true, "", "", nil)
-	if err != nil {
-		return nil, fmt.Errorf("error trying to upload file at %s to storage: %q\nHeaders: %v", path, err, headers)
-	}
-	return &storage.Backup{URL: fmt.Sprintf("%s/%s/%s", storageURL(bc), bc.container, filepath.Base(path+".zip")), Hash: headers["Etag"]}, nil
-}
-
-//storageURL finds cloud repository url
-func storageURL(bc *storage.Client) string {
-	if v, ok := bc.conn.(*swift.Connection); ok {
-		return v.StorageUrl
-	}
-	return ""
+	cr.ProcInfo = procInfo
+	return &cr, nil
 }
