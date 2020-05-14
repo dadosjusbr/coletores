@@ -1,0 +1,45 @@
+{
+    "reg": "1748491",
+    "name": "ADOLFO VILANOVA DE ASSIS",
+    "role": "TECNICO MINIST SUPLEMENTAR                        ",
+    "type": "membro",
+    "workplace": "mppe",
+    "active": false,
+    "income": {
+        "total": 17171.579999999998,
+        "wage": 15155.98,
+        "perks": {
+            "total": 500,
+            "food": null,
+            "transportation": null,
+            "pre_school": null,
+            "health": null,
+            "birth_aid": null,
+            "housing_aid": null,
+            "subsistence": null,
+            "others": {
+                "indemnity": 500,
+                "permanencePerk": 0,
+                "temporaryRemuneration": 0,
+                "vacationPerk": 0
+            }
+        },
+        "other": {
+            "total": 1515.6,
+            "person_benefits": 1515.6,
+            "eventual_benefits": 0,
+            "trust_position": 0,
+            "daily": null,
+            "gratification": null,
+            "origin_pos": null,
+            "others": null
+        }
+    },
+    "discounts": {
+        "total": 4671.25,
+        "prev_contribution": 1462.34,
+        "ceil_retention": 0,
+        "income_tax": 3208.91,
+        "other": null
+    }
+}
