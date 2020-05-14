@@ -13,11 +13,6 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-func printState(e storage.Employee) {
-	b, _ := json.Marshal(e)
-	fmt.Println(string(b))
-}
-
 func TestIntegration(t *testing.T) {
 	testCases := []struct {
 		name       string
