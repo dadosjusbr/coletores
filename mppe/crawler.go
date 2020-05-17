@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/dadosjusbr/coletores/status"
 )
 
 var re = regexp.MustCompile("\\b\\d{4}\\b")
@@ -117,41 +119,12 @@ var (
 				2020: 508,
 			},
 		},
-		"colaboradores": {
-			category: "valores-percebidos-por-todos-os-colaboradores",
-			yearCodes: map[int]int{
-				2016: 365,
-				2017: 366,
-				2018: 410,
-				2019: 450,
-				2020: 496,
-			},
-		},
-		"exerciciosAnteriores": {
-			category: "verbas-referentes-a-exercicios-anteriores",
-			yearCodes: map[int]int{
-				2016: 348,
-				2017: 349,
-				2018: 411,
-				2019: 461,
-				2020: 509,
-			},
-		},
-		"indenizacoesEOutrosPagamentos": {
-			category: "verbas-indenizatorias-e-outras-remuneracoes-temporarias",
-			yearCodes: map[int]int{
-				2018: 415,
-				2019: 451,
-				2020: 510,
-			},
-		},
 	}
 )
 
 // Crawl download all files related to the MPPE salaries and return their local paths
 func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 	var paths []string
-	var errors []string
 	pathChannel := make(chan string, 8)
 	errChannel := make(chan error, 8)
 	var wg sync.WaitGroup
@@ -162,33 +135,33 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 			link := fmt.Sprintf("%s%d-%s", host, member.yearCodes[year], member.category)
 			resp, err := http.Get(link)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
+				errChannel <- status.NewError(status.ConnectionError, fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)) //fmt.Errorf("error for category %s getting downloading main html file :%q", member.category, err)
 				return
 			}
 			defer resp.Body.Close()
 			b, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s reading response body: %q", err, member.category)
+				errChannel <- status.NewError(status.SystemError, fmt.Errorf("error for category %s reading response body: %q", err, member.category))
 				return
 			}
 			htmlAsString := string(b)
 			pattern := pathResolver(month, year, member.category)
 			fileCode, err := findFileIdentifier(member.category, htmlAsString, pattern)
 			if err != nil {
-				errChannel <- err
+				errChannel <- status.NewError(status.DataUnavailable, err)
 				return
 			}
 			urlToDownload := fmt.Sprintf("%s%d-%s?download=%s", host, member.yearCodes[year], member.category, fileCode)
 			filePath := fmt.Sprintf("%s/%s-%s-%d.xlsx", outputPath, member.category, fmt.Sprintf("%02d", month), year)
 			desiredFile, err := os.Create(filePath)
 			if err != nil {
-				errChannel <- fmt.Errorf("error creating sheet file:%q for category %s", err, member.category)
+				errChannel <- status.NewError(status.SystemError, fmt.Errorf("error creating sheet file:%q for category %s", err, member.category))
 				return
 			}
 			defer desiredFile.Close()
 			err = donwloadFile(urlToDownload, desiredFile)
 			if err != nil {
-				errChannel <- fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err)
+				errChannel <- status.NewError(status.DataUnavailable, fmt.Errorf("error for category %s downloading main file: %s %q for", member.category, filePath, err))
 				return
 			}
 			pathChannel <- filePath
@@ -201,26 +174,13 @@ func Crawl(outputPath string, month, year int, host string) ([]string, error) {
 	}()
 	for err := range errChannel {
 		if err != nil {
-			errors = append(errors, err.Error())
+			return nil, err
 		}
 	}
 	for path := range pathChannel {
 		paths = append(paths, path)
 	}
-	return paths, processErrorMessages(errors)
-}
-
-// get the error messages to build a clear
-// string message containing them
-func processErrorMessages(errors []string) error {
-	if len(errors) == 0 {
-		return nil
-	}
-	errorMessage := ""
-	for _, e := range errors {
-		errorMessage = fmt.Sprintf("%s\n%s\n", errorMessage, e)
-	}
-	return fmt.Errorf("%s", errorMessage)
+	return paths, nil
 }
 
 // it gets a HTML file as string and search for the file identifier code
