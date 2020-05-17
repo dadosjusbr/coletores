@@ -25,12 +25,12 @@ type dataPackage struct {
 func main() {
 	path := os.Getenv("OUTPUT_FOLDER")
 	var cr storage.CrawlingResult
-	teste, err := ioutil.ReadAll(os.Stdin)
+	crIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		logError("error reading crawling result: %q", err)
 		os.Exit(1)
 	}
-	err = json.Unmarshal(teste, &cr)
+	err = json.Unmarshal(crIN, &cr)
 	if err != nil {
 		logError("error getting crawling result: %q", err)
 		os.Exit(1)
