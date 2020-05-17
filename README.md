@@ -19,4 +19,4 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 | [trt13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
 | [trepb](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
 | [tjpb](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         -        |
-| [mppe](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         -        |
+| [mppe](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
