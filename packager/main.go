@@ -70,7 +70,6 @@ func pack(cr storage.CrawlingResult) string {
 	s["aid"] = cr.AgencyID
 	s["year"] = cr.Year
 	s["month"] = cr.Month
-	s["path"] = filePath
 	dtpBytes, err := json.Marshal(s)
 	if err != nil {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("Error getting DataPackage as bytes: %q", err)))
