@@ -12,78 +12,77 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 )
 
-type dataPackage struct {
-	AgencyID string
-	Year     int
-	Month    int
-	Schema   map[string]interface{}
+type executionResult struct {
+	Pr storage.PackagingResult `json:"pr,omitempty"`
+	Cr storage.CrawlingResult  `json:"cr,omitempty"`
 }
 
 func main() {
-	path := os.Getenv("OUTPUT_FOLDER")
 	var cr storage.CrawlingResult
 	crIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		logError("error reading crawling result: %q", err)
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Error reading crawling result: %q", err)))
+	}
+	if err = json.Unmarshal(crIN, &cr); err != nil {
+		status.ExitFromError(status.NewError(5, fmt.Errorf("Error unmarshaling crawling resul from STDIN: %q", err)))
 		os.Exit(1)
 	}
-	err = json.Unmarshal(crIN, &cr)
-	if err != nil {
-		logError("error getting crawling result: %q", err)
-		os.Exit(1)
+	filePath := pack(cr)
+	fmt.Print(filePath)
+}
+
+func pack(cr storage.CrawlingResult) string {
+	path := os.Getenv("OUTPUT_FOLDER")
+	if path == "" {
+		path = "./"
 	}
-	var bufCsv bytes.Buffer
-	csvwriter := csv.NewWriter(&bufCsv)
 	csvContent, err := writeAgencyMonthlyInfo(cr)
 	if err != nil {
-		logError("error logging agency: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error Writing csv content: %q", err)))
 	}
-	err = csvwriter.WriteAll(csvContent)
-	if err != nil {
-		logError("An error encountered while writing csv content %q", err)
-		os.Exit(1)
+
+	var bufCsv bytes.Buffer
+	csvWriter := csv.NewWriter(&bufCsv)
+	if err = csvWriter.WriteAll(csvContent); err != nil {
+		status.ExitFromError(status.NewError(5, fmt.Errorf("An error encountered while writing csv content %q", err)))
 	}
 	buf := new(bytes.Buffer)
 	w := zip.NewWriter(buf)
 	schema, err := os.Open("schema.json")
 	if err != nil {
-		logError("error openning schema: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error openning schema: %q", err)))
 	}
 	defer schema.Close()
-	byteSchema, err := ioutil.ReadAll(schema)
+	schemaContent, err := ioutil.ReadAll(schema)
 	if err != nil {
-		logError("error reading schema: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error reading schema: %q", err)))
 	}
-	d := make(map[string]interface{})
-	if err := json.Unmarshal(byteSchema, &d); err != nil {
-		logError("Error unmarshaling schema: %q", err)
-		os.Exit(1)
+	s := make(map[string]interface{})
+	if err := json.Unmarshal(schemaContent, &s); err != nil {
+		status.ExitFromError(status.NewError(5, fmt.Errorf("Error unmarshaling schema: %q", err)))
 	}
-	dtpBytes, err := json.Marshal(
-		dataPackage{
-			AgencyID: cr.AgencyID,
-			Year:     cr.Year,
-			Month:    cr.Month,
-			Schema:   d,
-		},
-	)
+	fileName := fmt.Sprintf("%s-%d-%d.zip", cr.AgencyID, cr.Year, cr.Month)
+	filePath := filepath.Join(path, fileName)
+	s["aid"] = cr.AgencyID
+	s["year"] = cr.Year
+	s["month"] = cr.Month
+	s["path"] = filePath
+	dtpBytes, err := json.Marshal(s)
 	if err != nil {
-		logError("Error getting DataPackage as bytes: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(5, fmt.Errorf("Error getting DataPackage as bytes: %q", err)))
 	}
 	addFileToZip(w, "data.csv", bufCsv.Bytes())
 	addFileToZip(w, "datapackage.json", dtpBytes)
 	w.Close()
-	fileName := fmt.Sprintf("%s-%d-%d.zip", cr.AgencyID, cr.Year, cr.Month)
-	filePath := filepath.Join(path, fileName)
-	ioutil.WriteFile(filePath, buf.Bytes(), 0777)
-	fmt.Print(filePath)
+	fmt.Println(filePath)
+	if err = ioutil.WriteFile(filePath, buf.Bytes(), 0777); err != nil {
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error generating DataPackage.zip: %q", err)))
+	}
+	return filePath
 }
 
 func addFileToZip(w *zip.Writer, name string, contents []byte) error {
