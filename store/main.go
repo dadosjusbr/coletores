@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
-	"time"
 
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -38,12 +38,10 @@ var c config
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		logError("Error loading .env file")
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error loading .env file: %s", err)))
 	}
 	if err := envconfig.Process("", &c); err != nil {
-		logError("Error loading config values from .env: %q", err.Error())
-		os.Exit(1)
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %q", err.Error())))
 	}
 	fmt.Printf("%v\n", c)
 }
@@ -51,26 +49,25 @@ func init() {
 func main() {
 	client, err := newClient()
 	if err != nil {
-		logError("newClient() error: %s", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(3, fmt.Errorf("newClient() error: %s", err)))
 	}
 	var er executionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		logError("error reading execution result: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
 	}
 	err = json.Unmarshal(erIN, &er)
 	if err != nil {
-		logError("error getting execution result: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
 	}
 	summary := summary(er.Cr.Employees)
-	packBackup := 
+	packBackup, err := client.Bc.Backup(er.Pr.Package)
+	if err != nil {
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %q", er.Pr.Package, err)))
+	}
 	backup, err := client.Bc.Backup(er.Cr.Files)
 	if err != nil {
-		logError("error trying to get Backup files: %v, error: %q", er.Cr.Files, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %q", er.Cr.Files, err)))
 	}
 	agmi := storage.AgencyMonthlyInfo{
 		AgencyID:          er.Cr.AgencyID,
@@ -81,29 +78,16 @@ func main() {
 		Summary:           summary,
 		Backups:           backup,
 		CrawlingTimestamp: er.Cr.Timestamp,
+		Package:           packBackup,
 	}
 	if er.Cr.ProcInfo.ExitStatus != 0 {
 		agmi.ProcInfo = &er.Cr.ProcInfo
 	}
-
 	err = client.Store(agmi)
 	if err != nil {
-		logError("error trying to store agmi: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to store agmi: %q", err)))
 	}
 	fmt.Println("Store Executed...")
-}
-
-// fatalError prints to Stderr
-func logError(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
-}
-
-// log prints to Stdout
-func log(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
 }
 
 // newClient Creates client to connect with DB and Cloud5
