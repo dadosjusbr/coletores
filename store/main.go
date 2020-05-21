@@ -14,8 +14,8 @@ import (
 )
 
 type config struct {
-	Month int
-	Year  int
+	Month int `json:"month,omitempty"`
+	Year  int `json:"year,omitempty"`
 	// MONGO CONF
 	MongoURI   string `envconfig:"MONGODB_URI"`
 	DBName     string `envconfig:"MONGODB_DBNAME"`
