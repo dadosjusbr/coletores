@@ -14,9 +14,6 @@ import (
 )
 
 type config struct {
-	Month int `json:"month,omitempty"`
-	Year  int `json:"year,omitempty"`
-	// MONGO CONF
 	MongoURI   string `envconfig:"MONGODB_URI"`
 	DBName     string `envconfig:"MONGODB_DBNAME"`
 	MongoMICol string `envconfig:"MONGODB_MICOL"`
@@ -43,7 +40,6 @@ func init() {
 	if err := envconfig.Process("", &c); err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %q", err.Error())))
 	}
-	fmt.Printf("%v\n", c)
 }
 
 func main() {
@@ -56,8 +52,7 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
 	}
-	err = json.Unmarshal(erIN, &er)
-	if err != nil {
+	if err = json.Unmarshal(erIN, &er); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
 	}
 	summary := summary(er.Cr.Employees)
@@ -67,7 +62,7 @@ func main() {
 	}
 	backup, err := client.Bc.Backup(er.Cr.Files)
 	if err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %q", er.Cr.Files, err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup files: %v, error: %q", er.Cr.Files, err)))
 	}
 	agmi := storage.AgencyMonthlyInfo{
 		AgencyID:          er.Cr.AgencyID,
@@ -83,8 +78,7 @@ func main() {
 	if er.Cr.ProcInfo.ExitStatus != 0 {
 		agmi.ProcInfo = &er.Cr.ProcInfo
 	}
-	err = client.Store(agmi)
-	if err != nil {
+	if err = client.Store(agmi); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to store agmi: %q", err)))
 	}
 	fmt.Println("Store Executed...")
