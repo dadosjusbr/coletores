@@ -1,7 +1,5 @@
 FROM golang:1.14.0-alpine AS builder
 
-ARG GIT_COMMIT=unspecified
-
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -29,7 +27,11 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Build a small image
-FROM scratch
+FROM alpine:3.7
+
+RUN apk update && \
+    apk add ca-certificates && \
+    rm -rf /var/cache/apk/*
 
 COPY --from=builder /dist/ /
 
