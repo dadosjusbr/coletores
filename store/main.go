@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/coletores/executor"
 	"github.com/dadosjusbr/storage"
 	"github.com/kelseyhightower/envconfig"
 )
