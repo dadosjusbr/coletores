@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/dadosjusbr/coletores/status"
+	"github.com/dadosjusbr/coletores/executor"
 	"github.com/dadosjusbr/storage"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -25,11 +26,6 @@ type config struct {
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
 }
 
-type executionResult struct {
-	Pr storage.PackagingResult
-	Cr storage.CrawlingResult
-}
-
 var c config
 
 func init() {
@@ -43,7 +39,7 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(3, fmt.Errorf("newClient() error: %s", err)))
 	}
-	var er executionResult
+	var er executor.executionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
