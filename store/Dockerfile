@@ -29,6 +29,8 @@ RUN cp /build/main .
 # Build a small image
 FROM alpine:3.7
 
+# This command allow fix certificates security to upload file in to the cloud.
+# On other hand, this comment uses a greater image than scratch (minimal image)
 RUN apk update && \
     apk add ca-certificates && \
     rm -rf /var/cache/apk/*
