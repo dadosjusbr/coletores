@@ -9,7 +9,6 @@ import (
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
-	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -34,9 +33,6 @@ type executionResult struct {
 var c config
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("Error loading .env file: %s", err)))
-	}
 	if err := envconfig.Process("", &c); err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %q", err.Error())))
 	}
@@ -55,12 +51,13 @@ func main() {
 	if err = json.Unmarshal(erIN, &er); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
 	}
+
 	summary := summary(er.Cr.Employees)
-	packBackup, err := client.Bc.Backup(er.Pr.Package)
+	packBackup, err := client.Cloud.UploadFile(er.Pr.Package)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %q", er.Pr.Package, err)))
 	}
-	backup, err := client.Bc.Backup(er.Cr.Files)
+	backup, err := client.Cloud.Backup(er.Cr.Files)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup files: %v, error: %q", er.Cr.Files, err)))
 	}
@@ -91,7 +88,7 @@ func newClient() (*storage.Client, error) {
 		return nil, fmt.Errorf("error creating DB client: %q", err)
 	}
 	db.Collection(c.MongoMICol)
-	bc := storage.NewBackupClient(c.SwiftUsername, c.SwiftAPIKey, c.SwiftAuthURL, c.SwiftDomain, c.SwiftContainer)
+	bc := storage.NewCloudClient(c.SwiftUsername, c.SwiftAPIKey, c.SwiftAuthURL, c.SwiftDomain, c.SwiftContainer)
 	client, err := storage.NewClient(db, bc)
 	if err != nil {
 		return nil, fmt.Errorf("error creating storage.client: %q", err)
