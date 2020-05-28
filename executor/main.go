@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -32,6 +33,11 @@ type config struct {
 	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL"`
 	SwiftDomain    string `envconfig:"SWIFT_DOMAIN"`
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
+}
+
+type executionResult struct {
+	Pr storage.PackagingResult
+	Cr storage.CrawlingResult
 }
 
 var c config
@@ -58,35 +64,63 @@ func init() {
 }
 
 func main() {
-	client, err := newClient()
-	if err != nil {
-		logError("newClient() error: %s", err)
-		os.Exit(1)
-	}
 
 	commit, err := getGitCommit()
 	if err != nil {
 		logError("%s", err)
 		os.Exit(1)
 	}
+	log("Starting do build package")
+	procInfo, err := buildDockerImage("../packager", commit)
+	if err != nil {
+		logError("Error trying to build package image %s", err)
+		testeBytes, _ := json.Marshal(&procInfo)
+		fmt.Fprintf(os.Stderr, "%s", string(testeBytes))
+		os.Exit(1)
+	}
+	log("Package Builded")
+	log("Starting do build store")
+	procInfoStore, err := buildDockerImage("../store", commit)
+	if err != nil {
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error trying to build package image %s", err)))
+		testeBytes, _ := json.Marshal(&procInfoStore)
+		fmt.Fprintf(os.Stderr, "%s", string(testeBytes))
+		os.Exit(1)
+	}
+	log("Store Builded")
+
 	var wg sync.WaitGroup
 	wg.Add(len(c.JobList))
 	for _, job := range c.JobList {
 		go func(job string) {
 			defer wg.Done()
-			procInfo, err := build(job, commit)
+			//Collect Data
+			log("Starting to build Data Collect image for %s", job)
+			procInfo, err := buildDockerImage(job, commit)
 			if err != nil {
-				logError("Build error %s: %q", job, err)
+				status.ExitFromError(status.NewError(2, fmt.Errorf("Build error %s: %q", job, err)))
 			} else {
 				procInfo, err = execDataCollector(job, c.Month, c.Year)
 				if err != nil {
-					logError("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)
+					status.ExitFromError(status.NewError(2, fmt.Errorf("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)))
 				}
 			}
 			log(" -- Data collector executed for %s --\n", job)
-			err = store(job, c.Month, c.Year, procInfo, commit, client)
+			cr, err := genCR(job, procInfo, commit, c.Month, c.Year)
 			if err != nil {
-				logError("Store error %s-%d-%d: %q", job, c.Month, c.Year, err)
+				status.ExitFromError(status.NewError(4, fmt.Errorf("Error trying to generate crawling result %s", err)))
+			}
+			// Package Data
+			pckResult, err := execPack(*cr)
+			if err != nil {
+				status.ExitFromError(status.NewError(4, fmt.Errorf("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)))
+			}
+			log(" -- Package executed for %s --\n", job)
+			execResult := executionResult{Pr: *pckResult, Cr: *cr}
+			// Store Data
+			_, err = execStore(execResult)
+			if err != nil {
+				logError("Store error: %q", err)
 				return
 			}
 			log(" -- Store executed for %s --\n", job)
@@ -97,41 +131,6 @@ func main() {
 	fmt.Println("Finished.")
 }
 
-// newClient Creates client to connect with DB and Cloud5
-func newClient() (*storage.Client, error) {
-	db, err := storage.NewDBClient(c.MongoURI, c.DBName, c.MongoMICol, c.MongoAgCol)
-	if err != nil {
-		return nil, fmt.Errorf("error creating DB client: %q", err)
-	}
-	db.Collection(c.MongoMICol)
-	bc := storage.NewBackupClient(c.SwiftUsername, c.SwiftAPIKey, c.SwiftAuthURL, c.SwiftDomain, c.SwiftContainer)
-	client, err := storage.NewClient(db, bc)
-	if err != nil {
-		return nil, fmt.Errorf("error creating storage.client: %q", err)
-	}
-	return client, nil
-}
-
-// store stores crawling results to db in storageClient
-func store(job string, month int, year int, procInfo storage.ProcInfo, commit string, storageClient *storage.Client) error {
-	var cr storage.CrawlingResult
-	var err error
-	if procInfo.ExitStatus == 1 {
-		cr = newCRError(job, procInfo, commit, month, year)
-	} else {
-		err := json.Unmarshal([]byte(procInfo.Stdout), &cr)
-		if err != nil {
-			return fmt.Errorf("error trying to unmarshal crawling result: %q", err)
-		}
-	}
-	cr.ProcInfo = procInfo
-	err = storageClient.Store(cr)
-	if err != nil {
-		return fmt.Errorf("error trying to store crawling result: %q", err)
-	}
-	return nil
-}
-
 // getGitCommit returns the last git commit for the local repository.
 func getGitCommit() (string, error) {
 	cmd := exec.Command("git", "rev-list", "-1", "HEAD")
@@ -140,6 +139,27 @@ func getGitCommit() (string, error) {
 		return "", fmt.Errorf("getGitCommit() error: %s", err)
 	}
 	return string(stdout[:len(stdout)-1]), nil
+}
+
+// build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
+func buildDockerImage(dir, commit string) (storage.ProcInfo, error) {
+	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
+	cmd := exec.Command(cmdList[0], cmdList[1:]...)
+	cmd.Dir = dir
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err := cmd.Run()
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
+	}
+	return procInfo, err
 }
 
 // execDataCollector executes the data collector located in path and returns it's stdin, stdout and exit error if any.
@@ -164,66 +184,98 @@ func execDataCollector(dir string, month, year int) (storage.ProcInfo, error) {
 	return procInfo, err
 }
 
-// build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func build(dir, commit string) (storage.ProcInfo, error) {
-	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
+// execPack executes the data collector located in path and returns it's stdin, stdout and exit error if any.
+func execPack(cr storage.CrawlingResult) (*storage.PackagingResult, error) {
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s", c.OutputFolder)
+
+	cmdList := strings.Split(fmt.Sprintf(`docker run -e %s -i -v dadosjusbr:/output --rm packager`, outPath), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
-	cmd.Dir = dir
+	crJSON, err := json.Marshal(cr)
+	if err != nil {
+		return nil, fmt.Errorf("Error trying to marshal cr %s", crJSON)
+	}
+	cmd.Stdin = strings.NewReader(string(crJSON))
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
-	err := cmd.Run()
+	err = cmd.Run()
 	exitStatus := statusCode(err)
 	procInfo := storage.ProcInfo{
 		Stdout:     string(outb.Bytes()),
 		Stderr:     string(errb.Bytes()),
 		Cmd:        strings.Join(cmdList, " "),
-		CmdDir:     dir,
+		CmdDir:     cmd.Dir,
 		ExitStatus: exitStatus,
 		Env:        os.Environ(),
 	}
-	return procInfo, err
+	PckResult := storage.PackagingResult{
+		ProcInfo: procInfo,
+		Package:  procInfo.Stdout,
+	}
+	return &PckResult, err
 }
 
-// statusCode returns the exit code returned for the cmd execution.
-// 0 if no error.
-// -1 if process was terminated by a signal or hasn't started.
-// -2 if error is not an ExitError.
-func statusCode(err error) int {
-	if err == nil {
-		return 0
+// execPack executes the data collector located in path and returns it's stdin, stdout and exit error if any.
+func execStore(er executionResult) (*storage.ProcInfo, error) {
+	outPath := fmt.Sprintf("OUTPUT_FOLDER=%s", c.OutputFolder)
+	mgoURI := fmt.Sprintf("MONGODB_URI=%s", c.MongoURI)
+	dbName := fmt.Sprintf("MONGODB_DBNAME=%s", c.DBName)
+	miCol := fmt.Sprintf("MONGODB_MICOL=%s", c.MongoMICol)
+	agCol := fmt.Sprintf("MONGODB_AGCOL=%s", c.MongoAgCol)
+	swftUser := fmt.Sprintf("SWIFT_USERNAME=%s", c.SwiftUsername)
+	swftKey := fmt.Sprintf("SWIFT_APIKEY=%s", c.SwiftAPIKey)
+	swftAuth := fmt.Sprintf("SWIFT_AUTHURL=%s", c.SwiftAuthURL)
+	swftDmn := fmt.Sprintf("SWIFT_DOMAIN=%s", c.SwiftDomain)
+	swftCtnr := fmt.Sprintf("SWIFT_CONTAINER=%s", c.SwiftContainer)
+
+	cmdList := strings.Split(fmt.Sprintf(`docker run --network="host" 
+			-e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s 
+			-i -v dadosjusbr:/output --rm store`,
+		outPath, mgoURI, dbName, miCol, agCol, swftUser, swftKey, swftAuth, swftDmn, swftCtnr),
+		" ")
+	cmd := exec.Command(cmdList[0], cmdList[1:]...)
+	erJSON, err := json.Marshal(er)
+	if err != nil {
+		return nil, fmt.Errorf("Error trying to marshal er %s", erJSON)
 	}
-	if exitError, ok := err.(*exec.ExitError); ok {
-		return exitError.ExitCode()
+	cmd.Stdin = strings.NewReader(string(erJSON))
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err = cmd.Run()
+	exitStatus := statusCode(err)
+	procInfo := storage.ProcInfo{
+		Stdout:     string(outb.Bytes()),
+		Stderr:     string(errb.Bytes()),
+		Cmd:        strings.Join(cmdList, " "),
+		CmdDir:     cmd.Dir,
+		ExitStatus: exitStatus,
+		Env:        os.Environ(),
 	}
-	return -2
+	return &procInfo, err
 }
 
-// fatalError prints to Stderr
-func logError(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
-}
-
-// log prints to Stdout
-func log(format string, args ...interface{}) {
-	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
-}
-
-// newCRError creates a crawling result when a Exis Status is != 0
-func newCRError(job string, procInfo storage.ProcInfo, commit string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
-		CrawlerID:      strings.Split(job, "/")[1],
-		CrawlerVersion: commit,
+// genCR creates a crawling result
+func genCR(job string, procInfo storage.ProcInfo, commit string, month, year int) (*storage.CrawlingResult, error) {
+	var cr storage.CrawlingResult
+	if procInfo.ExitStatus == 1 {
+		crawlerInfo := storage.Crawler{
+			CrawlerID:      strings.Split(job, "/")[1],
+			CrawlerVersion: commit,
+		}
+		cr = storage.CrawlingResult{
+			AgencyID:  strings.Split(job, "/")[1],
+			Month:     month,
+			Year:      year,
+			Crawler:   crawlerInfo,
+			Timestamp: time.Now(),
+			ProcInfo:  procInfo,
+		}
+		return &cr, nil
 	}
-	cr := storage.CrawlingResult{
-		AgencyID:  strings.Split(job, "/")[1],
-		Month:     month,
-		Year:      year,
-		Crawler:   crawlerInfo,
-		Timestamp: time.Now(),
-		ProcInfo:  procInfo,
+	if err := json.Unmarshal([]byte(procInfo.Stdout), &cr); err != nil {
+		return nil, fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
-	return cr
+	cr.ProcInfo = procInfo
+	return &cr, nil
 }
