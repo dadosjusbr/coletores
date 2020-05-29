@@ -1,7 +1,7 @@
 github.com/dadosjusbr/coletores v0.0.0-20200528230031-1426f4dd4170 h1:2aWyEArTSq+g0URWd20ggR5eeqmXmQWe7zDjaRE3Mv0=
 github.com/dadosjusbr/coletores v0.0.0-20200528230031-1426f4dd4170/go.mod h1:gO+iQtyiT9Hw1piAtdGVnfUQNsowQ5zNkuX2fBfTEqE=
-github.com/dadosjusbr/storage v0.0.0-20200524164521-9c194ab9721e h1:UDPO3f4V5pzkuXDbOfSOxDbeNsOpgNld0Z2j3DMsNq0=
-github.com/dadosjusbr/storage v0.0.0-20200524164521-9c194ab9721e/go.mod h1:rUeCybvAr+8z2lzyrDphh/36QUJc/WUJBmcBY3qiTM8=
+github.com/dadosjusbr/storage v0.0.0-20200529045510-1c0810afb7ed h1:hxqYj3XUW2GjaKdrQqZli707ldKxEIEuo3NP8SR2YfU=
+github.com/dadosjusbr/storage v0.0.0-20200529045510-1c0810afb7ed/go.mod h1:rUeCybvAr+8z2lzyrDphh/36QUJc/WUJBmcBY3qiTM8=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=

@@ -45,20 +45,16 @@ var c config
 func init() {
 	var err error
 	if err := godotenv.Load(); err != nil {
-		logError("Error loading .env file")
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error loading .env file")))
 	}
 	if err := envconfig.Process("", &c); err != nil {
-		logError("Error loading config values from .env: %q", err.Error())
-		os.Exit(1)
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %v", err.Error())))
 	}
 	if c.OutputFolder, err = filepath.Abs(c.OutputFolder); err != nil {
-		logError("Error trying to get absolute path for output folder: %q", err.Error())
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error trying to get absolute path for output folder: %v", err.Error())))
 	}
 	if err := os.Mkdir(c.OutputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-		logError("Error creating output folder(%s): %q", c.OutputFolder, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error creating output folder(%s): %v", c.OutputFolder, err)))
 	}
 	fmt.Printf("%v\n", c)
 }
@@ -67,25 +63,22 @@ func main() {
 
 	commit, err := getGitCommit()
 	if err != nil {
-		logError("%s", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Error gettint git commig %s", err)))
 	}
 	log("Starting do build package")
 	procInfo, err := buildDockerImage("../packager", commit)
 	if err != nil {
-		logError("Error trying to build package image %s", err)
-		testeBytes, _ := json.Marshal(&procInfo)
-		fmt.Fprintf(os.Stderr, "%s", string(testeBytes))
-		os.Exit(1)
+		testPack, _ := json.Marshal(&procInfo)
+		fmt.Fprintf(os.Stderr, "%s", string(testPack))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("Error trying to build package image %s", err)))
 	}
 	log("Package Builded")
 	log("Starting do build store")
 	procInfoStore, err := buildDockerImage("../store", commit)
 	if err != nil {
+		testStore, _ := json.Marshal(&procInfoStore)
+		fmt.Fprintf(os.Stderr, "%s", string(testStore))
 		status.ExitFromError(status.NewError(2, fmt.Errorf("Error trying to build package image %s", err)))
-		testeBytes, _ := json.Marshal(&procInfoStore)
-		fmt.Fprintf(os.Stderr, "%s", string(testeBytes))
-		os.Exit(1)
 	}
 	log("Store Builded")
 
@@ -98,11 +91,11 @@ func main() {
 			log("Starting to build Data Collect image for %s", job)
 			procInfo, err := buildDockerImage(job, commit)
 			if err != nil {
-				status.ExitFromError(status.NewError(2, fmt.Errorf("Build error %s: %q", job, err)))
+				status.ExitFromError(status.NewError(2, fmt.Errorf("Build error %s: %v", job, err)))
 			} else {
 				procInfo, err = execDataCollector(job, c.Month, c.Year)
 				if err != nil {
-					status.ExitFromError(status.NewError(2, fmt.Errorf("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)))
+					status.ExitFromError(status.NewError(2, fmt.Errorf("Execution error %s-%d-%d: %v", job, c.Month, c.Year, err)))
 				}
 			}
 			log(" -- Data collector executed for %s --\n", job)
@@ -113,14 +106,14 @@ func main() {
 			// Package Data
 			pckResult, err := execPack(*cr)
 			if err != nil {
-				status.ExitFromError(status.NewError(4, fmt.Errorf("Execution error %s-%d-%d: %q", job, c.Month, c.Year, err)))
+				status.ExitFromError(status.NewError(4, fmt.Errorf("Execution error %s-%d-%d: %v", job, c.Month, c.Year, err)))
 			}
 			log(" -- Package executed for %s --\n", job)
 			execResult := executionResult{Pr: *pckResult, Cr: *cr}
 			// Store Data
 			_, err = execStore(execResult)
 			if err != nil {
-				logError("Store error: %q", err)
+				status.ExitFromError(status.NewError(4, fmt.Errorf("Store error: %v", err)))
 				return
 			}
 			log(" -- Store executed for %s --\n", job)
@@ -227,12 +220,7 @@ func execStore(er executionResult) (*storage.ProcInfo, error) {
 	swftAuth := fmt.Sprintf("SWIFT_AUTHURL=%s", c.SwiftAuthURL)
 	swftDmn := fmt.Sprintf("SWIFT_DOMAIN=%s", c.SwiftDomain)
 	swftCtnr := fmt.Sprintf("SWIFT_CONTAINER=%s", c.SwiftContainer)
-
-	cmdList := strings.Split(fmt.Sprintf(`docker run --network="host" 
-			-e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s 
-			-i -v dadosjusbr:/output --rm store`,
-		outPath, mgoURI, dbName, miCol, agCol, swftUser, swftKey, swftAuth, swftDmn, swftCtnr),
-		" ")
+	cmdList := strings.Split(fmt.Sprintf(`docker run -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -e %s -i -v dadosjusbr:/output --rm store`, outPath, mgoURI, dbName, miCol, agCol, swftUser, swftKey, swftAuth, swftDmn, swftCtnr), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	erJSON, err := json.Marshal(er)
 	if err != nil {
@@ -278,4 +266,24 @@ func genCR(job string, procInfo storage.ProcInfo, commit string, month, year int
 	}
 	cr.ProcInfo = procInfo
 	return &cr, nil
+}
+
+// log prints to Stdout
+func log(format string, args ...interface{}) {
+	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
+	fmt.Fprintf(os.Stdout, time+format+"\n", args...)
+}
+
+// statusCode returns the exit code returned for the cmd execution.
+// 0 if no error.
+// -1 if process was terminated by a signal or hasn't started.
+// -2 if error is not an ExitError.
+func statusCode(err error) int {
+	if err == nil {
+		return 0
+	}
+	if exitError, ok := err.(*exec.ExitError); ok {
+		return exitError.ExitCode()
+	}
+	return -2
 }

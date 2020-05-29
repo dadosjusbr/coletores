@@ -34,7 +34,7 @@ var c config
 
 func init() {
 	if err := envconfig.Process("", &c); err != nil {
-		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %q", err.Error())))
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %v", err.Error())))
 	}
 }
 
@@ -46,20 +46,20 @@ func main() {
 	var er executionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %v", err)))
 	}
 	if err = json.Unmarshal(erIN, &er); err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %q", err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %v", err)))
 	}
 
 	summary := summary(er.Cr.Employees)
 	packBackup, err := client.Cloud.UploadFile(er.Pr.Package)
 	if err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %q", er.Pr.Package, err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %v", er.Pr.Package, err)))
 	}
 	backup, err := client.Cloud.Backup(er.Cr.Files)
 	if err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup files: %v, error: %q", er.Cr.Files, err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup files: %v, error: %v", er.Cr.Files, err)))
 	}
 	agmi := storage.AgencyMonthlyInfo{
 		AgencyID:          er.Cr.AgencyID,
@@ -76,7 +76,7 @@ func main() {
 		agmi.ProcInfo = &er.Cr.ProcInfo
 	}
 	if err = client.Store(agmi); err != nil {
-		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to store agmi: %q", err)))
+		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to store agmi: %v", err)))
 	}
 	fmt.Println("Store Executed...")
 }

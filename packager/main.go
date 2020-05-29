@@ -77,7 +77,6 @@ func pack(cr storage.CrawlingResult) string {
 	addFileToZip(w, "data.csv", bufCsv.Bytes())
 	addFileToZip(w, "datapackage.json", dtpBytes)
 	w.Close()
-	fmt.Println(filePath)
 	if err = ioutil.WriteFile(filePath, buf.Bytes(), 0777); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("Error generating DataPackage.zip: %q", err)))
 	}
