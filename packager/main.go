@@ -22,16 +22,16 @@ type executionResult struct {
 }
 
 func main() {
-	var cr storage.CrawlingResult
-	crIN, err := ioutil.ReadAll(os.Stdin)
+	var er executionResult
+	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error reading crawling result: %q", err)))
 	}
-	if err = json.Unmarshal(crIN, &cr); err != nil {
+	if err = json.Unmarshal(erIN, &er); err != nil {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("Error unmarshaling crawling resul from STDIN: %q", err)))
 		os.Exit(1)
 	}
-	filePath := pack(cr)
+	filePath := pack(er.Cr)
 	fmt.Print(filePath)
 }
 
@@ -77,7 +77,6 @@ func pack(cr storage.CrawlingResult) string {
 	addFileToZip(w, "data.csv", bufCsv.Bytes())
 	addFileToZip(w, "datapackage.json", dtpBytes)
 	w.Close()
-	fmt.Println(filePath)
 	if err = ioutil.WriteFile(filePath, buf.Bytes(), 0777); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("Error generating DataPackage.zip: %q", err)))
 	}
