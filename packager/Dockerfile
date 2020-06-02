@@ -25,9 +25,9 @@ RUN go build -o main
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
 
-# Copy binary from build to main folder
+# Copy binary and .env from build to main folder
 RUN cp /build/main .
-
+RUN cp /build/.env .
 RUN cp /build/schema.json .
 
 # Build a small image

@@ -1,7 +1,5 @@
 FROM golang:1.14.0-alpine AS builder
 
-ARG GIT_COMMIT=unspecified
-
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -27,6 +25,7 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
+RUN cp -f /build/.env .
 
 # Build a small image
 FROM scratch

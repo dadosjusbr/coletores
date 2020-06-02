@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dadosjusbr/storage"
@@ -19,13 +19,14 @@ func main() {
 		log.Println("No .env file to load.")
 	}
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
-
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	flag.Parse()
-
-	if *month == 0 || *year == 0 {
-		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+	month, err := strconv.Atoi(os.Getenv("MONTH"))
+	if err != nil {
+		logError("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)
+		os.Exit(1)
+	}
+	year, err := strconv.Atoi(os.Getenv("YEAR"))
+	if err != nil {
+		logError("Invalid month (\"%s\"): %q", os.Getenv("YEAR"), err)
 		os.Exit(1)
 	}
 	if outputFolder == "" {
@@ -37,7 +38,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	files, err := Crawl(outputFolder, *month, *year)
+	files, err := Crawl(outputFolder, month, year)
 	if err != nil {
 		logError("Crawler error: %q", err)
 		os.Exit(1)
@@ -50,7 +51,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	cr := newCrawlingResult(emps, files, *month, *year)
+	cr := newCrawlingResult(emps, files, month, year)
 	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
 		logError("JSON marshaling error: %q", err)

@@ -9,6 +9,7 @@ import (
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
+	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -30,16 +31,16 @@ type executionResult struct {
 	Cr storage.CrawlingResult
 }
 
-var c config
-
-func init() {
+func main() {
+	if err := godotenv.Load(); err != nil {
+		status.ExitFromError(status.NewError(4, fmt.Errorf("Eror .env to read.")))
+	}
+	var c config
 	if err := envconfig.Process("", &c); err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %v", err.Error())))
 	}
-}
 
-func main() {
-	client, err := newClient()
+	client, err := newClient(c)
 	if err != nil {
 		status.ExitFromError(status.NewError(3, fmt.Errorf("newClient() error: %s", err)))
 	}
@@ -82,13 +83,13 @@ func main() {
 }
 
 // newClient Creates client to connect with DB and Cloud5
-func newClient() (*storage.Client, error) {
-	db, err := storage.NewDBClient(c.MongoURI, c.DBName, c.MongoMICol, c.MongoAgCol)
+func newClient(conf config) (*storage.Client, error) {
+	db, err := storage.NewDBClient(conf.MongoURI, conf.DBName, conf.MongoMICol, conf.MongoAgCol)
 	if err != nil {
 		return nil, fmt.Errorf("error creating DB client: %q", err)
 	}
-	db.Collection(c.MongoMICol)
-	bc := storage.NewCloudClient(c.SwiftUsername, c.SwiftAPIKey, c.SwiftAuthURL, c.SwiftDomain, c.SwiftContainer)
+	db.Collection(conf.MongoMICol)
+	bc := storage.NewCloudClient(conf.SwiftUsername, conf.SwiftAPIKey, conf.SwiftAuthURL, conf.SwiftDomain, conf.SwiftContainer)
 	client, err := storage.NewClient(db, bc)
 	if err != nil {
 		return nil, fmt.Errorf("error creating storage.client: %q", err)

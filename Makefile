@@ -1,3 +1,5 @@
+export GIT_COMMIT:=`git rev-list -1 HEAD`
+
 # Create a output folder inside workdir path and create a docker volume with this path.
 create-volume:
 	mkdir -p $(shell pwd)/output
@@ -8,7 +10,7 @@ create-volume:
 	--name=dadosjusbr
 
 # Build executor image
-build-executor:
+build:
 	docker build -t executor -f executor/Dockerfile .
 
 # Create a static server containing dadosjusbr docker volume files.
@@ -19,12 +21,13 @@ file-server:
     	halverneus/static-file-server:latest
 
 # Run executor after builded image.
-run-executor:
+run:
 	make create-volume
+	make build
 	docker run \
 	--rm \
 	-v dadosjusbr:/output \
 	-v /var/run/docker.sock:/var/run/docker.sock \
 	--privileged \
-	--env-file ./executor/.env \
+	--env GIT_COMMIT=`git rev-list -1 HEAD` \
 	executor

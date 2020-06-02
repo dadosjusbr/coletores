@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
+	"github.com/joho/godotenv"
 )
 
 type executionResult struct {
@@ -22,6 +24,9 @@ type executionResult struct {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env to read.")
+	}
 	var er executionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
