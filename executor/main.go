@@ -70,7 +70,7 @@ func main() {
 func mustExecStore(er executionResult, conf config) {
 	id := fmt.Sprintf("store-%d-%d", conf.Month, conf.Year)
 	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(packagerDir, er, conf)
+	pi, err := execImage(storeDir, er, conf)
 	if err != nil {
 		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi)
 	}
