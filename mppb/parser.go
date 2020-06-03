@@ -36,14 +36,15 @@ var headersMap = []map[string]int{
 	},
 
 	INDENIZACOES: {
-		"MATRÍCULA":      0,
-		"ALIMENTAÇÃO":    4,
-		"SAÚDE":          5,
-		"PECÚNIA":        6,
-		"MORADIA":        7,
-		"NATALIDADE":     8,
-		"AJUDA DE CUSTO": 9, // first col for eventualBenefits
-		"DESPESA":        21,
+		"MATRÍCULA":             0,
+		"ALIMENTAÇÃO":           4,
+		"SAÚDE":                 5,
+		"PECÚNIA":               6,
+		"MORADIA":               7,
+		"LICENÇA COMPENSATÓRIA": 8,
+		"NATALIDADE":            9,
+		"AJUDA DE CUSTO":        10, // first col for eventualBenefits
+		"DESPESA":               22,
 	},
 
 	REMUNERACOES: {
@@ -276,7 +277,11 @@ func employeePerks(reg string, perks []string) (*storage.Perks, error) {
 	if err := retrieveFloat64(&pecunia, perks, "PECÚNIA", INDENIZACOES); err != nil {
 		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
 	}
-	inPerks.Others = map[string]float64{"pecunia": pecunia}
+	var compens float64
+	if err := retrieveFloat64(&compens, perks, "LICENÇA COMPENSATÓRIA", INDENIZACOES); err != nil {
+		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
+	}
+	inPerks.Others = map[string]float64{"pecunia": pecunia, "Licença Compensatória": compens}
 	inPerks.Total = totalPerks(inPerks)
 	return &inPerks, nil
 }
@@ -294,7 +299,7 @@ func employeeIncomeFunds(emp []string, perks []string, fileType int) (*storage.F
 	}
 	var ebPerks float64
 	if perks != nil && len(perks) > 0 {
-		ebPerks, err = sumIndexes(perks, 10, 21)
+		ebPerks, err = sumIndexes(perks, 11, 21)
 		if err != nil {
 			return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
 		}
