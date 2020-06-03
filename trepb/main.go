@@ -4,15 +4,20 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	"github.com/dadosjusbr/storage"
+	"github.com/joho/godotenv"
 )
 
 var gitCommit string
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file to load.")
+	}
 	month := flag.Int("mes", 0, "Mês a ser analisado")
 	year := flag.Int("ano", 0, "Ano a ser analisado")
 	name := os.Getenv("NAME")
