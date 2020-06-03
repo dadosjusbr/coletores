@@ -24,7 +24,7 @@ func main() {
 		logError("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)
 		os.Exit(1)
 	}
-	year, err := strconv.Atoi(os.Getenv("ANO"))
+	year, err := strconv.Atoi(os.Getenv("YEAR"))
 	if err != nil {
 		logError("Invalid year (\"%s\"): %q", os.Getenv("YEAR"), err)
 		os.Exit(1)
