@@ -161,6 +161,7 @@ func execImage(dir string, er executionResult, conf config) (*storage.ProcInfo, 
 	err = cmd.Run()
 	exitStatus := statusCode(err)
 	procInfo := storage.ProcInfo{
+		Stdin:      string(erJSON),
 		Stdout:     string(outb.Bytes()),
 		Stderr:     string(errb.Bytes()),
 		Cmd:        strings.Join(cmdList, " "),
