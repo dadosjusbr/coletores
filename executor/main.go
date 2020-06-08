@@ -21,7 +21,6 @@ type config struct {
 	CollectorDirList []string `envconfig:"COLLECTOR_DIR_LIST"`
 	Month            int      `envconfig:"MONTH"`
 	Year             int      `envconfig:"YEAR"`
-	commit           string   `envconfig:"GIT_COMMIT"`
 }
 
 type executionResult struct {
