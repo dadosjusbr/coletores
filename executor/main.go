@@ -21,23 +21,24 @@ type config struct {
 	CollectorDirList []string `envconfig:"COLLECTOR_DIR_LIST"`
 	Month            int      `envconfig:"MONTH"`
 	Year             int      `envconfig:"YEAR"`
+	commit           string   `envconfig:"GIT_COMMIT"`
 }
 
 type executionResult struct {
-	Pr storage.PackagingResult
 	Cr storage.CrawlingResult
+	Pr storage.PackagingResult
 }
 
 const (
 	packagerDir = "../packager"
 	storeDir    = "../store"
+	storeErrDir = "../store-error"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		status.ExitFromError(status.NewError(status.SystemError, fmt.Errorf("Error loading .env file")))
 	}
-
 	var conf config
 	if err := envconfig.Process("", &conf); err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Error loading config values from .env: %v", err.Error())))
@@ -67,6 +68,44 @@ func main() {
 	fmt.Println("Finished.")
 }
 
+func mustExecDataCollector(job, commit string, conf config) storage.CrawlingResult {
+	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
+	log.Printf("Executing %s ...\n", id)
+	pi, err := execImage(job, executionResult{}, conf)
+	if err != nil {
+		//Store Error
+		var er executionResult
+		er.Cr.ProcInfo = *pi
+		er.Cr.Month = conf.Month
+		er.Cr.Year = conf.Year
+		er.Cr.AgencyID = filepath.Base(job)
+		mustBuild(storeErrDir, commit, conf)
+		mustExecStoreErr(er, conf)
+		log.Fatalf("Error executing DataCollector %s: %q. ProcInfo:%+v", id, err, pi)
+	}
+	cr, err := genCR(job, commit, pi, conf)
+	if err != nil {
+		log.Fatalf("Error trying to generate crawling result %s:%q", id, err)
+	}
+	log.Printf("%s executed successfully\n", id)
+	return *cr
+}
+
+func mustExecPackager(er executionResult, conf config) storage.PackagingResult {
+	id := fmt.Sprintf("packager-%d-%d", conf.Month, conf.Year)
+	log.Printf("Executing %s ...\n", id)
+	pi, err := execImage(packagerDir, er, conf)
+	if err != nil {
+		//Store Error
+		er.Pr.ProcInfo = *pi
+		mustBuild(storeErrDir, os.Getenv("GIT_COMMIT"), conf)
+		mustExecStoreErr(er, conf)
+		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi)
+	}
+	log.Printf("%s executed successfully\n", id)
+	return storage.PackagingResult{Package: pi.Stdout}
+}
+
 func mustExecStore(er executionResult, conf config) {
 	id := fmt.Sprintf("store-%d-%d", conf.Month, conf.Year)
 	log.Printf("Executing %s ...\n", id)
@@ -77,30 +116,15 @@ func mustExecStore(er executionResult, conf config) {
 	log.Printf("%s executed successfully\n", id)
 }
 
-func mustExecPackager(er executionResult, conf config) storage.PackagingResult {
-	id := fmt.Sprintf("packager-%d-%d", conf.Month, conf.Year)
+// tries to exec a docker image for a job and panics if it can not suceed.
+func mustExecStoreErr(er executionResult, conf config) {
+	id := fmt.Sprintf("storeError-%d-%d", er.Cr.Month, er.Cr.Year)
 	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(packagerDir, er, conf)
+	pi, err := execImage(storeErrDir, er, conf)
 	if err != nil {
 		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi)
 	}
 	log.Printf("%s executed successfully\n", id)
-	return storage.PackagingResult{Package: pi.Stdout}
-}
-
-func mustExecDataCollector(job, commit string, conf config) storage.CrawlingResult {
-	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
-	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(job, executionResult{}, conf)
-	if err != nil {
-		log.Fatalf("Error executing DataCollector %s: %q. ProcInfo:%+v", id, err, pi)
-	}
-	cr, err := genCR(job, commit, pi, conf)
-	if err != nil {
-		log.Fatalf("Error trying to generate crawling result %s:%q", id, err)
-	}
-	log.Printf("%s executed successfully\n", id)
-	return *cr
 }
 
 // tries to build a docker image for a job and panics if it can not suceed.
