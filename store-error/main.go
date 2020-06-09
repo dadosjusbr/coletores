@@ -83,7 +83,6 @@ func main() {
 	if err = client.Store(agmi); err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to store agmi: %v", err)))
 	}
-	fmt.Println("Store Executed...")
 }
 
 // newClient Creates client to connect with DB and Cloud5
