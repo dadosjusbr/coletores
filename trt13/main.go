@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dadosjusbr/storage"
@@ -19,15 +19,18 @@ func main() {
 		log.Println("No .env to read.")
 	}
 
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
-	flag.Parse()
-	if *month == 0 || *year == 0 {
-		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+	month, err := strconv.Atoi(os.Getenv("MONTH"))
+	if err != nil {
+		logError("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)
 		os.Exit(1)
 	}
+	year, err := strconv.Atoi(os.Getenv("YEAR"))
+	if err != nil {
+		logError("Invalid year (\"%s\"): %q", os.Getenv("YEAR"), err)
+		os.Exit(1)
+	}
+
 	if outputFolder == "" {
 		outputFolder = "./output"
 	}
@@ -36,19 +39,19 @@ func main() {
 		logError("Error creating output folder(%s): %q", outputFolder, err)
 		os.Exit(1)
 	}
-	filePath := fmt.Sprintf("%s/remuneracoes-trt13-%02d-%04d.json", outputFolder, *month, *year)
+	filePath := fmt.Sprintf("%s/remuneracoes-trt13-%02d-%04d.json", outputFolder, month, year)
 
-	if err := crawl(filePath, *month, *year); err != nil {
-		logError("Crawler error(%02d-%04d): %q", *month, *year, err)
+	if err := crawl(filePath, month, year); err != nil {
+		logError("Crawler error(%02d-%04d): %q", month, year, err)
 		os.Exit(1)
 	}
 
 	records, parsingErr := parse(filePath)
 	if parsingErr != nil {
-		logError("Parser error(%02d-%04d) - %s: %q", *month, *year, filePath, parsingErr)
+		logError("Parser error(%02d-%04d) - %s: %q", month, year, filePath, parsingErr)
 	}
 
-	cr := newCrawlingResult(records, filePath, *month, *year)
+	cr := newCrawlingResult(records, filePath, month, year)
 	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
 		logError("JSON marshaling error: %q", err)

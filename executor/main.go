@@ -31,7 +31,7 @@ type executionResult struct {
 const (
 	packagerDir = "../packager"
 	storeDir    = "../store"
-	storeDirErr = "../store-error"
+	storeErrDir = "../store-error"
 )
 
 func main() {
@@ -52,23 +52,76 @@ func main() {
 	// Executing pipeline for jobs
 	for _, job := range conf.CollectorDirList {
 		var er executionResult
+		var err error
 
 		// Collect Data
-		mustBuild(job, commit, conf)
-		er.Cr = mustExecDataCollector(job, commit, conf)
+		er.Cr.ProcInfo, err = Build(job, commit, conf)
+		if err != nil {
+			er.Cr.AgencyID = filepath.Base(job)
+			//Store Error
+			Build(storeErrDir, commit, conf)
+			execStoreErr(er, conf)
+			continue
+		}
+		er.Cr, err = execDataCollector(job, commit, conf)
+		if err != nil {
+			er.Cr.AgencyID = filepath.Base(job)
+			//Store Error
+			Build(storeErrDir, commit, conf)
+			execStoreErr(er, conf)
+			continue
+		}
 
 		// Package Data
-		mustBuild(packagerDir, commit, conf)
-		er.Pr = mustExecPackager(er, conf)
+		Build(packagerDir, commit, conf)
+		if err != nil {
+			//Store Error
+			Build(storeErrDir, commit, conf)
+			execStoreErr(er, conf)
+			continue
+		}
+		er.Pr, err = execPackager(er, conf)
+		if err != nil {
+			//Store Error
+			Build(storeErrDir, os.Getenv("GIT_COMMIT"), conf)
+			execStoreErr(er, conf)
+			continue
+		}
 
 		// Store Data
-		mustBuild(storeDir, commit, conf)
-		mustExecStore(er, conf)
+		Build(storeDir, commit, conf)
+		execStore(er, conf)
 	}
 	fmt.Println("Finished.")
 }
 
-func mustExecStore(er executionResult, conf config) {
+func execDataCollector(job, commit string, conf config) (storage.CrawlingResult, error) {
+	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
+	log.Printf("Executing %s ...\n", id)
+	pi, err := execImage(job, executionResult{}, conf)
+	if err != nil {
+		return storage.CrawlingResult{ProcInfo: *pi}, err
+	}
+	cr, err := genCR(job, commit, pi, conf)
+	if err != nil {
+		return storage.CrawlingResult{ProcInfo: *pi}, fmt.Errorf("Error trying to generate crawling result %s:%q", id, err)
+	}
+	log.Printf("%s executed successfully\n", id)
+	return *cr, nil
+}
+
+func execPackager(er executionResult, conf config) (storage.PackagingResult, error) {
+	id := fmt.Sprintf("packager-%d-%d", conf.Month, conf.Year)
+	log.Printf("Executing %s ...\n", id)
+	pi, err := execImage(packagerDir, er, conf)
+	if err != nil {
+		return storage.PackagingResult{ProcInfo: *pi}, err
+	}
+	log.Printf("%s executed successfully\n", id)
+	return storage.PackagingResult{Package: pi.Stdout}, nil
+}
+
+func execStore(er executionResult, conf config) {
 	id := fmt.Sprintf("store-%d-%d", conf.Month, conf.Year)
 	log.Printf("Executing %s ...\n", id)
 	pi, err := execImage(storeDir, er, conf)
@@ -78,43 +131,31 @@ func mustExecStore(er executionResult, conf config) {
 	log.Printf("%s executed successfully\n", id)
 }
 
-func mustExecPackager(er executionResult, conf config) storage.PackagingResult {
-	id := fmt.Sprintf("packager-%d-%d", conf.Month, conf.Year)
+func execStoreErr(er executionResult, conf config) {
+	er.Cr.Month = conf.Month
+	er.Cr.Year = conf.Year
+	id := fmt.Sprintf("storeError-%d-%d", er.Cr.Month, er.Cr.Year)
 	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(packagerDir, er, conf)
+	pi, err := execImage(storeErrDir, er, conf)
 	if err != nil {
 		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi)
 	}
 	log.Printf("%s executed successfully\n", id)
-	return storage.PackagingResult{Package: pi.Stdout}
+	return
 }
 
-func mustExecDataCollector(job, commit string, conf config) storage.CrawlingResult {
-	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
-	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(job, executionResult{}, conf)
-	if err != nil {
-		log.Fatalf("Error executing DataCollector %s: %q. ProcInfo:%+v", id, err, pi)
-	}
-	cr, err := genCR(job, commit, pi, conf)
-	if err != nil {
-		log.Fatalf("Error trying to generate crawling result %s:%q", id, err)
-	}
-	log.Printf("%s executed successfully\n", id)
-	return *cr
-}
-
-// tries to build a docker image for a job and panics if it can not suceed.
-func mustBuild(job, commit string, conf config) {
+// Build tries to build a docker image for a job and panics if it can not suceed.
+func Build(job, commit string, conf config) (storage.ProcInfo, error) {
 	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
 	log.Printf("Building image %s...\n", id)
 	pi, err := buildImage(job, commit)
 	if err != nil {
-		log.Fatalf("Error building DataCollector image %s: %q", id, err)
+		return *pi, fmt.Errorf("Error building DataCollector image %s: %q", id, err)
 	} else if status.Code(pi.ExitStatus) != status.OK {
-		log.Fatalf("Status code %d(%s) building DataCollector image %s", pi.ExitStatus, status.Text(status.Code(pi.ExitStatus)), id)
+		return *pi, fmt.Errorf("Status code %d(%s) building DataCollector image %s", pi.ExitStatus, status.Text(status.Code(pi.ExitStatus)), id)
 	}
 	log.Printf("Image %s build sucessfully\n", id)
+	return *pi, nil
 }
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
@@ -150,8 +191,6 @@ func execImage(dir string, er executionResult, conf config) (*storage.ProcInfo, 
 		"-v", "dadosjusbr:/output",
 		"--rm",
 		filepath.Base(dir),
-		fmt.Sprintf("--mes=%d", conf.Month),
-		fmt.Sprintf("--ano=%d", conf.Year),
 	}
 	cmd := exec.Command("docker", cmdList...)
 	cmd.Dir = dir
