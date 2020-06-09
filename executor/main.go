@@ -24,13 +24,14 @@ type config struct {
 }
 
 type executionResult struct {
-	Pr storage.PackagingResult
 	Cr storage.CrawlingResult
+	Pr storage.PackagingResult
 }
 
 const (
 	packagerDir = "../packager"
 	storeDir    = "../store"
+	storeDirErr = "../store-error"
 )
 
 func main() {
