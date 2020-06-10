@@ -1,3 +1,5 @@
+github.com/dadosjusbr/coletores v0.0.0-20200609014212-bd097295e75b h1:0PFtW0vFkqHv2OTQtBjlWJ4YJ2s4dUuUSIcYyZlkrDc=
+github.com/dadosjusbr/coletores v0.0.0-20200609014212-bd097295e75b/go.mod h1:gO+iQtyiT9Hw1piAtdGVnfUQNsowQ5zNkuX2fBfTEqE=
 github.com/dadosjusbr/storage v0.0.0-20200302174211-3a8750fdc72d h1:ZygjiyeMN4QoQXIRWhw2mZ3fThGpK/6FgUwa9nbZR+g=
 github.com/dadosjusbr/storage v0.0.0-20200302174211-3a8750fdc72d/go.mod h1:xvMAekicIYj4p7cJSyu77Yu6IIZRzZtGWn010WaFwvo=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
