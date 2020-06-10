@@ -83,7 +83,7 @@ func main() {
 		er.Pr, err = execPackager(er, conf)
 		if err != nil {
 			//Store Error
-			Build(storeErrDir, os.Getenv("GIT_COMMIT"), conf)
+			Build(storeErrDir, commit, conf)
 			execStoreErr(er, conf)
 			continue
 		}

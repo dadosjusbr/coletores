@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 )
@@ -18,66 +19,56 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file to load.")
 	}
-
-	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	month, err := strconv.Atoi(os.Getenv("MONTH"))
 	if err != nil {
-		logError("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)))
 	}
 	year, err := strconv.Atoi(os.Getenv("YEAR"))
 	if err != nil {
-		logError("Invalid year (\"%s\"): %q", os.Getenv("YEAR"), err)
-		os.Exit(1)
-	}
-	if outputFolder == "" {
-		outputFolder = "./output"
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Invalid year (\"%s\"): %q", os.Getenv("YEAR"), err)))
 	}
 	name := os.Getenv("NAME")
+	if name == "" {
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Empty name, please set a name before start")))
+	}
 	cpf := os.Getenv("CPF")
-
+	if cpf == "" {
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Invalid cpf, please set a name before start")))
+	}
+	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	if outputFolder == "" {
 		outputFolder = "./output"
 	}
 	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
-		logError("Error creating output folder(%s): %q", outputFolder, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.SystemError, fmt.Errorf("Error creating output folder(%s): %q", outputFolder, err)))
 	}
 
 	filePath := filePath(outputFolder, month, year)
 	if err := crawl(filePath, name, cpf, month, year); err != nil {
-		logError("Crawler error(%02d-%04d): %q", month, year, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Crawler error(%02d-%04d): %q", month, year, err)))
 	}
 
 	f, err := os.Open(filePath)
 	if err != nil {
-		logError("error opening file (%s): %q", filePath, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.SystemError, fmt.Errorf("error opening file (%s): %q", filePath, err)))
 	}
 	defer f.Close()
 
 	table, err := loadTable(f)
 	if err != nil {
-		logError("error while loading data table from %s: %q", filePath, err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("error while loading data table from %s: %q", filePath, err)))
 	}
 
-	records, parsingErr := employeeRecords(table)
-	if parsingErr != nil {
-		logError("Parsing error (%02d-%04d):\n%s", month, year, parsingErr)
+	records, err := employeeRecords(table)
+	if err != nil {
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Parsing error (%02d-%04d):\n%s", month, year, err)))
 	}
-
 	cr := newCrawlingResult(records, filePath, month, year)
 	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
-		logError("JSON marshaling error: %q", err)
-		os.Exit(1)
+		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("JSON marshaling error: %q", err)))
 	}
 	fmt.Printf("%s", string(crJSON))
-	if parsingErr != nil {
-		os.Exit(1)
-	}
 }
 
 func newCrawlingResult(emps []storage.Employee, filePath string, month, year int) storage.CrawlingResult {
