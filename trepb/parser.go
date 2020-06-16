@@ -67,9 +67,9 @@ func loadTable(r io.Reader) ([]*html.Node, error) {
 }
 
 // employeeRecords will retrieve a list of employees from the data table. Status 1 if any errors trying to parse employees, 0 if none.
-func employeeRecords(records []*html.Node) ([]storage.Employee, parsingErrors) {
+func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
 	var employees []storage.Employee
-	var errs []error
+	var errs parsingErrors
 	for i, row := range records[1:] {
 		e, err := newEmployee(row)
 		if err != nil {
