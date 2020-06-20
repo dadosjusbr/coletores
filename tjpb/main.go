@@ -40,7 +40,7 @@ func main() {
 
 	files, err := crawl(outputFolder, *month, *year)
 	if err != nil {
-		logError("Crawl(%d,%d) error: %q", *month, *year, outputFolder, err)
+		logError("Crawl(%d,%d,%s) error: %q", *month, *year, outputFolder, err)
 		os.Exit(1)
 	}
 	fmt.Println(files)

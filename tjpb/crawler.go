@@ -13,7 +13,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/folha-de-pagamento-de-pessoal"
+const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/detalhamento-da-folha-de-pagamento-de-pessoal"
 
 var netClient = &http.Client{
 	Timeout: time.Second * 60,
