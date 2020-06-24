@@ -18,7 +18,7 @@ func main() {
 	}
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	if outputFolder == "" {
-		outputFolder = "/output"
+		outputFolder = "./output"
 	}
 
 	month := flag.Int("mes", 0, "Mês a ser analisado")
@@ -28,9 +28,6 @@ func main() {
 	if *month == 0 || *year == 0 {
 		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
 		os.Exit(1)
-	}
-	if outputFolder == "" {
-		outputFolder = "./output"
 	}
 
 	if err := os.Mkdir(outputFolder, os.ModePerm); err != nil && !os.IsExist(err) {
@@ -44,15 +41,18 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println(files)
+	teste := []string{"sample.pdf"}
+	parser(teste)
+
 }
 
 func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
 	crawlerInfo := storage.Crawler{
-		CrawlerID:      "mppb",
+		CrawlerID:      "tjpb",
 		CrawlerVersion: gitCommit,
 	}
 	cr := storage.CrawlingResult{
-		AgencyID:  "mppb",
+		AgencyID:  "tjpb",
 		Month:     month,
 		Year:      year,
 		Files:     files,
