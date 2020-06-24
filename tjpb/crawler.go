@@ -13,7 +13,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/folha-de-pagamento-de-pessoal"
+const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/detalhamento-da-folha-de-pagamento-de-pessoal"
 
 var netClient = &http.Client{
 	Timeout: time.Second * 60,
@@ -89,7 +89,6 @@ func findInterestNodes(doc *html.Node, month, year int) ([]*html.Node, error) {
 	if year <= 2012 {
 		xpath = fmt.Sprintf("//ul[@id=\"arquivos-%04d\"]//a[contains(text(), '%s %04d')]", year, monthStr[month], year)
 	}
-
 	nodeList := htmlquery.Find(doc, xpath)
 	if len(nodeList) == 0 {
 		return nil, fmt.Errorf("couldn't find any link for %02d-%04d", month, year)
