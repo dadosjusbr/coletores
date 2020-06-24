@@ -49,7 +49,6 @@ func parser(files []string) ([]storage.Employee, error) {
 		for i := range csvFinal[3] {
 			csvFinal[0][i] = append(csvFinal[0][i], csvFinal[1][i][0])
 			csvFinal[0][i] = append(csvFinal[0][i], csvFinal[2][i][0])
-			//csvFinal[0][i] = append(csvFinal[0][i], csvFinal[3][i]...)
 			for j := range csvFinal[3][i] {
 				reg := regexp.MustCompile(`[a-zA-Z_ ]`)
 				res := reg.ReplaceAllString(csvFinal[3][i][j], "${1}")
@@ -57,7 +56,10 @@ func parser(files []string) ([]storage.Employee, error) {
 			}
 		}
 		csvFinal[0] = csvFinal[0][:len(csvFinal[3])]
-		file, _ := os.Create("result.csv")
+		file, err := os.Create("result.csv")
+		if err != nil {
+			logError("Error creating csv: %q", err)
+		}
 		defer file.Close()
 		writer := csv.NewWriter(file)
 		defer writer.Flush()
