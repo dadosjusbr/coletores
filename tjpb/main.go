@@ -41,8 +41,8 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println(files)
-	teste := []string{"sample.pdf"}
-	parser(teste)
+	teste := "sample.pdf"
+	parserServerMay(teste)
 
 }
 
