@@ -1,12 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/folha-de-pagamento-de-pessoal"
+const baseURL = "https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/detalhamento-da-folha-de-pagamento-de-pessoal"
 
 var netClient = &http.Client{
 	Timeout: time.Second * 60,
@@ -35,29 +34,26 @@ var monthStr = map[int]string{
 	12: "Dezembro",
 }
 
-func main() {
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	flag.Parse()
-	if *month == 0 || *year == 0 {
-		log.Fatalf("Need all arguments to continue, please try again: \"go run crawler-tjpb.go --mes=int --ano=int\"")
-	}
-
+func crawl(outputFolder string, month, year int) ([]string, error) {
+	var files []string
 	doc, err := loadURL(baseURL)
 	if err != nil {
-		log.Fatalf("Error trying to load URL: %q", err)
+		return nil, fmt.Errorf("Error trying to load URL: %q", err)
 	}
 
-	nodes, err := findInterestNodes(doc, *month, *year)
+	nodes, err := findInterestNodes(doc, month, year)
 	if err != nil {
-		log.Fatalf("Error trying to find link nodes of interest: %q", err)
+		return nil, fmt.Errorf("Error trying to find link nodes of interest: %q", err)
 	}
 
-	for typ, url := range fileURLsFromInterestNodes(nodes, *month, *year) {
-		if err = save(typ, url); err != nil {
-			log.Fatalf("Error trying to save file: %q", err)
+	for typ, url := range fileURLsFromInterestNodes(nodes, month, year) {
+		fp, err := save(outputFolder, typ, url)
+		if err != nil {
+			return nil, fmt.Errorf("Error trying to save file: %q", err)
 		}
+		files = append(files, fp)
 	}
+	return files, nil
 }
 
 // loadURL loads the HTML document from the specified URL, parses it and returns the root node of the document.
@@ -93,7 +89,6 @@ func findInterestNodes(doc *html.Node, month, year int) ([]*html.Node, error) {
 	if year <= 2012 {
 		xpath = fmt.Sprintf("//ul[@id=\"arquivos-%04d\"]//a[contains(text(), '%s %04d')]", year, monthStr[month], year)
 	}
-
 	nodeList := htmlquery.Find(doc, xpath)
 	if len(nodeList) == 0 {
 		return nil, fmt.Errorf("couldn't find any link for %02d-%04d", month, year)
@@ -112,19 +107,22 @@ func fileName(href string, month, year int) string {
 }
 
 // save downloads content from url and save it on a file.
-func save(typ string, url string) error {
-	fileName := fmt.Sprintf("%s.pdf", typ)
-	f, err := os.Create(fileName)
+func save(outputPath, typ, url string) (string, error) {
+	filePath, err := filepath.Abs(filepath.Join(outputPath, fmt.Sprintf("%s.pdf", typ)))
 	if err != nil {
-		return fmt.Errorf("error creating file(%s):%q", fileName, err)
+		return "", fmt.Errorf("filePath.Abs() error: %q", err)
+	}
+	f, err := os.Create(filePath)
+	if err != nil {
+		return "", fmt.Errorf("error creating file(%s):%q", filePath, err)
 	}
 	defer f.Close()
 
 	if err = download(url, f); err != nil {
-		os.Remove(fileName)
-		return fmt.Errorf("error while downloading content: %q", err)
+		os.Remove(filePath)
+		return "", fmt.Errorf("error while downloading content: %q", err)
 	}
-	return nil
+	return filePath, nil
 }
 
 // download gets content from url and copy it to an io.Writer.
