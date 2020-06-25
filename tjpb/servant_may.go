@@ -13,14 +13,11 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-var (
-	templateArea = []string{"88.928,16.838,557.246,102.083",
+func parserServerMay(path string) ([]storage.Employee, error) {
+	templateArea := []string{"88.928,16.838,557.246,102.083",
 		"88.928,97.873,546.722,213.637",
 		"89.98,207.323,557.246,360.973",
 		"93.137,358.868,557.246,815.61"}
-)
-
-func parserServerMay(path string) ([]storage.Employee, error) {
 	var csvByte [][]byte
 	var csvFinal [][]string
 	for _, templ := range templateArea {
@@ -34,12 +31,13 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 		reader := csv.NewReader(&outb)
 		rows, err := reader.ReadAll()
 		if err != nil {
+			//TODO CHECK ERROR
 			os.Exit(1)
 		}
 		if len(rows[0]) > 1 {
-			rows = fixColOfNumbers(rows)
+			rows = fixNumberColumns(rows)
 		}
-		csvFinal = joinCsv(csvFinal, rows)
+		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
 	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
 	if err != nil {
@@ -52,20 +50,24 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 	return []storage.Employee{}, nil
 }
 
-func joinCsv(mountedCsv, csv [][]string) [][]string {
-	if len(mountedCsv) == 0 {
-		mountedCsv = csv
+//TODO UNIT TEST
+//appendCSVColumns receives a base csv and append columns of a new csv to the right.
+func appendCSVColumns(baseCSV, newCols [][]string) [][]string {
+	if len(baseCSV) == 0 {
+		baseCSV = newCols
 	} else {
-		for i := 0; i < len(csv); i++ {
+		for i := 0; i < len(newCols); i++ {
 			var newElement []string
-			newElement = append(newElement, csv[i]...)
-			mountedCsv[i] = append(mountedCsv[i], newElement...)
+			newElement = append(newElement, newCols[i]...)
+			baseCSV[i] = append(baseCSV[i], newElement...)
 		}
 	}
-	return mountedCsv
+	return baseCSV
 }
 
-func fixColOfNumbers(rows [][]string) [][]string {
+//TODO Unit Test
+//fixNumberColumns fix and formats columns that should only contain numbers.
+func fixNumberColumns(rows [][]string) [][]string {
 	reg := regexp.MustCompile(`[a-zA-Z_  /]`)
 	for i := range rows {
 		for j := range rows[i] {

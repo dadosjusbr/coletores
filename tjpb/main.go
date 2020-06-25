@@ -40,6 +40,7 @@ func main() {
 		logError("Crawl(%d,%d) error: %q", *month, *year, outputFolder, err)
 		os.Exit(1)
 	}
+	//TODO - Check MOnth And Year
 	fmt.Println(files)
 	teste := "sample.pdf"
 	parserServerMay(teste)
