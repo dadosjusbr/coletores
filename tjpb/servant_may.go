@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -21,6 +20,9 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 	var csvByte [][]byte
 	var csvFinal [][]string
 	for i, templ := range templateArea {
+		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
+		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
+		//one or more columns in the table.
 		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, filepath.Base(path)), " ")
 		cmd := exec.Command(cmdList[0], cmdList[1:]...)
 		var outb, errb bytes.Buffer
@@ -51,62 +53,5 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 	writer.WriteAll(csvFinal)
-
 	return []storage.Employee{}, nil
-}
-
-//TODO UNIT TEST
-//appendCSVColumns receives a base csv and append columns of a new csv to the right.
-func appendCSVColumns(mountedCsv, csv [][]string) [][]string {
-	if len(mountedCsv) == 0 {
-		for i := range csv {
-			if strings.Contains(csv[i][0], "Legenda das") {
-				break
-			}
-			mountedCsv = append(mountedCsv, csv[i])
-		}
-	} else {
-		for i := 0; i < len(mountedCsv); i++ {
-			var newElement []string
-			newElement = append(newElement, csv[i]...)
-			mountedCsv[i] = append(mountedCsv[i], newElement...)
-		}
-	}
-	return mountedCsv
-}
-
-//TODO Unit Test
-//fixNumberColumns fix and formats columns that should only contain numbers.
-func fixNumberColumns(rows [][]string) [][]string {
-	reg := regexp.MustCompile(`[a-zA-Z_  /]`)
-	for i := range rows {
-		for j := range rows[i] {
-			rows[i][j] = reg.ReplaceAllString(rows[i][j], "${1}")
-		}
-	}
-	return rows
-}
-
-//TODO Unit Test
-//treatDoubleLines fix cels widh double lines based in other colunm without double line.
-func treatDoubleLines(rows [][]string) [][]string {
-	reg := regexp.MustCompile(`(\d+)( *[\.,]( *\d*( *\d))| +)+`)
-	var fixedCsv [][]string
-	for i := range rows {
-		rows[i][0] = reg.ReplaceAllString(rows[i][0], "")
-		fmt.Println(rows[i][0])
-		rowFixed := []string{}
-		if strings.Contains(rows[i][0], "ras desta natureza") {
-			return fixedCsv
-		}
-		fmt.Println(i)
-		if rows[i][2] == "" {
-			rows[i+1][0] = rows[i][0] + rows[i+1][0]
-			continue
-		}
-		fmt.Println(i)
-		rowFixed = append(rowFixed, rows[i][0])
-		fixedCsv = append(fixedCsv, rowFixed)
-	}
-	return fixedCsv
 }
