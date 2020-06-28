@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
+	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dadosjusbr/storage"
@@ -20,13 +21,14 @@ func main() {
 	if outputFolder == "" {
 		outputFolder = "./output"
 	}
-
-	month := flag.Int("mes", 0, "Mês a ser analisado")
-	year := flag.Int("ano", 0, "Ano a ser analisado")
-	flag.Parse()
-
-	if *month == 0 || *year == 0 {
-		logError("Month or year not provided. Please provide those to continue. --mes={} --ano={}\n")
+	month, err := strconv.Atoi(os.Getenv("MONTH"))
+	if err != nil {
+		logError("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)
+		os.Exit(1)
+	}
+	year, err := strconv.Atoi(os.Getenv("YEAR"))
+	if err != nil {
+		logError("Invalid year (\"%s\"): %q", os.Getenv("YEAR"), err)
 		os.Exit(1)
 	}
 
@@ -35,16 +37,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	files, err := crawl(outputFolder, *month, *year)
+	files, err := crawl(outputFolder, month, year)
 	if err != nil {
-		logError("Crawl(%d,%d) error: %q", *month, *year, outputFolder, err)
+		logError("Crawl(%d,%d) error: %q", month, year, outputFolder, err)
 		os.Exit(1)
 	}
 	//TODO - Check MOnth And Year
 	fmt.Println(files)
 	teste := "transparencia_202005_servidores2_0.pdf"
-	parserServerMay(teste)
-
+	emps, err := parserServerMay(teste)
+	if err != nil {
+		logError("parserServerMay error: %q", err)
+		os.Exit(1)
+	}
+	cr := newCrawlingResult(emps, files, month, year)
+	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	if err != nil {
+		logError("JSON marshaling error: %q", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%s", string(crJSON))
 }
 
 func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
