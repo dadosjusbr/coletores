@@ -39,7 +39,7 @@ func main() {
 
 	files, err := crawl(outputFolder, month, year)
 	if err != nil {
-		logError("Crawl(%d,%d) error: %q", month, year, outputFolder, err)
+		logError("Error crawling (%d,%d,%s) error: %q", month, year, outputFolder, err)
 		os.Exit(1)
 	}
 	//TODO - Check MOnth And Year
@@ -47,7 +47,7 @@ func main() {
 	teste := "transparencia_202005_servidores2_0.pdf"
 	emps, err := parserServerMay(teste)
 	if err != nil {
-		logError("parserServerMay error: %q", err)
+		logError("error parsing servant may: %q", err)
 		os.Exit(1)
 	}
 	cr := newCrawlingResult(emps, files, month, year)

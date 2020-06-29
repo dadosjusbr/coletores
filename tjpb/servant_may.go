@@ -2,9 +2,7 @@ package main
 
 import (
 	"bytes"
-	"encoding/csv"
 	"fmt"
-	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,27 +10,28 @@ import (
 	"strings"
 
 	"github.com/dadosjusbr/storage"
+	"github.com/gocarina/gocsv"
 )
 
-var headersMap = map[string]int{
-	"NOME":                           0,
-	"CARGO":                          1,
-	"LOTAÇÃO":                        2,
-	"REMUNERAÇÃO PARADIGMA":          3,
-	"VANTAGENS PESSOAIS":             4,
-	"FUNÇÃO DE CONFIANÇA":            5,
-	"INDENIZAÇÕES":                   6,
-	"VANTAGENS EVENTUAIS":            7,
-	"GRATIFICACOES":                  8,
-	"TOTAL CREDITOS":                 9,
-	"PREVIDENCIA PUBLICA":            10,
-	"IMPOSTO DE RENDA":               11,
-	"DESCONTOS DIVERSOS":             12,
-	"RETENÇÃO":                       13,
-	"TOTAL DEBITOS":                  14,
-	"RENDIMENTO LIQUIDO":             15,
-	"REMUNERACAO DO ORGAO DE ORIGEM": 16,
-	"DIARIAS":                        17,
+type servantMay struct { // Our example struct, you can use "-" to ignore a field
+	Name             string   `csv:"name"`
+	Role             string   `csv:"role"`
+	Workplace        string   `csv:"workplace"`
+	Wage             *float64 `csv:"wage"`
+	PersonalBenefits *float64 `csv:"personalBenefits"`
+	PositionOfTrust  *float64 `csv:"positionOfTrust"`
+	Perks            *float64 `csv:"perks"`
+	EventualBenefits *float64 `csv:"eventualBenefits"`
+	Gratification    *float64 `csv:"gratification"`
+	TotalIncome      *float64 `csv:"totalIncome"`
+	PrevContribution *float64 `csv:"prevContribution"`
+	IncomeTax        *float64 `csv:"incomeTax"`
+	OthersDisc       *float64 `csv:"othersDisc"`
+	CeilRetention    *float64 `csv:"ceilRetention"`
+	TotalDisc        *float64 `csv:"totalDisc"`
+	IncomeFinal      *float64 `csv:"incomeFinal"`
+	OriginPosition   *float64 `csv:"originPosition"`
+	Daily            *float64 `csv:"daily"`
 }
 
 func parserServerMay(path string) ([]storage.Employee, error) {
@@ -41,7 +40,7 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 		"94.19,209.428,547.774,824.029",
 		"94.19,360.973,548.827,818.767"}
 	var csvByte [][]byte
-	var csvFinal [][]string
+	csvFinal := setHeaders()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
@@ -53,10 +52,10 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 		cmd.Stderr = &errb
 		cmd.Run()
 		csvByte = append(csvByte, outb.Bytes())
-		reader := csv.NewReader(&outb)
+		reader := gocsv.DefaultCSVReader(&outb)
 		rows, err := reader.ReadAll()
 		if err != nil {
-			//TODO CHECK ERROR
+			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
 		if i == 2 {
@@ -67,172 +66,96 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 		}
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
-	employees, err := genEmpSlice(csvFinal)
-	if err != nil {
-		return []storage.Employee{}, fmt.Errorf("Error generating  Employee slice %v", err)
-	}
 	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
 	if err != nil {
 		logError("Error creating csv: %q", err)
+		os.Exit(1)
 	}
 	defer file.Close()
-	writer := csv.NewWriter(file)
+	writer := gocsv.DefaultCSVWriter(file)
 	defer writer.Flush()
 	writer.WriteAll(csvFinal)
+	clientsFile, err := os.OpenFile(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		logError("Error oppening csv: %v", err)
+		os.Exit(1)
+	}
+	defer clientsFile.Close()
+	servMay := []servantMay{}
+	if err := gocsv.UnmarshalFile(clientsFile, &servMay); err != nil { // Load Employees from file
+		logError("Error Unmarshalling json to servantMay csv: %v", err)
+	}
+	employees := toEmployee(servMay)
 	return employees, nil
 }
 
-func genEmpSlice(empCSV [][]string) ([]storage.Employee, error) {
+//setHeaders Set headers to CSV based on his pdf template.
+func setHeaders() [][]string {
+	var csvFinal [][]string
+	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "positionOfTrust",
+		"perks", "eventualBenefits", "gratification", "totalIncome", "prevContribution", "incomeTax",
+		"othersDisc", "ceilRetention", "totalDisc", "incomeFinal", "originPosition", "daily"}
+	return append(csvFinal, headers)
+}
+
+//toEmployee Receives a []servantMay and transform it into a []storage.Employee
+func toEmployee(servMay []servantMay) []storage.Employee {
 	var empSet []storage.Employee
-	var err error
-	for i := range empCSV {
+	for i := range servMay {
 		var emp = storage.Employee{}
-		emp.Name = empCSV[i][0]
-		emp.Role = empCSV[i][1]
+		emp.Name = servMay[i].Name
+		emp.Role = servMay[i].Role
 		emp.Type = "servidor"
-		emp.Workplace = empCSV[i][2]
-		emp.Active = employeeActive(empCSV[i][1])
-		emp.Income, err = employeeIncome(empCSV[i])
-		if err != nil {
-			return []storage.Employee{}, fmt.Errorf("Error generating income of Employee slice %v", err)
-		}
-		emp.Discounts, err = employeeDiscountInfo(empCSV[i])
-		if err != nil {
-			return []storage.Employee{}, fmt.Errorf("Error generating Discounts of Employee slice %v", err)
-		}
+		emp.Workplace = servMay[i].Workplace
+		emp.Active = employeeActive(servMay[i].Role)
+		emp.Income = employeeIncome(servMay[i])
+		emp.Discounts = employeeDiscountInfo(servMay[i])
 		empSet = append(empSet, emp)
 	}
-	return empSet, nil
+	return empSet
 }
 
-func employeeDiscountInfo(emp []string) (*storage.Discount, error) {
+//employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
+func employeeDiscountInfo(emp servantMay) *storage.Discount {
 	var d storage.Discount
-	if err := retrieveFloat64(&d.PrevContribution, emp, 10); err != nil {
-		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&d.CeilRetention, emp, 13); err != nil {
-		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&d.IncomeTax, emp, 11); err != nil {
-		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&d.Total, emp, 14); err != nil {
-		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
-	}
-	var diversos float64
-	if err := retrieveFloat64(&diversos, emp, 12); err != nil {
-		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
-	}
-	d.Others = map[string]float64{"Descontos Diversos": diversos}
-	return &d, nil
-}
-
-func retrieveFloat64(v interface{}, emp []string, key int) error {
-	var err error
-	var value float64
-	valueStr := emp[key]
-	if valueStr == "" {
-		value = 0.0
-	} else {
-		value, err = parseFloat(valueStr)
-		if err != nil {
-			return fmt.Errorf("error retrieving float %v from %v: %v", key, emp, err)
-		}
-	}
-	if v, ok := v.(**float64); ok {
-		*v = &value
-		return nil
-	}
-	if v, ok := v.(*float64); ok {
-		*v = value
-		return nil
-	}
-	return fmt.Errorf("error retrieving float %v: %v must be *float64 or **float64", key, emp)
+	d.CeilRetention = emp.CeilRetention
+	d.IncomeTax = emp.IncomeTax
+	d.PrevContribution = emp.PrevContribution
+	d.Total = *emp.TotalDisc
+	d.Others = make(map[string]float64)
+	d.Others["Descontos Diversos"] = *emp.OthersDisc
+	return &d
 }
 
 // parseFloat makes the string with format "xx.xx,xx" able to be parsed by the strconv.ParseFloat and return it parsed.
 func parseFloat(s string) (float64, error) {
 	s = strings.Trim(s, " ")
-	s = strings.Replace(s, ",", ".", 1)
-	if n := strings.Count(s, "."); n > 1 {
-		s = strings.Replace(s, ".", "", n-1)
-	}
+	s = strings.Replace(s, ".", "", -1)
+	s = strings.Replace(s, ",", ".", -1)
 	return strconv.ParseFloat(s, 64)
 }
 
-// getValue takes a list of float64 pointers and returns it's sum, 0 if nil
-func getFloat64Value(pointers ...*float64) float64 {
-	var total float64
-	for _, p := range pointers {
-		if p == nil {
-			total += 0
-			continue
-		}
-		total += *p
-	}
-	return math.Round(total*100) / 100.0
-}
-
+// employeeActive Checks if a role of a employee has words that indicate that the servant is inactive
 func employeeActive(cargo string) bool {
 	return (strings.Contains(cargo, "Inativos") || strings.Contains(cargo, "aposentados")) == false
 }
 
-func employeeIncome(emp []string) (*storage.IncomeDetails, error) {
-	var err error
-	var in storage.IncomeDetails
-	if err = retrieveFloat64(&in.Wage, emp, 3); err != nil {
-		return nil, fmt.Errorf("error retrieving employee income info: %q", err)
-	}
-	if in.Perks, err = employeePerks(emp); err != nil {
-		return nil, fmt.Errorf("error retrieving employee perks: %q", err)
-	}
-	if in.Other, err = employeeIncomeFunds(emp); err != nil {
-		return nil, fmt.Errorf("error retrieving employee funds: %q", err)
-	}
-	in.Total = totalIncome(in)
-	return &in, nil
-}
-
-func employeePerks(emp []string) (*storage.Perks, error) {
-	var inPerks storage.Perks
-
-	if err := retrieveFloat64(&inPerks.Total, emp, 6); err != nil {
-		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", emp[0], err)
-	}
-	return &inPerks, nil
-}
-
-func employeeIncomeFunds(emp []string) (*storage.Funds, error) {
-	var o storage.Funds
-	if err := retrieveFloat64(&o.PositionOfTrust, emp, 5); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&o.PersonalBenefits, emp, 4); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&o.EventualBenefits, emp, 7); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&o.Gratification, emp, 8); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&o.OriginPosition, emp, 16); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	if err := retrieveFloat64(&o.Daily, emp, 17); err != nil {
-		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
-	}
-	o.Total = *o.PositionOfTrust + *o.EventualBenefits + *o.Gratification + *o.PersonalBenefits + *o.Daily + *o.OriginPosition
-	return &o, nil
-}
-
-func totalIncome(in storage.IncomeDetails) float64 {
-	total := getFloat64Value(in.Wage)
-	if in.Other != nil {
-		total += in.Other.Total
-	}
-	if in.Perks != nil {
-		total += in.Perks.Total
-	}
-	return math.Round(total*100) / 100
+//employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
+func employeeIncome(emp servantMay) *storage.IncomeDetails {
+	in := storage.IncomeDetails{}
+	perks := storage.Perks{}
+	other := storage.Funds{}
+	in.Wage = emp.Wage
+	perks.Total = *emp.Perks
+	other.PositionOfTrust = emp.PositionOfTrust
+	other.PersonalBenefits = emp.PersonalBenefits
+	other.Gratification = emp.Gratification
+	other.Daily = emp.Daily
+	other.EventualBenefits = emp.EventualBenefits
+	other.OriginPosition = emp.OriginPosition
+	other.Total = *other.PositionOfTrust + *other.PersonalBenefits + *other.Gratification + *other.Daily + *other.EventualBenefits + *other.OriginPosition
+	in.Perks = &perks
+	in.Other = &other
+	in.Total = *in.Wage + in.Other.Total + in.Perks.Total
+	return &in
 }
