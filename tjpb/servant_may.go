@@ -137,7 +137,7 @@ func parseFloat(s string) (float64, error) {
 
 // employeeActive Checks if a role of a employee has words that indicate that the servant is inactive
 func employeeActive(cargo string) bool {
-	return (strings.Contains(cargo, "Inativos") || strings.Contains(cargo, "aposentados")) == false
+	return !strings.Contains(cargo, "Inativos") && !strings.Contains(cargo, "aposentados")
 }
 
 //employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
