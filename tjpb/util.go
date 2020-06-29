@@ -17,7 +17,7 @@ func logError(format string, args ...interface{}) {
 //TODO UNIT TEST
 //appendCSVColumns receives a base csv and append columns of a new csv to the right.
 func appendCSVColumns(baseCSV, newColumns [][]string) [][]string {
-	if len(baseCSV) == 0 {
+	if len(baseCSV) == 1 {
 		for i := range newColumns {
 			if strings.Contains(newColumns[i][0], "Legenda das") {
 				break
@@ -25,10 +25,10 @@ func appendCSVColumns(baseCSV, newColumns [][]string) [][]string {
 			baseCSV = append(baseCSV, newColumns[i])
 		}
 	} else {
-		for i := 0; i < len(baseCSV); i++ {
+		for i := 0; i < len(baseCSV)-1; i++ {
 			var newElement []string
 			newElement = append(newElement, newColumns[i]...)
-			baseCSV[i] = append(baseCSV[i], newElement...)
+			baseCSV[i+1] = append(baseCSV[i+1], newElement...)
 		}
 	}
 	return baseCSV
@@ -40,7 +40,9 @@ func fixNumberColumns(rows [][]string) [][]string {
 	reg := regexp.MustCompile(`[a-zA-Z_  /]`)
 	for i := range rows {
 		for j := range rows[i] {
-			rows[i][j] = reg.ReplaceAllString(rows[i][j], "${1}")
+			var aux float64
+			aux, _ = parseFloat(reg.ReplaceAllString(rows[i][j], "${1}"))
+			rows[i][j] = fmt.Sprintf("%v", aux)
 		}
 	}
 	return rows
