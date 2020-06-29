@@ -40,7 +40,7 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 		"94.19,209.428,547.774,824.029",
 		"94.19,360.973,548.827,818.767"}
 	var csvByte [][]byte
-	csvFinal := setHeaders()
+	csvFinal := headers()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
@@ -90,7 +90,7 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 }
 
 //setHeaders Set headers to CSV based on his pdf template.
-func setHeaders() [][]string {
+func headers() [][]string {
 	var csvFinal [][]string
 	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "positionOfTrust",
 		"perks", "eventualBenefits", "gratification", "totalIncome", "prevContribution", "incomeTax",
