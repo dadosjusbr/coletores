@@ -120,7 +120,7 @@ func writeAgencyMonthlyInfo(cr storage.CrawlingResult) ([][]string, error) {
 
 // empInfo returns the employee as a csv line.
 func empInfo(e storage.Employee) string {
-	basicInfo := fmt.Sprintf("%q, %q, %q, %q, %q, %t,", e.Reg, e.Name, e.Role, e.Type, e.Workplace, e.Active)
+	basicInfo := fmt.Sprintf("%q, %q, %q, %q, %q, %t,", e.Reg, strings.ReplaceAll(e.Name, ",", "-"), strings.ReplaceAll(e.Role, ",", "-"), e.Type, strings.ReplaceAll(e.Workplace, ",", "-"), e.Active)
 	income := incomeInfo(e.Income)
 	discounts := discountInfo(e.Discounts)
 	line := basicInfo + income + discounts
