@@ -14,7 +14,9 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-type servant struct { // Our example struct, you can use "-" to ignore a field
+// servang_bef_may.go parse all servants.pdf before may/2020.
+
+type servBefMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
 	Role             string   `csv:"role"`
 	Workplace        string   `csv:"workplace"`
@@ -33,7 +35,7 @@ type servant struct { // Our example struct, you can use "-" to ignore a field
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserServer(path string) ([]storage.Employee, error) {
+func parserServBefMay(path string) ([]storage.Employee, error) {
 	templateArea := []string{"94.19,13.681,545.669,109.45",
 		"94.19,106.292,545.669,228.371",
 		"96.295,226.266,544.617,499.89",
@@ -79,7 +81,7 @@ func parserServer(path string) ([]storage.Employee, error) {
 		os.Exit(1)
 	}
 	defer clientsFile.Close()
-	serv := []servant{}
+	serv := []servBefMay{}
 	if err := gocsv.UnmarshalFile(clientsFile, &serv); err != nil { // Load Employees from file
 		logError("Error Unmarshalling CSV to servantMay csv: %v", err)
 	}
@@ -97,7 +99,7 @@ func headers() [][]string {
 }
 
 //toEmployee Receives a []servantMay and transform it into a []storage.Employee
-func toEmployee(serv []servant) []storage.Employee {
+func toEmployee(serv []servBefMay) []storage.Employee {
 	var empSet []storage.Employee
 	for i := range serv {
 		var emp = storage.Employee{}
@@ -114,7 +116,7 @@ func toEmployee(serv []servant) []storage.Employee {
 }
 
 //employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
-func employeeDisc(emp servant) *storage.Discount {
+func employeeDisc(emp servBefMay) *storage.Discount {
 	var d storage.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
@@ -126,7 +128,7 @@ func employeeDisc(emp servant) *storage.Discount {
 }
 
 //employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncome(emp servant) *storage.IncomeDetails {
+func employeeIncome(emp servBefMay) *storage.IncomeDetails {
 	in := storage.IncomeDetails{}
 	perks := storage.Perks{}
 	other := storage.Funds{}
