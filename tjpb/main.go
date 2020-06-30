@@ -45,6 +45,7 @@ func main() {
 	//TODO - Check MOnth And Year
 	fmt.Println(files)
 	teste := "transparencia_202005_servidores2_0.pdf"
+	//teste2 := "transparencia_202004_servidores_0_0.pdf"
 	emps, err := parserServerMay(teste)
 	if err != nil {
 		logError("error parsing servant may: %q", err)
