@@ -36,6 +36,7 @@ type servBefMay struct { // Our example struct, you can use "-" to ignore a fiel
 }
 
 func parserServBefMay(path string) ([]storage.Employee, error) {
+	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"94.19,13.681,545.669,109.45",
 		"94.19,106.292,545.669,228.371",
 		"96.295,226.266,544.617,499.89",
@@ -57,13 +58,15 @@ func parserServBefMay(path string) ([]storage.Employee, error) {
 			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
+		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
 			rows = treatDoubleLines(rows)
 		}
+		// When the templ refers to column of numbers, treating cels to format numbers and
+		// remove characters.
 		if i == 3 {
 			rows = fixNumberColumns(rows)
 		}
-		fmt.Println(rows)
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
 	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
@@ -75,15 +78,19 @@ func parserServBefMay(path string) ([]storage.Employee, error) {
 	writer := gocsv.DefaultCSVWriter(file)
 	defer writer.Flush()
 	writer.WriteAll(csvFinal)
-	clientsFile, err := os.OpenFile(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
+	//TODO uses status lib to format errors.
+	clientsFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
-		logError("Error oppening csv: %v", err)
+		logError("Error oppening csv: %v, error: %v", fileName, err)
 		os.Exit(1)
 	}
 	defer clientsFile.Close()
 	serv := []servBefMay{}
+	//TODO uses status lib to format errors.
 	if err := gocsv.UnmarshalFile(clientsFile, &serv); err != nil { // Load Employees from file
-		logError("Error Unmarshalling CSV to servantMay csv: %v", err)
+		logError("Error Unmarshalling CSV to servantBefMay csv: %v, error: ", fileName, err)
+		os.Exit(1)
 	}
 	employees := toEmployee(serv)
 	return employees, nil
@@ -102,15 +109,15 @@ func headers() [][]string {
 func toEmployee(serv []servBefMay) []storage.Employee {
 	var empSet []storage.Employee
 	for i := range serv {
-		var emp = storage.Employee{}
-		emp.Name = serv[i].Name
-		emp.Role = serv[i].Role
-		emp.Type = "servidor"
-		emp.Workplace = serv[i].Workplace
-		emp.Active = employeeActive(serv[i].Role)
-		emp.Income = employeeIncome(serv[i])
-		emp.Discounts = employeeDisc(serv[i])
-		empSet = append(empSet, emp)
+		empSet = append(empSet, storage.Employee{
+			Name:      serv[i].Name,
+			Role:      serv[i].Role,
+			Type:      "servidor",
+			Workplace: serv[i].Workplace,
+			Active:    employeeActive(serv[i].Role),
+			Income:    employeeIncome(serv[i]),
+			Discounts: employeeDisc(serv[i]),
+		})
 	}
 	return empSet
 }
