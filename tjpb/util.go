@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -74,4 +75,17 @@ func treatDoubleLines(rows [][]string) [][]string {
 		fixedCsv = append(fixedCsv, rowFixed)
 	}
 	return fixedCsv
+}
+
+// parseFloat makes the string with format "xx.xx,xx" able to be parsed by the strconv.ParseFloat and return it parsed.
+func parseFloat(s string) (float64, error) {
+	s = strings.Trim(s, " ")
+	s = strings.Replace(s, ".", "", -1)
+	s = strings.Replace(s, ",", ".", -1)
+	return strconv.ParseFloat(s, 64)
+}
+
+// employeeActive Checks if a role of a employee has words that indicate that the servant is inactive
+func employeeActive(cargo string) bool {
+	return !strings.Contains(cargo, "Inativos") && !strings.Contains(cargo, "aposentados")
 }
