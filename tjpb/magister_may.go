@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/csv"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,35 +12,34 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-// magister_may.go parse all servants.pdf after or equal may/2020.
-
 type magMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
 	Role             string   `csv:"role"`
 	Workplace        string   `csv:"workplace"`
 	Wage             *float64 `csv:"wage"`
 	PersonalBenefits *float64 `csv:"personalBenefits"`
-	Gratification    *float64 `csv:"gratification"`
+	Subsidy          *float64 `csv:"subsidy"`
 	Perks            *float64 `csv:"perks"`
 	EventualBenefits *float64 `csv:"eventualBenefits"`
+	Gratification    *float64 `csv:"gratification"`
+	TotalIncome      *float64 `csv:"totalIncome"`
 	PrevContribution *float64 `csv:"prevContribution"`
 	IncomeTax        *float64 `csv:"incomeTax"`
 	OthersDisc       *float64 `csv:"othersDisc"`
 	CeilRetention    *float64 `csv:"ceilRetention"`
 	TotalDisc        *float64 `csv:"totalDisc"`
-	TotalIncome      *float64 `csv:"totalIncome"`
 	IncomeFinal      *float64 `csv:"netIncome"`
+	OriginPosition   *float64 `csv:"originPosition"`
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserMagBefMay(path string) ([]storage.Employee, error) {
-	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"101.475,35.64,557.865,130.68",
-		"100.485,129.69,564.795,234.63",
-		"104.445,231.66,564.795,745.473",
-		"102.465,365.31,554.895,397.98",
-		"102.465,404.91,554.895,747.45"}
-	csvFinal := headersMag()
+func parserMagMay(path string) ([]storage.Employee, error) {
+	templateArea := []string{"93.137,16.838,550.931,103.135",
+		"94.19,99.978,544.617,211.532",
+		"93.137,209.428,548.827,817.715",
+		"94.19,368.34,545.669,827.186"}
+	var csvByte [][]byte
+	csvFinal := headersMagMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
@@ -52,91 +50,74 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Run()
-		reader := csv.NewReader(&outb)
-		reader.FieldsPerRecord = -1
+		csvByte = append(csvByte, outb.Bytes())
+		reader := setCSVReader(&outb)
 		rows, err := reader.ReadAll()
 		if err != nil {
 			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
-
-		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
-			// Pass rows and a knew invariable and non-empty column pos.
-			rows = treatDoubleLines(rows, 3)
+			rows = treatDoubleLines(rows, 2)
 		}
-		// When the templ refers to column of numbers, treating cels to format numbers and
-		// remove characters.
-		if i == 3 || i == 4 {
+		if i == 3 {
 			rows = fixNumberColumns(rows)
 		}
-		file, err := os.Create(fmt.Sprintf("%v.csv", i))
-		if err != nil {
-			logError("Error creating csv: %q", err)
-			os.Exit(1)
-		}
-		defer file.Close()
-		writer := gocsv.DefaultCSVWriter(file)
-		defer writer.Flush()
-		writer.WriteAll(rows)
-
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
+	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
 	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
 	if err != nil {
-		logError("Error creating csv: %q", err)
+		logError("Error creating csv: %v, error: %v", fileName, err)
 		os.Exit(1)
 	}
 	defer file.Close()
 	writer := gocsv.DefaultCSVWriter(file)
 	defer writer.Flush()
 	writer.WriteAll(csvFinal)
-	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
-	//TODO uses status lib to format errors.
-	clientsFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	clientsFile, err := os.OpenFile(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1), os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		logError("Error oppening csv: %v, error: %v", fileName, err)
 		os.Exit(1)
 	}
 	defer clientsFile.Close()
-	mag := []magBefMay{}
-	//TODO uses status lib to format errors.
-	if err := gocsv.UnmarshalFile(clientsFile, &mag); err != nil { // Load Employees from file
-		logError("Error Unmarshalling CSV to Magister before may csv: %v, error: ", fileName, err)
+	magMay := []magMay{}
+	if err := gocsv.UnmarshalFile(clientsFile, &magMay); err != nil { // Load Employees from file
+		logError("Error Unmarshalling json to magisterMay csv: %v, error: %v", fileName, err)
 		os.Exit(1)
 	}
-	employees := toEmployeeMag(mag)
+	employees := toEmployeeMagMay(magMay)
 	return employees, nil
 }
 
 //setHeaders Set headers to CSV based on his pdf template.
-func headersMag() [][]string {
+func headersMagMay() [][]string {
 	var csvFinal [][]string
-	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "gratification",
-		"perks", "eventualBenefits", "prevContribution", "incomeTax",
-		"othersDisc", "ceilRetention", "totalDisc", "totalIncome", "netIncome", "daily"}
+	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "subsidy",
+		"perks", "eventualBenefits", "gratification", "totalIncome", "prevContribution", "incomeTax",
+		"othersDisc", "ceilRetention", "totalDisc", "netIncome", "originPosition", "daily"}
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []servBefMay and transform it into a []storage.Employee
-func toEmployeeMag(mag []magBefMay) []storage.Employee {
+//toEmployee Receives a []servantMay and transform it into a []storage.Employee
+func toEmployeeMagMay(magMay []magMay) []storage.Employee {
 	var empSet []storage.Employee
-	for i := range mag {
-		empSet = append(empSet, storage.Employee{
-			Name:      mag[i].Name,
-			Role:      mag[i].Role,
-			Type:      "magistrado",
-			Workplace: mag[i].Workplace,
-			Active:    employeeActive(mag[i].Role),
-			Income:    employeeIncomeMag(mag[i]),
-			Discounts: employeeDiscMag(mag[i]),
-		})
+	for i := range magMay {
+		var emp = storage.Employee{}
+		emp.Name = magMay[i].Name
+		emp.Role = magMay[i].Role
+		emp.Type = "magistrado"
+		emp.Workplace = magMay[i].Workplace
+		emp.Active = employeeActive(magMay[i].Role)
+		emp.Income = employeeIncomeMagMay(magMay[i])
+		emp.Discounts = employeeDiscMagMay(magMay[i])
+		empSet = append(empSet, emp)
 	}
 	return empSet
 }
 
-//employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
-func employeeDiscMag(emp magBefMay) *storage.Discount {
+//employeeDiscountInfo receives a magisterMay, create a storage.Discount, match fields and return.
+func employeeDiscMagMay(emp magMay) *storage.Discount {
 	var d storage.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
@@ -147,18 +128,21 @@ func employeeDiscMag(emp magBefMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncomeMag(emp magBefMay) *storage.IncomeDetails {
+//employeeIncome receives a magisterMay, create a storage.IncomeDetails, match fields and return.
+// Wage
+func employeeIncomeMagMay(emp magMay) *storage.IncomeDetails {
 	in := storage.IncomeDetails{}
 	perks := storage.Perks{}
 	other := storage.Funds{}
-	in.Wage = emp.Wage
+	sumWage := *emp.Wage + *emp.Subsidy
+	in.Wage = &sumWage
 	perks.Total = *emp.Perks
-	other.Gratification = emp.Gratification
 	other.PersonalBenefits = emp.PersonalBenefits
+	other.Gratification = emp.Gratification
 	other.Daily = emp.Daily
 	other.EventualBenefits = emp.EventualBenefits
-	other.Total = *other.Gratification + *other.PersonalBenefits + *other.Daily + *other.EventualBenefits
+	other.OriginPosition = emp.OriginPosition
+	other.Total = *other.PersonalBenefits + *other.Gratification + *other.Daily + *other.EventualBenefits + *other.OriginPosition
 	in.Perks = &perks
 	in.Other = &other
 	in.Total = *in.Wage + in.Other.Total + in.Perks.Total
