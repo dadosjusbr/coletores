@@ -12,6 +12,8 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
+// servang_bef_may.go parse all servants.pdf after or equal may/2020.
+
 type servantMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
 	Role             string   `csv:"role"`
