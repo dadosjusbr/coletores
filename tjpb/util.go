@@ -58,7 +58,7 @@ func fixNumberColumns(rows [][]string) [][]string {
 // END
 // "CENTRAL DA INFORMACAO"
 //treatDoubleLines fix cels with double lines based in other colunm without double line.
-func treatDoubleLines(rows [][]string) [][]string {
+func treatDoubleLines(rows [][]string, col int) [][]string {
 	reg := regexp.MustCompile(`(\d+)( *[\.,]( *\d*( *\d))| +)+`)
 	var fixedCsv [][]string
 	for i := range rows {
@@ -67,7 +67,7 @@ func treatDoubleLines(rows [][]string) [][]string {
 		if strings.Contains(rows[i][0], "ras desta natureza") {
 			return fixedCsv
 		}
-		if rows[i][2] == "" {
+		if rows[i][col] == "" {
 			rows[i+1][0] = rows[i][0] + rows[i+1][0]
 			continue
 		}
