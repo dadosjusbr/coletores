@@ -12,6 +12,8 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
+// magistrate_may.go parse all magistrate.pdf before may/2020.
+
 type magMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
 	Role             string   `csv:"role"`
@@ -54,6 +56,7 @@ func parserMagMay(path string) ([]storage.Employee, error) {
 		reader := setCSVReader(&outb)
 		rows, err := reader.ReadAll()
 		if err != nil {
+			// TODO uses status lib to deal with errors.
 			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
@@ -66,28 +69,34 @@ func parserMagMay(path string) ([]storage.Employee, error) {
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
 	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
-	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
-	if err != nil {
+	//TODO output
+
+	if err := createCsv(fileName, csvFinal); err != nil {
 		logError("Error creating csv: %v, error: %v", fileName, err)
 		os.Exit(1)
 	}
-	defer file.Close()
-	writer := gocsv.DefaultCSVWriter(file)
-	defer writer.Flush()
-	writer.WriteAll(csvFinal)
-	clientsFile, err := os.OpenFile(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1), os.O_RDWR|os.O_CREATE, os.ModePerm)
+	magMay, err := csvToMagMay(fileName)
 	if err != nil {
-		logError("Error oppening csv: %v, error: %v", fileName, err)
-		os.Exit(1)
-	}
-	defer clientsFile.Close()
-	magMay := []magMay{}
-	if err := gocsv.UnmarshalFile(clientsFile, &magMay); err != nil { // Load Employees from file
-		logError("Error Unmarshalling json to magisterMay csv: %v, error: %v", fileName, err)
+		logError("Error parsing csv: %v, to struct.  error: %v", fileName, err)
 		os.Exit(1)
 	}
 	employees := toEmployeeMagMay(magMay)
 	return employees, nil
+}
+
+//csvToMagMay parse csv into []magMay struct.
+func csvToMagMay(fileName string) ([]magMay, error) {
+	magMay := []magMay{}
+	empFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
+	}
+	defer empFile.Close()
+	if err := gocsv.UnmarshalFile(empFile, &magMay); err != nil { // Load Employees from file
+		return nil, fmt.Errorf("Error Unmarshalling json to magisterMay csv: %v, error: %v", fileName, err)
+		os.Exit(1)
+	}
+	return magMay, nil
 }
 
 //setHeaders Set headers to CSV based on his pdf template.
