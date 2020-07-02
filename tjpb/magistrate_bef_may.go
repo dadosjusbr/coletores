@@ -13,7 +13,7 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-// magister_bef_may.go parse all servants.pdf before may/2020.
+// magistrate_bef_may.go parse all servants.pdf before may/2020.
 
 type magBefMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
@@ -41,7 +41,7 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		"104.445,231.66,564.795,745.473",
 		"102.465,365.31,554.895,397.98",
 		"102.465,404.91,554.895,747.45"}
-	csvFinal := headersMag()
+	csvFinal := headersMagBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
@@ -52,14 +52,18 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Run()
+
 		reader := csv.NewReader(&outb)
+		// Allow records to have a variable number of fields
+		// This template isnt simple to parse into records, so this line is to receive
+		// records the way it was possible and treat after.
 		reader.FieldsPerRecord = -1
+		// Reads csv from bytes buffer
 		rows, err := reader.ReadAll()
 		if err != nil {
 			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
-
 		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
 			// Pass rows and a knew invariable and non-empty column pos.
@@ -70,47 +74,40 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		if i == 3 || i == 4 {
 			rows = fixNumberColumns(rows)
 		}
-		file, err := os.Create(fmt.Sprintf("%v.csv", i))
-		if err != nil {
-			logError("Error creating csv: %q", err)
-			os.Exit(1)
-		}
-		defer file.Close()
-		writer := gocsv.DefaultCSVWriter(file)
-		defer writer.Flush()
-		writer.WriteAll(rows)
-
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
-	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
-	if err != nil {
-		logError("Error creating csv: %q", err)
-		os.Exit(1)
-	}
-	defer file.Close()
-	writer := gocsv.DefaultCSVWriter(file)
-	defer writer.Flush()
-	writer.WriteAll(csvFinal)
+	//TODO uses lib to format errors
 	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
-	//TODO uses status lib to format errors.
-	clientsFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err := createCsv(fileName, csvFinal); err != nil {
+		logError("Error creating csv: %v, error : %v", fileName, err)
+		os.Exit(1)
+	}
+	magBefMay, err := csvToMagBefMay(fileName)
 	if err != nil {
-		logError("Error oppening csv: %v, error: %v", fileName, err)
+		logError("Error creating csv: %v, error : %v", fileName, err)
 		os.Exit(1)
 	}
-	defer clientsFile.Close()
-	mag := []magBefMay{}
-	//TODO uses status lib to format errors.
-	if err := gocsv.UnmarshalFile(clientsFile, &mag); err != nil { // Load Employees from file
-		logError("Error Unmarshalling CSV to Magister before may csv: %v, error: ", fileName, err)
-		os.Exit(1)
-	}
-	employees := toEmployeeMag(mag)
+	employees := toEmployeeMagistrateBeforeMay(magBefMay)
 	return employees, nil
 }
 
+func csvToMagBefMay(fileName string) ([]magBefMay, error) {
+	//TODO uses status lib to format errors.
+	magistrateEmps, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
+	}
+	defer magistrateEmps.Close()
+	magBefMay := []magBefMay{}
+	//TODO uses status lib to format errors.
+	if err := gocsv.UnmarshalFile(magistrateEmps, &magBefMay); err != nil { // Load Employees from file
+		return nil, fmt.Errorf("Error Unmarshalling CSV to Magister before may csv: %v, error: %v", fileName, err)
+	}
+	return magBefMay, nil
+}
+
 //setHeaders Set headers to CSV based on his pdf template.
-func headersMag() [][]string {
+func headersMagBefMay() [][]string {
 	var csvFinal [][]string
 	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "gratification",
 		"perks", "eventualBenefits", "prevContribution", "incomeTax",
@@ -118,8 +115,8 @@ func headersMag() [][]string {
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []servBefMay and transform it into a []storage.Employee
-func toEmployeeMag(mag []magBefMay) []storage.Employee {
+//toEmployee Receives a []magBefMay and transform it into a []storage.Employee
+func toEmployeeMagistrateBeforeMay(mag []magBefMay) []storage.Employee {
 	var empSet []storage.Employee
 	for i := range mag {
 		empSet = append(empSet, storage.Employee{
@@ -128,15 +125,15 @@ func toEmployeeMag(mag []magBefMay) []storage.Employee {
 			Type:      "magistrado",
 			Workplace: mag[i].Workplace,
 			Active:    employeeActive(mag[i].Role),
-			Income:    employeeIncomeMag(mag[i]),
-			Discounts: employeeDiscMag(mag[i]),
+			Income:    employeeIncomeMagistrateBeforeMay(mag[i]),
+			Discounts: employeeDiscMagistrateBeforeMay(mag[i]),
 		})
 	}
 	return empSet
 }
 
-//employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
-func employeeDiscMag(emp magBefMay) *storage.Discount {
+//employeeDiscountInfo receives a magBefMay, create a storage.Discount, match fields and return.
+func employeeDiscMagistrateBeforeMay(emp magBefMay) *storage.Discount {
 	var d storage.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
@@ -147,8 +144,8 @@ func employeeDiscMag(emp magBefMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncomeMag(emp magBefMay) *storage.IncomeDetails {
+//employeeIncome receives a magBefMay, create a storage.IncomeDetails, match fields and return.
+func employeeIncomeMagistrateBeforeMay(emp magBefMay) *storage.IncomeDetails {
 	in := storage.IncomeDetails{}
 	perks := storage.Perks{}
 	other := storage.Funds{}

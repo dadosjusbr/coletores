@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gocarina/gocsv"
 )
 
 // logError prints to Stderr
@@ -88,4 +90,17 @@ func parseFloat(s string) (float64, error) {
 // employeeActive Checks if a role of a employee has words that indicate that the servant is inactive
 func employeeActive(cargo string) bool {
 	return !strings.Contains(cargo, "Inativos") && !strings.Contains(cargo, "aposentados")
+}
+
+// createCsv receive a fileName and a csv as [][]string, and creates a fileName.csv
+func createCsv(fileName string, csvFinal [][]string) error {
+	file, err := os.Create(fileName)
+	if err != nil {
+		return fmt.Errorf("Error creating csv: %v, error: %v", fileName, err)
+	}
+	defer file.Close()
+	writer := gocsv.DefaultCSVWriter(file)
+	defer writer.Flush()
+	writer.WriteAll(csvFinal)
+	return nil
 }
