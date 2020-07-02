@@ -12,6 +12,8 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
+// servang_bef_may.go parse all servants.pdf after or equal may/2020.
+
 type servantMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`
 	Role             string   `csv:"role"`
@@ -58,7 +60,8 @@ func parserServerMay(path string) ([]storage.Employee, error) {
 			os.Exit(1)
 		}
 		if i == 2 {
-			rows = treatDoubleLines(rows)
+			// Pass rows and a knew invariable and non-empty column pos.
+			rows = treatDoubleLines(rows, 2)
 		}
 		if i == 3 {
 			rows = fixNumberColumns(rows)

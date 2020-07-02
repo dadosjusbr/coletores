@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gocarina/gocsv"
 )
 
 // logError prints to Stderr
@@ -58,7 +60,7 @@ func fixNumberColumns(rows [][]string) [][]string {
 // END
 // "CENTRAL DA INFORMACAO"
 //treatDoubleLines fix cels with double lines based in other colunm without double line.
-func treatDoubleLines(rows [][]string) [][]string {
+func treatDoubleLines(rows [][]string, col int) [][]string {
 	reg := regexp.MustCompile(`(\d+)( *[\.,]( *\d*( *\d))| +)+`)
 	var fixedCsv [][]string
 	for i := range rows {
@@ -67,7 +69,7 @@ func treatDoubleLines(rows [][]string) [][]string {
 		if strings.Contains(rows[i][0], "ras desta natureza") {
 			return fixedCsv
 		}
-		if rows[i][2] == "" {
+		if rows[i][col] == "" {
 			rows[i+1][0] = rows[i][0] + rows[i+1][0]
 			continue
 		}
@@ -88,4 +90,17 @@ func parseFloat(s string) (float64, error) {
 // employeeActive Checks if a role of a employee has words that indicate that the servant is inactive
 func employeeActive(cargo string) bool {
 	return !strings.Contains(cargo, "Inativos") && !strings.Contains(cargo, "aposentados")
+}
+
+// createCsv receive a fileName and a csv as [][]string, and creates a fileName.csv
+func createCsv(fileName string, csvFinal [][]string) error {
+	file, err := os.Create(fileName)
+	if err != nil {
+		return fmt.Errorf("Error creating csv: %v, error: %v", fileName, err)
+	}
+	defer file.Close()
+	writer := gocsv.DefaultCSVWriter(file)
+	defer writer.Flush()
+	writer.WriteAll(csvFinal)
+	return nil
 }

@@ -60,7 +60,8 @@ func parserServBefMay(path string) ([]storage.Employee, error) {
 		}
 		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
-			rows = treatDoubleLines(rows)
+			// Pass rows and a knew invariable and non-empty column pos.
+			rows = treatDoubleLines(rows, 2)
 		}
 		// When the templ refers to column of numbers, treating cels to format numbers and
 		// remove characters.
