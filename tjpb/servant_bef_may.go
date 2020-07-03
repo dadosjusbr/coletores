@@ -92,7 +92,6 @@ func csvToStructServBefMay(fileName string) ([]servBefMay, error) {
 		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
 	}
 	defer servEmps.Close()
-	fmt.Println(fileName)
 	servBefMay := []servBefMay{}
 	//TODO uses status lib to format errors.
 	if err := gocsv.UnmarshalFile(servEmps, &servBefMay); err != nil { // Load Employees from file

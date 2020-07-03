@@ -86,28 +86,24 @@ func genEmployees(files []string, outputFolder string, month, year int) ([]strin
 		pathFixed = append(pathFixed, fmt.Sprintf("%v/%v", outputFolder, filepath.Base(f)))
 		switch {
 		case strings.Contains(f, "magistrados") && checkYM(month, year):
-			fmt.Println("Magistrate may", pathFixed[i])
 			emps, err := parserMagMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing magistrate may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		case strings.Contains(f, "servidores") && checkYM(month, year):
-			fmt.Println("Server may", pathFixed[i])
 			emps, err := parserServerMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing servant may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		case strings.Contains(f, "magistrados") && !checkYM(month, year):
-			fmt.Println("MAGBEF may", pathFixed[i])
 			emps, err := parserMagBefMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		default:
-			fmt.Println("SERVBEF may", pathFixed[i])
 			emps, err := parserServBefMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing servant before may: %v", err)
@@ -116,6 +112,5 @@ func genEmployees(files []string, outputFolder string, month, year int) ([]strin
 		}
 		files = append(files, strings.Replace(f, ".pdf", ".csv", 1))
 	}
-	fmt.Println(files)
 	return files, allEmployees, nil
 }

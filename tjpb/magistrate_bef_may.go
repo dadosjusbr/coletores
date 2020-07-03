@@ -97,13 +97,8 @@ func csvToMagBefMay(fileName string) ([]magBefMay, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
 	}
-	fmt.Println(fileName, "CSV TO MAG BEF MAY")
 	defer magistrateEmps.Close()
-	/*
-		reader := csv.NewReader(magistrateEmps)
-		teste, _ := reader.ReadAll()
-		fmt.Println(teste)
-	*/
+
 	magBefMay := []magBefMay{}
 	//TODO uses status lib to format errors.
 	if err := gocsv.UnmarshalFile(magistrateEmps, &magBefMay); err != nil { // Load Employees from file
