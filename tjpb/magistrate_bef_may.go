@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -46,13 +45,12 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
 		//one or more columns in the table.
-		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, filepath.Base(path)), " ")
+		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, path), " ")
 		cmd := exec.Command(cmdList[0], cmdList[1:]...)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
 		cmd.Run()
-
 		reader := csv.NewReader(&outb)
 		// Allow records to have a variable number of fields
 		// This template isnt simple to parse into records, so this line is to receive
@@ -76,8 +74,9 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 		}
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
+
 	//TODO uses lib to format errors
-	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
+	fileName := strings.Replace(path, ".pdf", ".csv", 1)
 	if err := createCsv(fileName, csvFinal); err != nil {
 		logError("Error creating csv: %v, error : %v", fileName, err)
 		os.Exit(1)
@@ -91,13 +90,20 @@ func parserMagBefMay(path string) ([]storage.Employee, error) {
 	return employees, nil
 }
 
+//csvToMagBefMay parse csv into []magBefMay struct.
 func csvToMagBefMay(fileName string) ([]magBefMay, error) {
 	//TODO uses status lib to format errors.
 	magistrateEmps, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
 	}
+	fmt.Println(fileName, "CSV TO MAG BEF MAY")
 	defer magistrateEmps.Close()
+	/*
+		reader := csv.NewReader(magistrateEmps)
+		teste, _ := reader.ReadAll()
+		fmt.Println(teste)
+	*/
 	magBefMay := []magBefMay{}
 	//TODO uses status lib to format errors.
 	if err := gocsv.UnmarshalFile(magistrateEmps, &magBefMay); err != nil { // Load Employees from file

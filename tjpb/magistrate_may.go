@@ -46,7 +46,7 @@ func parserMagMay(path string) ([]storage.Employee, error) {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
 		//one or more columns in the table.
-		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, filepath.Base(path)), " ")
+		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, path), " ")
 		cmd := exec.Command(cmdList[0], cmdList[1:]...)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
@@ -94,7 +94,6 @@ func csvToMagMay(fileName string) ([]magMay, error) {
 	defer empFile.Close()
 	if err := gocsv.UnmarshalFile(empFile, &magMay); err != nil { // Load Employees from file
 		return nil, fmt.Errorf("Error Unmarshalling json to magisterMay csv: %v, error: %v", fileName, err)
-		os.Exit(1)
 	}
 	return magMay, nil
 }

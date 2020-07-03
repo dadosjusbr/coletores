@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -41,12 +40,12 @@ func parserServBefMay(path string) ([]storage.Employee, error) {
 		"94.19,106.292,545.669,228.371",
 		"96.295,226.266,544.617,499.89",
 		"94.19,387.283,545.669,814.558"}
-	csvFinal := headers()
+	csvFinal := headersServBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
 		//where tmpl is the template area, which corresponds to the coordinates (x1,2,y1,2) of
 		//one or more columns in the table.
-		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, filepath.Base(path)), " ")
+		cmdList := strings.Split(fmt.Sprintf(`java -jar tabula-1.0.3-jar-with-dependencies.jar -t -a %v -p all %v`, templ, path), " ")
 		cmd := exec.Command(cmdList[0], cmdList[1:]...)
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
@@ -70,35 +69,40 @@ func parserServBefMay(path string) ([]storage.Employee, error) {
 		}
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
-	file, err := os.Create(strings.Replace(filepath.Base(path), ".pdf", ".csv", 1))
-	if err != nil {
-		logError("Error creating csv: %q", err)
+	fileName := strings.Replace(path, ".pdf", ".csv", 1)
+	if err := createCsv(fileName, csvFinal); err != nil {
+		logError("Error creating csv: %v, error : %v", fileName, err)
 		os.Exit(1)
 	}
-	defer file.Close()
-	writer := gocsv.DefaultCSVWriter(file)
-	defer writer.Flush()
-	writer.WriteAll(csvFinal)
-	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
 	//TODO uses status lib to format errors.
-	clientsFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	servBefMay, err := csvToStructServBefMay(fileName)
 	if err != nil {
-		logError("Error oppening csv: %v, error: %v", fileName, err)
+		logError("Error parsing to servBefMay struct the csv: %v, error : %v", fileName, err)
 		os.Exit(1)
 	}
-	defer clientsFile.Close()
-	serv := []servBefMay{}
-	//TODO uses status lib to format errors.
-	if err := gocsv.UnmarshalFile(clientsFile, &serv); err != nil { // Load Employees from file
-		logError("Error Unmarshalling CSV to servantBefMay csv: %v, error: ", fileName, err)
-		os.Exit(1)
-	}
-	employees := toEmployee(serv)
+	employees := toEmployeeServBefMay(servBefMay)
 	return employees, nil
 }
 
+//csvToStructServBefMay parse csv into []servBefMay struct.
+func csvToStructServBefMay(fileName string) ([]servBefMay, error) {
+	//TODO uses status lib to format errors.
+	servEmps, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return nil, fmt.Errorf("Error oppening csv: %v, error: %v", fileName, err)
+	}
+	defer servEmps.Close()
+	fmt.Println(fileName)
+	servBefMay := []servBefMay{}
+	//TODO uses status lib to format errors.
+	if err := gocsv.UnmarshalFile(servEmps, &servBefMay); err != nil { // Load Employees from file
+		return nil, fmt.Errorf("Error Unmarshalling CSV to servant before may csv: %v, error: %v", fileName, err)
+	}
+	return servBefMay, nil
+}
+
 //setHeaders Set headers to CSV based on his pdf template.
-func headers() [][]string {
+func headersServBefMay() [][]string {
 	var csvFinal [][]string
 	headers := []string{"name", "role", "workplace", "wage", "personalBenefits", "positionOfTrust",
 		"perks", "eventualBenefits", "totalIncome", "prevContribution", "incomeTax",
@@ -107,7 +111,7 @@ func headers() [][]string {
 }
 
 //toEmployee Receives a []servantMay and transform it into a []storage.Employee
-func toEmployee(serv []servBefMay) []storage.Employee {
+func toEmployeeServBefMay(serv []servBefMay) []storage.Employee {
 	var empSet []storage.Employee
 	for i := range serv {
 		empSet = append(empSet, storage.Employee{
@@ -116,15 +120,15 @@ func toEmployee(serv []servBefMay) []storage.Employee {
 			Type:      "servidor",
 			Workplace: serv[i].Workplace,
 			Active:    employeeActive(serv[i].Role),
-			Income:    employeeIncome(serv[i]),
-			Discounts: employeeDisc(serv[i]),
+			Income:    employeeIncomeServBefMay(serv[i]),
+			Discounts: employeeDiscServBefMay(serv[i]),
 		})
 	}
 	return empSet
 }
 
-//employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
-func employeeDisc(emp servBefMay) *storage.Discount {
+//employeeDiscServBefMay receives a servBefMay, create a storage.Discount, match fields and return.
+func employeeDiscServBefMay(emp servBefMay) *storage.Discount {
 	var d storage.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
@@ -135,8 +139,8 @@ func employeeDisc(emp servBefMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncome(emp servBefMay) *storage.IncomeDetails {
+//employeeIncomeServBefMay receives a servBefMay, create a storage.IncomeDetails, match fields and return.
+func employeeIncomeServBefMay(emp servBefMay) *storage.IncomeDetails {
 	in := storage.IncomeDetails{}
 	perks := storage.Perks{}
 	other := storage.Funds{}

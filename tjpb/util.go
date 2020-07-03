@@ -104,3 +104,10 @@ func createCsv(fileName string, csvFinal [][]string) error {
 	writer.WriteAll(csvFinal)
 	return nil
 }
+
+func checkYM(month, year int) bool {
+	if month >= 5 && year >= 2020 {
+		return true
+	}
+	return false
+}

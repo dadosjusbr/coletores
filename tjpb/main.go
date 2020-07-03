@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/dadosjusbr/storage"
@@ -42,20 +44,18 @@ func main() {
 		logError("Error crawling (%d,%d,%s) error: %q", month, year, outputFolder, err)
 		os.Exit(1)
 	}
-	//TODO - Check MOnth And Year
-	fmt.Println(files)
-	//teste := "transparencia_202005_servidores2_0.pdf"
-	//teste2 := "transparencia_202004_servidores_0_0.pdf"
-	teste3 := "remuneracoes-magistrados-tjpb-01-2020.pdf"
-	emps, err := parserMagBefMay(teste3)
+	files, allEmployees, err := genEmployees(files, outputFolder, month, year)
 	if err != nil {
-		logError("error parsing servant may: %q", err)
+		logError("Error generating employees, error: %v", err)
 		os.Exit(1)
 	}
-	cr := newCrawlingResult(emps, files, month, year)
+	//teste := "transparencia_202005_servidores2_0.pdf"
+	//teste2 := "transparencia_202004_servidores_0_0.pdf"
+	//teste3 := "remuneracoes-magistrados-tjpb-01-2020.pdf"
+	cr := newCrawlingResult(allEmployees, files, month, year)
 	crJSON, err := json.MarshalIndent(cr, "", "  ")
 	if err != nil {
-		logError("JSON marshaling error: %q", err)
+		logError("JSON marshaling error: %v", err)
 		os.Exit(1)
 	}
 	fmt.Printf("%s", string(crJSON))
@@ -76,4 +76,46 @@ func newCrawlingResult(emps []storage.Employee, files []string, month, year int)
 		Timestamp: time.Now(),
 	}
 	return cr
+}
+
+// genEmployees navigate
+func genEmployees(files []string, outputFolder string, month, year int) ([]string, []storage.Employee, error) {
+	var allEmployees []storage.Employee
+	var pathFixed []string
+	for i, f := range files {
+		pathFixed = append(pathFixed, fmt.Sprintf("%v/%v", outputFolder, filepath.Base(f)))
+		switch {
+		case strings.Contains(f, "magistrados") && checkYM(month, year):
+			fmt.Println("Magistrate may", pathFixed[i])
+			emps, err := parserMagMay(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "servidores") && checkYM(month, year):
+			fmt.Println("Server may", pathFixed[i])
+			emps, err := parserServerMay(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing servant may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "magistrados") && !checkYM(month, year):
+			fmt.Println("MAGBEF may", pathFixed[i])
+			emps, err := parserMagBefMay(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		default:
+			fmt.Println("SERVBEF may", pathFixed[i])
+			emps, err := parserServBefMay(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing servant before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		}
+		files = append(files, strings.Replace(f, ".pdf", ".csv", 1))
+	}
+	fmt.Println(files)
+	return files, allEmployees, nil
 }
