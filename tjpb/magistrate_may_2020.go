@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/dadosjusbr/storage"
@@ -51,7 +50,9 @@ func parserMagMay(path string) ([]storage.Employee, error) {
 		var outb, errb bytes.Buffer
 		cmd.Stdout = &outb
 		cmd.Stderr = &errb
-		cmd.Run()
+		if err := cmd.Run(); err != nil {
+			logError("Error executing java cmd: %v", err)
+		}
 		csvByte = append(csvByte, outb.Bytes())
 		reader := setCSVReader(&outb)
 		rows, err := reader.ReadAll()
@@ -68,9 +69,8 @@ func parserMagMay(path string) ([]storage.Employee, error) {
 		}
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
-	fileName := strings.Replace(filepath.Base(path), ".pdf", ".csv", 1)
+	fileName := strings.Replace(path, ".pdf", ".csv", 1)
 	//TODO output
-
 	if err := createCsv(fileName, csvFinal); err != nil {
 		logError("Error creating csv: %v, error: %v", fileName, err)
 		os.Exit(1)
