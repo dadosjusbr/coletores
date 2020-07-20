@@ -10,12 +10,34 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-func parserServMar2020(path string) ([]storage.Employee, error) {
+// servang_bef_may.go parse all servants.pdf before may/2020.
+
+type servBefMay struct { // Our example struct, you can use "-" to ignore a field
+	Name             string   `csv:"name"`
+	Role             string   `csv:"role"`
+	Workplace        string   `csv:"workplace"`
+	Wage             *float64 `csv:"wage"`
+	PersonalBenefits *float64 `csv:"personalBenefits"`
+	PositionOfTrust  *float64 `csv:"positionOfTrust"`
+	Perks            *float64 `csv:"perks"`
+	EventualBenefits *float64 `csv:"eventualBenefits"`
+	TotalIncome      *float64 `csv:"totalIncome"`
+	PrevContribution *float64 `csv:"prevContribution"`
+	IncomeTax        *float64 `csv:"incomeTax"`
+	OthersDisc       *float64 `csv:"othersDisc"`
+	CeilRetention    *float64 `csv:"ceilRetention"`
+	TotalDisc        *float64 `csv:"totalDisc"`
+	IncomeFinal      *float64 `csv:"incomeFinal"`
+	Daily            *float64 `csv:"daily"`
+}
+
+func parserServA(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"97.333,17.888,541.383,110.486",
-		"96.281,110.486,542.435,231.495",
-		"98.385,230.443,543.487,513.498",
-		"97.333,396.698,545.592,822.859"}
+	templateArea := []string{"97.361,17.893,539.432,109.465",
+		"97.361,107.36,544.695,228.403",
+		"97.361,226.298,544.695,531.538",
+		"96.308,388.391,543.642,406.284",
+		"97.361,423.125,543.642,810.463"}
 	csvFinal := headersServBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
@@ -38,11 +60,11 @@ func parserServMar2020(path string) ([]storage.Employee, error) {
 		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
 			// Pass rows and a knew invariable and non-empty column pos.
-			rows = treatDoubleLines(rows, 2)
+			rows = treatDoubleLines(rows, 3)
 		}
 		// When the templ refers to column of numbers, treating cels to format numbers and
 		// remove characters.
-		if i == 3 {
+		if i == 3 || i == 4 {
 			rows = fixNumberColumns(rows)
 		}
 

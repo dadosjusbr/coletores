@@ -32,13 +32,13 @@ type magBefMay struct { // Our example struct, you can use "-" to ignore a field
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserMagApr2020(path string) ([]storage.Employee, error) {
+func parserMagA(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"101.475,35.64,557.865,130.68",
-		"105.766,135.76,546.722,247.314",
-		"106.819,245.209,538.303,795.614",
-		"106.819,392.545,554.089,416.75",
-		"107.871,429.379,540.407,798.772"}
+	templateArea := []string{"105.781,36.839,583.639,136.831",
+		"106.834,136.831,586.797,248.402",
+		"105.781,247.349,569.956,587.323",
+		"106.834,392.601,547.852,414.705",
+		"106.834,435.756,565.746,803.096"}
 	csvFinal := headersMagBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)

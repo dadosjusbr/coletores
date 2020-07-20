@@ -34,7 +34,7 @@ type servantMay struct { // Our example struct, you can use "-" to ignore a fiel
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserServerMay(path string) ([]storage.Employee, error) {
+func parserServerE(path string) ([]storage.Employee, error) {
 	templateArea := []string{"92.085,16.838,559.351,102.083",
 		"93.137,102.083,541.46,211.532",
 		"94.19,209.428,547.774,824.029",

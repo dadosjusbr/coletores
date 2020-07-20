@@ -10,12 +10,13 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-func parserServFev2020(path string) ([]storage.Employee, error) {
+func parserServC(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"95.535,17.82,560.835,104.94",
-		"95.535,104.94,561.825,215.82",
-		"93.555,216.81,561.825,480.15",
-		"95.535,371.25,562.815,774.18"}
+	templateArea := []string{"242.423,40.615,1483.731,261.462",
+		"237.346,261.462,1514.193,548.308",
+		"239.885,543.231,1483.731,1436.77",
+		"242.423,931.616,1465.962,979.847",
+		"244.962,1002.693,1471.039,1969.847"}
 	csvFinal := headersServBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
@@ -38,11 +39,11 @@ func parserServFev2020(path string) ([]storage.Employee, error) {
 		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
 			// Pass rows and a knew invariable and non-empty column pos.
-			rows = treatDoubleLines(rows, 2)
+			rows = treatDoubleLines(rows, 4)
 		}
 		// When the templ refers to column of numbers, treating cels to format numbers and
 		// remove characters.
-		if i == 3 {
+		if i == 3 || i == 4 {
 			rows = fixNumberColumns(rows)
 		}
 

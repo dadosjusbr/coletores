@@ -34,7 +34,7 @@ type magMay struct { // Our example struct, you can use "-" to ignore a field
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserMagMay(path string) ([]storage.Employee, error) {
+func parserMagE(path string) ([]storage.Employee, error) {
 	templateArea := []string{"93.137,16.838,550.931,103.135",
 		"94.19,99.978,544.617,211.532",
 		"93.137,209.428,548.827,817.715",

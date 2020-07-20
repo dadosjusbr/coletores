@@ -13,13 +13,13 @@ import (
 
 // magistrate_bef_may.go parse all servants.pdf before may/2020.
 
-func parserMagMar2020(path string) ([]storage.Employee, error) {
+func parserMagC(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"105.751,37.881,539.278,137.845",
-		"104.699,135.74,541.383,246.226",
-		"106.803,246.226,541.383,499.819",
-		"107.856,388.28,540.33,416.691",
-		"105.751,429.318,540.33,795.501"}
+	templateArea := []string{"247.5,89.342,1396.868,311.488",
+		"247.5,311.488,1428.258,560.196",
+		"247.5,557.781,1396.868,847.538",
+		"249.915,876.513,1392.038,932.05",
+		"247.5,910.318,1377.551,1820.637"}
 	csvFinal := headersMagBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
@@ -44,16 +44,21 @@ func parserMagMar2020(path string) ([]storage.Employee, error) {
 			logError("Error reading rows from stdout: %v", err)
 			os.Exit(1)
 		}
-		// When the templ refers to worksplace Column, treating double lines is necessary
-		if i == 2 {
-			// Pass rows and a knew invariable and non-empty column pos.
-			rows = treatDoubleLines(rows, 3)
-		}
+
 		// When the templ refers to column of numbers, treating cels to format numbers and
 		// remove characters.
-		if i == 3 || i == 4 {
+		if i == 3 {
 			rows = fixNumberColumns(rows)
 		}
+		if i == 4 {
+			// Tabula exports a empty first row of each page.
+			for i := range rows {
+				rows[i] = rows[i][1:]
+			}
+			rows = fixNumberColumns(rows)
+		}
+		fmt.Println(rows)
+		fmt.Println(len(rows))
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
 

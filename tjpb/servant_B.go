@@ -10,33 +10,13 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-// servang_bef_may.go parse all servants.pdf before may/2020.
-
-type servBefMay struct { // Our example struct, you can use "-" to ignore a field
-	Name             string   `csv:"name"`
-	Role             string   `csv:"role"`
-	Workplace        string   `csv:"workplace"`
-	Wage             *float64 `csv:"wage"`
-	PersonalBenefits *float64 `csv:"personalBenefits"`
-	PositionOfTrust  *float64 `csv:"positionOfTrust"`
-	Perks            *float64 `csv:"perks"`
-	EventualBenefits *float64 `csv:"eventualBenefits"`
-	TotalIncome      *float64 `csv:"totalIncome"`
-	PrevContribution *float64 `csv:"prevContribution"`
-	IncomeTax        *float64 `csv:"incomeTax"`
-	OthersDisc       *float64 `csv:"othersDisc"`
-	CeilRetention    *float64 `csv:"ceilRetention"`
-	TotalDisc        *float64 `csv:"totalDisc"`
-	IncomeFinal      *float64 `csv:"incomeFinal"`
-	Daily            *float64 `csv:"daily"`
-}
-
-func parserServApr2020(path string) ([]storage.Employee, error) {
+func parserServB(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"94.19,13.681,545.669,109.45",
-		"94.19,106.292,545.669,228.371",
-		"96.295,226.266,544.617,499.89",
-		"94.19,387.283,545.669,814.558"}
+	templateArea := []string{"94.545,16.83,582.615,105.93",
+		"94.545,102.96,578.655,215.82",
+		"94.545,216.81,574.695,540.54",
+		"93.555,369.27,569.745,389.07",
+		"95.535,399.96,576.675,787.05"}
 	csvFinal := headersServBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
@@ -59,13 +39,14 @@ func parserServApr2020(path string) ([]storage.Employee, error) {
 		// When the templ refers to worksplace Column, treating double lines is necessary
 		if i == 2 {
 			// Pass rows and a knew invariable and non-empty column pos.
-			rows = treatDoubleLines(rows, 2)
+			rows = treatDoubleLines(rows, 4)
 		}
 		// When the templ refers to column of numbers, treating cels to format numbers and
 		// remove characters.
-		if i == 3 {
+		if i == 3 || i == 4 {
 			rows = fixNumberColumns(rows)
 		}
+
 		csvFinal = appendCSVColumns(csvFinal, rows)
 	}
 	fileName := strings.Replace(path, ".pdf", ".csv", 1)

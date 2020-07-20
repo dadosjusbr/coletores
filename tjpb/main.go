@@ -16,6 +16,7 @@ import (
 var gitCommit string
 
 func main() {
+
 	if err := godotenv.Load(); err != nil {
 		logError("Error loading .env file")
 	}
@@ -44,12 +45,14 @@ func main() {
 		logError("Error crawling (%d,%d,%s) error: %q", month, year, outputFolder, err)
 		os.Exit(1)
 	}
+
+	//teste := []string{"transparencia_202001_servidores_0.pdf", "remuneracoes-magistrados-tjpb-01-2020.pdf"}
 	files, allEmployees, err := genEmployees(files, outputFolder, month, year)
 	if err != nil {
 		logError("Error generating employees, error: %v", err)
 		os.Exit(1)
 	}
-	//teste := "transparencia_202005_servidores2_0.pdf"
+
 	//teste2 := "transparencia_202004_servidores_0_0.pdf"
 	//teste3 := "remuneracoes-magistrados-tjpb-01-2020.pdf"
 	cr := newCrawlingResult(allEmployees, files, month, year)
@@ -82,55 +85,71 @@ func newCrawlingResult(emps []storage.Employee, files []string, month, year int)
 func genEmployees(files []string, outputFolder string, month, year int) ([]string, []storage.Employee, error) {
 	var allEmployees []storage.Employee
 	var pathFixed []string
+	template, err := checkTemplate(month, year)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error trying to check in which template this month/year belongs %v", err)
+	}
 	for i, f := range files {
 		pathFixed = append(pathFixed, fmt.Sprintf("%v/%v", outputFolder, filepath.Base(f)))
 		switch {
-		case strings.Contains(f, "magistrados") && month == 5 && year == 2020:
-			emps, err := parserMagMay(pathFixed[i])
+		case strings.Contains(f, "magistrados") && template == "E":
+			emps, err := parserMagE(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing magistrate of template D: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "servidores") && month == 5 && year == 2020:
-			emps, err := parserServerMay(pathFixed[i])
+		case strings.Contains(f, "servidores") && template == "E":
+			emps, err := parserServerE(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing servant may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing servant of template D: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "magistrados") && month == 4 && year == 2020:
-			emps, err := parserMagApr2020(pathFixed[i])
+		case strings.Contains(f, "magistrados") && template == "D":
+			emps, err := parserMagD(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing magistrate of template E: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "magistrados") && month == 3 && year == 2020:
-			emps, err := parserMagMar2020(pathFixed[i])
+		case strings.Contains(f, "servidores") && template == "D":
+			emps, err := parserServD(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing servants of template E: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "servidores") && month == 3 && year == 2020:
-			emps, err := parserServMar2020(pathFixed[i])
+		case strings.Contains(f, "magistrados") && template == "C":
+			emps, err := parserMagC(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing magistrate of template C: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "magistrados") && month == 2 && year == 2020:
-			emps, err := parserMagFev2020(pathFixed[i])
+		case strings.Contains(f, "servidores") && template == "C":
+			emps, err := parserServC(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing magistrate of template C: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "servidores") && month == 2 && year == 2020:
-			emps, err := parserServFev2020(pathFixed[i])
+		case strings.Contains(f, "magistrados") && template == "B":
+			emps, err := parserMagB(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing magistrate of template B: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "servidores") && template == "B":
+			emps, err := parserServB(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate of template B: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "magistrados") && template == "A":
+			emps, err := parserMagA(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate of template A: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		default:
-			emps, err := parserServApr2020(pathFixed[i])
+			emps, err := parserServA(pathFixed[i])
 			if err != nil {
-				return nil, nil, fmt.Errorf("error parsing servant before may: %v", err)
+				return nil, nil, fmt.Errorf("error parsing servant of template A: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		}
