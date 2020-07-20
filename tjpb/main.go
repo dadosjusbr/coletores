@@ -115,6 +115,18 @@ func genEmployees(files []string, outputFolder string, month, year int) ([]strin
 				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "magistrados") && month == 2 && year == 2020:
+			emps, err := parserMagFev2020(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "servidores") && month == 2 && year == 2020:
+			emps, err := parserServFev2020(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
 		default:
 			emps, err := parserServApr2020(pathFixed[i])
 			if err != nil {

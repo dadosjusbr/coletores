@@ -13,13 +13,13 @@ import (
 
 // magistrate_bef_may.go parse all servants.pdf before may/2020.
 
-func parserMagMar2020(path string) ([]storage.Employee, error) {
+func parserMagFev2020(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
-	templateArea := []string{"105.751,37.881,539.278,137.845",
-		"104.699,135.74,541.383,246.226",
-		"106.803,246.226,541.383,499.819",
-		"107.856,388.28,540.33,416.691",
-		"105.751,429.318,540.33,795.501"}
+	templateArea := []string{"102.465,37.62,559.845,129.69",
+		"103.455,128.7,563.805,234.63",
+		"101.475,231.66,559.845,560.34",
+		"103.455,368.28,558.855,390.06",
+		"103.455,405.9,559.845,748.44"}
 	csvFinal := headersMagBefMay()
 	for i, templ := range templateArea {
 		//This cmd execute a tabula script(https://github.com/tabulapdf/tabula-java)
