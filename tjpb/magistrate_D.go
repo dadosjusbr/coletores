@@ -11,7 +11,8 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-// magistrate_bef_may.go parse all servants.pdf before may/2020.
+// magistrate_D.go parse all magistrate.pdf from the following months:
+// 2020: Mar
 
 func parserMagD(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula

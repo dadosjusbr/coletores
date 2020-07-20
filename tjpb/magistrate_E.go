@@ -11,7 +11,9 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-// magistrate_may.go parse all magistrate.pdf before may/2020.
+// magistrate_E.go parse all magistrate.pdf from the following months:
+// 2020: May
+// Will be used as default for the next months.
 
 type magMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`

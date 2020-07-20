@@ -10,7 +10,10 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
-// servang_bef_may.go parse all servants.pdf before may/2020.
+// servant_A.go parse all servants.pdf from the following months:
+// 2018: Fev, Apr, May, June, August, September, Octurbre, November, December
+// 2019: Jan, Fev, Mar, Apr, May, June, August, September, November
+// 2020: Apr
 
 type servBefMay struct { // Our example struct, you can use "-" to ignore a field
 	Name             string   `csv:"name"`

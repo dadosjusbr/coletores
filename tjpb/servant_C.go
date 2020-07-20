@@ -10,6 +10,9 @@ import (
 	"github.com/dadosjusbr/storage"
 )
 
+// servant_C.go parse all servants.pdf from the following months:
+// 2018: Jan
+
 func parserServC(path string) ([]storage.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"242.423,40.615,1483.731,261.462",
