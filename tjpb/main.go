@@ -85,26 +85,38 @@ func genEmployees(files []string, outputFolder string, month, year int) ([]strin
 	for i, f := range files {
 		pathFixed = append(pathFixed, fmt.Sprintf("%v/%v", outputFolder, filepath.Base(f)))
 		switch {
-		case strings.Contains(f, "magistrados") && checkYM(month, year):
+		case strings.Contains(f, "magistrados") && month == 5 && year == 2020:
 			emps, err := parserMagMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing magistrate may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "servidores") && checkYM(month, year):
+		case strings.Contains(f, "servidores") && month == 5 && year == 2020:
 			emps, err := parserServerMay(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing servant may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
-		case strings.Contains(f, "magistrados") && !checkYM(month, year):
-			emps, err := parserMagBefMay(pathFixed[i])
+		case strings.Contains(f, "magistrados") && month == 4 && year == 2020:
+			emps, err := parserMagApr2020(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "magistrados") && month == 3 && year == 2020:
+			emps, err := parserMagMar2020(pathFixed[i])
+			if err != nil {
+				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
+			}
+			allEmployees = append(allEmployees, emps...)
+		case strings.Contains(f, "servidores") && month == 3 && year == 2020:
+			emps, err := parserServMar2020(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing magistrate before may: %v", err)
 			}
 			allEmployees = append(allEmployees, emps...)
 		default:
-			emps, err := parserServBefMay(pathFixed[i])
+			emps, err := parserServApr2020(pathFixed[i])
 			if err != nil {
 				return nil, nil, fmt.Errorf("error parsing servant before may: %v", err)
 			}

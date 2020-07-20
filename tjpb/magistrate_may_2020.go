@@ -114,7 +114,7 @@ func toEmployeeMagMay(magMay []magMay) []storage.Employee {
 		var emp = storage.Employee{}
 		emp.Name = magMay[i].Name
 		emp.Role = magMay[i].Role
-		emp.Type = "magistrado"
+		emp.Type = "membro"
 		emp.Workplace = magMay[i].Workplace
 		emp.Active = employeeActive(magMay[i].Role)
 		emp.Income = employeeIncomeMagMay(magMay[i])
