@@ -11,6 +11,11 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
+type monthYear struct {
+	month int
+	year  int
+}
+
 // logError prints to Stderr
 func logError(format string, args ...interface{}) {
 	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
@@ -103,4 +108,77 @@ func createCsv(fileName string, csvFinal [][]string) error {
 	defer writer.Flush()
 	writer.WriteAll(csvFinal)
 	return nil
+}
+
+// checkTemplate returns the caracter of which template should be used.
+func checkTemplate(month, year int) (string, error) {
+	templates := getTemplate()
+	check := monthYear{month: month, year: year}
+	for k, v := range templates {
+		if contains(v, check) {
+			return k, nil
+		}
+	}
+	return "", fmt.Errorf("Tuple month and year was not found in any template.")
+}
+
+// getTemplate returns tuple of (month, year) in their adequated templates.
+func getTemplate() map[string][]monthYear {
+	A := []monthYear{
+		{month: 4, year: 2018},
+		{month: 4, year: 2019},
+		{month: 3, year: 2019},
+		{month: 2, year: 2019},
+		{month: 1, year: 2019},
+		{month: 12, year: 2018},
+		{month: 11, year: 2018},
+		{month: 10, year: 2018},
+		{month: 9, year: 2018},
+		{month: 8, year: 2018},
+		{month: 6, year: 2018},
+		{month: 5, year: 2018},
+		{month: 2, year: 2018},
+		{month: 11, year: 2019},
+		{month: 9, year: 2019},
+		{month: 8, year: 2019},
+		{month: 7, year: 2019},
+		{month: 6, year: 2019},
+		{month: 5, year: 2019},
+		{month: 4, year: 2020},
+	}
+	B := []monthYear{
+		{month: 1, year: 2020},
+		{month: 2, year: 2020},
+		{month: 12, year: 2019},
+		{month: 7, year: 2018},
+		{month: 3, year: 2018},
+	}
+	C := []monthYear{
+		{month: 1, year: 2018},
+	}
+	D := []monthYear{
+		{month: 3, year: 2020},
+	}
+	E := []monthYear{
+		{month: 5, year: 2020},
+	}
+
+	templates := map[string][]monthYear{
+		"A": A,
+		"B": B,
+		"C": C,
+		"D": D,
+		"E": E,
+	}
+	return templates
+}
+
+// Check if a value contains in a array of monthYear.
+func contains(s []monthYear, e monthYear) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
