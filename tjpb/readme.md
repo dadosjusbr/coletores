@@ -69,12 +69,31 @@ As planilhas apresentadas nos pdfs contém as seguintes colunas:
 ### Remunerações ###
 
 - **URL Base**: [https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/folha-de-pagamento-de-pessoal](https://www.tjpb.jus.br/transparencia/gestao-de-pessoas/folha-de-pagamento-de-pessoal)
-- **Formato**: PDF
+- **Formato**: PDF, XLS*
 - **Tipos**: Existe um arquivo referente aos servidores e um referente aos magistrados.
-	- **Obs**: Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
+- **Obs**: 
+	- Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
+	- Apenas o mês de outubro/2019 é disponibilizado em '.xls'.
+
 
 ## Dificuldades para libertação dos dados
 
 - Não há API
-- Dados disponibilizados em PDF, o que dificulta a libertação.
+- Quase a totalidade dos dados disponibilizados em PDF, o que dificulta a libertação.
+- Para traduzir esses dados em pdf, foram testadas bibliotecas escritas em diversas linguagens como go, python  e java. Até agora, a melhor forma de obter resultados válidos foi utilizando a biblioteca [tabula](https://github.com/tabulapdf/tabula-java). Essa biblioteca permite a especificação de áreas dos pdf’s que representam colunas e usa essa especificação para guiar a extração dos dados.
+- A partir de 2018, foram verificados que há 5 padrões diferentes nos templates dos pdf e não há um padrão na distribuição dos meses nesses padrões, agrupamos oas meses nesses 5 tipos e os nomeamos de 'A', 'B', 'C','D' e 'E'. Abaixo ilustramos como os meses estão distribuídos com uma tabela:
+    
+    |  Ano  |  A  |  B | C |  D   |  E |
+    |:----------:|:-------------:|:------:|:----------|:-------------:|:------:|
+    | 2018 |  Fev-Abr-Mai-Jun-Ago-Set-Out-Nov-Dez | Mar-Jul | Jan |   | 
+    | 2019 |    Jan-Fev-Mar-Abr-Mai-Jun-Jul-Ago-Set-Nov  |   Dez |
+    | 2020 | Abr |    Jan-Fev | | Mar | Mai |
+
+- Logo do órgão do TJPB no formato é adicionado no arquivo .xls como uma imagem e dificulta a libertação dos dados.
+- Precisamos desenvolver uma forma de testar a qualidade dos dados e, em caso de problemas, avaliar a forma de resolução.
+- Na figura abaixo,podemos comparar os meses de Abril/2018 (Verde) e Julho/2018 (vermelho), temos que para o mesmo número de colunas, a largura e altura das tabelas são diferentes. 
+
+   ![](https://lh5.googleusercontent.com/2koi3MHPJ_j3ZqZCgc-XHqNfw38vTDuIV-ewVC6jp7ar_riRppyoW8jNjn0B6d9us0VZLrzFq1ZgRks4nGJtvPku8raScCiQm6bWJdM46PzKlQznEyD_ngznFRnHYjX0gmfYPhjG)
+
+
 - Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
