@@ -79,9 +79,8 @@ As planilhas apresentadas nos pdfs contém as seguintes colunas:
 ## Dificuldades para libertação dos dados
 
 - Não há API
-- Quase a totalidade dos dados disponibilizados em PDF, o que dificulta a libertação.
-- Para traduzir esses dados em pdf, foram testadas bibliotecas escritas em diversas linguagens como go, python  e java. Até agora, a melhor forma de obter resultados válidos foi utilizando a biblioteca [tabula](https://github.com/tabulapdf/tabula-java). Essa biblioteca permite a especificação de áreas dos pdf’s que representam colunas e usa essa especificação para guiar a extração dos dados.
-- A partir de 2018, foram verificados que há 5 padrões diferentes nos templates dos pdf e não há um padrão na distribuição dos meses nesses padrões, agrupamos oas meses nesses 5 tipos e os nomeamos de 'A', 'B', 'C','D' e 'E'. Abaixo ilustramos como os meses estão distribuídos com uma tabela:
+- A partir de jan/2018 até maio/2020, todos os meses foram disponibilizados em PDF,  exceto de out/2019 que foi disponibilizado em .xls.
+- A partir de 2018, foram verificados que há 5 padrões diferentes nos templates dos pdf e não há um padrão na distribuição dos meses nesses padrões. Esses padrões possuem se referem ao tamanho da tabela e/ou a quantidade de colunas existentes em cada uma. Agrupamos os meses nesses 5 tipos e os nomeamos de 'A', 'B', 'C','D' e 'E'. O template 'E' é o único que difere em quantidade de colunas em relação aos demais que embora possuam a mesma quantidade de colunas entre si, as tabelas tem largura e/ou altura diferentes. Abaixo ilustramos como os meses estão distribuídos nos templates com uma tabela:
     
     |  Ano  |  A  |  B | C |  D   |  E |
     |:----------:|:-------------:|:------:|:----------|:-------------:|:------:|
@@ -91,9 +90,9 @@ As planilhas apresentadas nos pdfs contém as seguintes colunas:
 
 - Logo do órgão do TJPB no formato é adicionado no arquivo .xls como uma imagem e dificulta a libertação dos dados.
 - Precisamos desenvolver uma forma de testar a qualidade dos dados e, em caso de problemas, avaliar a forma de resolução.
-- Na figura abaixo,podemos comparar os meses de Abril/2018 (Verde) e Julho/2018 (vermelho), temos que para o mesmo número de colunas, a largura e altura das tabelas são diferentes. 
+- Na figura abaixo,podemos comparar a diferença no layout dos templates com cores, onde: 'A' = Azul ([Abril/2020](https://www.tjpb.jus.br/sites/default/files/anexos/2020/05/transparencia_202004_servidores_0_0.pdf)), 'B' = Amarelo ([fev/2020](https://www.tjpb.jus.br/sites/default/files/anexos/2020/03/transparencia_202002_servidores_0.pdf)), 'C' = Laranja ([Mar/2018](https://www.tjpb.jus.br/sites/default/files/anexos/2018/06/transparencia_201803_servidores.pdf)), 'D' = Vermelho ([Mai/2020](https://www.tjpb.jus.br/sites/default/files/anexos/2020/04/transparencia_202003_servidores_0.pdf)), 'E' = Verde ([Mai/2020](https://www.tjpb.jus.br/sites/default/files/anexos/2020/06/transparencia_202005_servidores2_0.pdf)). 
 
-   ![](https://lh5.googleusercontent.com/2koi3MHPJ_j3ZqZCgc-XHqNfw38vTDuIV-ewVC6jp7ar_riRppyoW8jNjn0B6d9us0VZLrzFq1ZgRks4nGJtvPku8raScCiQm6bWJdM46PzKlQznEyD_ngznFRnHYjX0gmfYPhjG)
+   ![](https://imagizer.imageshack.com/img923/8154/Qa7qTV.jpg)
 
 
 - Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
