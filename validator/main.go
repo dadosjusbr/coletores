@@ -150,7 +150,6 @@ func checkType(vCsv []string, key int, value string) {
 		if vCsv[key] == "" {
 			break
 		} else {
-			fmt.Println(vCsv[key])
 			_, err := strconv.ParseFloat(strings.TrimSpace(vCsv[key]), 64)
 			if err != nil {
 				logError("Field %v is not a float: %q", err)
@@ -161,7 +160,6 @@ func checkType(vCsv []string, key int, value string) {
 		if vCsv[key] == "" {
 			break
 		} else {
-			fmt.Println(vCsv[key])
 			_, err := strconv.ParseInt(strings.TrimSpace(vCsv[key]), 10, 0)
 			if err != nil {
 				logError("Field %v is not a Integer: %q", err)
