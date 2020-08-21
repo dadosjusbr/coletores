@@ -10,57 +10,49 @@ import (
 )
 
 type employees struct {
-	Aid                 string
-	Year                int
-	Month               int
-	Reg                 string
-	Name                string
-	Role                string
-	Type                string
-	Workplace           string
-	Active              bool
-	IncomeTotal         float64
-	Wage                float64
-	PerksTotal          float64
-	PerksFood           float64
-	PerksTranport       float64
-	PerksPreSchool      float64
-	PerksHealth         float64
-	PerksBirthAid       float64
-	PerksHousingAid     float64
-	PerksSubsistence    float64
-	PerksOthers         float64
-	OthersTotal         float64
-	OthersPersonalBenef float64
-	OthersEventualBenef float64
-	OthersPosOfTrust    float64
-	OthersDaily         float64
-	OthersGrat          float64
-	OthersOriPos        float64
-	OthersOthers        float64
-	DiscountsTotal      float64
-	DiscountsPrevContr  float64
-	DiscountsCeilRet    float64
-	DiscountsIncomeTax  float64
-	DiscountsOthers     float64
+	Aid                 string  `tableheader:"aid"`
+	Year                int     `tableheader:"year"`
+	Month               int     `tableheader:"month"`
+	Reg                 string  `tableheader:"name"`
+	Name                string  `tableheader:"role"`
+	Role                string  `tableheader:"reg"`
+	Type                string  `tableheader:"type"`
+	Workplace           string  `tableheader:"workplace"`
+	Active              bool    `tableheader:"active"`
+	IncomeTotal         float64 `tableheader:"income_total"`
+	Wage                float64 `tableheader:"wage"`
+	PerksTotal          float64 `tableheader:"perks_total"`
+	PerksFood           float64 `tableheader:"perks_food"`
+	PerksTranport       float64 `tableheader:"perks_transportation"`
+	PerksPreSchool      float64 `tableheader:"perks_preschool"`
+	PerksHealth         float64 `tableheader:"perks_health"`
+	PerksBirthAid       float64 `tableheader:"perks_birthaid"`
+	PerksHousingAid     float64 `tableheader:"perks_housingaid"`
+	PerksSubsistence    float64 `tableheader:"perks_subsistence"`
+	PerksOthers         float64 `tableheader:"perks_others"`
+	OthersTotal         float64 `tableheader:"others_total"`
+	OthersPersonalBenef float64 `tableheader:"others_personalbenefits"`
+	OthersEventualBenef float64 `tableheader:"others_eventualbenefits"`
+	OthersPosOfTrust    float64 `tableheader:"others_positionoftrust"`
+	OthersDaily         float64 `tableheader:"others_daily"`
+	OthersGrat          float64 `tableheader:"others_gratification"`
+	OthersOriPos        float64 `tableheader:"others_originposition"`
+	OthersOthers        float64 `tableheader:"others_others"`
+	DiscountsTotal      float64 `tableheader:"discounts_total"`
+	DiscountsPrevContr  float64 `tableheader:"discounts_prevcontribution"`
+	DiscountsCeilRet    float64 `tableheader:"discounts_ceilretention"`
+	DiscountsIncomeTax  float64 `tableheader:"discounts_incometax"`
+	DiscountsOthers     float64 `tableheader:"discounts_others"`
 }
 
-// writeAgencyMonthlyInfo will take a AgencyMonthlyInfo and prints to stdout all the employees as csv lines.
-func writeAgencyMonthlyInfo(cr storage.CrawlingResult) ([][]string, error) {
-	var csvContent [][]string
-	headers := []string{"aid", "year", "month",
-		"reg", "name", "role", "type", "workplace", "active", "income_total", "wage",
-		"perks_total", "perks_food", "perks_transportation", "perks_preschool", "perks_health", "perks_birthaid", "perks_housingaid", "perks_subsistence", "perks_others",
-		"others_total", "others_personalbenefits", "others_eventualbenefits", "others_positionoftrust", "others_daily", "others_gratification", "others_originposition", "others_others",
-		"discounts_total", "discounts_prevcontribution", "discounts_ceilretention", "discounts_incometax", "discounts_others"}
-	csvContent = append(csvContent, headers)
-	for _, e := range cr.Employees {
-		basicInfo := fmt.Sprintf("%q, %d, %d,", cr.AgencyID, cr.Year, cr.Month)
-		empInfo := empInfo(e)
-		content := basicInfo + empInfo[:len(empInfo)-1]
-		csvContent = append(csvContent, strings.Split(content, ","))
-	}
-	return csvContent, nil
+type executionResult struct {
+	Pr storage.PackagingResult `json:"pr,omitempty"`
+	Cr storage.CrawlingResult  `json:"cr,omitempty"`
+}
+
+type dataExport struct {
+	csv   [][]string
+	dtpck map[string]interface{}
 }
 
 // empInfo returns the employee as a csv line.
