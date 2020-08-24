@@ -23,4 +23,5 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ## Transparência do Sistema de Justiça na Mídia
 
+* 24/o8/2020 -[Tribunal de Justiça do Ceará lidera ranking da transparência no País, aponta estudo](https://www.focus.jor.br/tribunal-de-justica-do-ceara-lidera-ranking-da-transparencia-no-pais-aponta-estudo/)
 * 23/08/2020 - [Levantamento mostra que tribunais de justiça descumprem leis de transparência](https://congressoemfoco.uol.com.br/opiniao/colunas/levantamento-mostra-que-tribunais-de-justica-descumprem-leis-de-transparencia/)
