@@ -18,5 +18,10 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 | [mppb](https://github.com/dadosjusbr/coletores/tree/master/mppb)             | X             | X                |
 | [trt13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
 | [trepb](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
-| [tjpb](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         -        |
+| [tjpb](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         X        |
 | [mppe](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
+
+## Transparência do Sistema de Justiça na Mídia
+
+* 24/o8/2020 -[Tribunal de Justiça do Ceará lidera ranking da transparência no País, aponta estudo](https://www.focus.jor.br/tribunal-de-justica-do-ceara-lidera-ranking-da-transparencia-no-pais-aponta-estudo/)
+* 23/08/2020 - [Levantamento mostra que tribunais de justiça descumprem leis de transparência](https://congressoemfoco.uol.com.br/opiniao/colunas/levantamento-mostra-que-tribunais-de-justica-descumprem-leis-de-transparencia/)
