@@ -13,10 +13,8 @@
                     "format": "default",
                     "title": "Agency ID",
                     "description": "The ID of agency",
-                    "description-ptbr": "A sigla da agência",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "A sigla da agência"
+
                 },
                 {
                     "name": "year",
@@ -24,10 +22,8 @@
                     "format": "default",
                     "title": "Year",
                     "description": "Year of data collection",
-                    "description-ptbr": "O ano que os dados foram coletados",
-                    "constraints": {
-                        "required": true
-                    }
+                    "bareNumber": false,
+                    "description-ptbr": "O ano que os dados foram coletados"
                 },
                 {
                     "name": "month",
@@ -35,21 +31,16 @@
                     "format": "default",
                     "title": "Month",
                     "description": "Month of data collection",
-                    "description-ptbr": "O mês que os dados foram coletados",
-                    "constraints": {
-                        "required": true
-                    }
+                    "bareNumber": false,
+                    "description-ptbr": "O mês que os dados foram coletados"
                 },
                 {
                     "name": "reg",
                     "title": "Register number",
                     "type": "string",
-                    "format": "uuid",
+                    "format": "default",
                     "description": "Employee registration word",
-                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado",
-                    "constraints": {
-                        "unique": true
-                    }
+                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado"
                 },
                 {
                     "name": "name",
@@ -57,10 +48,7 @@
                     "type": "string",
                     "description": "Employee Name",
                     "format": "default",
-                    "description-ptbr": "O nome do empregado",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "O nome do empregado"
                 },
                 {
                     "name": "role",
@@ -68,10 +56,7 @@
                     "type": "string",
                     "description": "Role of the employee",
                     "format": "default",
-                    "description-ptbr": "A função do empregado",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "A função do empregado"
                 },
                 {
                     "name": "type",
@@ -79,10 +64,7 @@
                     "type": "string",
                     "description": "Describe if the employee is a servidor, membro, pensionista or indefinido",
                     "format": "default",
-                    "description-ptbr": "Descreve se o empregado é um servidor, membro, pensionista ou indefinido",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Descreve se o empregado é um servidor, membro, pensionista ou indefinido"
                 },
                 {
                     "name": "worklplace",
@@ -90,50 +72,36 @@
                     "type": "string",
                     "description": "Employee workplace",
                     "format": "default",
-                    "description-ptbr": "O local onde o empregado está alocado",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "O local onde o empregado está alocado"
                 },
                 {
                     "name": "active",
                     "title": "Active",
                     "type": "boolean",
                     "description": "Active or inactive employee",
-                    "description-ptbr": "Descreve se o funcionário está ativo ou inativo",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Descreve se o funcionário está ativo ou inativo"
                 },
                 {
                     "name": "income_total",
                     "title": "Income Total",
                     "type": "number",
                     "description": "Describe employee income",
-                    "description-ptbr": "Corresponde a renda total do funcionário",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Corresponde a renda total do funcionário"
                 },
                 {
                     "name": "wage",
                     "title": "Wage",
                     "type": "number",
+                    
                     "description": "Describe employee wage",
-                    "description-ptbr": "Corresponde ao salário sem descontos",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Corresponde ao salário sem descontos"
                 },
                 {
                     "name": "perks_total",
                     "title": "Perks Total",
                     "type": "number",
                     "description": "Describes all perks received by a employee",
-                    "description-ptbr": "Corresponde aos benefícios recebidos pelo funcionário",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Corresponde aos benefícios recebidos pelo funcionário"
                 },
                 {
                     "name": "perks_food",
@@ -196,10 +164,7 @@
                     "title": "Others total amount",
                     "type": "number",
                     "description": "Describe all others amounts received by employee",
-                    "description-ptbr": "Corresponde a soma de todos os montantes acrescentados ao salário",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Corresponde a soma de todos os montantes acrescentados ao salário"
                 },
                 {
                     "name": "others_personalbenefits",
@@ -255,10 +220,7 @@
                     "title": "Total discounts",
                     "type": "number",
                     "description": "Represents the sum of discounts applied to the employee.",
-                    "description-ptbr": "Total de descontos aplicados ao empregado",
-                    "constraints": {
-                        "required": true
-                    }
+                    "description-ptbr": "Total de descontos aplicados ao empregado"
                 },
                 {
                     "name": "discounts_prevcontribution",
@@ -284,7 +246,7 @@
                 {
                     "name": "discounts_others",
                     "title": "Others discounts",
-                    "type": "numberType",
+                    "type": "number",
                     "description": "Any other type of discount applied that does not fit into another field",
                     "description-ptbr": "Qualquer outro tipo de desconto aplicado que não se encaixa em outro campo"
                 }

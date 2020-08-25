@@ -13,6 +13,16 @@ import (
 	"github.com/frictionlessdata/tableschema-go/table"
 )
 
+type executionResult struct {
+	Pr storage.PackagingResult `json:"pr,omitempty"`
+	Cr storage.CrawlingResult  `json:"cr,omitempty"`
+}
+
+type dataExport struct {
+	csv   [][]string
+	dtpck map[string]interface{}
+}
+
 func main() {
 	var er executionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
@@ -25,9 +35,7 @@ func main() {
 	}
 	csvContent := mountCSV(er.Cr)
 	for i := range csvContent {
-		csvContent[i][1] = strings.TrimSpace(csvContent[i][1])
-		csvContent[i][2] = strings.TrimSpace(csvContent[i][2])
-		fmt.Println(csvContent[i][0].Version(), csvContent[i][1], len(csvContent[i][1]))
+		csvContent[i][8] = strings.TrimSpace(csvContent[i][8])
 	}
 	table := table.FromSlices(csvContent[0], csvContent[1:])
 	dtpckg := mountDtPckg(er.Cr)
@@ -36,7 +44,6 @@ func main() {
 	if err := sch.CastTable(table, &emp); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(sch)
 	var v dataExport
 	v.csv = csvContent
 	v.dtpck = dtpckg
@@ -45,6 +52,7 @@ func main() {
 
 //mountCSV receives a CR and returns header and content of a csv.
 func mountCSV(cr storage.CrawlingResult) [][]string {
+	var csvContent [][]string
 	headers := []string{"aid", "year", "month",
 		"reg", "name", "role", "type", "workplace", "active", "income_total", "wage",
 		"perks_total", "perks_food", "perks_transportation", "perks_preschool", "perks_health", "perks_birthaid", "perks_housingaid", "perks_subsistence", "perks_others",
@@ -82,7 +90,6 @@ func mountDtPckg(cr storage.CrawlingResult) map[string]interface{} {
 }
 
 func mountSchema(dtpckg map[string]interface{}) *schema.Schema {
-
 	schemaFields, ok := dtpckg["resources"].([]interface{})[0].(map[string]interface{})["schema"]
 	if !ok {
 		logError("Error getting fields of schema")

@@ -45,16 +45,6 @@ type employees struct {
 	DiscountsOthers     float64 `tableheader:"discounts_others"`
 }
 
-type executionResult struct {
-	Pr storage.PackagingResult `json:"pr,omitempty"`
-	Cr storage.CrawlingResult  `json:"cr,omitempty"`
-}
-
-type dataExport struct {
-	csv   [][]string
-	dtpck map[string]interface{}
-}
-
 // empInfo returns the employee as a csv line.
 func empInfo(e storage.Employee) string {
 	//Change ',' for '-' to avoid unexpected split, changing csv columns
@@ -104,7 +94,7 @@ func getFloatValues(floats ...*float64) string {
 	result := ""
 	for _, p := range floats {
 		if p == nil {
-			result += ","
+			result += "0.00,"
 		} else {
 			result += fmt.Sprintf("%.2f,", *p)
 		}

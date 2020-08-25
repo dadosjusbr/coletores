@@ -27,14 +27,12 @@ WORKDIR /dist
 
 # Copy binary and .env from build to main folder
 RUN cp /build/main .
-RUN cp /build/.env .
 RUN cp /build/schema.json .
 
 # Build a small image
 FROM scratch
 
 COPY --from=builder /dist/ /
-
 
 # Command to run
 ENTRYPOINT ["/main"]
