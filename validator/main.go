@@ -16,9 +16,10 @@ import (
 type executionResult struct {
 	Pr storage.PackagingResult `json:"pr,omitempty"`
 	Cr storage.CrawlingResult  `json:"cr,omitempty"`
+	Vr validatorResult         `json: vr,omitempty`
 }
 
-type dataExport struct {
+type validatorResult struct {
 	csv   [][]string
 	dtpck map[string]interface{}
 }
@@ -33,7 +34,9 @@ func main() {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("Error unmarshaling crawling resul from STDIN: %q", err)))
 		os.Exit(1)
 	}
-	csvContent := mountCSV(er.Cr)
+
+	//Treat white spaces on string before type cast.
+	csvContent := toCSV(er.Cr)
 	for i := range csvContent {
 		csvContent[i][8] = strings.TrimSpace(csvContent[i][8])
 	}
@@ -42,7 +45,8 @@ func main() {
 	sch := mountSchema(dtpckg)
 	var emp []employees
 	if err := sch.CastTable(table, &emp); err != nil {
-		fmt.Println(err)
+		status.ExitFromError(status.NewError(5, fmt.Errorf("Error Casting table with schema fields: %q", err)))
+		os.Exit(1)
 	}
 	var v dataExport
 	v.csv = csvContent
@@ -51,7 +55,7 @@ func main() {
 }
 
 //mountCSV receives a CR and returns header and content of a csv.
-func mountCSV(cr storage.CrawlingResult) [][]string {
+func toCSV(cr storage.CrawlingResult) [][]string {
 	var csvContent [][]string
 	headers := []string{"aid", "year", "month",
 		"reg", "name", "role", "type", "workplace", "active", "income_total", "wage",
