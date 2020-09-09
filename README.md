@@ -8,10 +8,11 @@ Coletores de dados sobre remunerações do sistema de justiça brasileiro
 
 Quer contribuir com a libertação de dados do sistema de justiça do seu estado? Temos um [tutorial](TUTORIAL.md) para ajudar nessa tarefa.
 
+## Contribuição
+
+Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é responsável por duas tarefas: baixar os dados do site oficial do órgão e convertê-los para o formato padronizado de resultado de coleta [Crawling Result](https://github.com/dadosjusbr/storage/blob/master/agency.go#L27). Para facilitar o processo de contruibuição, por favor ler nossas [regras e código de conduta](https://github.com/dadosjusbr/coletores/blob/master/CONTRIBUTING.md). 
+
 ## Status
-
-Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é responsável por duas tarefas: baixar os dados do site oficial do órgão e convertê-los para o formato padronizado de resultado de coleta (crawling result). Para facilitar o processo de revisão, aconselhamos que separem a automação do download dos arquivos e da tradução em dois PRs, sendo o segundo aberto depois do primeiro ter sido aprovado. O órgão só fará parte do processo de libertação contínua quando ambas as etapas forem concluídas.
-
 
 | Nome do Coletor | Coleta | Tradução  |
 |:--------------- |:-------------:|:----------------:|
@@ -23,5 +24,6 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ## Transparência do Sistema de Justiça na Mídia
 
-* 24/o8/2020 -[Tribunal de Justiça do Ceará lidera ranking da transparência no País, aponta estudo](https://www.focus.jor.br/tribunal-de-justica-do-ceara-lidera-ranking-da-transparencia-no-pais-aponta-estudo/)
+* 07/09/2020 - [Os privilégios da toga](https://piaui.folha.uol.com.br/os-privilegios-da-toga/)
+* 24/08/2020 -[Tribunal de Justiça do Ceará lidera ranking da transparência no País, aponta estudo](https://www.focus.jor.br/tribunal-de-justica-do-ceara-lidera-ranking-da-transparencia-no-pais-aponta-estudo/)
 * 23/08/2020 - [Levantamento mostra que tribunais de justiça descumprem leis de transparência](https://congressoemfoco.uol.com.br/opiniao/colunas/levantamento-mostra-que-tribunais-de-justica-descumprem-leis-de-transparencia/)

@@ -1,3 +1,18 @@
+# Contribuição 
+
+Quando for contribuir com esse repositório, por favor, primeiro discutir a mudança que pretende fazer via issue, email ou outra forma de contato com os participantes da organização dadosjusbr antes de fazer a mudança. 
+No caso de um novo coletor, verificar se o órgão já está na lista de issues que são sugestões de novos coletores.
+Por favor, notar que temos um código de conduta, seguir o que se é pedido no código de conduta é de extrema importância para o projeto.
+
+## Processo de Pull Requests (PR'S)
+
+1. Certifique-se de que todas as dependências de build e install (go.mod, go.sum, requirements.py...) desnecessárias, sejam removidas antes do PR final.
+2. Atualize a do README.md com o avanço da sua mudança, no caso da implementação de um novo coletor.
+3. Crie um .env-sample com o nome das variáveis necessárias para a execução do coletor.
+4. Você deve requisitar o review do seu Pull Request para @dadosjusbr/coleta-dev. Seu código será analisado e comentado se mudanças forem necessárias. Após a aprovação, o seu PR é mergeado.
+5. É obrigatório que todo PR pertença a uma issue, assinale o número dela no comentário do seu Pull Request.
+6. Certifique-se de ter testes de unidade referentes ao código e que eles estejam com 100% de assertividade.
+
 # Código de Conduta para Colaboradores
 
 ## Nossa promessa
