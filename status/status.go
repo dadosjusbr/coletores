@@ -31,6 +31,12 @@ const (
 
 	// Unknown means that something unexpected has happend
 	Unknown Code = 6
+
+	// InvalidInput means the stage input could not be marshalled or is invalid.
+	InvalidInput = 7
+
+	// OutputError will be raised when the stage is not able to print the correct output.
+	OutputError = 8
 )
 
 var (
