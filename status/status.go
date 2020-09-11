@@ -33,10 +33,10 @@ const (
 	Unknown Code = 6
 
 	// InvalidInput means the stage input could not be marshalled or is invalid.
-	InvalidInput = 7
+	InvalidInput Code = 7
 
 	// OutputError will be raised when the stage is not able to print the correct output.
-	OutputError = 8
+	OutputError Code = 8
 )
 
 var (
@@ -48,6 +48,8 @@ var (
 		DataUnavailable:   "Data Unavailable",
 		InvalidFile:       "Invalid File",
 		Unknown:           "Unknown",
+		InvalidInput:      "Invalid Input",
+		OutputError:       "Output Error",
 	}
 )
 
