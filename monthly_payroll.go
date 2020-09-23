@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dadosjusbr/storage"
 	"github.com/gocarina/gocsv"
 )
 
@@ -13,14 +12,14 @@ type MonthlyPayrollItem struct {
 	AgencyID string `tableheader:"aid" tableheader:"aid" csv:"aid"`
 	Month    int    `tableheader:"month" csv:"month"`
 	Year     int    `tableheader:"year" tableheader:"year" csv:"year"`
-	storage.Employee
+	Employee
 }
 
 // MonthlyPayroll stores the data about the payroll of a certain agency.
 type MonthlyPayroll []MonthlyPayrollItem
 
 // NewMonthlyPayroll instantiates a MonthlyPayroll
-func NewMonthlyPayroll(aid string, month, year int, emps []storage.Employee) MonthlyPayroll {
+func NewMonthlyPayroll(aid string, month, year int, emps []Employee) MonthlyPayroll {
 	var p MonthlyPayroll
 	for _, e := range emps {
 		p = append(p, MonthlyPayrollItem{
