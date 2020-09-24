@@ -3,11 +3,9 @@ module trepb
 go 1.14
 
 require (
-	github.com/antchfx/htmlquery v1.1.0
-	github.com/antchfx/xpath v1.1.0 // indirect
-	github.com/dadosjusbr/coletores v0.0.0-20200609014212-bd097295e75b
-	github.com/dadosjusbr/storage v0.0.0-20191121132348-879140805636
+	github.com/antchfx/htmlquery v1.2.3
+	github.com/dadosjusbr/coletores v0.0.0-20200923235936-4de43986274f
 	github.com/joho/godotenv v1.3.0
-	github.com/stretchr/testify v1.4.0
-	golang.org/x/net v0.0.0-20191101175033-0deb6923b6d9
+	github.com/stretchr/testify v1.6.1
+	golang.org/x/net v0.0.0-20200923182212-328152dc79b1
 )

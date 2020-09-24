@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 )
 
@@ -63,20 +63,20 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Parsing error (%02d-%04d):\n%s", month, year, err)))
 	}
-	cr := newCrawlingResult(records, filePath, month, year)
-	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	er := coletores.ExecutionResult{Cr: newCrawlingResult(records, filePath, month, year)}
+	b, err := json.MarshalIndent(er, "", "  ")
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("JSON marshaling error: %q", err)))
 	}
-	fmt.Printf("%s", string(crJSON))
+	fmt.Println(string(b))
 }
 
-func newCrawlingResult(emps []storage.Employee, filePath string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
+func newCrawlingResult(emps []coletores.Employee, filePath string, month, year int) coletores.CrawlingResult {
+	crawlerInfo := coletores.Crawler{
 		CrawlerID:      "trepb",
 		CrawlerVersion: gitCommit,
 	}
-	cr := storage.CrawlingResult{
+	cr := coletores.CrawlingResult{
 		AgencyID:  "trepb",
 		Month:     month,
 		Year:      year,

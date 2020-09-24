@@ -5,9 +5,8 @@ import (
 	"io"
 	"math"
 
-	"github.com/dadosjusbr/storage"
-
 	"github.com/antchfx/htmlquery"
+	"github.com/dadosjusbr/coletores"
 	"golang.org/x/net/html"
 )
 
@@ -67,8 +66,8 @@ func loadTable(r io.Reader) ([]*html.Node, error) {
 }
 
 // employeeRecords will retrieve a list of employees from the data table. Status 1 if any errors trying to parse employees, 0 if none.
-func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
-	var employees []storage.Employee
+func employeeRecords(records []*html.Node) ([]coletores.Employee, error) {
+	var employees []coletores.Employee
 	var errs parsingErrors
 	for i, row := range records[1:] {
 		e, err := newEmployee(row)
@@ -86,11 +85,11 @@ func employeeRecords(records []*html.Node) ([]storage.Employee, error) {
 }
 
 // newEmployee will create a new employee from a row.
-func newEmployee(row *html.Node) (storage.Employee, error) {
+func newEmployee(row *html.Node) (coletores.Employee, error) {
 	// Creating employee struct as needed.
-	e := storage.Employee{
-		Income:    &storage.IncomeDetails{Other: &storage.Funds{}, Perks: &storage.Perks{}},
-		Discounts: &storage.Discount{},
+	e := coletores.Employee{
+		Income:    &coletores.IncomeDetails{Other: &coletores.Funds{}, Perks: &coletores.Perks{}},
+		Discounts: &coletores.Discount{},
 	}
 
 	if err := employeeBasicInfo(row, &e); err != nil {
@@ -106,7 +105,7 @@ func newEmployee(row *html.Node) (storage.Employee, error) {
 }
 
 // employeeBasicInfo will fetch basic info from the rows.
-func employeeBasicInfo(row *html.Node, e *storage.Employee) error {
+func employeeBasicInfo(row *html.Node, e *coletores.Employee) error {
 	if err := retrieveString(row, &e.Name, nameXPath); err != nil {
 		return fmt.Errorf("error retrieving name: %q", err)
 	}
@@ -121,7 +120,7 @@ func employeeBasicInfo(row *html.Node, e *storage.Employee) error {
 }
 
 // employeeIncome will fetch Income info from the rows.
-func employeeIncome(row *html.Node, i *storage.IncomeDetails) error {
+func employeeIncome(row *html.Node, i *coletores.IncomeDetails) error {
 	if err := retrieveFloat(row, &i.Wage, wageXPath); err != nil {
 		return fmt.Errorf("error retrieving Wage: %q", err)
 	}
@@ -136,7 +135,7 @@ func employeeIncome(row *html.Node, i *storage.IncomeDetails) error {
 }
 
 // employeeIncomeOthers will fetch other incomes info from the rows.
-func employeeIncomeOthers(row *html.Node, o *storage.Funds) error {
+func employeeIncomeOthers(row *html.Node, o *coletores.Funds) error {
 	if err := retrieveFloat(row, &o.PersonalBenefits, personalBenefitsXPath); err != nil {
 		return fmt.Errorf("error retrieving personal benefits: %q", err)
 	}
@@ -157,7 +156,7 @@ func employeeIncomeOthers(row *html.Node, o *storage.Funds) error {
 }
 
 // employeeDiscount will fetch discounts info from the row.
-func employeeDiscounts(row *html.Node, d *storage.Discount) error {
+func employeeDiscounts(row *html.Node, d *coletores.Discount) error {
 	if err := retrieveFloat(row, &d.PrevContribution, prevContributionXPath); err != nil {
 		return fmt.Errorf("error retrieving PrevContribution: %q", err)
 	}
@@ -183,20 +182,20 @@ func active(role string) bool {
 }
 
 // totalDiscounts returns the sum of discounts.
-func totalDiscounts(d storage.Discount) float64 {
+func totalDiscounts(d coletores.Discount) float64 {
 	total := getFloat64Value(d.PrevContribution) + getFloat64Value(d.CeilRetention) + getFloat64Value(d.IncomeTax) + sumMapValues(d.Others)
 	return math.Round(total*100) / 100
 }
 
 // totalFunds returns the sum of funds.
-func totalFunds(f storage.Funds) float64 {
+func totalFunds(f coletores.Funds) float64 {
 	total := getFloat64Value(f.PersonalBenefits) + getFloat64Value(f.EventualBenefits) +
 		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + getFloat64Value(f.OriginPosition) + sumMapValues(f.Others)
 	return math.Round(total*100) / 100
 }
 
 // grossIncome returns the sum of incomes.
-func totalIncome(in storage.IncomeDetails) float64 {
+func totalIncome(in coletores.IncomeDetails) float64 {
 	total := getFloat64Value(in.Wage) + in.Perks.Total + in.Other.Total
 	return math.Round(total*100) / 100
 }

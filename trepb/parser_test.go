@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/antchfx/htmlquery"
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/html"
 )
@@ -48,22 +48,22 @@ func row() (*html.Node, error) {
 }
 
 // expectedEmployee auxiliary function to create the expected employee struct.
-func expectedEmployee() storage.Employee {
+func expectedEmployee() coletores.Employee {
 	zero := 0.0
 	pb := 7475.71
 	pt := 5990.88
-	expectedOthers := storage.Funds{Total: 13466.59, PersonalBenefits: &pb, EventualBenefits: &zero, PositionOfTrust: &pt, Gratification: &zero, OriginPosition: &zero}
-	expectedPerks := storage.Perks{Total: 0}
+	expectedOthers := coletores.Funds{Total: 13466.59, PersonalBenefits: &pb, EventualBenefits: &zero, PositionOfTrust: &pt, Gratification: &zero, OriginPosition: &zero}
+	expectedPerks := coletores.Perks{Total: 0}
 
 	wg := 16902.0
-	expectedIncome := storage.IncomeDetails{Total: 30368.59, Wage: &wg, Perks: &expectedPerks, Other: &expectedOthers}
+	expectedIncome := coletores.IncomeDetails{Total: 30368.59, Wage: &wg, Perks: &expectedPerks, Other: &expectedOthers}
 
 	prev := 2719.5
 	it := 6158.41
 	others := make(map[string]float64)
 	others["other_discounts"] = 0
-	expectedDiscount := storage.Discount{Total: 8877.91, PrevContribution: &prev, CeilRetention: &zero, IncomeTax: &it, Others: others}
-	expected := storage.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: &expectedIncome,
+	expectedDiscount := coletores.Discount{Total: 8877.91, PrevContribution: &prev, CeilRetention: &zero, IncomeTax: &it, Others: others}
+	expected := coletores.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false, Income: &expectedIncome,
 		Discounts: &expectedDiscount}
 	return expected
 }
@@ -102,7 +102,7 @@ func Test_employeeIncome(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	var i = storage.IncomeDetails{Perks: &storage.Perks{}, Other: &storage.Funds{}}
+	var i = coletores.IncomeDetails{Perks: &coletores.Perks{}, Other: &coletores.Funds{}}
 	assert.NoError(t, employeeIncome(row, &i))
 	assert.Equal(t, *expectedEmployee().Income, i)
 }
@@ -113,7 +113,7 @@ func Test_employeeIncomeOthers(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	var o = storage.Funds{}
+	var o = coletores.Funds{}
 	assert.NoError(t, employeeIncomeOthers(row, &o))
 	assert.Equal(t, *expectedEmployee().Income.Other, o)
 }
@@ -124,9 +124,9 @@ func Test_employeeBasicInfo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	var e = storage.Employee{}
+	var e = coletores.Employee{}
 	assert.NoError(t, employeeBasicInfo(row, &e))
-	assert.Equal(t, storage.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false}, e)
+	assert.Equal(t, coletores.Employee{Name: "Zulmira De Jesus Guimaraes Mendes", Role: "Inativo", Workplace: "inativo", Active: false}, e)
 }
 
 // Test if employeeDiscounts is collecting correct information from the row.
@@ -135,7 +135,7 @@ func Test_employeeDiscounts(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 
-	var d = storage.Discount{}
+	var d = coletores.Discount{}
 	assert.NoError(t, employeeDiscounts(row, &d))
 	assert.Equal(t, *expectedEmployee().Discounts, d)
 }
