@@ -44,12 +44,12 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Parser error(%02d-%04d) - %s: %q", month, year, filePath, err)))
 	}
-	cr := newCrawlingResult(records, filePath, month, year)
-	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	er := coletores.ExecutionResult{Cr: newCrawlingResult(records, filePath, month, year)}
+	b, err := json.MarshalIndent(er, "", "  ")
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("JSON marshaling error: %q", err)))
 	}
-	fmt.Printf("%s", string(crJSON))
+	fmt.Println(string(b))
 }
 
 func newCrawlingResult(emps []coletores.Employee, filePath string, month, year int) coletores.CrawlingResult {
