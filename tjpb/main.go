@@ -55,13 +55,13 @@ func main() {
 
 	//teste2 := "transparencia_202004_servidores_0_0.pdf"
 	//teste3 := "remuneracoes-magistrados-tjpb-01-2020.pdf"
-	cr := newCrawlingResult(allEmployees, files, month, year)
-	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	er := coletores.ExecutionResult{Cr: newCrawlingResult(allEmployees, files, month, year)}
+	b, err := json.MarshalIndent(er, "", "  ")
 	if err != nil {
 		logError("JSON marshaling error: %v", err)
 		os.Exit(1)
 	}
-	fmt.Printf("%s", string(crJSON))
+	fmt.Println(string(b))
 }
 
 func newCrawlingResult(emps []coletores.Employee, files []string, month, year int) coletores.CrawlingResult {
