@@ -8,13 +8,13 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 // magistrate_C.go parse all magistrate.pdf from the following months:
 // 2018: Jan
 
-func parserMagC(path string) ([]storage.Employee, error) {
+func parserMagC(path string) ([]coletores.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"247.5,89.342,1396.868,311.488",
 		"247.5,311.488,1428.258,560.196",

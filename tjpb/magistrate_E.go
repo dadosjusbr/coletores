@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/gocarina/gocsv"
 )
 
@@ -36,7 +36,7 @@ type magMay struct { // Our example struct, you can use "-" to ignore a field
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserMagE(path string) ([]storage.Employee, error) {
+func parserMagE(path string) ([]coletores.Employee, error) {
 	templateArea := []string{"93.137,16.838,550.931,103.135",
 		"94.19,99.978,544.617,211.532",
 		"93.137,209.428,548.827,817.715",
@@ -109,11 +109,11 @@ func headersMagMay() [][]string {
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []servantMay and transform it into a []storage.Employee
-func toEmployeeMagMay(magMay []magMay) []storage.Employee {
-	var empSet []storage.Employee
+//toEmployee Receives a []servantMay and transform it into a []coletores.Employee
+func toEmployeeMagMay(magMay []magMay) []coletores.Employee {
+	var empSet []coletores.Employee
 	for i := range magMay {
-		var emp = storage.Employee{}
+		var emp = coletores.Employee{}
 		emp.Name = magMay[i].Name
 		emp.Role = magMay[i].Role
 		emp.Type = "membro"
@@ -126,9 +126,9 @@ func toEmployeeMagMay(magMay []magMay) []storage.Employee {
 	return empSet
 }
 
-//employeeDiscountInfo receives a magisterMay, create a storage.Discount, match fields and return.
-func employeeDiscMagMay(emp magMay) *storage.Discount {
-	var d storage.Discount
+//employeeDiscountInfo receives a magisterMay, create a coletores.Discount, match fields and return.
+func employeeDiscMagMay(emp magMay) *coletores.Discount {
+	var d coletores.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
 	d.PrevContribution = emp.PrevContribution
@@ -138,12 +138,12 @@ func employeeDiscMagMay(emp magMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a magisterMay, create a storage.IncomeDetails, match fields and return.
+//employeeIncome receives a magisterMay, create a coletores.IncomeDetails, match fields and return.
 // Wage
-func employeeIncomeMagMay(emp magMay) *storage.IncomeDetails {
-	in := storage.IncomeDetails{}
-	perks := storage.Perks{}
-	other := storage.Funds{}
+func employeeIncomeMagMay(emp magMay) *coletores.IncomeDetails {
+	in := coletores.IncomeDetails{}
+	perks := coletores.Perks{}
+	other := coletores.Funds{}
 	sumWage := *emp.Wage + *emp.Subsidy
 	in.Wage = &sumWage
 	perks.Total = *emp.Perks

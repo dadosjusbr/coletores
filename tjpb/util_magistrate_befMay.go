@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/gocarina/gocsv"
 )
 
@@ -34,11 +34,11 @@ func headersMagBefMay() [][]string {
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []magBefMay and transform it into a []storage.Employee
-func toEmployeeMagistrateBeforeMay(mag []magBefMay) []storage.Employee {
-	var empSet []storage.Employee
+//toEmployee Receives a []magBefMay and transform it into a []coletores.Employee
+func toEmployeeMagistrateBeforeMay(mag []magBefMay) []coletores.Employee {
+	var empSet []coletores.Employee
 	for i := range mag {
-		empSet = append(empSet, storage.Employee{
+		empSet = append(empSet, coletores.Employee{
 			Name:      mag[i].Name,
 			Role:      mag[i].Role,
 			Type:      "membro",
@@ -51,9 +51,9 @@ func toEmployeeMagistrateBeforeMay(mag []magBefMay) []storage.Employee {
 	return empSet
 }
 
-//employeeDiscountInfo receives a magBefMay, create a storage.Discount, match fields and return.
-func employeeDiscMagistrateBeforeMay(emp magBefMay) *storage.Discount {
-	var d storage.Discount
+//employeeDiscountInfo receives a magBefMay, create a coletores.Discount, match fields and return.
+func employeeDiscMagistrateBeforeMay(emp magBefMay) *coletores.Discount {
+	var d coletores.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
 	d.PrevContribution = emp.PrevContribution
@@ -63,11 +63,11 @@ func employeeDiscMagistrateBeforeMay(emp magBefMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a magBefMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncomeMagistrateBeforeMay(emp magBefMay) *storage.IncomeDetails {
-	in := storage.IncomeDetails{}
-	perks := storage.Perks{}
-	other := storage.Funds{}
+//employeeIncome receives a magBefMay, create a coletores.IncomeDetails, match fields and return.
+func employeeIncomeMagistrateBeforeMay(emp magBefMay) *coletores.IncomeDetails {
+	in := coletores.IncomeDetails{}
+	perks := coletores.Perks{}
+	other := coletores.Funds{}
 	in.Wage = emp.Wage
 	perks.Total = *emp.Perks
 	other.Gratification = emp.Gratification

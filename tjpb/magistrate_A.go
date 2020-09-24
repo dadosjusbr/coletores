@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 // magistrate_A.go parse all magistrate.pdf from the following months:
@@ -35,7 +35,7 @@ type magBefMay struct { // Our example struct, you can use "-" to ignore a field
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserMagA(path string) ([]storage.Employee, error) {
+func parserMagA(path string) ([]coletores.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"105.781,36.839,583.639,136.831",
 		"106.834,136.831,586.797,248.402",

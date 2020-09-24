@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/joho/godotenv"
 )
 
@@ -64,12 +64,12 @@ func main() {
 	fmt.Printf("%s", string(crJSON))
 }
 
-func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
+func newCrawlingResult(emps []coletores.Employee, files []string, month, year int) coletores.CrawlingResult {
+	crawlerInfo := coletores.Crawler{
 		CrawlerID:      "tjpb",
 		CrawlerVersion: gitCommit,
 	}
-	cr := storage.CrawlingResult{
+	cr := coletores.CrawlingResult{
 		AgencyID:  "tjpb",
 		Month:     month,
 		Year:      year,
@@ -82,8 +82,8 @@ func newCrawlingResult(emps []storage.Employee, files []string, month, year int)
 }
 
 // genEmployees navigate
-func genEmployees(files []string, outputFolder string, month, year int) ([]string, []storage.Employee, error) {
-	var allEmployees []storage.Employee
+func genEmployees(files []string, outputFolder string, month, year int) ([]string, []coletores.Employee, error) {
+	var allEmployees []coletores.Employee
 	var pathFixed []string
 	template, err := checkTemplate(month, year)
 	if err != nil {

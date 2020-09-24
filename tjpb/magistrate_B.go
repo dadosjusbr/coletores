@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 // magistrate_B.go parse all magistrate.pdf from the following months:
@@ -16,7 +16,7 @@ import (
 // 2019: December.
 // 2020: Jan, Fev
 
-func parserMagB(path string) ([]storage.Employee, error) {
+func parserMagB(path string) ([]coletores.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"102.465,37.62,559.845,129.69",
 		"103.455,128.7,563.805,234.63",

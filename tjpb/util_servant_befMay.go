@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/gocarina/gocsv"
 )
 
@@ -35,11 +35,11 @@ func headersServBefMay() [][]string {
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []servantMay and transform it into a []storage.Employee
-func toEmployeeServBefMay(serv []servBefMay) []storage.Employee {
-	var empSet []storage.Employee
+//toEmployee Receives a []servantMay and transform it into a []coletores.Employee
+func toEmployeeServBefMay(serv []servBefMay) []coletores.Employee {
+	var empSet []coletores.Employee
 	for i := range serv {
-		empSet = append(empSet, storage.Employee{
+		empSet = append(empSet, coletores.Employee{
 			Name:      serv[i].Name,
 			Role:      serv[i].Role,
 			Type:      "servidor",
@@ -52,9 +52,9 @@ func toEmployeeServBefMay(serv []servBefMay) []storage.Employee {
 	return empSet
 }
 
-//employeeDiscServBefMay receives a servBefMay, create a storage.Discount, match fields and return.
-func employeeDiscServBefMay(emp servBefMay) *storage.Discount {
-	var d storage.Discount
+//employeeDiscServBefMay receives a servBefMay, create a coletores.Discount, match fields and return.
+func employeeDiscServBefMay(emp servBefMay) *coletores.Discount {
+	var d coletores.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
 	d.PrevContribution = emp.PrevContribution
@@ -64,11 +64,11 @@ func employeeDiscServBefMay(emp servBefMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncomeServBefMay receives a servBefMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncomeServBefMay(emp servBefMay) *storage.IncomeDetails {
-	in := storage.IncomeDetails{}
-	perks := storage.Perks{}
-	other := storage.Funds{}
+//employeeIncomeServBefMay receives a servBefMay, create a coletores.IncomeDetails, match fields and return.
+func employeeIncomeServBefMay(emp servBefMay) *coletores.IncomeDetails {
+	in := coletores.IncomeDetails{}
+	perks := coletores.Perks{}
+	other := coletores.Funds{}
 	in.Wage = emp.Wage
 	perks.Total = *emp.Perks
 	other.PositionOfTrust = emp.PositionOfTrust

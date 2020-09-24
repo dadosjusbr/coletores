@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/gocarina/gocsv"
 )
 
@@ -36,7 +36,7 @@ type servantMay struct { // Our example struct, you can use "-" to ignore a fiel
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserServerE(path string) ([]storage.Employee, error) {
+func parserServerE(path string) ([]coletores.Employee, error) {
 	templateArea := []string{"92.085,16.838,559.351,102.083",
 		"93.137,102.083,541.46,211.532",
 		"94.19,209.428,547.774,824.029",
@@ -110,11 +110,11 @@ func headersServMay() [][]string {
 	return append(csvFinal, headers)
 }
 
-//toEmployee Receives a []servantMay and transform it into a []storage.Employee
-func toEmployeeServMay(servMay []servantMay) []storage.Employee {
-	var empSet []storage.Employee
+//toEmployee Receives a []servantMay and transform it into a []coletores.Employee
+func toEmployeeServMay(servMay []servantMay) []coletores.Employee {
+	var empSet []coletores.Employee
 	for i := range servMay {
-		var emp = storage.Employee{}
+		var emp = coletores.Employee{}
 		emp.Name = servMay[i].Name
 		emp.Role = servMay[i].Role
 		emp.Type = "servidor"
@@ -127,9 +127,9 @@ func toEmployeeServMay(servMay []servantMay) []storage.Employee {
 	return empSet
 }
 
-//employeeDiscountInfo receives a servantMay, create a storage.Discount, match fields and return.
-func employeeDiscServMay(emp servantMay) *storage.Discount {
-	var d storage.Discount
+//employeeDiscountInfo receives a servantMay, create a coletores.Discount, match fields and return.
+func employeeDiscServMay(emp servantMay) *coletores.Discount {
+	var d coletores.Discount
 	d.CeilRetention = emp.CeilRetention
 	d.IncomeTax = emp.IncomeTax
 	d.PrevContribution = emp.PrevContribution
@@ -139,11 +139,11 @@ func employeeDiscServMay(emp servantMay) *storage.Discount {
 	return &d
 }
 
-//employeeIncome receives a servantMay, create a storage.IncomeDetails, match fields and return.
-func employeeIncomeServMay(emp servantMay) *storage.IncomeDetails {
-	in := storage.IncomeDetails{}
-	perks := storage.Perks{}
-	other := storage.Funds{}
+//employeeIncome receives a servantMay, create a coletores.IncomeDetails, match fields and return.
+func employeeIncomeServMay(emp servantMay) *coletores.IncomeDetails {
+	in := coletores.IncomeDetails{}
+	perks := coletores.Perks{}
+	other := coletores.Funds{}
 	in.Wage = emp.Wage
 	perks.Total = *emp.Perks
 	other.PositionOfTrust = emp.PositionOfTrust

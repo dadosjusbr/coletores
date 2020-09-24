@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 // servant_A.go parse all servants.pdf from the following months:
@@ -34,7 +34,7 @@ type servBefMay struct { // Our example struct, you can use "-" to ignore a fiel
 	Daily            *float64 `csv:"daily"`
 }
 
-func parserServA(path string) ([]storage.Employee, error) {
+func parserServA(path string) ([]coletores.Employee, error) {
 	// We generate this template using release 1.2.1 of https://github.com/tabulapdf/tabula
 	templateArea := []string{"97.361,17.893,539.432,109.465",
 		"97.361,107.36,544.695,228.403",
