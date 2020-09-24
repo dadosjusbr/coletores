@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/knieriem/odf/ods"
 )
 
@@ -67,8 +67,8 @@ var headersMap = []map[string]int{
 }
 
 // Parse parses the ods tables.
-func Parse(files []string) ([]storage.Employee, error) {
-	var employees []storage.Employee
+func Parse(files []string) ([]coletores.Employee, error) {
+	var employees []coletores.Employee
 	var parseErr bool
 
 	perks, err := retrievePerksData(files)
@@ -109,13 +109,13 @@ func retrievePerksData(files []string) ([][]string, error) {
 	return nil, nil
 }
 
-func retrieveEmployees(emps [][]string, perks [][]string, fileName string) ([]storage.Employee, bool) {
+func retrieveEmployees(emps [][]string, perks [][]string, fileName string) ([]coletores.Employee, bool) {
 	ok := true
-	var employees []storage.Employee
+	var employees []coletores.Employee
 	fileType := dataType(fileName)
 	for _, emp := range emps {
 		var err error
-		var newEmp *storage.Employee
+		var newEmp *coletores.Employee
 		if fileType == REMUNERACOES {
 			empPerks := retrievePerksLine(emp[0], perks)
 			if newEmp, err = newEmployee(emp, empPerks, fileName); err != nil {
@@ -147,9 +147,9 @@ func retrievePerksLine(regNum string, perks [][]string) []string {
 	return nil
 }
 
-func newIntern(emp []string, fileName string) (*storage.Employee, error) {
+func newIntern(emp []string, fileName string) (*coletores.Employee, error) {
 	fileType := dataType(fileName)
-	var newEmp storage.Employee
+	var newEmp coletores.Employee
 	var err error
 	newEmp.Name = retrieveString(emp, "NOME", fileType)
 	newEmp.Role = retrieveString(emp, "CARGO", fileType)
@@ -165,9 +165,9 @@ func newIntern(emp []string, fileName string) (*storage.Employee, error) {
 	return &newEmp, nil
 }
 
-func newEmployee(emp []string, perks []string, fileName string) (*storage.Employee, error) {
+func newEmployee(emp []string, perks []string, fileName string) (*coletores.Employee, error) {
 	fileType := dataType(fileName)
-	var newEmp storage.Employee
+	var newEmp coletores.Employee
 	var err error
 	newEmp.Reg = retrieveString(emp, "MATRÍCULA", fileType)
 	newEmp.Name = retrieveString(emp, "NOME", fileType)
@@ -201,11 +201,11 @@ func employeeType(fileName string) string {
 	return ""
 }
 
-func internIncomeInfo(emp []string, fileType int) (*storage.IncomeDetails, error) {
+func internIncomeInfo(emp []string, fileType int) (*coletores.IncomeDetails, error) {
 	var err error
-	var in storage.IncomeDetails
-	in.Perks = &storage.Perks{}
-	in.Other = &storage.Funds{}
+	var in coletores.IncomeDetails
+	in.Perks = &coletores.Perks{}
+	in.Other = &coletores.Funds{}
 	if err = retrieveFloat64(&in.Wage, emp, "REMUNERAÇÃO", fileType); err != nil {
 		return nil, fmt.Errorf("error retrieving employee income info: %q", err)
 	}
@@ -232,9 +232,9 @@ func internIncomeInfo(emp []string, fileType int) (*storage.IncomeDetails, error
 	return &in, nil
 }
 
-func employeeIncomeInfo(emp []string, perks []string, fileType int) (*storage.IncomeDetails, error) {
+func employeeIncomeInfo(emp []string, perks []string, fileType int) (*coletores.IncomeDetails, error) {
 	var err error
-	var in storage.IncomeDetails
+	var in coletores.IncomeDetails
 	if err = retrieveFloat64(&in.Wage, emp, "CARGO EFETIVO", fileType); err != nil {
 		return nil, fmt.Errorf("error retrieving employee income info: %q", err)
 	}
@@ -248,8 +248,8 @@ func employeeIncomeInfo(emp []string, perks []string, fileType int) (*storage.In
 	return &in, nil
 }
 
-func employeePerks(reg string, perks []string) (*storage.Perks, error) {
-	var inPerks storage.Perks
+func employeePerks(reg string, perks []string) (*coletores.Perks, error) {
+	var inPerks coletores.Perks
 	if perks == nil || len(perks) == 0 {
 		inPerks.Total = 0
 		return &inPerks, nil
@@ -286,8 +286,8 @@ func employeePerks(reg string, perks []string) (*storage.Perks, error) {
 	return &inPerks, nil
 }
 
-func employeeIncomeFunds(emp []string, perks []string, fileType int) (*storage.Funds, error) {
-	var o storage.Funds
+func employeeIncomeFunds(emp []string, perks []string, fileType int) (*coletores.Funds, error) {
+	var o coletores.Funds
 	pb, err := sumKeyValues(emp, []string{"OUTRAS VERBAS", "PERMANÊNCIA"}, fileType)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving funds(regNum: %s): %q", emp[0], err)
@@ -314,11 +314,11 @@ func employeeIncomeFunds(emp []string, perks []string, fileType int) (*storage.F
 	return &o, nil
 }
 
-func totalPerks(p storage.Perks) float64 {
+func totalPerks(p coletores.Perks) float64 {
 	return getFloat64Value(p.Food, p.Health, p.HousingAid, p.BirthAid, p.Subsistence) + sumMapValues(p.Others)
 }
 
-func totalIncome(in storage.IncomeDetails) float64 {
+func totalIncome(in coletores.IncomeDetails) float64 {
 	total := getFloat64Value(in.Wage)
 	if in.Other != nil {
 		total += in.Other.Total
@@ -329,8 +329,8 @@ func totalIncome(in storage.IncomeDetails) float64 {
 	return math.Round(total*100) / 100
 }
 
-func employeeDiscountInfo(emp []string, fileType int) (*storage.Discount, error) {
-	var d storage.Discount
+func employeeDiscountInfo(emp []string, fileType int) (*coletores.Discount, error) {
+	var d coletores.Discount
 	if err := retrieveFloat64(&d.PrevContribution, emp, "PREVIDENCIÁRIA", fileType); err != nil {
 		return nil, fmt.Errorf("error retrieving discounts(regNum: %s): %q", emp[0], err)
 	}

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/joho/godotenv"
 )
 
@@ -44,29 +44,28 @@ func main() {
 		os.Exit(1)
 	}
 
-	var emps []storage.Employee
+	var emps []coletores.Employee
 	var parseErr error
 	if emps, parseErr = Parse(files); parseErr != nil {
 		logError("Parsing error: %q", parseErr)
 		os.Exit(1)
 	}
 
-	cr := newCrawlingResult(emps, files, month, year)
-	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	er := coletores.ExecutionResult{Cr: newCrawlingResult(emps, files, month, year)}
+	b, err := json.MarshalIndent(er, "", "  ")
 	if err != nil {
 		logError("JSON marshaling error: %q", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("%s", string(crJSON))
+	fmt.Printf("%s", string(b))
 }
 
-func newCrawlingResult(emps []storage.Employee, files []string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
+func newCrawlingResult(emps []coletores.Employee, files []string, month, year int) coletores.CrawlingResult {
+	crawlerInfo := coletores.Crawler{
 		CrawlerID:      "mppb",
 		CrawlerVersion: gitCommit,
 	}
-	cr := storage.CrawlingResult{
+	cr := coletores.CrawlingResult{
 		AgencyID:  "mppb",
 		Month:     month,
 		Year:      year,
