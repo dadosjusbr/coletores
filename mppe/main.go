@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/storage"
 )
 
 var gitCommit string
@@ -50,22 +50,24 @@ func main() {
 	if err != nil {
 		status.ExitFromError(err)
 	}
-	cr := storage.CrawlingResult{
-		AgencyID:  "mppe",
-		Month:     *month,
-		Year:      *year,
-		Files:     paths,
-		Employees: employees,
-		Crawler: storage.Crawler{
-			CrawlerID:      "mppe",
-			CrawlerVersion: gitCommit,
+	er := coletores.ExecutionResult{
+		Cr: coletores.CrawlingResult{
+			AgencyID:  "mppe",
+			Month:     *month,
+			Year:      *year,
+			Files:     paths,
+			Employees: employees,
+			Crawler: coletores.Crawler{
+				CrawlerID:      "mppe",
+				CrawlerVersion: gitCommit,
+			},
+			Timestamp: time.Now(),
 		},
-		Timestamp: time.Now(),
 	}
-	crJSON, err := json.MarshalIndent(cr, "", "  ")
+	b, err := json.MarshalIndent(er, "", "  ")
 	if err != nil {
 		e := status.NewError(status.InvalidParameters, fmt.Errorf("JSON marshaling error: %q", err))
 		status.ExitFromError(e)
 	}
-	fmt.Printf("%s", string(crJSON))
+	fmt.Println(string(b))
 }

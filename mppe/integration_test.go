@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 func TestIntegration(t *testing.T) {
@@ -162,7 +162,7 @@ func TestIntegration(t *testing.T) {
 			if err != nil {
 				t.Errorf("fail to read desired output file, got %q", err)
 			}
-			var res storage.Employee
+			var res coletores.Employee
 			err = json.Unmarshal(desiredOutput, &res)
 			if err != nil {
 				t.Errorf("want nil, got %q", err)

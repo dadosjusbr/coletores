@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 func areFloatsEqual(a, b float64) bool {
@@ -67,14 +67,14 @@ func TestDiscounts(t *testing.T) {
 		name            string
 		row             []string
 		indentification string
-		funds           *storage.Discount
+		funds           *coletores.Discount
 		indexMap        map[string]int
 	}{
 		{
 			"Should get discounts",
 			[]string{"680729", "ALBÉRICO GOMES GUERRA", "PROMOTOR 3. ENTRANCIA", "INATIVOS", "33689.11", "90.0", "50.00", "30.00", "20.00", "10.00", "33689.11", "3759.70", "6837.63", "0.00", "10597.33", "23091.78", "500.00", "500.00"},
 			"proventos-de-todos-os-membros-inativos",
-			&storage.Discount{
+			&coletores.Discount{
 				Total:            10597.33,
 				CeilRetention:    getPointer(0),
 				IncomeTax:        getPointer(6837.63),

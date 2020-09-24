@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/storage"
 )
 
 type env int
@@ -108,8 +108,8 @@ var (
 )
 
 // Parse parses the xlsx tables
-func Parse(paths []string) ([]storage.Employee, error) {
-	var employees []storage.Employee
+func Parse(paths []string) ([]coletores.Employee, error) {
+	var employees []coletores.Employee
 	for _, path := range paths {
 		documentIdentification := getFileDocumentation(path)
 		indexMap := indexies[documentIdentification]
@@ -120,7 +120,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 		fileMap := file.GetSheetMap()
 		rows := file.GetRows(fileMap[1])
 		lastIndex := detectLastIndexToWork(rows)
-		var employee storage.Employee
+		var employee coletores.Employee
 		for index, row := range rows {
 			if index == 0 || index == 1 || index == 2 || index >= lastIndex {
 				continue
@@ -133,7 +133,7 @@ func Parse(paths []string) ([]storage.Employee, error) {
 			if err != nil {
 				return nil, status.NewError(status.DataUnavailable, err)
 			}
-			employee = storage.Employee{
+			employee = coletores.Employee{
 				Reg:       row[indexMap["registerCodeIndex"]],
 				Name:      row[indexMap["nameIndex"]],
 				Role:      row[indexMap["roleIndex"]],
@@ -164,7 +164,7 @@ func detectLastIndexToWork(rows [][]string) int {
 }
 
 // it returns the total discounts sumary
-func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*storage.Discount, error) {
+func getDiscounts(row []string, documentIdentification string, indexMap map[string]int) (*coletores.Discount, error) {
 	ceilRetention, err := strconv.ParseFloat(row[indexMap["ceilRetentionIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing ceil retention from string to float64 for document %s: %q", documentIdentification, err)
@@ -178,7 +178,7 @@ func getDiscounts(row []string, documentIdentification string, indexMap map[stri
 		return nil, fmt.Errorf("error on parsing prev contribution from string to float64 for document %s: %q", documentIdentification, err)
 	}
 	totalDiscount := ceilRetention + incomeTax + prevContribution
-	return &storage.Discount{
+	return &coletores.Discount{
 		Total:            totalDiscount,
 		CeilRetention:    &ceilRetention,
 		IncomeTax:        &incomeTax,
@@ -187,7 +187,7 @@ func getDiscounts(row []string, documentIdentification string, indexMap map[stri
 }
 
 // it returns the incomes sumary
-func getIncome(row []string, documentIdentification string, indexMap map[string]int) (*storage.IncomeDetails, error) {
+func getIncome(row []string, documentIdentification string, indexMap map[string]int) (*coletores.IncomeDetails, error) {
 	wage, err := strconv.ParseFloat(row[indexMap["wageIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing wage of income details from string to float64 for document %s: %q", documentIdentification, err)
@@ -200,7 +200,7 @@ func getIncome(row []string, documentIdentification string, indexMap map[string]
 	if err != nil {
 		return nil, err
 	}
-	return &storage.IncomeDetails{
+	return &coletores.IncomeDetails{
 		Total: wage + perks.Total + funds.Total,
 		Wage:  &wage,
 		Perks: perks,
@@ -209,7 +209,7 @@ func getIncome(row []string, documentIdentification string, indexMap map[string]
 }
 
 // it retrieves employee perks
-func getPerks(row []string, documentIdentification string, indexMap map[string]int) (*storage.Perks, error) {
+func getPerks(row []string, documentIdentification string, indexMap map[string]int) (*coletores.Perks, error) {
 	indemnity, err := strconv.ParseFloat(row[indexMap["indemnityIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing indemnity from string to float64 for document %s: %q", documentIdentification, err)
@@ -232,13 +232,13 @@ func getPerks(row []string, documentIdentification string, indexMap map[string]i
 		"indemnity":             indemnity,
 		"temporaryRemuneration": temporaryRemuneration,
 	}
-	return &storage.Perks{
+	return &coletores.Perks{
 		Total:  vacationPerk + permanencePerk + indemnity + temporaryRemuneration,
 		Others: other,
 	}, nil
 }
 
-func getFunds(row []string, documentIdentification string, indexMap map[string]int) (*storage.Funds, error) {
+func getFunds(row []string, documentIdentification string, indexMap map[string]int) (*coletores.Funds, error) {
 	otherAmmounts, err := strconv.ParseFloat(row[indexMap["otherAmmountsIndex"]], 64)
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing other ammounts of income details from string to float64 for document %s: %q", documentIdentification, err)
@@ -251,7 +251,7 @@ func getFunds(row []string, documentIdentification string, indexMap map[string]i
 	if err != nil {
 		return nil, fmt.Errorf("error on parsing posisition of trust of income details from string to float64 for document %s: %q", documentIdentification, err)
 	}
-	return &storage.Funds{
+	return &coletores.Funds{
 		Total:            otherAmmounts + eventualBenefits + positionOfTrust,
 		PersonalBenefits: &otherAmmounts,
 		EventualBenefits: &eventualBenefits,
