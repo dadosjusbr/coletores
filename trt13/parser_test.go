@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 	"github.com/stretchr/testify/assert"
 )
 
 const empSample = `{   
-    "id":872,
+    "matricula":"872",
     "nome":"ABIA",
     "lotacao":"GABINETE",
     "cargo":"ANALISTA",
@@ -41,12 +41,12 @@ var (
 	eleven = 11.0
 )
 var (
-	expectedEmployeeBasicInfo = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor"}
-	expectedIncomeOthers      = storage.Funds{Total: 23, PersonalBenefits: &two, EventualBenefits: &three, Daily: &five, Gratification: &six, OriginPosition: &seven}
-	expectedDiscounts         = storage.Discount{PrevContribution: &two, IncomeTax: &three, CeilRetention: &five, Others: map[string]float64{"other_discounts": 4}, Total: 14}
-	perks                     = storage.Perks{Total: 5}
-	expectedIncome            = storage.IncomeDetails{Total: 39, Wage: &eleven, Perks: &perks, Other: &expectedIncomeOthers}
-	expectedNewEmployee       = storage.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor", Income: &expectedIncome, Discounts: &expectedDiscounts}
+	expectedEmployeeBasicInfo = coletores.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor"}
+	expectedIncomeOthers      = coletores.Funds{Total: 23, PersonalBenefits: &two, EventualBenefits: &three, Daily: &five, Gratification: &six, OriginPosition: &seven}
+	expectedDiscounts         = coletores.Discount{PrevContribution: &two, IncomeTax: &three, CeilRetention: &five, Others: map[string]float64{"other_discounts": 4}, Total: 14}
+	perks                     = coletores.Perks{Total: 5}
+	expectedIncome            = coletores.IncomeDetails{Total: 39, Wage: &eleven, Perks: &perks, Other: &expectedIncomeOthers}
+	expectedNewEmployee       = coletores.Employee{Reg: "872", Name: "ABIA", Workplace: "GABINETE", Role: "ANALISTA", Active: true, Type: "servidor", Income: &expectedIncome, Discounts: &expectedDiscounts}
 )
 
 func employeeSample(s string) (trt13Employee, error) {

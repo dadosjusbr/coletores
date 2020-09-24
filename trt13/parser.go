@@ -6,11 +6,11 @@ import (
 	"math"
 	"strings"
 
-	"github.com/dadosjusbr/storage"
+	"github.com/dadosjusbr/coletores"
 )
 
 // parse takes a json filePath and retrieve the array of employees from it.
-func parse(filePath string) ([]storage.Employee, error) {
+func parse(filePath string) ([]coletores.Employee, error) {
 	resultJSON, err := readJSON(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading json: %q", err)
@@ -24,8 +24,8 @@ func parse(filePath string) ([]storage.Employee, error) {
 }
 
 // parseEmployees takes a map in the format returned from the trt13 api and retrieves employees list.
-func parseEmployees(m map[string]interface{}) ([]storage.Employee, error) {
-	var employees []storage.Employee
+func parseEmployees(m map[string]interface{}) ([]coletores.Employee, error) {
+	var employees []coletores.Employee
 	mapArray, err := getSliceOfMaps(m, "listaAnexoviiiServidorMagistradoPensionista")
 	if err != nil {
 		return nil, fmt.Errorf("error trying to retrieve array of categories: %q", err)
@@ -41,8 +41,8 @@ func parseEmployees(m map[string]interface{}) ([]storage.Employee, error) {
 }
 
 // parseCategory will parse a category of employees and return the employee list.
-func parseCategory(category map[string]interface{}) ([]storage.Employee, error) {
-	var employees []storage.Employee
+func parseCategory(category map[string]interface{}) ([]coletores.Employee, error) {
+	var employees []coletores.Employee
 	catInfo, err := catInfo(category)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving category info: %q", err)
@@ -96,9 +96,9 @@ func newTRT13Employee(emp map[string]interface{}) (trt13Employee, error) {
 	return e, nil
 }
 
-// newEmployee creates an storage.employee from a trt13Employee
-func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
-	e := storage.Employee{}
+// newEmployee creates an coletores.employee from a trt13Employee
+func newEmployee(emp trt13Employee, catInfo string) coletores.Employee {
+	e := coletores.Employee{}
 	e.Reg = emp.Reg
 	e.Name = emp.Name
 	e.Role = emp.Role
@@ -110,9 +110,9 @@ func newEmployee(emp trt13Employee, catInfo string) storage.Employee {
 	return e
 }
 
-// employeeIncome creates an *storage.IncomeDetails from a trt13Employee
-func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
-	in := storage.IncomeDetails{Perks: &storage.Perks{}}
+// employeeIncome creates an *coletores.IncomeDetails from a trt13Employee
+func employeeIncome(emp trt13Employee) *coletores.IncomeDetails {
+	in := coletores.IncomeDetails{Perks: &coletores.Perks{}}
 	wage := emp.Income.Wage + emp.Income.Subsidio
 	in.Wage = &wage
 	in.Perks.Total = emp.Income.Perks
@@ -121,9 +121,9 @@ func employeeIncome(emp trt13Employee) *storage.IncomeDetails {
 	return &in
 }
 
-// employeeFunds creates an *storage.Funds from a trt13Employee
-func employeeFunds(emp trt13Employee) *storage.Funds {
-	o := storage.Funds{}
+// employeeFunds creates an *coletores.Funds from a trt13Employee
+func employeeFunds(emp trt13Employee) *coletores.Funds {
+	o := coletores.Funds{}
 	o.PersonalBenefits = &emp.Income.PersonalBenefits
 	o.EventualBenefits = &emp.Income.EventualBenefits
 	o.Gratification = &emp.Income.Gratification
@@ -133,9 +133,9 @@ func employeeFunds(emp trt13Employee) *storage.Funds {
 	return &o
 }
 
-// employeeDiscounts creates an *storage.Discount from a trt13Employee
-func employeeDiscounts(emp trt13Employee) *storage.Discount {
-	d := storage.Discount{}
+// employeeDiscounts creates an *coletores.Discount from a trt13Employee
+func employeeDiscounts(emp trt13Employee) *coletores.Discount {
+	d := coletores.Discount{}
 	d.PrevContribution = &emp.Discount.PrevContribution
 	d.CeilRetention = &emp.Discount.CeilRetantion
 	d.IncomeTax = &emp.Discount.IncomeTax
@@ -162,20 +162,20 @@ func active(cat string) bool {
 }
 
 // totalDiscounts returns the sum of discounts.
-func totalDiscounts(d storage.Discount) float64 {
+func totalDiscounts(d coletores.Discount) float64 {
 	total := getFloat64Value(d.PrevContribution) + getFloat64Value(d.CeilRetention) + getFloat64Value(d.IncomeTax) + sumMapValues(d.Others)
 	return math.Round(total*100) / 100
 }
 
 // totalFunds returns the sum of funds.
-func totalFunds(f storage.Funds) float64 {
+func totalFunds(f coletores.Funds) float64 {
 	total := getFloat64Value(f.PersonalBenefits) + getFloat64Value(f.EventualBenefits) +
 		getFloat64Value(f.PositionOfTrust) + getFloat64Value(f.Daily) + getFloat64Value(f.Gratification) + getFloat64Value(f.OriginPosition) + sumMapValues(f.Others)
 	return math.Round(total*100) / 100
 }
 
 // grossIncome returns the sum of incomes.
-func totalIncome(in storage.IncomeDetails) float64 {
+func totalIncome(in coletores.IncomeDetails) float64 {
 	total := getFloat64Value(in.Wage) + in.Perks.Total + in.Other.Total
 	return math.Round(total*100) / 100
 }

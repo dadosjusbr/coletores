@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 )
 
@@ -52,12 +52,12 @@ func main() {
 	fmt.Printf("%s", string(crJSON))
 }
 
-func newCrawlingResult(emps []storage.Employee, filePath string, month, year int) storage.CrawlingResult {
-	crawlerInfo := storage.Crawler{
+func newCrawlingResult(emps []coletores.Employee, filePath string, month, year int) coletores.CrawlingResult {
+	crawlerInfo := coletores.Crawler{
 		CrawlerID:      "trt13",
 		CrawlerVersion: gitCommit,
 	}
-	cr := storage.CrawlingResult{
+	cr := coletores.CrawlingResult{
 		AgencyID:  "trt13",
 		Month:     month,
 		Year:      year,
