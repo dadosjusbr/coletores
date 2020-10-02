@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
@@ -26,14 +27,9 @@ type config struct {
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
 }
 
-type executionResult struct {
-	Pr storage.PackagingResult
-	Cr storage.CrawlingResult
-}
-
 func main() {
 	if err := godotenv.Load(); err != nil {
-		status.ExitFromError(status.NewError(4, fmt.Errorf("Eror .env to read.")))
+		status.ExitFromError(status.NewError(4, fmt.Errorf("error .env to read")))
 	}
 	var c config
 	if err := envconfig.Process("", &c); err != nil {
@@ -44,7 +40,7 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(3, fmt.Errorf("newClient() error: %s", err)))
 	}
-	var er executionResult
+	var er coletores.ExecutionResult
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %v", err)))
@@ -98,13 +94,13 @@ func newClient(conf config) (*storage.Client, error) {
 }
 
 // summary aux func to make all necessary calculations to DataSummary Struct
-func summary(Employees []storage.Employee) storage.Summaries {
+func summary(employees []coletores.Employee) storage.Summaries {
 	general := storage.Summary{}
 	memberActive := storage.Summary{}
 	memberInactive := storage.Summary{}
 	servantActive := storage.Summary{}
 	servantInactive := storage.Summary{}
-	for _, emp := range Employees {
+	for _, emp := range employees {
 		updateSummary(&general, emp)
 		switch {
 		case emp.Type == "membro" && emp.Active:
@@ -130,7 +126,7 @@ func summary(Employees []storage.Employee) storage.Summaries {
 }
 
 //updateSummary auxiliary function that updates the summary data at each employee value
-func updateSummary(s *storage.Summary, emp storage.Employee) {
+func updateSummary(s *storage.Summary, emp coletores.Employee) {
 	s.Count++
 	updateData := func(d *storage.DataSummary, value float64, count int) {
 		if count == 1 {
