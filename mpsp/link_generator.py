@@ -143,16 +143,16 @@ def download(mes, ano):
             MPSP_URL_PENS_MEMBROS = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Pensionistas/Pensionistas_membros/Benefici%C3%A1rios%20do%20MP%20Membros%20dez%202018.ods'
     
     r = requests.get(MPSP_URL_MEMB_ATIVOS, allow_redirects=True)
-    open('membros_ativos' + mes + ano, 'wb').write(r.content)
+    open('output/membros_ativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_MEMB_INATIVOS, allow_redirects=True)
-    open('membros_inativos' + mes + ano, 'wb').write(r.content)
+    open('output/membros_inativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_SERV_INATIVOS, allow_redirects=True)
-    open('servidores_inativos' + mes + ano, 'wb').write(r.content)
+    open('output/servidores_inativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_SERV_ATIVOS, allow_redirects=True)
-    open('servidores_ativos' + mes + ano, 'wb').write(r.content)
+    open('output/servidores_ativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_PENS_SERVIDORES, allow_redirects=True)
-    open('pensionistas_servidores' + mes + ano, 'wb').write(r.content)
+    open('output/pensionistas_servidores' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_PENS_MEMBROS, allow_redirects=True)
-    open('pensionistas_membros' + mes + ano, 'wb').write(r.content) 
+    open('output/pensionistas_membros' + mes + ano, 'wb').write(r.content) 
 
 
