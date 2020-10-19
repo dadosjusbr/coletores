@@ -11,6 +11,7 @@ load_dotenv()
 # Inputs para mês e ano
 mes = os.getenv("MONTH")
 ano = os.getenv("YEAR")
+caminho = os.getenv("OUTPUT")
 
 # Chama função para definir os links das planilhas
-download(mes, ano)
+download(mes, ano, caminho)

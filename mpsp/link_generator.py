@@ -3,7 +3,7 @@ import csv
 import requests
 from pandas_ods_reader import read_ods
 
-def download(mes, ano):
+def download(mes, ano, caminho):
     if ano == '2020':
         MPSP_URL_MEMB_ATIVOS = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb' + mes + ano + '.ods'
         MPSP_URL_MEMB_INATIVOS = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_inativos/Tabela%20I%20membinat' + mes + ano + '.ods'
@@ -143,16 +143,16 @@ def download(mes, ano):
             MPSP_URL_PENS_MEMBROS = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Pensionistas/Pensionistas_membros/Benefici%C3%A1rios%20do%20MP%20Membros%20dez%202018.ods'
     
     r = requests.get(MPSP_URL_MEMB_ATIVOS, allow_redirects=True)
-    open('output/membros_ativos' + mes + ano, 'wb').write(r.content)
+    open(caminho + 'membros_ativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_MEMB_INATIVOS, allow_redirects=True)
-    open('output/membros_inativos' + mes + ano, 'wb').write(r.content)
+    open(caminho + 'membros_inativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_SERV_INATIVOS, allow_redirects=True)
-    open('output/servidores_inativos' + mes + ano, 'wb').write(r.content)
+    open(caminho + 'servidores_inativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_SERV_ATIVOS, allow_redirects=True)
-    open('output/servidores_ativos' + mes + ano, 'wb').write(r.content)
+    open(caminho + 'servidores_ativos' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_PENS_SERVIDORES, allow_redirects=True)
-    open('output/pensionistas_servidores' + mes + ano, 'wb').write(r.content)
+    open(caminho + 'pensionistas_servidores' + mes + ano, 'wb').write(r.content)
     r = requests.get(MPSP_URL_PENS_MEMBROS, allow_redirects=True)
-    open('output/pensionistas_membros' + mes + ano, 'wb').write(r.content) 
+    open(caminho + 'pensionistas_membros' + mes + ano, 'wb').write(r.content) 
 
 
