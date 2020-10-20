@@ -5,5 +5,5 @@ def valida_data(mes, ano):
     anos = ['2018', '2019', '2020']
     if mes not in meses:
         return "Mês inválido. Por favor, digite um mês entre Janeiro (01) e Dezembro (12)"
-    else if ano not in anos:
+    elif ano not in anos:
         return "Ano inválido, tente um ano entre 2018 e 2020"
