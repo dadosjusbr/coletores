@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -21,11 +21,6 @@ type config struct {
 	CollectorDirList []string `envconfig:"COLLECTOR_DIR_LIST"`
 	Month            int      `envconfig:"MONTH"`
 	Year             int      `envconfig:"YEAR"`
-}
-
-type executionResult struct {
-	Cr storage.CrawlingResult
-	Pr storage.PackagingResult
 }
 
 const (
@@ -46,14 +41,13 @@ func main() {
 	// Getting commit ID.
 	commit := os.Getenv("GIT_COMMIT")
 	if commit == "" {
-		log.Fatalf("GIT_COMMIT env var can not be empty")
+		fmt.Println("GIT_COMMIT env var can not be empty")
 	}
 
 	// Executing pipeline for jobs
 	for _, job := range conf.CollectorDirList {
-		var er executionResult
+		var er coletores.ExecutionResult
 		var err error
-
 		// Collect Data
 		er.Cr.ProcInfo, err = Build(job, commit, conf)
 		if err != nil {
@@ -80,6 +74,7 @@ func main() {
 			execStoreErr(er, conf)
 			continue
 		}
+
 		er.Pr, err = execPackager(er, conf)
 		if err != nil {
 			//Store Error
@@ -95,43 +90,57 @@ func main() {
 	fmt.Println("Finished.")
 }
 
-func execDataCollector(job, commit string, conf config) (storage.CrawlingResult, error) {
+func execDataCollector(job, commit string, conf config) (coletores.CrawlingResult, error) {
 	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
 	log.Printf("Executing %s ...\n", id)
-	pi, err := execImage(job, executionResult{}, conf)
+	pi, err := execImage(job, coletores.ExecutionResult{}, conf)
 	if err != nil {
-		return storage.CrawlingResult{ProcInfo: *pi}, err
+		return coletores.CrawlingResult{ProcInfo: *pi}, err
 	}
+
 	cr, err := genCR(job, commit, pi, conf)
 	if err != nil {
-		return storage.CrawlingResult{ProcInfo: *pi}, fmt.Errorf("Error trying to generate crawling result %s:%q", id, err)
+		return coletores.CrawlingResult{ProcInfo: *pi}, fmt.Errorf("Error trying to generate crawling result %s:%q", id, err)
 	}
+
 	log.Printf("%s executed successfully\n", id)
 	return *cr, nil
 }
 
-func execPackager(er executionResult, conf config) (storage.PackagingResult, error) {
+func execPackager(er coletores.ExecutionResult, conf config) (coletores.PackagingResult, error) {
 	id := fmt.Sprintf("packager-%d-%d", conf.Month, conf.Year)
 	log.Printf("Executing %s ...\n", id)
 	pi, err := execImage(packagerDir, er, conf)
 	if err != nil {
-		return storage.PackagingResult{ProcInfo: *pi}, err
+		return coletores.PackagingResult{ProcInfo: *pi}, err
+	}
+
+	if err := json.Unmarshal([]byte(pi.Stdout), &er); err != nil {
+		return coletores.PackagingResult{ProcInfo: *pi}, fmt.Errorf("error trying to unmarshal Packaging result: %q", err)
 	}
 	log.Printf("%s executed successfully\n", id)
-	return storage.PackagingResult{Package: pi.Stdout}, nil
+	return coletores.PackagingResult{Package: er.Pr.Package}, nil
 }
 
-func execStore(er executionResult, conf config) {
+func execStore(er coletores.ExecutionResult, conf config) {
 	id := fmt.Sprintf("store-%d-%d", conf.Month, conf.Year)
+
 	log.Printf("Executing %s ...\n", id)
+
+	erJSON, err := json.Marshal(er)
+	if err != nil {
+		return
+	}
+	fmt.Println(strings.NewReader(string(erJSON)))
+
 	pi, err := execImage(storeDir, er, conf)
 	if err != nil {
-		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi)
+		log.Fatalf("Error executing %s: %q. ProcInfo:%+v", id, err, pi.Stderr)
 	}
 	log.Printf("%s executed successfully\n", id)
 }
 
-func execStoreErr(er executionResult, conf config) {
+func execStoreErr(er coletores.ExecutionResult, conf config) {
 	er.Cr.Month = conf.Month
 	er.Cr.Year = conf.Year
 	id := fmt.Sprintf("storeError-%d-%d", er.Cr.Month, er.Cr.Year)
@@ -145,7 +154,7 @@ func execStoreErr(er executionResult, conf config) {
 }
 
 // Build tries to build a docker image for a job and panics if it can not suceed.
-func Build(job, commit string, conf config) (storage.ProcInfo, error) {
+func Build(job, commit string, conf config) (coletores.ProcInfo, error) {
 	id := fmt.Sprintf("%s-%d-%d", job, conf.Month, conf.Year)
 	log.Printf("Building image %s...\n", id)
 	pi, err := buildImage(job, commit)
@@ -159,7 +168,7 @@ func Build(job, commit string, conf config) (storage.ProcInfo, error) {
 }
 
 // build runs a go build for each path. It will also insert the value of main.gitCommit in the binaries.
-func buildImage(dir, commit string) (*storage.ProcInfo, error) {
+func buildImage(dir, commit string) (*coletores.ProcInfo, error) {
 	cmdList := strings.Split(fmt.Sprintf("docker build --build-arg GIT_COMMIT=%s -t %s .", commit, filepath.Base(dir)), " ")
 	cmd := exec.Command(cmdList[0], cmdList[1:]...)
 	cmd.Dir = dir
@@ -168,7 +177,7 @@ func buildImage(dir, commit string) (*storage.ProcInfo, error) {
 	cmd.Stderr = &errb
 	err := cmd.Run()
 	exitStatus := statusCode(err)
-	procInfo := storage.ProcInfo{
+	procInfo := coletores.ProcInfo{
 		Stdout:     string(outb.Bytes()),
 		Stderr:     string(errb.Bytes()),
 		Cmd:        strings.Join(cmdList, " "),
@@ -180,11 +189,12 @@ func buildImage(dir, commit string) (*storage.ProcInfo, error) {
 }
 
 // execImage executes the image designed and returns it's stdin, stdout and exit error if any.
-func execImage(dir string, er executionResult, conf config) (*storage.ProcInfo, error) {
+func execImage(dir string, er coletores.ExecutionResult, conf config) (*coletores.ProcInfo, error) {
 	erJSON, err := json.Marshal(er)
 	if err != nil {
 		return nil, fmt.Errorf("Error trying to marshal er %s", erJSON)
 	}
+
 	cmdList := []string{
 		"run",
 		"-i",
@@ -200,7 +210,7 @@ func execImage(dir string, er executionResult, conf config) (*storage.ProcInfo, 
 	cmd.Stderr = &errb
 	err = cmd.Run()
 	exitStatus := statusCode(err)
-	procInfo := storage.ProcInfo{
+	procInfo := coletores.ProcInfo{
 		Stdin:      string(erJSON),
 		Stdout:     string(outb.Bytes()),
 		Stderr:     string(errb.Bytes()),
@@ -213,14 +223,15 @@ func execImage(dir string, er executionResult, conf config) (*storage.ProcInfo, 
 }
 
 // genCR creates a crawling result
-func genCR(job, commit string, pi *storage.ProcInfo, conf config) (*storage.CrawlingResult, error) {
-	var cr storage.CrawlingResult
+func genCR(job, commit string, pi *coletores.ProcInfo, conf config) (*coletores.CrawlingResult, error) {
+	var er coletores.ExecutionResult
+	var cr coletores.CrawlingResult
 	if status.Code(pi.ExitStatus) != status.OK {
-		crawlerInfo := storage.Crawler{
+		crawlerInfo := coletores.Crawler{
 			CrawlerID:      strings.Split(job, "/")[1],
 			CrawlerVersion: commit,
 		}
-		cr = storage.CrawlingResult{
+		cr = coletores.CrawlingResult{
 			AgencyID:  strings.Split(job, "/")[1],
 			Month:     conf.Month,
 			Year:      conf.Year,
@@ -230,10 +241,12 @@ func genCR(job, commit string, pi *storage.ProcInfo, conf config) (*storage.Craw
 		}
 		return &cr, nil
 	}
-	if err := json.Unmarshal([]byte(pi.Stdout), &cr); err != nil {
+
+	if err := json.Unmarshal([]byte(pi.Stdout), &er); err != nil {
 		return nil, fmt.Errorf("error trying to unmarshal crawling result: %q", err)
 	}
-	return &cr, nil
+
+	return &er.Cr, nil
 }
 
 // statusCode returns the exit code returned for the cmd execution.

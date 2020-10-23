@@ -26,8 +26,8 @@ type config struct {
 }
 
 type executionResult struct {
-	Pr storage.PackagingResult
-	Cr storage.CrawlingResult
+	Pr coletores.PackagingResult
+	Cr coletores.CrawlingResult
 }
 
 func main() {
