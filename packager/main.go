@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	csvFileName     = "data.csv"                       // hardcoded in datapackage_descriptor.json
-	packageFileName = "../datapackage_descriptor.json" // name of datapackage descriptor
+	csvFileName     = "data.csv"                    // hardcoded in datapackage_descriptor.json
+	packageFileName = "datapackage_descriptor.json" // name of datapackage descriptor
 )
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error reading crawling result: %q", err)))
 	}
-	if err = json.Unmarshal(erIN, &err); err != nil {
+	if err = json.Unmarshal(erIN, &er); err != nil {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("Error unmarshaling crawling resul from STDIN: %q", err)))
 	}
 
