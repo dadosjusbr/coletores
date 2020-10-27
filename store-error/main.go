@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
 	"github.com/joho/godotenv"
@@ -26,8 +27,8 @@ type config struct {
 }
 
 type executionResult struct {
-	Pr storage.PackagingResult
-	Cr storage.CrawlingResult
+	Pr coletores.PackagingResult
+	Cr coletores.CrawlingResult
 }
 
 func main() {
