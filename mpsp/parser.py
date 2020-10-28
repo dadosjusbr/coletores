@@ -10,9 +10,7 @@ load_dotenv()
 arquivo = os.getenv("EXAMPLE")
 
 def parsear(arquivo): 
-    with open(arquivo, encoding='utf8', errors='ignore') as file:
-        read = csv.reader(file)
-        for line in read:
-            print(line)
+    read = read_ods(arquivo, 1)
+    print(read)
 
 parsear(arquivo)
