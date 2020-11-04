@@ -27,7 +27,6 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
-RUN cp -f /build/.env .
 RUN cp -f /build/tabula-1.0.3-jar-with-dependencies.jar .
 
 # Build a small image

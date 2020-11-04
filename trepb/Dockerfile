@@ -27,7 +27,6 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
-RUN cp -f /build/.env .
 
 # Build a small image
 FROM scratch

@@ -25,7 +25,6 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
-RUN cp /build/.env .
 
 # Build a small image
 FROM alpine:3.7
