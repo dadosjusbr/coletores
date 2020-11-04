@@ -27,7 +27,6 @@ WORKDIR /dist
 
 # Copy binary and .env from build to main folder
 RUN cp /build/main .
-RUN cp /build/.env .
 RUN cp /build/datapackage_descriptor.json .
 
 # Build a small image
