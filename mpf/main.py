@@ -1,7 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import os
-import pathlib #pip install pathlib
-from pathlib import Path   #pip install -U python-dotenv
+import pathlib 
+from pathlib import Path 
 import crawler
 
 #Pegando argumentos da variável ambiente

@@ -1,7 +1,7 @@
 import requests
-from pyexcel_ods import get_data #pip install pyexcel-ods
-from pyexcel_xls import get_data #pip install pyexcel-xls
-import pathlib #pip install pathlib
+from pyexcel_ods import get_data 
+from pyexcel_xls import get_data 
+import pathlib 
 
 
 #Processo de download dos dados do MPF
@@ -28,7 +28,11 @@ def consulta(year,month,data_type,output_path):
 
     #Transcrição da resposta HTTP para o disco
     file_name =  data_type + '_' + year + "_" + month + extension
-    open(".//" + output_path + "//" + file_name, "wb").write(response.content)
+    with open(".//" + output_path + "//" + file_name, "wb") as file :
+        file.write(response.content)
+    
+    file.close()
+
     return file_name
 
 
