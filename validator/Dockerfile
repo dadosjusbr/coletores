@@ -29,7 +29,7 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Build a small image
-FROM scratch
+FROM alpine:3.7
 
 COPY --from=builder /dist/ /
 
