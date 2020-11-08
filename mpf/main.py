@@ -19,11 +19,9 @@ def get_args():
         "outputPath": outputPath
     }
 
-
 #Execução principal 
 def main(args):
     fileNames  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
-    
 
 args = get_args()
 main(args)

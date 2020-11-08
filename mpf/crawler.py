@@ -3,7 +3,6 @@ from pyexcel_ods import get_data
 from pyexcel_xls import get_data 
 import pathlib 
 
-
 #Processo de download dos dados do MPF
 def consulta(year,month,data_type,output_path):
     base_url = 'http://www.transparencia.mpf.mp.br/conteudo/contracheque/'+ data_type +'/'
@@ -35,7 +34,6 @@ def consulta(year,month,data_type,output_path):
 
     return file_name
 
-
 #Implementando o reuso de codigo, de modo que só muda o data-type que buscamos 
 #                       em cada consulta 
 def get_relevant_data(year,month,output_path):
@@ -46,5 +44,3 @@ def get_relevant_data(year,month,output_path):
     file_names.append(consulta(year,month,'provento-membros-inativos',output_path))
     file_names.append(consulta(year,month,'valores-percebidos-pensionistas',output_path))
     return file_names
-
-    
