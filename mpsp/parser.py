@@ -9,8 +9,10 @@ import os
 load_dotenv()
 arquivo = os.getenv("EXAMPLE")
 
+# Print dos funcionários
 def parser(arquivo): 
     read = read_ods(arquivo, 1)
     print(read)
+
 
 parser(arquivo)
