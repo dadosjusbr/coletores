@@ -3,6 +3,7 @@ import os
 import pathlib 
 from pathlib import Path 
 import crawler
+import parser
 
 #Pegando argumentos da variável ambiente
 def get_args():
@@ -21,7 +22,9 @@ def get_args():
 
 #Execução principal 
 def main(args):
-    fileNames  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
+    file_names  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
+    # result  =  parser.crawler_result(args['year'],args['month'],file_names)
+    # print(result)
 
 args = get_args()
 main(args)

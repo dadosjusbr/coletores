@@ -1,10 +1,14 @@
 import requests
-from pyexcel_ods import get_data 
-from pyexcel_xls import get_data 
 import pathlib 
 
+_REMU_MEMBROS_ATIVOS ='remuneracao-membros-ativos'
+_REMU_SERVIDORES_ATIVOS ='remuneracao-servidores-ativos'
+_PROV_SERVIDORES_INATIVOS = 'provento-servidores-inativos'
+_PROV_MEMBROS_INATIVOS ='provento-membros-inativos'
+_VALORES_PERCEBIDOS_PENSIONISTAS ='valores-percebidos-pensionistas'
+
 #Processo de download dos dados do MPF
-def consulta(year,month,data_type,output_path):
+def query(year,month,data_type,output_path):
     base_url = 'http://www.transparencia.mpf.mp.br/conteudo/contracheque/'+ data_type +'/'
    
     #Não trabalha com determinados caracteres
@@ -12,10 +16,11 @@ def consulta(year,month,data_type,output_path):
         month = 'Marco'
 
     #O formato dos arquivos (extension) muda para .ods a partir de Junho de 2019 
+    months = ['Junho',"Julho","Agosto","Setembro","Outubro","Novembro",'Dezembro']
     extension = '.xls'
     if(int(year) == 2020):
         extension = '.ods'
-    elif((int(year) == 2019) and ( (month == 'Junho') or (month == "Julho") or (month == "Agosto") or (month == "Setembro") or (month == "Outubro") or (month == "Novembro") or (month == 'Dezembro'))):
+    elif((int(year) == 2019) and (month in months)):
         extension = '.ods'
 
     #Download de dados
@@ -38,9 +43,10 @@ def consulta(year,month,data_type,output_path):
 #                       em cada consulta 
 def get_relevant_data(year,month,output_path):
     file_names = []
-    file_names.append(consulta(year,month,'remuneracao-membros-ativos',output_path))
-    file_names.append(consulta(year,month,'remuneracao-servidores-ativos',output_path))
-    file_names.append(consulta(year,month,'provento-servidores-inativos',output_path))
-    file_names.append(consulta(year,month,'provento-membros-inativos',output_path))
-    file_names.append(consulta(year,month,'valores-percebidos-pensionistas',output_path))
+    file_names.append(query(year,month,_REMU_MEMBROS_ATIVOS,output_path))
+    file_names.append(query(year,month,_REMU_SERVIDORES_ATIVOS,output_path))
+    file_names.append(query(year,month,_PROV_SERVIDORES_INATIVOS,output_path))
+    file_names.append(query(year,month,_PROV_MEMBROS_INATIVOS,output_path))
+    file_names.append(query(year,month,_VALORES_PERCEBIDOS_PENSIONISTAS,output_path))
+
     return file_names
