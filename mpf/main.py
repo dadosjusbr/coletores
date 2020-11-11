@@ -23,6 +23,7 @@ def get_args():
 #Execução principal 
 def main(args):
     file_names  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
+    print(file_names)
     # result  =  parser.crawler_result(args['year'],args['month'],file_names)
     # print(result)
 
