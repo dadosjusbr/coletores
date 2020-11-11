@@ -96,7 +96,7 @@ type Funds struct {
 	Others           map[string]float64 `json:"others" bson:"others,omitempty" csv:"-"`                                                                                   // Any other kind of income that does not have a pattern among the Agencys.
 }
 
-// Discount a Struct that details all discounts that must be applied to the employee's income.
+// Discount a Struct that details all discounts (represented as a non-negative number) that must be applied to the employee's income.
 type Discount struct {
 	Total               float64            `json:"total" bson:"total,omitempty" tableheader:"discounts_total" csv:"discounts_total"`
 	PrevContribution    *float64           `json:"prev_contribution" bson:"prev_contribution,omitempty" tableheader:"discounts_prev_contribution" csv:"discount_prev_contribution"` // 'Contribuição Previdenciária'

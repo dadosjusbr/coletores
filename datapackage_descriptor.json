@@ -250,8 +250,8 @@
                     "name": "discounts_total",
                     "title": "Total discounts",
                     "type": "number",
-                    "description": "Represents the sum of discounts applied to the employee.",
-                    "description-ptbr": "Total de descontos aplicados ao empregado",
+                    "description": "Represents the sum of discounts applied to the employee as a non-negative number.",
+                    "description-ptbr": "Total de descontos aplicados ao empregado como um numero não negativo",
                     "constraints": {
                         "required": true,
                         "minimum": "0"
