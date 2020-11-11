@@ -48,7 +48,10 @@ def specific_query(year,month,output_path):
             final_url = url +'/'+ kind + '/' + year +'/' + _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS + '_' + year + '_' + month + extension 
             file_name = _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS + '_' + year + '_' + month + '_' + kind + extension
             
-            response  = requests.get(final_url, allow_redirects=True)
+            try:
+                response  = requests.get(final_url, allow_redirects=True)
+            except  requests.ConnectionError:
+                print('Failed to connect')
 
             #Escreve em disco conteudo da resposta HTTP 
             write_file(response,file_name,output_path)
@@ -78,8 +81,12 @@ def query(year,month,data_type,output_path):
 
     #Download de dados
     final_url  = url + year + '/'+ data_type + '_' + year + "_" + month + extension
-    response  = requests.get(final_url, allow_redirects=True)
 
+    try:
+        response  = requests.get(final_url, allow_redirects=True)
+    except  requests.ConnectionError:
+        print('Failed to connect')
+ 
     file_name =  data_type + '_' + year + "_" + month + extension
     write_file(response,file_name,output_path)
 
