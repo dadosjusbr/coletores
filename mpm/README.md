@@ -15,15 +15,6 @@ Serão baixadas 6 planilhas no formato xlsx referentes ao mês e ano que foram p
 
 ### Executando sem uso do docker:
 
- - É necessário ter instalado o Python Pip. Clique [aqui] (https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/) para saber mais.
-
- - Após instalado o pip, rode os seguintes comandos:
-
-```sh
-pip install -U python-dotenv
-pip install pyexcel-xls
-pip install json
-```
  - Para preencher o env, basta criar uma cópia do arquivo .env.example renomeando para .env. os parãmetros requeridos são year = ano e month, esse último deve ser preenchido de acordo com o número que representa o mês. (Exemplo: Se quero consultas a folha de pagamento referente a janeiro de 2020 devo preencher, year=2020 e month=1).
 
  - Para executar o script é necessário rodar o seguinte comando no diretório mpm:
