@@ -101,6 +101,9 @@ def get_relevant_data(year,month,output_path):
     file_names.append(query(year,month,_PROV_SERVIDORES_INATIVOS,output_path))
     file_names.append(query(year,month,_PROV_MEMBROS_INATIVOS,output_path))
     file_names.append(query(year,month,_VALORES_PERCEBIDOS_PENSIONISTAS,output_path))
-    file_names.append(query(year,month,_VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS,output_path))
-
-    return file_names
+    try:
+        file_names.append(query(year,month,_VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS,output_path))
+    except ValueError:
+        print('This kind of consult can be only done between now and July 2019')
+    finally:
+        return file_names
