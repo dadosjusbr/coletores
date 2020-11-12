@@ -35,7 +35,7 @@ def get_args():
 
 # Main execution
 def main(args):
-    file_names  =  crawler.crawler(args["outputPath"],args["year"],args["month"])
+    file_names  =  crawler.crawl(args["outputPath"],args["year"],args["month"])
   
 args = get_args()
 main(args)
