@@ -28,7 +28,8 @@ def download(url, file_path):
   file.close()
 
 # Crawl retrieves payment files from MPM.
-def crawl(output_path, year, month):
+def crawl(year, month):
+  output_path = '/output'
   urls_type = links(month, year)
   files = []
   

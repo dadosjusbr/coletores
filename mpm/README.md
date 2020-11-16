@@ -13,12 +13,8 @@ Serão baixadas 6 planilhas no formato xlsx referentes ao mês e ano que foram p
 
 ## Como usar
 
-### Executando sem uso do docker:
-
- - Para preencher o env, basta criar uma cópia do arquivo .env.example renomeando para .env. os parãmetros requeridos são year = ano e month, esse último deve ser preenchido de acordo com o número que representa o mês. (Exemplo: Se quero consultas a folha de pagamento referente a janeiro de 2020 devo preencher, year=2020 e month=1).
-
- - Para executar o script é necessário rodar o seguinte comando no diretório mpm:
+ - Para executar o script é necessário rodar o seguinte comando no diretório mpm, substituindo month pelo número correspondete ao mês. Como por exemplo para janeiro de 2020: python main.py 1 2020
 
   ```sh
-    python main.py
+    python main.py --month --year
   ```
