@@ -16,5 +16,5 @@ Serão baixadas 6 planilhas no formato xlsx referentes ao mês e ano que foram p
  - Para executar o script é necessário rodar o seguinte comando no diretório mpm, substituindo month pelo número correspondete ao mês. Como por exemplo para janeiro de 2020: python main.py 1 2020
 
   ```sh
-    python main.py --month --year
+    python main.py month year
   ```
