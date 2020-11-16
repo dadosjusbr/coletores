@@ -31,14 +31,16 @@ func readJSON(filePath string) (map[string]interface{}, error) {
 
 // findNil verifies if map contains any nil values.
 func findNil(m map[string]interface{}) (string, bool) {
+	allowedNil := []string{"matricula", "cargo", "lotacao"}
 	for k, v := range m {
-		if v == nil && k != "matricula" {
+		allowed := find(allowedNil, k)
+		if v == nil && !allowed {
 			return k, true
 		}
 		switch v.(type) {
 		case map[string]interface{}:
 			k, found := findNil(v.(map[string]interface{}))
-			if found && k != "matricula" {
+			if found && !(find(allowedNil, k)) {
 				return k, true
 			}
 		}
@@ -93,4 +95,13 @@ func sumMapValues(m map[string]float64) float64 {
 func logError(format string, args ...interface{}) {
 	time := fmt.Sprintf("%s: ", time.Now().Format(time.RFC3339))
 	fmt.Fprintf(os.Stderr, time+format+"\n", args...)
+}
+
+func find(slice []string, val string) bool {
+	for _, item := range slice {
+		if item == val {
+			return true
+		}
+	}
+	return false
 }

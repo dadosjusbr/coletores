@@ -54,11 +54,11 @@ func parseCategory(category map[string]interface{}) ([]coletores.Employee, error
 	}
 
 	for i, emp := range empsMap {
-		errKey, ok := findNil(emp)
-		if ok {
-			logError("error parsing employee at (%s: %d): missing key %q - %v\n", catInfo, i, errKey, emp)
-			continue
+		errKey, fieldErr := findNil(emp)
+		if fieldErr {
+			return nil, fmt.Errorf("error parsing employee at (%s: %d): missing key %q - %v", catInfo, i, errKey, emp)
 		}
+
 		trt13Emp, err := newTRT13Employee(emp)
 		if err != nil {
 			return nil, fmt.Errorf("error creating trt13Employee(%s: %d): %q", catInfo, i, err)
