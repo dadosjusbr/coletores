@@ -1,7 +1,8 @@
-from dotenv import load_dotenv, find_dotenv
 import os
+import time
 import pathlib 
 import datetime
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -62,7 +63,6 @@ def download(url, file_path, month, year):
     driver = setup_driver()
     driver.get(url)
     years = driver.find_element_by_id("j_idt140")
-    
     now = datetime.datetime.now()
     current_year = now.year
     
@@ -92,16 +92,20 @@ def download(url, file_path, month, year):
             print("Mês identificado")
     finally:
         print("Download efetuado")
-
     driver.quit()
-    
+
 def setup_driver():
     env_path = '.env'
     load_dotenv(dotenv_path = env_path)
-    PATH_CHROME = os.getenv("PATH")
-    PATH_PREFS = os.getenv("PREFS")
+    current_directory = os.getcwd()
+
+    RELATIVE_PATH_CHROME = os.getenv("PATH_DRIVER")
+    RELATIVE_PATH_PREFS = os.getenv("OUTPUT_FOLDER")
+    PATH_CHROME = current_directory + RELATIVE_PATH_CHROME
+    PATH_PREFS = current_directory + RELATIVE_PATH_PREFS
     
+    prefs = {"download.default_directory" : PATH_PREFS}
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("prefs", PATH_PREFS)
+    chrome_options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome(executable_path = PATH_CHROME, chrome_options = chrome_options)
     return driver
