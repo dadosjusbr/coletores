@@ -1,9 +1,7 @@
 import requests
 import pathlib 
-from pathlib import Path 
 
 baseURL = 'https://www.mpm.mp.br/sistemas/consultaFolha/php/'
-
 
 beneficiary_types = {1: 'Membros ativos',
                      2: 'Membros inativos',
