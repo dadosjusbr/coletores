@@ -13,7 +13,7 @@ O crawler está estruturado como uma CLI. Você deve passar quatro argumentos (m
 
 ## Como usar
 
- - Para executar o script é necessário rodar o seguinte comando no diretório mpm, adicionando às variáveis seus respectivos valores, a depender da consulta desejada:
+ - Para executar o script é necessário rodar o seguinte comando, a partir do diretório mpt, adicionando às variáveis seus respectivos valores, a depender da consulta desejada:
  
     ```sh
     MONTH=1 YEAR=2020 OUTPUT_PATH=/output DRIVER_PATH=/chromedriver python main.py
