@@ -1,9 +1,7 @@
 import os
 import sys
-import time
 import pathlib 
 import datetime
-from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -14,6 +12,8 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 # Constants
 BASE_URL = "https://mpt.mp.br/MPTransparencia/pages/portal/"
+## Year dropdown identification, used to set the year
+YEARS = "j_idt140"
 ## Identification of the element "Pesquisar", to be used when the search by link text doesn't works
 SEARCH_NAME = "j_idt143"
 ## Identification of the extension type to be used in the download. In this case, .ods
@@ -42,7 +42,7 @@ MONTHS = {
     }
 
 # Retrieves payment files from MPT
-def crawl(output_path, month, year):
+def crawl(output_path, path_driver, month, year):
     files = []
     urls = links()
 
@@ -53,7 +53,7 @@ def crawl(output_path, month, year):
         file_name = TYPES[i] + '-' + month + "-" + year + '.ods'
         
         file_path = (output_path + "/" + file_name)
-        download(url, output_path, month, year)
+        download(url, output_path, path_driver, month, year)
         files.append(file_path)
 
     return files
@@ -64,10 +64,10 @@ def links():
         links.append(BASE_URL + TYPES[i] + ".xhtml")
     return links
 
-def download(url, file_path, month, year):
-    driver = setup_driver()
+def download(url, output_path, path_driver, month, year):
+    driver = setup_driver(output_path, path_driver)
     driver.get(url)
-    years = driver.find_element_by_id("j_idt140")
+    years = driver.find_element_by_id(YEARS)
     now = datetime.datetime.now()
     current_year = now.year
     
@@ -99,18 +99,12 @@ def download(url, file_path, month, year):
         sys.stderr.write("Download efetuado.\n")
     driver.quit()
 
-def setup_driver():
-    env_path = '.env'
-    load_dotenv(dotenv_path = env_path)
+def setup_driver(output_path, path_driver):
     current_directory = os.getcwd()
-
-    RELATIVE_PATH_CHROME = os.getenv("PATH_DRIVER")
-    RELATIVE_PATH_PREFS = os.getenv("OUTPUT_FOLDER")
-    PATH_CHROME = current_directory + RELATIVE_PATH_CHROME
-    PATH_PREFS = current_directory + RELATIVE_PATH_PREFS
+    path_chrome = current_directory + path_driver
+    path_prefs = current_directory + output_path
     
-    prefs = {"download.default_directory" : PATH_PREFS}
+    prefs = {"download.default_directory" : path_prefs}
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(executable_path = PATH_CHROME, chrome_options = chrome_options)
-    return driver
+    return webdriver.Chrome(executable_path = path_chrome, chrome_options = chrome_options)
