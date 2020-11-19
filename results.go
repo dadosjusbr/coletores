@@ -70,17 +70,37 @@ type IncomeDetails struct {
 }
 
 // Perks a Struct that details perks that complements an employee's wage.
+//  Confused? Our Dictonary:
+// 	Name           |       Pt-BR             | Description | About
+//  Perks          | 'Indenizações'         | Is the amount of compensation or reparation for acts that result in damages to the employee | https://www.jusbrasil.com.br/topicos/290794/indenizacao
+//	Food           | 'Auxílio Alimentação'  | Purpose of subsidizing meal expenses.  | https://www.progpe.ufscar.br/servicos/adicionais-auxilios-e-beneficios-1/auxilio-alimentacao
+//	Vacations      | 'Férias Indenizadas'   | Equivalent to the period not taken when terminating an employment contract, or those not taken during the term of the contract. | http://www.guiatrabalhista.com.br/guia/ferias-indenizadas.htm
+//	Transportation | 'Auxílio Transporte'   | Intended to partially cover the expenses incurred with municipal, intercity or interstate public transportation in the travels made by the employee of his residence to the workplace and vice versa. | https://progep.ufes.br/manual-servidor/auxilio-transporte
+//	PreSchool      | 'Auxílio Creche        | Assistance provided before the child enters school | https://viacarreira.com/auxilio-creche/
+//	Health         | 'Auxílio Saúde'        | Partial reimbursement of the amount spent by the employee, active or inactive, and their dependents or pensioners with private health care plans.  | https://ww2.uft.edu.br/index.php/progedep/acesso-rapido/servicos/15928-auxilio-saude
+//	BirthAid       | 'Auxílio Natalidade'   | Granted for the reason of the birth of a child in an amount equivalent to the lowest salary of the public service.     |  https://progep.ufes.br/aux%C3%ADlio-natalidade
+//	HousingAid     | 'Auxílio Moradia'| Reimbursement of expenses incurred with renting a house or with accommodation managed by a hotel company, to a Employee who has undergone a change of address due to appointment to a management position or a trust function. |  http://portal2.trtrio.gov.br:7777/pls/portal/PORTAL.wwv_media.show?p_id=14107300&p_settingssetid=381905&p_settingssiteid=73&p_siteid=73&p_type=basetext&p_textid=14107301
+//	Subsistence    | 'Ajuda de Custo' | Paid only once or eventually, to cover travel expenses incurred by him, such as: transfer expenses, monitoring of internal or external customers a professional events etc. |  https://www.arabello.com.br/ajuda-de-custo-a-funcionario-uso-transporte-proprio/#:~:text=Ajuda%20de%20custo%20%C3%A9%20o,externos%20a%20eventos%20profissionais%20etc.
+//	CompensatoryLeave  | 'Licença Compensatória' | 'Compensation to the server for any acquired right.' | http://ampern.org.br/pgj-defere-requerimento-da-ampern-e-altera-a-resolucao-que-disciplina-a-licenca-compensatoria
+//	Pecuniary      | 'Pecunia' | 'payment of any advantage or right of the public servant' | https://www.acheconcursos.com.br/artigos/o-que-e-pecunia-45290
+//	VacationPecuniary | 'Pecunia de férias' | 'It consists of exchanging a few days of the vacation period for receiving an extra amount. | https://anape.org.br/site/wp-content/uploads/2014/01/004_046_Raimilan_Seneterri_da_Silva_Rodrigues_11082009-23h36m.pdf
+//	FurnitureTransport | 'Transporte Mobiliário' | 'Amount related to the payment of the transportation of the employee's furniture in case of change' |
+//	PremiumLicensePecuniary | 'Licença Prêmio'  | award to the assiduous and disciplined public employee, guaranteeing him the right to leave the public service for a period, without reducing his wages. | 'https://juridicocerto.com/p/zereshenrique/artigos/conversao-de-licenca-premio-em-pecunia-1675'
 type Perks struct {
-	Total           float64            `json:"total" bson:"total,omitempty" tableheader:"perks_total" csv:"perks_total"`
-	Food            *float64           `json:"food" bson:"food,omitempty" tableheader:"perks_food" csv:"perks_food"` // Food Aid
-	Transportation  *float64           `json:"transportation" bson:"transportation,omitempty" tableheader:"perks_transportation" csv:"perks_transportation"`
-	PreSchool       *float64           `json:"pre_school" bson:"pre_school,omitempty" tableheader:"perks_pre_school" csv:"perks_pre_school"` // Assistance provided before the child enters school.
-	Health          *float64           `json:"health" bson:"health,omitempty" tableheader:"perks_health" csv:"perks_health"`
-	BirthAid        *float64           `json:"birth_aid" bson:"birth_aid,omitempty" tableheader:"perks_birth" csv:"perks_birth"`                     // 'Auxílio Natalidade'
-	HousingAid      *float64           `json:"housing_aid" bson:"housing_aid,omitempty" tableheader:"perks_housing" csv:"perks_housing"`             // 'Auxílio Moradia'
-	Subsistence     *float64           `json:"subsistence" bson:"subsistence,omitempty" tableheader:"perks_subsistence" csv:"perks_subsistence"`     // 'Ajuda de Custo'
-	OtherPerksTotal *float64           `json:"others_total" bson:"others_total,omitempty" tableheader:"perks_others_total" csv:"perks_others_total"` // Total de outras ajudas (descritas no mapa Others)
-	Others          map[string]float64 `json:"others" bson:"others,omitempty" csv:"-"`                                                               // Any other kind of perk that does not have a pattern among the Agencys.
+	Total                   float64  `json:"total" bson:"total,omitempty" tableheader:"perks_total" csv:"perks_total"`
+	Food                    *float64 `json:"food" bson:"food,omitempty" tableheader:"perks_food" csv:"perks_food"`                                                                         // Food Aid
+	Vacations               *float64 `json:"vacation" bson:"food,omitempty" tableheader:"vacation" csv:"vacation"`                                                                         // Férias Indenizatórias - Vacation perk
+	Transportation          *float64 `json:"transportation" bson:"transportation,omitempty" tableheader:"perks_transportation" csv:"perks_transportation"`                                 // 'Auxílio Transporte'.
+	PreSchool               *float64 `json:"pre_school" bson:"pre_school,omitempty" tableheader:"perks_pre_school" csv:"perks_pre_school"`                                                 // Assistance provided before the child enters school.
+	Health                  *float64 `json:"health" bson:"health,omitempty" tableheader:"perks_health" csv:"perks_health"`                                                                 // 'Auxílio Saúde'
+	BirthAid                *float64 `json:"birth_aid" bson:"birth_aid,omitempty" tableheader:"perks_birth" csv:"perks_birth"`                                                             // 'Auxílio Natalidade'
+	HousingAid              *float64 `json:"housing_aid" bson:"housing_aid,omitempty" tableheader:"perks_housing" csv:"perks_housing"`                                                     // 'Auxílio Moradia'
+	Subsistence             *float64 `json:"subsistence" bson:"subsistence,omitempty" tableheader:"perks_subsistence" csv:"perks_subsistence"`                                             // 'Ajuda de Custo'
+	CompensatoryLeave       *float64 `json:"compensatory_leave" bson:"compensatory_leave,omitempty" tableheader:"compensatory_leave" csv:"compensatory_leave"`                             // 'Licença Compensatória'
+	Pecuniary               *float64 `json:"pecuniary" bson:"pecuniary,omitempty" tableheader:"pecuniary" csv:"pecuniary"`                                                                 // 'Pecunia'
+	VacationPecuniary       *float64 `json:"vacation_pecuniary" bson:"vacation_pecuniary,omitempty" tableheader:"vacation_pecuniary" csv:"vacation_pecuniary"`                             // 'Pecunia de férias'
+	FurnitureTransport      *float64 `json:"furniture_transport" bson:"furniture_transport,omitempty" tableheader:"furniture_transport" csv:"furniture_transport"`                         // 'Transporte Mobiliário'
+	PremiumLicensePecuniary *float64 `json:"premium_license_pecuniary" bson:"premium_license_pecuniary,omitempty" tableheader:"premium_license_pecuniary" csv:"premium_license_pecuniary"` // 'Licença prêmio em pecúnia (Geralmente as que nao foram gozadas, passam pros sucessores)'
 }
 
 // Funds a Struct that details that make up the employee income.
