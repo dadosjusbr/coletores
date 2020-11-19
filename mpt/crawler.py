@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import pathlib 
 import datetime
@@ -13,6 +14,10 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 # Constants
 BASE_URL = "https://mpt.mp.br/MPTransparencia/pages/portal/"
+## Identification of the element "Pesquisar", to be used when the search by link text doesn't works
+SEARCH_NAME = "j_idt143"
+## Identification of the extension type to be used in the download. In this case, .ods
+EXTENSION_CODE = ":j_idt157"
 TYPES = {
         0 : "remuneracaoMembrosAtivos",
         1 : "proventosMembrosInativos",
@@ -74,12 +79,12 @@ def download(url, file_path, month, year):
         search.click()
     except NoSuchElementException:
         try:
-            search = driver.find_element_by_name("j_idt143")
+            search = driver.find_element_by_name(SEARCH_NAME)
             search.click()
         finally:
-            print("Ano identificado")
+            sys.stderr.write("Ano identificado.\n")
 
-    id_month = "tabelaRemuneracao:" + str(int(month) - 1) + ":j_idt157"
+    id_month = "tabelaRemuneracao:" + str(int(month) - 1) + EXTENSION_CODE
     try:
         archive = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, id_month))
@@ -89,9 +94,9 @@ def download(url, file_path, month, year):
             driver.execute_script("arguments[0].click();", archive)
             WebDriverWait(driver, 10)
         finally:
-            print("Mês identificado")
+            sys.stderr.write("Mês identificado.\n")
     finally:
-        print("Download efetuado")
+        sys.stderr.write("Download efetuado.\n")
     driver.quit()
 
 def setup_driver():
