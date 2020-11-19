@@ -42,7 +42,7 @@ MONTHS = {
     }
 
 # Retrieves payment files from MPT
-def crawl(output_path, path_driver, month, year):
+def crawl(output_path, driver_path, month, year):
     files = []
     urls = links()
 
@@ -51,9 +51,8 @@ def crawl(output_path, path_driver, month, year):
     
     for i, url in zip(TYPES.keys(), urls):
         file_name = TYPES[i] + '-' + month + "-" + year + '.ods'
-        
         file_path = (output_path + "/" + file_name)
-        download(url, output_path, path_driver, month, year)
+        download(url, output_path, driver_path, month, year)
         files.append(file_path)
 
     return files
@@ -64,8 +63,8 @@ def links():
         links.append(BASE_URL + TYPES[i] + ".xhtml")
     return links
 
-def download(url, output_path, path_driver, month, year):
-    driver = setup_driver(output_path, path_driver)
+def download(url, output_path, driver_path, month, year):
+    driver = setup_driver(output_path, driver_path)
     driver.get(url)
     years = driver.find_element_by_id(YEARS)
     now = datetime.datetime.now()
@@ -99,9 +98,9 @@ def download(url, output_path, path_driver, month, year):
         sys.stderr.write("Download efetuado.\n")
     driver.quit()
 
-def setup_driver(output_path, path_driver):
+def setup_driver(output_path, driver_path):
     current_directory = os.getcwd()
-    path_chrome = current_directory + path_driver
+    path_chrome = current_directory + driver_path
     path_prefs = current_directory + output_path
     
     prefs = {"download.default_directory" : path_prefs}
