@@ -88,19 +88,19 @@ type IncomeDetails struct {
 //	PremiumLicensePecuniary | 'Licença Prêmio'  | award to the assiduous and disciplined public employee, guaranteeing him the right to leave the public service for a period, without reducing his wages. | 'https://juridicocerto.com/p/zereshenrique/artigos/conversao-de-licenca-premio-em-pecunia-1675'
 type Perks struct {
 	Total                   float64  `json:"total" bson:"total,omitempty" tableheader:"perks_total" csv:"perks_total"`
-	Food                    *float64 `json:"food" bson:"food,omitempty" tableheader:"perks_food" csv:"perks_food"`                                                                         // Food Aid
-	Vacations               *float64 `json:"vacation" bson:"food,omitempty" tableheader:"vacation" csv:"vacation"`                                                                         // Férias Indenizatórias - Vacation perk
-	Transportation          *float64 `json:"transportation" bson:"transportation,omitempty" tableheader:"perks_transportation" csv:"perks_transportation"`                                 // 'Auxílio Transporte'.
-	PreSchool               *float64 `json:"pre_school" bson:"pre_school,omitempty" tableheader:"perks_pre_school" csv:"perks_pre_school"`                                                 // Assistance provided before the child enters school.
-	Health                  *float64 `json:"health" bson:"health,omitempty" tableheader:"perks_health" csv:"perks_health"`                                                                 // 'Auxílio Saúde'
-	BirthAid                *float64 `json:"birth_aid" bson:"birth_aid,omitempty" tableheader:"perks_birth" csv:"perks_birth"`                                                             // 'Auxílio Natalidade'
-	HousingAid              *float64 `json:"housing_aid" bson:"housing_aid,omitempty" tableheader:"perks_housing" csv:"perks_housing"`                                                     // 'Auxílio Moradia'
-	Subsistence             *float64 `json:"subsistence" bson:"subsistence,omitempty" tableheader:"perks_subsistence" csv:"perks_subsistence"`                                             // 'Ajuda de Custo'
-	CompensatoryLeave       *float64 `json:"compensatory_leave" bson:"compensatory_leave,omitempty" tableheader:"compensatory_leave" csv:"compensatory_leave"`                             // 'Licença Compensatória'
-	Pecuniary               *float64 `json:"pecuniary" bson:"pecuniary,omitempty" tableheader:"pecuniary" csv:"pecuniary"`                                                                 // 'Pecunia'
-	VacationPecuniary       *float64 `json:"vacation_pecuniary" bson:"vacation_pecuniary,omitempty" tableheader:"vacation_pecuniary" csv:"vacation_pecuniary"`                             // 'Pecunia de férias'
-	FurnitureTransport      *float64 `json:"furniture_transport" bson:"furniture_transport,omitempty" tableheader:"furniture_transport" csv:"furniture_transport"`                         // 'Transporte Mobiliário'
-	PremiumLicensePecuniary *float64 `json:"premium_license_pecuniary" bson:"premium_license_pecuniary,omitempty" tableheader:"premium_license_pecuniary" csv:"premium_license_pecuniary"` // 'Licença prêmio em pecúnia (Geralmente as que nao foram gozadas, passam pros sucessores)'
+	Food                    *float64 `json:"food" bson:"food,omitempty" tableheader:"perks_food" csv:"perks_food"`                                                                                     // Food Aid
+	Vacations               *float64 `json:"vacation" bson:"food,omitempty" tableheader:"vacation" csv:"vacation"`                                                                                     // Férias Indenizatórias - Vacation perk
+	Transportation          *float64 `json:"transportation" bson:"transportation,omitempty" tableheader:"perks_transportation" csv:"perks_transportation"`                                             // 'Auxílio Transporte'.
+	PreSchool               *float64 `json:"pre_school" bson:"pre_school,omitempty" tableheader:"perks_pre_school" csv:"perks_pre_school"`                                                             // Assistance provided before the child enters school.
+	Health                  *float64 `json:"health" bson:"health,omitempty" tableheader:"perks_health" csv:"perks_health"`                                                                             // 'Auxílio Saúde'
+	BirthAid                *float64 `json:"birth_aid" bson:"birth_aid,omitempty" tableheader:"perks_birth" csv:"perks_birth"`                                                                         // 'Auxílio Natalidade'
+	HousingAid              *float64 `json:"housing_aid" bson:"housing_aid,omitempty" tableheader:"perks_housing" csv:"perks_housing"`                                                                 // 'Auxílio Moradia'
+	Subsistence             *float64 `json:"subsistence" bson:"subsistence,omitempty" tableheader:"perks_subsistence" csv:"perks_subsistence"`                                                         // 'Ajuda de Custo'
+	CompensatoryLeave       *float64 `json:"compensatory_leave" bson:"compensatory_leave,omitempty" tableheader:"perks_compensatory_leave" csv:"perks_compensatory_leave"`                             // 'Licença Compensatória'
+	Pecuniary               *float64 `json:"pecuniary" bson:"pecuniary,omitempty" tableheader:"perks_pecuniary" csv:"perks_pecuniary"`                                                                 // 'Pecunia'
+	VacationPecuniary       *float64 `json:"vacation_pecuniary" bson:"vacation_pecuniary,omitempty" tableheader:"perks_vacation_pecuniary" csv:"perks_vacation_pecuniary"`                             // 'Pecunia de férias'
+	FurnitureTransport      *float64 `json:"furniture_transport" bson:"furniture_transport,omitempty" tableheader:"perks_furniture_transport" csv:"perks_furniture_transport"`                         // 'Transporte Mobiliário'
+	PremiumLicensePecuniary *float64 `json:"premium_license_pecuniary" bson:"premium_license_pecuniary,omitempty" tableheader:"perks_premium_license_pecuniary" csv:"perks_premium_license_pecuniary"` // 'Licença prêmio em pecúnia (Geralmente as que nao foram gozadas, passam pros sucessores)'
 }
 
 // Funds a Struct that details that make up the employee income.

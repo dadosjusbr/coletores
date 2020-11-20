@@ -180,35 +180,35 @@
                     "description-ptbr": "Ajuda de custo recebida pelo empregado"
                 },
                 {
-                    "name": "compensatory_leave",
+                    "name": "perks_compensatory_leave",
                     "title": "Perk Compensatory Leave",
                     "type": "number",
                     "description": "Compensation to the server for any acquired right.",
                     "description-ptbr": "Compensação ao empregado por algum direito adquirido"
                 },
                 {
-                    "name": "pecuniary",
+                    "name": "perks_pecuniary",
                     "title": "Perk Pecuniary",
                     "type": "number",
                     "description": "Payment of any advantage or right of the public servant",
                     "description-ptbr": "Pagamento ao empregado por alguma vantagem e direito do servidor público"
                 },
                 {
-                    "name": "vacation_pecuniary",
+                    "name": "perks_vacation_pecuniary",
                     "title": "Perks of Vacation Pecuniary",
                     "type": "number",
                     "description": "It consists of exchanging a few days of the vacation period for receiving an extra amount.",
                     "description-ptbr": "Consiste na troca de alguns dias de férias por uma remuneração extra. "
                 },
                 {
-                    "name": "furniture_transport",
+                    "name": "perks_furniture_transport",
                     "title": "Perks of Furniture Transport",
                     "type": "number",
                     "description": "Amount related to the payment of the transportation of the employee's furniture in case of change",
                     "description-ptbr": "Consiste no pagamento devido a alguma mudança mobiliária necessária pelo empregado."
                 },
                 {
-                    "name": "premium_license_pecuniary",
+                    "name": "perks_premium_license_pecuniary",
                     "title": "Perks of Premium License Pecuniary",
                     "type": "number",
                     "description": "Award to the assiduous and disciplined public employee, guaranteeing him the right to leave the public service for a period, without reducing his wages.",
