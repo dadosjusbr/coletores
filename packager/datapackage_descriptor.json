@@ -132,10 +132,17 @@
                 },
                 {
                     "name": "perks_food",
-                    "title": "Perks Foord",
+                    "title": "Perks Food",
                     "type": "number",
                     "description": "Perks food amount",
                     "description-ptbr": "Corresponde aos benefícios de alimentação recebidos pelo funcionário"
+                },
+                {
+                    "name": "perks_vacation",
+                    "title": "Perks Vacation",
+                    "type": "number",
+                    "description": "Perks vacation amount",
+                    "description-ptbr": "Corresponde as férias indenizadas quando não são gozadas."
                 },
                 {
                     "name": "perks_transportation",
