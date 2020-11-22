@@ -89,7 +89,7 @@ type IncomeDetails struct {
 type Perks struct {
 	Total                   float64  `json:"total" bson:"total,omitempty" tableheader:"perks_total" csv:"perks_total"`
 	Food                    *float64 `json:"food" bson:"food,omitempty" tableheader:"perks_food" csv:"perks_food"`                                                                                     // Food Aid
-	Vacations               *float64 `json:"vacation" bson:"food,omitempty" tableheader:"perks_vacation" csv:"perks_vacation"`                                                                         // Férias Indenizatórias - Vacation perk
+	Vacations               *float64 `json:"vacation" bson:"vacation,omitempty" tableheader:"perks_vacation" csv:"perks_vacation"`                                                                     // Férias Indenizatórias - Vacation perk
 	Transportation          *float64 `json:"transportation" bson:"transportation,omitempty" tableheader:"perks_transportation" csv:"perks_transportation"`                                             // 'Auxílio Transporte'.
 	PreSchool               *float64 `json:"pre_school" bson:"pre_school,omitempty" tableheader:"perks_pre_school" csv:"perks_pre_school"`                                                             // Assistance provided before the child enters school.
 	Health                  *float64 `json:"health" bson:"health,omitempty" tableheader:"perks_health" csv:"perks_health"`                                                                             // 'Auxílio Saúde'
