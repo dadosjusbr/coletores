@@ -119,7 +119,7 @@ def rename_file(key, output_path, month, year):
         time.sleep(1)
         time_counter += 1
         if time_counter > time_to_wait:
-            print("Tempo esgotado para localização do arquivo {}: SystemError.".format(prev_file_name))
+            sys.stderr.write("Tempo esgotado para localização do arquivo {}: SystemError.".format(prev_file_name))
             os._exit(2)
     
     new_file_name = TYPES[key] + '-' + month + "-" + year + '.ods'
