@@ -46,11 +46,11 @@ func main() {
 	}
 
 	summary := summary(er.Cr.Employees)
-	packBackup, err := client.Cloud.UploadFile(er.Pr.Package)
+	packBackup, err := client.Cloud.UploadFile(er.Pr.Package, er.Cr.AgencyID)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %v", er.Pr.Package, err)))
 	}
-	backup, err := client.Cloud.Backup(er.Cr.Files)
+	backup, err := client.Cloud.Backup(er.Cr.Files, er.Cr.AgencyID)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup files: %v, error: %v", er.Cr.Files, err)))
 	}
