@@ -273,15 +273,12 @@ func employeePerks(reg string, perks []string) (*coletores.Perks, error) {
 	if err := retrieveFloat64(&inPerks.Subsistence, perks, "AJUDA DE CUSTO", INDENIZACOES); err != nil {
 		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
 	}
-	var pecunia float64
-	if err := retrieveFloat64(&pecunia, perks, "PECÚNIA", INDENIZACOES); err != nil {
+	if err := retrieveFloat64(&inPerks.Pecuniary, perks, "PECÚNIA", INDENIZACOES); err != nil {
 		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
 	}
-	var compens float64
-	if err := retrieveFloat64(&compens, perks, "LICENÇA COMPENSATÓRIA", INDENIZACOES); err != nil {
+	if err := retrieveFloat64(&inPerks.CompensatoryLeave, perks, "LICENÇA COMPENSATÓRIA", INDENIZACOES); err != nil {
 		return nil, fmt.Errorf("error retrieving perks(regNum: %s): %q", reg, err)
 	}
-	inPerks.Others = map[string]float64{"pecunia": pecunia, "Licença Compensatória": compens}
 	inPerks.Total = totalPerks(inPerks)
 	return &inPerks, nil
 }
@@ -315,7 +312,7 @@ func employeeIncomeFunds(emp []string, perks []string, fileType int) (*coletores
 }
 
 func totalPerks(p coletores.Perks) float64 {
-	return getFloat64Value(p.Food, p.Health, p.HousingAid, p.BirthAid, p.Subsistence) + sumMapValues(p.Others)
+	return getFloat64Value(p.Food, p.Health, p.HousingAid, p.BirthAid, p.Subsistence, p.Pecuniary, p.CompensatoryLeave)
 }
 
 func totalIncome(in coletores.IncomeDetails) float64 {
