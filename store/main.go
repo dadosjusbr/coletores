@@ -14,16 +14,16 @@ import (
 )
 
 type config struct {
-	MongoURI   string `envconfig:"MONGODB_URI"`
-	DBName     string `envconfig:"MONGODB_DBNAME"`
-	MongoMICol string `envconfig:"MONGODB_MICOL"`
-	MongoAgCol string `envconfig:"MONGODB_AGCOL"`
+	MongoURI   string `envconfig:"MONGODB_URI" required:"true"`
+	DBName     string `envconfig:"MONGODB_DBNAME" required:"true"`
+	MongoMICol string `envconfig:"MONGODB_MICOL" required:"true"`
+	MongoAgCol string `envconfig:"MONGODB_AGCOL" required:"true"`
 	// Swift Conf
-	SwiftUsername  string `envconfig:"SWIFT_USERNAME"`
-	SwiftAPIKey    string `envconfig:"SWIFT_APIKEY"`
-	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL"`
-	SwiftDomain    string `envconfig:"SWIFT_DOMAIN"`
-	SwiftContainer string `envconfig:"SWIFT_CONTAINER"`
+	SwiftUsername  string `envconfig:"SWIFT_USERNAME" required:"true"`
+	SwiftAPIKey    string `envconfig:"SWIFT_APIKEY" required:"true"`
+	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL" required:"true"`
+	SwiftDomain    string `envconfig:"SWIFT_DOMAIN" required:"true"`
+	SwiftContainer string `envconfig:"SWIFT_CONTAINER" required:"true"`
 }
 
 func main() {
