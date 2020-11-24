@@ -1,17 +1,39 @@
 import pandas as pd
 from datetime import datetime
+import math
+nan = float('nan')
 
 #Definindo primeira Linha iterável da planilha 
 def get_begin_row(data,rows,begin_string):
     for row in rows:
         if(data.iloc[row][0] == begin_string):
-                return int(row) + 3 
-    
+            new_begin = int(row)
+
+    #Primeiro indice não None pós matricula
+    begin = new_begin +1
+    for i in range(begin,len(data.index)):
+        try:
+            if(not math.isnan(data.iloc[i][0])):
+                return i 
+        except:
+            return i
 #Definindo ultima Linha Iterável da Planilha
 def get_end_row(data,rows,end_string):
+    rows.reverse()
+    #Caso contenha total geral
     for row in rows:
         if(data.iloc[row][0] == end_string):
             return int(row) -1 
+    
+    #Se não temos total geral
+    for row in rows:
+        #Lugar com o primeiro nome de pessoas
+        try:
+            if(not math.isnan(data.iloc[row][2])):
+                return  int(row)
+        except:
+            return int(row)
+    return None
 
 #Define estratégia de leitura baseada na extensão do arquivo.
 def read_data(path,extension):
@@ -27,6 +49,12 @@ def read_data(path,extension):
         print('Cannot Read File.')
     return data
 
+#Definindo primeira Linha iterável da planilha para planilhas sem Indenizações
+def get_begin_row_notIn(data,rows,begin_string):
+    for row in rows:
+        if(data.iloc[row][0] == begin_string):
+            new_begin = int(row)
+    
 #Parser, convertendo os objetos para o formato exigido para empregados sem dados indenizatórios
 def employees(file_name,outputPath,year,month):
 
@@ -38,14 +66,70 @@ def employees(file_name,outputPath,year,month):
     rows = list(data.index.values)
 
     #Definindo linhas Iteráveis da planilha Principal
-    begin_string  = "Matrícula" 
+    begin_string  = "Nome ou Matrícula" 
     begin_row = get_begin_row(data,rows,begin_string)
 
     end_string = "TOTAL GERAL"
     end_row = get_end_row(data,rows,end_string)
 
-    return all_employees(data,begin_row,end_row)
+    return all_employees_novi(data,begin_row,end_row)
 
+#Para empregados sem dados de verbas indenizatórias 
+def all_employees_novi(data,begin_row,end_row):
+    employees = []
+    for i in range(begin_row,end_row):
+        employee = {
+            'reg' : data.iloc[i][0],
+            'name': data.iloc[i][0],
+            'role': data.iloc[i][3],
+            'type': data.iloc[i][8],  
+            'workplace': data.iloc[i][13],
+            'active': True,
+            "income": 
+            #Income Details
+            {'total' : format_string(data.iloc[i][25]), # ? Total Liquido ??
+             'wage'  : format_string(data.iloc[i][14]),
+             'perks' : 
+            #Perks Object 
+            { 'total' : format_string(data.iloc[i][27]),
+               'food' : 0,
+               'transportation': 0,
+               'preSchool': 0, 
+               'health': 0, # Não encontrado
+               'birthAid': 0, # Não encontrado
+               'housingAid': 0,# Não encontrado
+               'subistence': 0, #Não encontrado
+               'otherPerksTotal': 0,# Não encontrado
+               'others': "" #Não encontrado
+            },
+            'other': 
+            { #Funds Object 
+              'total': format_string(data.iloc[i][26]),
+              'personalBenefits': 0, #Não encontrado 
+              'eventualBenefits': format_string(data.iloc[i][18]), #Férias
+              'positionOfTrust' : format_string(data.iloc[i][16]), #Pericia e projeto
+              'daily': 0 , #Não encontrado
+              'gratification': format_string(data.iloc[i][17]), #Só existem dados da gratificação natalina
+              'originPosition': 0, #Não encontrado
+              'otherFundsTotal':0, #Não encontrado
+              'others': format_string(data.iloc[i][15]) + format_string(data.iloc[i][19]), #Não encontrado
+            } ,
+            } ,
+            'discounts':
+            { #Discounts Object
+              'total' : format_string(data.iloc[i][24]) * -1,
+              'prevContribution': format_string(data.iloc[i][21]) * -1,
+              'cell Retention': format_string(data.iloc[i][23]) * -1 ,
+              'incomeTax': format_string(data.iloc[i][24]) * - 1,
+              'otherDiscountsTotal': 0,
+              'others': '',
+            }
+        }
+        employees.append(employee)
+
+    return (employees)
+
+#Para empregados no formato de mês com indenização mas sem match
 def all_employees(data,begin_row,end_row):
     employees = []
     for i in range(begin_row,end_row):
@@ -75,9 +159,9 @@ def all_employees(data,begin_row,end_row):
             },
             'other': 
             { #Funds Object 
-              'total': format_string(data.iloc[match_row][19]),
+              'total': format_string(data.iloc[i][19]),
               'personalBenefits': 0, #Não encontrado 
-              'eventualBenefits': format_string(indemnity_data.iloc[match_row][39]), #Férias
+              'eventualBenefits': format_string(indemnity_data.iloc[i][39]), #Férias
               'positionOfTrust' : format_string(data.iloc[i][14]), #Pericia e projeto
               'daily': 0 , #Não encontrado
               'gratification': format_string(data.iloc[i][16]), #Só existem dados da gratificação natalina
@@ -174,13 +258,13 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                     'wage'  : data.iloc[i][12],
                     'perks' : 
                 #Perks Object 
-                { 'total' : indemnity_data.iloc[match_row][26],
-                    'food' : indemnity_data.iloc[match_row][16],
-                    'transportation': indemnity_data.iloc[match_row][19],
-                    'preSchool': indemnity_data.iloc[match_row][17],
+                { 'total' : format_string(indemnity_data.iloc[match_row][26]),
+                    'food' : format_string(indemnity_data.iloc[match_row][16]),
+                    'transportation': format_string(indemnity_data.iloc[match_row][19]),
+                    'preSchool': format_string(indemnity_data.iloc[match_row][17]),
                     'health': 0, # Não encontrado
-                    'birthAid': indemnity_data.iloc[match_row][21],
-                    'housingAid': indemnity_data.iloc[match_row][23],
+                    'birthAid': format_string(indemnity_data.iloc[match_row][21]),
+                    'housingAid': format_string(indemnity_data.iloc[match_row][23]),
                     'subistence': 0, #Não encontrado
                     'otherPerksTotal': format_string(indemnity_data.iloc[match_row][15]) + 
                     format_string(indemnity_data.iloc[match_row][20]) + 
@@ -191,10 +275,10 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                 },
                 'other': 
                 { #Funds Object 
-                    'total': indemnity_data.iloc[match_row][40],
+                    'total': format_string(indemnity_data.iloc[match_row][40]),
                     'personalBenefits': 0, #Não encontrado 
-                    'eventualBenefits': indemnity_data.iloc[match_row][39], #Férias
-                    'positionOfTrust' : data.iloc[i][14], #Pericia e projeto
+                    'eventualBenefits': format_string(indemnity_data.iloc[match_row][39]), #Férias
+                    'positionOfTrust' : format_string(data.iloc[i][14]), #Pericia e projeto
                     'daily': 0 , #Não encontrado
                     'gratification': format_string(indemnity_data.iloc[match_row][27]) +
                     format_string(indemnity_data.iloc[match_row][28]) + 
@@ -209,7 +293,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                     format_string(indemnity_data.iloc[match_row][36]) +
                     format_string(indemnity_data.iloc[match_row][37]) + 
                     format_string(indemnity_data.iloc[match_row][38]),
-                    'others': data.iloc[i][13],
+                    'others': format_string(data.iloc[i][13]),
                 } ,
                 } ,
                 'discounts':
@@ -263,7 +347,7 @@ def crawler_result(year,month,outputPath,file_names):
     if(check_indemnity(year,month)):
         indemnity_names = file_names.pop(-1)
         for i in range(len(file_names)):
-            employee = employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month) 
+            employee = employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month)
     else:
         for i in range(len(file_names)):
             employee = employees(file_names[i],outputPath,year,month)
