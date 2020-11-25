@@ -4,14 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/frictionlessdata/datapackage-go/datapackage"
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -20,10 +18,7 @@ const (
 )
 
 func main() {
-	// Reading input and loading environment variables.
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env to read.")
-	}
+
 	outputPath := os.Getenv("OUTPUT_FOLDER")
 	if outputPath == "" {
 		outputPath = "./"

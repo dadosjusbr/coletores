@@ -9,7 +9,6 @@ import (
 	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/storage"
-	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -32,14 +31,10 @@ type executionResult struct {
 }
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		status.ExitFromError(status.NewError(4, fmt.Errorf("error .env to read")))
-	}
 	var c config
 	if err := envconfig.Process("", &c); err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("Error loading config values from .env: %v", err.Error())))
 	}
-
 	client, err := newClient(c)
 	if err != nil {
 		status.ExitFromError(status.NewError(3, fmt.Errorf("newClient() error: %s", err)))
