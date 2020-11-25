@@ -99,14 +99,17 @@ def all_employees_novi(data,begin_row,end_row):
                'birthAid': 0, # Não encontrado
                'housingAid': 0,# Não encontrado
                'subistence': 0, #Não encontrado
-               'otherPerksTotal': 0,# Não encontrado
-               'others': "" #Não encontrado
+                'CompensatoryLeave': 0 , #Não encontrado
+               'Pecuniary':0, #Não encontrado
+               'VacationPecuniary':format_string(data.iloc[i][18]),#Férias
+               'FurnitureTransport':0,#Não encontrado
+               "PremiumLicensePecuniary": 0
             },
             'other': 
             { #Funds Object 
               'total': format_string(data.iloc[i][26]),
               'personalBenefits': 0, #Não encontrado 
-              'eventualBenefits': format_string(data.iloc[i][18]), #Férias
+              'eventualBenefits': 0, #Não encontrando
               'positionOfTrust' : format_string(data.iloc[i][16]), #Pericia e projeto
               'daily': 0 , #Não encontrado
               'gratification': format_string(data.iloc[i][17]), #Só existem dados da gratificação natalina
@@ -154,17 +157,20 @@ def all_employees(data,begin_row,end_row):
                'birthAid': 0, # Não encontrado
                'housingAid': 0,# Não encontrado
                'subistence': 0, #Não encontrado
-               'otherPerksTotal': 0,# Não encontrado
-               'others': "" #Não encontrado
+               'CompensatoryLeave':format_string(data.iloc[i][19]), 
+               'Pecuniary':0, #Não encontrado
+               'VacationPecuniary':format_string(data.iloc[i][18]),#Férias
+               'FurnitureTransport':0,#Não encontrado
+               "PremiumLicensePecuniary": 0
             },
             'other': 
             { #Funds Object 
-              'total': format_string(data.iloc[i][19]),
+              'total': format_string(data.iloc[i][27]),
               'personalBenefits': 0, #Não encontrado 
-              'eventualBenefits': format_string(indemnity_data.iloc[i][39]), #Férias
+              'eventualBenefits': 0, #Não encontrado
               'positionOfTrust' : format_string(data.iloc[i][14]), #Pericia e projeto
               'daily': 0 , #Não encontrado
-              'gratification': format_string(data.iloc[i][16]), #Só existem dados da gratificação natalina
+              'gratification': format_string(data.iloc[i][17]), #Só existem dados da gratificação natalina
               'originPosition': 0, #Não encontrado
               'otherFundsTotal':0, #Não encontrado
               'others': format_string(data.iloc[i][13]), #Não encontrado
@@ -238,13 +244,15 @@ def format_string(string):
 #Função responsável por definir array com dados dos empregados + indenizações
 def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
     employees = []
-    for i in range(begin_row,end_row):
-        id = data.iloc[i][0]
-        match_row = match_line(id,indemnity_data)
+    id = data.iloc[begin_row][0]
+    match_row = match_line(id,indemnity_data)
 
+    i = begin_row
+    while(i <= end_row):
         #Por motivos desconhecidos alguns funcionários não estão na planilha indenizatória
                         # --- mesmo estando na planilha comum ---#
-        if(match_row != None):
+        if(indemnity_data.iloc[match_row][0] == data.iloc[i][0]):
+            #print("Data com indenização" + str(data.iloc[i][0]))
             employee = {
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][2],
@@ -265,13 +273,12 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                     'health': 0, # Não encontrado
                     'birthAid': format_string(indemnity_data.iloc[match_row][21]),
                     'housingAid': format_string(indemnity_data.iloc[match_row][23]),
-                    'subistence': 0, #Não encontrado
-                    'otherPerksTotal': format_string(indemnity_data.iloc[match_row][15]) + 
-                    format_string(indemnity_data.iloc[match_row][20]) + 
-                    format_string(indemnity_data.iloc[match_row][22])+ 
-                    format_string(indemnity_data.iloc[match_row][24]) + 
-                    format_string(indemnity_data.iloc[match_row][25]),
-                    'others': ""
+                    'subistence': format_string(indemnity_data.iloc[match_row][22]),
+                    'CompensatoryLeave':format_string(indemnity_data.iloc[match_row][23]), 
+                    'Pecuniary':format_string(indemnity_data.iloc[match_row][24]),
+                    'VacationPecuniary':format_string(indemnity_data.iloc[match_row][15]),#Férias
+                    'FurnitureTransport':format_string(indemnity_data.iloc[match_row][20]),
+                    "PremiumLicensePecuniary": format_string(indemnity_data.iloc[match_row][25]),
                 },
                 'other': 
                 { #Funds Object 
@@ -305,9 +312,24 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                     'otherDiscountsTotal': 0,
                     'others': '',
                 }
-            }
+            }            
         else:
-            employee = all_employees(data,i,i)
+            #print("Sem indenização")
+            id = data.iloc[i][0]
+            before_match = match_row
+            match_row = match_line(id,indemnity_data)
+            if(match_row == None): 
+                employee = all_employees(data,i,i)
+                #print("Sem indenização None")
+            else:
+                employee = all_employees(data,i,i)
+                
+        if(match_row == None):
+            match_row = before_match
+            i += 1
+        else:
+            match_row += 1
+            i += 1 
 
         employees.append(employee)
     
@@ -344,13 +366,20 @@ def check_indemnity(year,month):
 
 #Processo de geração do objeto resultado do Crawler e Parser. 
 def crawler_result(year,month,outputPath,file_names):
+    employee = []
+    final_employees = [] 
     if(check_indemnity(year,month)):
         indemnity_names = file_names.pop(-1)
         for i in range(len(file_names)):
-            employee = employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month)
+            final_employees.append(employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month))
     else:
         for i in range(len(file_names)):
-            employee = employees(file_names[i],outputPath,year,month)
+            final_employees.append(employees(file_names[i],outputPath,year,month))
+
+    #Armazenando Todos os Empregados em lista unica
+    for lista in final_employees:
+        for employe in lista:
+            employee.append(employe) 
 
     month_number = get_month_number(month)
     now  = datetime.now()
