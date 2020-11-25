@@ -1,33 +1,9 @@
 import pandas as pd
 from datetime import datetime
 import os
+import math
 
 cwd = os.getcwd()
-
-remuneracoes = {
-    "matricula": 0,
-    "nome": 1,
-    "cargo": 2,
-    "lotacao": 3,
-    "cargo_efetivo": 4,
-    "outras_verbas": 5,
-    "cargo_em_comissão": 6,
-    "gratificacao_natalina": 7,
-    "ferias": 8,
-    "abono_de_permanencia": 9,
-    "temporarias": 10,
-    "verbas_indenizatorias": 11,
-}
-
-descontos = {
-    "matricula": 0,
-    "nome": 1,
-    "cargo": 2,
-    "lotacao": 3,
-    "contribuicao_previdenciaria": 5,
-    "imposto_de_renda": 6,
-    "retencao_por_teto__constitucional": 7
-}
 
 # Read data downloaded from the crawler
 def read_data(path):
@@ -39,14 +15,23 @@ def read_data(path):
 
 # Define first iterable line 
 def get_begin_row(data,rows,begin_string):
+    new_begin = ''
     for row in rows:
         if(data.iloc[row][0] == begin_string):
-            return int(row) + 3 
+            new_begin = int(row) + 1
+
+    while(isNaN(data.iloc[new_begin][0])):  
+        new_begin += 1
+
+    return new_begin
+
+def isNaN(string):
+    return string != string
 
 # Define last iterable line 
-def get_end_row(data,rows,end_string):
+def get_end_row(data, rows, end_string_remuneration, end_string_other_funds):
     for row in rows:
-        if(data.iloc[row][0] == end_string):
+        if((data.iloc[row][0] == end_string_remuneration) or (data.iloc[row][0] == end_string_other_funds)):
             return int(row) -2
 
 def employees(file_name):
@@ -54,8 +39,9 @@ def employees(file_name):
     rows  = list(data.index.values)
     begin_string  = "Matrícula" # word before starting data
     begin_row = get_begin_row(data,rows,begin_string)
-    end_string = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
-    end_row = get_end_row(data,rows,end_string)
+    end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
+    end_string_other_funds = "1 Auxílio-alimentação, Auxílio-transporte, Auxílio-Moradia, Ajuda de Custo e outras dessa natureza, exceto diárias, que serão divulgadas no Portal da Transparência, discriminada de forma individualizada."
+    end_row = get_end_row(data,rows,end_string_remuneration, end_string_other_funds)
     return all_employees(data,begin_row,end_row)
 
 def all_employees(data,begin_row,end_row):
