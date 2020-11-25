@@ -45,14 +45,12 @@ def get_begin_row(data,rows,begin_string):
 
 # Define last iterable line 
 def get_end_row(data,rows,end_string):
-    print(data.iloc[84][1])
     for row in rows:
         if(data.iloc[row][0] == end_string):
-            print(int(row) -2)
             return int(row) -2
 
-def employees(file_name, path): 
-    data = read_data(path)
+def employees(file_name, output_path):
+    data = read_data(file_name)
     rows  = list(data.index.values)
     begin_string  = "Matrícula" # word before starting data
     begin_row = get_begin_row(data,rows,begin_string)
@@ -117,4 +115,27 @@ def all_employees(data,begin_row,end_row):
             employees.append(employee)
        
     return employees
+
+def crawler_result(year,month,file_names):
+    output_path = '/output'
+    for i in range(len(file_names)):
+        employee = employees(file_names[i], output_path)
+
+    now  = datetime.now()
+
+    return {
+        'agencyID' : 'MPF' ,
+        'month' : month,
+        'year' : int(year),
+        'crawler': 
+        { #CrawlerObject
+             'crawlerID': 'mpm',
+             'crawlerVersion': 'Inicial' ,  
+        },
+        'files' : file_names,
+        'employees': employee,
+        'timestamp': now.strftime("%H:%M:%S"),
+        'procInfo' : ''
+    }
+
 
