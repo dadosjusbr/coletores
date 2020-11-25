@@ -49,7 +49,7 @@ def get_end_row(data,rows,end_string):
         if(data.iloc[row][0] == end_string):
             return int(row) -2
 
-def employees(file_name, output_path):
+def employees(file_name):
     data = read_data(file_name)
     rows  = list(data.index.values)
     begin_string  = "Matrícula" # word before starting data
@@ -76,26 +76,26 @@ def all_employees(data,begin_row,end_row):
              'perks' : 
             #Perks Object 
               { 'total' : data.iloc[i][11],
-               'food' : 0,
-               'transportation': 0,
-               'preSchool': 0, 
-               'health': 0, # Não encontrado
-               'birthAid': 0, # Não encontrado
-               'housingAid': 0,# Não encontrado
-               'subistence': 0, #Não encontrado
-               'otherPerksTotal': 0,# Não encontrado
-               'others': "" #Não encontrado
+               'food' : '',
+               'transportation': '',
+               'preSchool': '', 
+               'health': '', 
+               'birthAid': '', 
+               'housingAid': '',
+               'subistence': '', 
+               'otherPerksTotal': '',
+               'others': "" 
             },
             'other': 
             { #Funds Object 
               'total': data.iloc[i][10],
-              'personalBenefits': 0, #Não encontrado 
+              'personalBenefits': '',  
               'eventualBenefits': data.iloc[i][8], #Férias
               'positionOfTrust' : data.iloc[i][6], 
-              'daily': 0 , #Não encontrado
+              'daily': '' , 
               'gratification': data.iloc[i][4], #gratificação natalina
-              'originPosition': 0, #Não encontrado
-              'otherFundsTotal':0, #Não encontrado
+              'originPosition': '', 
+              'otherFundsTotal':'', 
               'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
             } ,
             } ,
@@ -105,7 +105,7 @@ def all_employees(data,begin_row,end_row):
               'prevContribution': data.iloc[i][13],
               'cell Retention': data.iloc[i][15], #Retenção por teto constitucional
               'incomeTax': data.iloc[i][14],
-              'otherDiscountsTotal': 0,
+              'otherDiscountsTotal': '',
               'others': '',
             }
         }
@@ -117,14 +117,13 @@ def all_employees(data,begin_row,end_row):
     return employees
 
 def crawler_result(year,month,file_names):
-    output_path = '/output'
     for i in range(len(file_names)):
-        employee = employees(file_names[i], output_path)
+        employee = employees(file_names[i])
 
     now  = datetime.now()
 
     return {
-        'agencyID' : 'MPF' ,
+        'agencyID' : 'MPM' ,
         'month' : month,
         'year' : int(year),
         'crawler': 
