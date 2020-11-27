@@ -15,10 +15,10 @@ _BASE_URL = 'http://www.transparencia.mpf.mp.br/conteudo/contracheque/'
 def write_file(response,file_name,output_path):
 
     #Cria o diretório de download (caso nao exista)
-    pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
+    pathlib.Path('./' + output_path).mkdir(exist_ok=True) 
 
     #Transcrição da resposta HTTP para o disco
-    with open(".//" + output_path + "//" + file_name, "wb") as file :
+    with open("./" + output_path + "/" + file_name, "wb") as file :
         file.write(response.content)
     
     file.close()
@@ -38,7 +38,7 @@ def specific_query(year,month,output_path):
 
     if(int(year) < 2019):
         raise ValueError('This kind of consult can be only done between now and July 2019')
-    elif((int(year) == 2019) and (month not in valid_months2019)):
+    if((int(year) == 2019) and (month not in valid_months2019)):
         raise ValueError('This kind of consult can be only done between now and July 2019')
     else:
 
