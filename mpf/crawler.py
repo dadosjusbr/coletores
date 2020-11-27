@@ -26,7 +26,7 @@ def write_file(response,file_name,output_path):
 #Processo de download Especifico para Verbas Indenizatórias e remunerações Temporarias
 def specific_query(year,month,output_path):
     url = _BASE_URL + _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS
-    query_type = ['colaboradores','membros-ativos','membros-inativos','pensionistas','servidores-ativos','servidores-inativos']
+    query_type = ['membros-ativos','membros-inativos','servidores-ativos','servidores-inativos','pensionistas','colaboradores']
     extension = '.ods'
 
     #Não trabalha com determinados caracteres
@@ -97,9 +97,9 @@ def query(year,month,data_type,output_path):
 def get_relevant_data(year,month,output_path):
     file_names = []
     file_names.append(query(year,month,_REMU_MEMBROS_ATIVOS,output_path))
+    file_names.append(query(year,month,_PROV_MEMBROS_INATIVOS,output_path))
     file_names.append(query(year,month,_REMU_SERVIDORES_ATIVOS,output_path))
     file_names.append(query(year,month,_PROV_SERVIDORES_INATIVOS,output_path))
-    file_names.append(query(year,month,_PROV_MEMBROS_INATIVOS,output_path))
     file_names.append(query(year,month,_VALORES_PERCEBIDOS_PENSIONISTAS,output_path))
     try:
         file_names.append(query(year,month,_VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS,output_path))
