@@ -10,16 +10,11 @@ import (
 	"time"
 
 	"github.com/dadosjusbr/coletores"
-	"github.com/joho/godotenv"
 )
 
 var gitCommit string
 
 func main() {
-
-	if err := godotenv.Load(); err != nil {
-		logError("Error loading .env file")
-	}
 	outputFolder := os.Getenv("OUTPUT_FOLDER")
 	if outputFolder == "" {
 		outputFolder = "./output"

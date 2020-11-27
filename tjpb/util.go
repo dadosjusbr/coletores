@@ -161,6 +161,8 @@ func getTemplate() map[string][]monthYear {
 	}
 	E := []monthYear{
 		{month: 5, year: 2020},
+		{month: 6, year: 2020},
+		{month: 7, year: 2020},
 	}
 
 	templates := map[string][]monthYear{
