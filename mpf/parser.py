@@ -92,40 +92,23 @@ def all_employees_novi(data,begin_row,end_row):
              'perks' : 
             #Perks Object 
             { 'total' : format_string(data.iloc[i][27]),
-               'food' : 0,
-               'transportation': 0,
-               'preSchool': 0, 
-               'health': 0, # Não encontrado
-               'birthAid': 0, # Não encontrado
-               'housingAid': 0,# Não encontrado
-               'subistence': 0, #Não encontrado
-                'CompensatoryLeave': 0 , #Não encontrado
-               'Pecuniary':0, #Não encontrado
-               'VacationPecuniary':format_string(data.iloc[i][18]),#Férias
-               'FurnitureTransport':0,#Não encontrado
-               "PremiumLicensePecuniary": 0
+               'vacation_pecuniary':format_string(data.iloc[i][18]),#Férias
             },
             'other': 
             { #Funds Object 
               'total': format_string(data.iloc[i][26]),
-              'personalBenefits': 0, #Não encontrado 
-              'eventualBenefits': 0, #Não encontrando
-              'positionOfTrust' : format_string(data.iloc[i][16]), #Pericia e projeto
-              'daily': 0 , #Não encontrado
+              'trust_position' : format_string(data.iloc[i][16]), #Pericia e projeto
               'gratification': format_string(data.iloc[i][17]), #Só existem dados da gratificação natalina
-              'originPosition': 0, #Não encontrado
-              'otherFundsTotal':0, #Não encontrado
               'others': format_string(data.iloc[i][15]) + format_string(data.iloc[i][19]), #Não encontrado
             } ,
             } ,
             'discounts':
             { #Discounts Object
               'total' : format_string(data.iloc[i][24]) * -1,
-              'prevContribution': format_string(data.iloc[i][21]) * -1,
-              'cell Retention': format_string(data.iloc[i][23]) * -1 ,
-              'incomeTax': format_string(data.iloc[i][24]) * - 1,
-              'otherDiscountsTotal': 0,
-              'others': '',
+              'prev_contribution': format_string(data.iloc[i][21]) * -1,
+              'ceil_retention': format_string(data.iloc[i][23]) * -1 ,
+              'income_tax': format_string(data.iloc[i][24]) * - 1,
+              'other': 0,
             }
         }
         employees.append(employee)
@@ -140,7 +123,6 @@ def all_employees(data,begin_row,end_row):
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][2],
             'role': data.iloc[i][7],
-            'type': '' ,  
             'workplace': data.iloc[i][11],
             'active': True,
             "income": 
@@ -150,40 +132,24 @@ def all_employees(data,begin_row,end_row):
              'perks' : 
             #Perks Object 
             { 'total' : format_string(data.iloc[i][20]),
-               'food' : 0,
-               'transportation': 0,
-               'preSchool': 0, 
-               'health': 0, # Não encontrado
-               'birthAid': 0, # Não encontrado
-               'housingAid': 0,# Não encontrado
-               'subistence': 0, #Não encontrado
-               'CompensatoryLeave':format_string(data.iloc[i][19]), 
-               'Pecuniary':0, #Não encontrado
-               'VacationPecuniary':format_string(data.iloc[i][18]),#Férias
-               'FurnitureTransport':0,#Não encontrado
-               "PremiumLicensePecuniary": 0
+               'compensatory_leave':format_string(data.iloc[i][19]), 
+               'vacation_pecuniary':format_string(data.iloc[i][18]),#Férias
             },
             'other': 
             { #Funds Object 
               'total': format_string(data.iloc[i][27]),
-              'personalBenefits': 0, #Não encontrado 
-              'eventualBenefits': 0, #Não encontrado
-              'positionOfTrust' : format_string(data.iloc[i][14]), #Pericia e projeto
-              'daily': 0 , #Não encontrado
+              'trust_position' : format_string(data.iloc[i][14]), #Pericia e projeto
               'gratification': format_string(data.iloc[i][17]), #Só existem dados da gratificação natalina
-              'originPosition': 0, #Não encontrado
-              'otherFundsTotal':0, #Não encontrado
               'others': format_string(data.iloc[i][13]), #Não encontrado
             } ,
             } ,
             'discounts':
             { #Discounts Object
               'total' : format_string(data.iloc[i][25]) * -1,
-              'prevContribution': format_string(data.iloc[i][22]) * -1,
-              'cell Retention': format_string(data.iloc[i][24]) * -1 ,
-              'incomeTax': format_string(data.iloc[i][23]) * - 1,
-              'otherDiscountsTotal': 0,
-              'others': '',
+              'prev_contribution': format_string(data.iloc[i][22]) * -1,
+              'ceil_retention': format_string(data.iloc[i][24]) * -1 ,
+              'income_tax': format_string(data.iloc[i][23]) * - 1,
+              'other': 0,
             }
         }
         if(begin_row == end_row):
@@ -256,8 +222,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
             employee = {
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][2],
-                'role': data.iloc[i][7],
-                'type': '' ,  
+                'role': data.iloc[i][7],  
                 'workplace': data.iloc[i][11],
                 'active': True,
                 "income": 
@@ -269,31 +234,27 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                 { 'total' : format_string(indemnity_data.iloc[match_row][26]),
                     'food' : format_string(indemnity_data.iloc[match_row][16]),
                     'transportation': format_string(indemnity_data.iloc[match_row][19]),
-                    'preSchool': format_string(indemnity_data.iloc[match_row][17]),
-                    'health': 0, # Não encontrado
-                    'birthAid': format_string(indemnity_data.iloc[match_row][21]),
-                    'housingAid': format_string(indemnity_data.iloc[match_row][23]),
+                    'pre_school': format_string(indemnity_data.iloc[match_row][17]),
+                    'birth_aid': format_string(indemnity_data.iloc[match_row][21]),
+                    'housing_aid': format_string(indemnity_data.iloc[match_row][23]),
                     'subistence': format_string(indemnity_data.iloc[match_row][22]),
-                    'CompensatoryLeave':format_string(indemnity_data.iloc[match_row][23]), 
-                    'Pecuniary':format_string(indemnity_data.iloc[match_row][24]),
-                    'VacationPecuniary':format_string(indemnity_data.iloc[match_row][15]),#Férias
-                    'FurnitureTransport':format_string(indemnity_data.iloc[match_row][20]),
-                    "PremiumLicensePecuniary": format_string(indemnity_data.iloc[match_row][25]),
+                    'compensatory_leave':format_string(indemnity_data.iloc[match_row][23]), 
+                    'pecuniary':format_string(indemnity_data.iloc[match_row][24]),
+                    'vacation_pecuniary':format_string(indemnity_data.iloc[match_row][15]),#Férias
+                    'furniture_transport':format_string(indemnity_data.iloc[match_row][20]),
+                    "premium_license_pecuniary": format_string(indemnity_data.iloc[match_row][25]),
                 },
                 'other': 
                 { #Funds Object 
                     'total': format_string(indemnity_data.iloc[match_row][40]),
-                    'personalBenefits': 0, #Não encontrado 
-                    'eventualBenefits': format_string(indemnity_data.iloc[match_row][39]), #Férias
-                    'positionOfTrust' : format_string(data.iloc[i][14]), #Pericia e projeto
-                    'daily': 0 , #Não encontrado
+                    'eventual_benefits': format_string(indemnity_data.iloc[match_row][39]), #Férias
+                    'trust_position' : format_string(data.iloc[i][14]), #Pericia e projeto
                     'gratification': format_string(indemnity_data.iloc[match_row][27]) +
                     format_string(indemnity_data.iloc[match_row][28]) + 
                     format_string(indemnity_data.iloc[match_row][29]) +
                     format_string(indemnity_data.iloc[match_row][30]) + 
                     format_string(indemnity_data.iloc[match_row][31]),
-                    'originPosition': 0,
-                    'otherFundsTotal': format_string(indemnity_data.iloc[match_row][32]) + 
+                    'others_total': format_string(indemnity_data.iloc[match_row][32]) + 
                     format_string(indemnity_data.iloc[match_row][33]) +
                     format_string(indemnity_data.iloc[match_row][34]) + 
                     format_string(indemnity_data.iloc[match_row][35]) + 
@@ -306,11 +267,10 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                 'discounts':
                 { #Discounts Object
                     'total' : data.iloc[i][25] * -1,
-                    'prevContribution': data.iloc[i][22] * -1,
-                    'cell Retention': data.iloc[i][24] * -1 ,
-                    'incomeTax': data.iloc[i][23] * - 1,
-                    'otherDiscountsTotal': 0,
-                    'others': '',
+                    'prev_contribution': data.iloc[i][22] * -1,
+                    'ceil_retention': data.iloc[i][24] * -1 ,
+                    'income_tax': data.iloc[i][23] * - 1,
+                    'other': 0,
                 }
             }            
         else:
