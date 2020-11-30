@@ -49,9 +49,9 @@ def crawl(year, month):
    
   for element in urls_other_funds:
     pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
-    file_name = element + "-" + "Verbas Indenizatorias" + "-" + month + '-' + year + '.xlsx'
-    file_path = output_path + "/" + file_name 
-    download(urls_remuneration[element], file_path)
-    files.append(file_path)
+    file_name_indemnity = element + "-" + "Verbas Indenizatorias" + "-" + month + '-' + year + '.xlsx'
+    file_path_indemnity = output_path + "/" + file_name_indemnity 
+    download(urls_other_funds[element], file_path_indemnity)
+    files.append(file_path_indemnity)
     
   return files
