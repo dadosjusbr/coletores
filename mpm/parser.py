@@ -203,11 +203,11 @@ def crawler_result(year,month,file_names):
         'agencyID' : 'mpm' ,
         'month' : month,
         'year' : year,
-        'crawler': 
-        { #CrawlerObject
-             'crawlerID': 'mpm',
-             'crawlerVersion': 'Inicial' ,  
-        },
+        # 'crawler': 
+        # { #CrawlerObject
+        #      'crawlerID': '',
+        #      'crawlerVersion': '' ,  
+        # },
         #'files' : file_names,
         'employees': final_employees,
         'timestamp': now.strftime("%H:%M:%S"),
