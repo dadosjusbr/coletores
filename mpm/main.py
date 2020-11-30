@@ -7,6 +7,6 @@ def main():
     year = sys.argv[2]
     file_names  =  crawler.crawl(year,month)
     result  =  parser.crawler_result(year, month, file_names)
-    print(file_names)
+    print(result)
 
 main()
