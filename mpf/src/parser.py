@@ -42,7 +42,6 @@ def read_data(path,extension):
     else:
         df_engine = 'xlrd'
     
-    print(path)
     #Leitura de arquivo em disco.
     try:
         data = pd.read_excel(path,engine = df_engine)
@@ -61,7 +60,7 @@ def employees(file_name,outputPath,year,month):
 
     #Definindo main Data
     extension = file_name.split('.')
-    path = './' + outputPath +'/' + file_name
+    path = './/' + outputPath +'//' + file_name
 
     data = read_data(path,extension)
     rows = list(data.index.values)
@@ -165,7 +164,7 @@ def employees_indemnity(file_name,indemnity_name,outputPath,year,month):
 
     #Definindo aspectos do main Data
     extension = file_name.split('.')
-    path = './' + outputPath + "/" + file_name
+    path = './/' + outputPath + "//" + file_name
 
     data = read_data(path,extension)
     rows  = list(data.index.values)
@@ -179,7 +178,7 @@ def employees_indemnity(file_name,indemnity_name,outputPath,year,month):
 
     #Definindo aspectos dos dados indenizatórios
     indemnity_extension = indemnity_name.split('.')
-    indemnity_path = './' + outputPath  + '/' + indemnity_name
+    indemnity_path = './/' + outputPath  + '//' + indemnity_name
 
     indemnity_data =  read_data(indemnity_path,indemnity_extension)
 
@@ -271,7 +270,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                     'prev_contribution': data.iloc[i][22] * -1,
                     'ceil_retention': data.iloc[i][24] * -1 ,
                     'income_tax': data.iloc[i][23] * - 1,
-                    'other': 0,
+                    
                 }
             }            
         else:
