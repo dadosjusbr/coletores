@@ -36,18 +36,24 @@ def get_end_row(data, rows, end_string):
 def employees(file_name):
     data = read_data(file_name)
     rows  = list(data.index.values)
+
+    active = False
+    if(file_name.__contains__("ativos")):
+        active = True
+
     begin_string  = "Matrícula" # word before starting data
     begin_row = get_begin_row(data,rows,begin_string)
     end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
     end_row = get_end_row(data,rows,end_string_remuneration)
-    return all_employees(data,begin_row,end_row)
+    return all_employees(data,begin_row,end_row, active)
 
 def employees_indemnity(file_name, indemnity_file_name):
     data = read_data(file_name)
     indemnity_data = read_data(indemnity_file_name)
-    ativo = False
+
+    active = False
     if(file_name.__contains__("ativos")):
-        ativo = True
+        active = True
 
     #define limits
     rows  = list(data.index.values)
@@ -56,7 +62,7 @@ def employees_indemnity(file_name, indemnity_file_name):
     end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
     end_row = get_end_row(data,rows,end_string_remuneration)
     
-    return all_employees_indemnity(data, begin_row, end_row, indemnity_data, ativo)
+    return all_employees_indemnity(data, begin_row, end_row, indemnity_data, active)
 
 def match_line(id,indemnity_data):
     rows = list(indemnity_data.index.values)
@@ -65,7 +71,8 @@ def match_line(id,indemnity_data):
             return row
 
 # Used when the employee is not on the indemnity list
-def all_employees(data,begin_row,end_row):
+def all_employees(data,begin_row,end_row, active):
+    type_employee = data.iloc[6][0].split(" - ")
     employees = []
     for i in range(begin_row,end_row):
         id = data.iloc[i][0]
@@ -73,36 +80,23 @@ def all_employees(data,begin_row,end_row):
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][1],
             'role': data.iloc[i][2],
-            'type': '' ,  
+            'type': type_employee[0].lower(),  
             'workplace': data.iloc[i][3],
-            'active': True,
+            'active': active,
             "income": 
             #Income Details
             {'total' : data.iloc[i][17], # ? Total Liquido ??
              'wage'  : data.iloc[i][4],
              'perks' : 
             #Perks Object 
-              { 'total' : data.iloc[i][11],
-               'food' : '',
-               'transportation': '',
-               'preSchool': '', 
-               'health': '', 
-               'birthAid': '', 
-               'housingAid': '',
-               'subistence': '', 
-               'otherPerksTotal': '',
-               'others': "" 
+              { 'total' : data.iloc[i][11],  
             },
             'other': 
             { #Funds Object 
               'total': data.iloc[i][10],
-              'personalBenefits': '',  
               'eventualBenefits': data.iloc[i][8], #Férias
               'positionOfTrust' : data.iloc[i][6], 
-              'daily': '' , 
               'gratification': data.iloc[i][4], #gratificação natalina
-              'originPosition': '', 
-              'otherFundsTotal':'', 
               'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
             } ,
             } ,
@@ -112,8 +106,6 @@ def all_employees(data,begin_row,end_row):
               'prevContribution': data.iloc[i][13],
               'cell Retention': data.iloc[i][15], #Retenção por teto constitucional
               'incomeTax': data.iloc[i][14],
-              'otherDiscountsTotal': '',
-              'others': '',
             }
         }
         if(begin_row == end_row):
@@ -123,7 +115,8 @@ def all_employees(data,begin_row,end_row):
        
     return employees
 
-def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
+def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
+    type_employee = data.iloc[6][0].split(" - ")
     employees = []
     id = data.iloc[begin_row][0]
     match_row = match_line(id,indemnity_data)
@@ -135,9 +128,9 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][1],
                 'role': data.iloc[i][2],
-                'type': '' ,  
+                'type': type_employee[0].lower(),  
                 'workplace': data.iloc[i][3],
-                'active': ativo,
+                'active': active,
                 "income": 
                 #Income Details
                 {'total' : data.iloc[i][17], # ? Total Liquido ??
@@ -147,12 +140,8 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
                 {'total' : indemnity_data.iloc[match_row][13],
                     'food' : indemnity_data.iloc[match_row][5],
                     'transportation': indemnity_data.iloc[match_row][7],
-                    'preSchool': '', 
-                    'health': '', 
                     'birthAid': indemnity_data.iloc[match_row][6], 
                     'housingAid': indemnity_data.iloc[match_row][4],
-                    'subistence': '', 
-                    'otherPerksTotal': '',
                 },
                 'other': 
                  #Funds Object 
@@ -160,9 +149,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
                     'personalBenefits': '',  
                     'eventualBenefits': data.iloc[i][8], #Férias
                     'positionOfTrust' : data.iloc[i][6], 
-                    'daily': '' , 
                     'gratification': (data.iloc[i][4]) + (indemnity_data.iloc[match_row][11]), #gratificação natalina + grat. encargo cursou ou concurso
-                    'originPosition': '', 
                     'otherFundsTotal': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]), 
                     'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
                 } ,
@@ -173,8 +160,6 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
                     'prevContribution': data.iloc[i][13],
                     'cell Retention': data.iloc[i][15], #Retenção por teto constitucional
                     'incomeTax': data.iloc[i][14],
-                    'otherDiscountsTotal': '',
-                    'others': '',
                 }
                 }            
         else:
@@ -182,10 +167,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ativo):
             before_match = match_row
             match_row = match_line(id,indemnity_data)
             if(match_row == None): 
-                employee = all_employees(data,i,i)
-                
-            # else:
-            #     employee = all_employees(data,i,i)
+                employee = all_employees(data,i,i, active)
                 
         if(match_row == None):
             match_row = before_match
@@ -218,7 +200,7 @@ def crawler_result(year,month,file_names):
     now  = datetime.now()
 
     return {
-        'agencyID' : 'MPM' ,
+        'agencyID' : 'mpm' ,
         'month' : month,
         'year' : year,
         'crawler': 
