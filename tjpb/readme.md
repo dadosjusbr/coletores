@@ -94,5 +94,7 @@ As planilhas apresentadas nos pdfs contém as seguintes colunas:
 
    ![](https://imagizer.imageshack.com/img923/8154/Qa7qTV.jpg)
 
-
 - Antes de outubro de 2012 pode-se ter apenas o arquivo de magistrados ou um arquivo geral que não discrimina por funcionário. Esses são nomeados apenas como "remuneracoes-tjpb-mes-ano.pdf" quando baixados.
+- Não há um identificador único por pessoa remunerada
+- A mesma pessoa tem grafias diferentes. Por exemplo PAULA FRASSINETTI NOBREGA DE MIRANDA DA, PAULA FRASSINETTI NOBREGA DE MIRANDA DAN, PAULA FRASSINETTI NOBREGA DE MIRANDA DANTAS
+- Não há discriminação dos valores de diferentes tipos de indenizações (perks)
