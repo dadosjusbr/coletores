@@ -20,7 +20,7 @@ else:
     sys.stderr.write("Invalid arguments, missing parameter: 'DRIVER_PATH'.\n")
     os._exit(1)
 if('OUTPUT_PATH' in os.environ):
-    output_path = os.environ['DRIVER_PATH']
+    output_path = os.environ['OUTPUT_PATH']
 else:
     output_path = "/output"
 

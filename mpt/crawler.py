@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import pathlib 
 import datetime
 from selenium import webdriver
@@ -27,34 +28,31 @@ TYPES = {
         5 : "proventosColaboradores"
     }
 MONTHS = {
-        '1' : "Janeiro",
-        '2' : "Fevereiro",
-        '3' : "Março",
-        '4' : "Abril",
-        '5' : "Maio",
-        '6' : "Junho",
-        '7' : "Julho",
-        '8' : "Agosto",
-        '9' : "Setembro",
-        '10' : "Outubro",
-        '11' : "Novembro",
-        '12' : "Dezembro"
+        '1' : "jan",
+        '2' : "fev",
+        '3' : "mar",
+        '4' : "abr",
+        '5' : "mai",
+        '6' : "jun",
+        '7' : "jul",
+        '8' : "ago",
+        '9' : "set",
+        '10' : "out",
+        '11' : "nov",
+        '12' : "dez"
     }
 
 # Retrieves payment files from MPT
 def crawl(output_path, driver_path, month, year):
     files = []
     urls = links()
-
     # Creates the download directory (if it doesn't exists)
     pathlib.Path('./' + output_path).mkdir(exist_ok = True)
-    
-    for i, url in zip(TYPES.keys(), urls):
-        file_name = TYPES[i] + '-' + month + "-" + year + '.ods'
-        file_path = (output_path + "/" + file_name)
-        download(url, output_path, driver_path, month, year)
-        files.append(file_path)
 
+    for key, url in zip(TYPES.keys(), urls):
+        download(url, output_path, driver_path, month, year)
+        new_file_path = rename_file(key, output_path, month, year)
+        files.append(new_file_path)
     return files
 
 def links():
@@ -107,3 +105,24 @@ def setup_driver(output_path, driver_path):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("prefs", prefs)
     return webdriver.Chrome(executable_path = path_chrome, chrome_options = chrome_options)
+
+def rename_file(key, output_path, month, year):
+    prev_types = ["RemuneracaoMembrosAtivos", "ProventosMembrosInativos",
+                 "RemuneracaoServidoresAtivos", "RemuneracaoServidoresInativos",
+                 "RemuneracaoPensionistas", "RemuneracaoColaboradores"]
+    prev_file_name = prev_types[key] + '-' + MONTHS[month] + "-" + year + '.ods'
+    prev_file_path = ("." + output_path + "/" + prev_file_name)
+    
+    time_to_wait = 10
+    time_counter = 0
+    while not os.path.exists(prev_file_path):
+        time.sleep(1)
+        time_counter += 1
+        if time_counter > time_to_wait:
+            sys.stderr.write("Tempo esgotado para localização do arquivo {}: SystemError.".format(prev_file_name))
+            os._exit(2)
+    
+    new_file_name = TYPES[key] + '-' + month + "-" + year + '.ods'
+    new_file_path = ("." + output_path + "/" + new_file_name)
+    os.rename(prev_file_path, new_file_path)
+    return new_file_path
