@@ -91,4 +91,7 @@ Para cada funcionário, o JSON possui os seguintes campos:
 
 ## Dificuldades para libertação dos dados
 
-O TRT13 é um ótimo exemplo de API para acesso aos dados de remuneração. Existe uma API própria para isso e os dados são exportados em formato aberto fácil de ser manipulado por programas de computador (JSON).
+De maneira geral, o TRT13 é um ótimo exemplo de API para acesso aos dados de remuneração. Existe uma API própria para isso e os dados são exportados em formato aberto fácil de ser manipulado por programas de computador (JSON). Porém:
+
+- Há valores negativos nos totais de benefícios e de indenizações
+- Não há discriminação dos valores para diferentes tipos de indenizações
