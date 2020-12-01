@@ -94,8 +94,8 @@ def all_employees(data,begin_row,end_row, active):
             'other': 
             { #Funds Object 
               'total': data.iloc[i][10],
-              'eventualBenefits': data.iloc[i][8], #Férias
-              'positionOfTrust' : data.iloc[i][6], 
+              'eventual_benefits': data.iloc[i][8], #Férias
+              'trust_position' : data.iloc[i][6], 
               'gratification': data.iloc[i][4], #gratificação natalina
               'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
             } ,
@@ -103,9 +103,9 @@ def all_employees(data,begin_row,end_row, active):
      'discounts':
             { #Discounts Object
               'total' : data.iloc[i][16],
-              'prevContribution': data.iloc[i][13],
-              'cell Retention': data.iloc[i][15], #Retenção por teto constitucional
-              'incomeTax': data.iloc[i][14],
+              'prev_contribution': data.iloc[i][13],
+              'ceil_retention': data.iloc[i][15], #Retenção por teto constitucional
+              'income_tax': data.iloc[i][14],
             }
         }
         if(begin_row == end_row):
@@ -140,26 +140,25 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 {'total' : indemnity_data.iloc[match_row][13],
                     'food' : indemnity_data.iloc[match_row][5],
                     'transportation': indemnity_data.iloc[match_row][7],
-                    'birthAid': indemnity_data.iloc[match_row][6], 
-                    'housingAid': indemnity_data.iloc[match_row][4],
+                    'birth_aid': indemnity_data.iloc[match_row][6], 
+                    'housing_aid': indemnity_data.iloc[match_row][4],
                 },
                 'other': 
                  #Funds Object 
                 {'total': data.iloc[i][10],
-                    'personalBenefits': '',  
-                    'eventualBenefits': data.iloc[i][8], #Férias
-                    'positionOfTrust' : data.iloc[i][6], 
+                    'eventual_benefits': data.iloc[i][8], #Férias
+                    'trust_position' : data.iloc[i][6], 
                     'gratification': (data.iloc[i][4]) + (indemnity_data.iloc[match_row][11]), #gratificação natalina + grat. encargo cursou ou concurso
-                    'otherFundsTotal': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]), 
+                    'others_total': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]), 
                     'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
                 } ,
                 } ,
                 'discounts':
                 { #Discounts Object
                     'total' : data.iloc[i][16],
-                    'prevContribution': data.iloc[i][13],
-                    'cell Retention': data.iloc[i][15], #Retenção por teto constitucional
-                    'incomeTax': data.iloc[i][14],
+                    'prev_contribution': data.iloc[i][13],
+                    'cell_retention': data.iloc[i][15], #Retenção por teto constitucional
+                    'income_tax': data.iloc[i][14],
                 }
                 }            
         else:
@@ -203,15 +202,14 @@ def crawler_result(year,month,file_names):
         'agencyID' : 'mpm' ,
         'month' : month,
         'year' : year,
-        # 'crawler': 
-        # { #CrawlerObject
-        #      'crawlerID': '',
-        #      'crawlerVersion': '' ,  
-        # },
+        'crawler': 
+        { #CrawlerObject
+             'crawlerID': 'mpm',
+             'crawlerVersion': 'inicial' ,  
+        },
         #'files' : file_names,
         'employees': final_employees,
-        'timestamp': now.strftime("%H:%M:%S"),
-        'procInfo' : ''
+        'timestamp': now.strftime("%H:%M:%S")
     }
 
 

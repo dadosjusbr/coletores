@@ -34,21 +34,20 @@ def download(url, file_path):
   file.close()
 
 # Crawl retrieves payment files from MPM.
-def crawl(year, month):
-  output_path = '/output'
+def crawl(year, month, output_path):
   urls_remuneration = links_remuneration(month, year)
   urls_other_funds = links_other_funds(month, year)
   files = []
   
   for element in urls_remuneration:
-    pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
+    pathlib.Path('./' + output_path).mkdir(exist_ok=True) 
     file_name = element + "-" + month + '-' + year + '.xlsx'
     file_path = output_path + "/" + file_name 
     download(urls_remuneration[element], file_path)
     files.append(file_path)
    
   for element in urls_other_funds:
-    pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
+    pathlib.Path('./' + output_path).mkdir(exist_ok=True) 
     file_name_indemnity = element + "-" + "Verbas Indenizatorias" + "-" + month + '-' + year + '.xlsx'
     file_path_indemnity = output_path + "/" + file_name_indemnity 
     download(urls_other_funds[element], file_path_indemnity)
