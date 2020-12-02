@@ -2,7 +2,7 @@
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público Federal. O site com as informações pode ser acessado [aqui](http://www.transparencia.mpf.mp.br/conteudo/contracheque).
 
-O crawler está estruturado de modo a adquirir 3 parâmetros por meio de uma variável de ambiente nomeada .env com os seguinte parâmetros:
+O crawler está estruturado de modo que serão passadas via cli três parâmetros descritos abaixo:
 
 ```sh
 MONTH= (Inteiro entre 1 - 12 responsável por indicar o mês)
@@ -35,7 +35,7 @@ Para consultas que se referem á meses iguais ou posteriores á Julho de 2019, s
  -Grupo 11: Verbas indenizatórias e outras remunerações temporárias pensionistas;  
  -Grupo 12: Verbas indenizatórias e outras remunerações temporárias colaboradores;  
 
-È importante verificar que os arquivos nomeados como verbas indenizatórias são responsáveis por detalhar com maior precisão a natureza de algumas remunerações associadas aos grupos 1 á 6.
+É importante verificar que os arquivos nomeados como verbas indenizatórias são responsáveis por detalhar com maior precisão a natureza de algumas remunerações associadas aos grupos 1 á 6.
 
 ##Como utilizar 
 
@@ -50,7 +50,7 @@ cd coletores/mpf
 sudo docker build -t mpf .
 ``` 
 - Execução:  
-    - Para executar será necessário passar o arquivo .env e a executar o seguinte comando:   
+    - Para executar será necessário utilizar-se  do seguinte comando:   
 
 ```sh
 sudo docker run --env-file=./src/.env mpf
@@ -65,7 +65,7 @@ sudo docker run --env-file=./src/.env mpf
     cd coletores/mpf 
     pip3 install -r requirements.txt
     ```
-  - Finalmente verifique e modifique as variáveis de ambiente contidas no .env conforme a especificação e execute:
+  - Finalmente execute :
 
     ```sh
     cd coletores/mpf/src
