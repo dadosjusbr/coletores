@@ -23,7 +23,7 @@ def get_end_row(data,rows,end_string):
     #Caso contenha total geral
     for row in rows:
         if(data.iloc[row][0] == end_string):
-            return int(row) -1 
+            return int(row)  
     
     #Se não temos total geral
     for row in rows:
@@ -56,7 +56,7 @@ def get_begin_row_notIn(data,rows,begin_string):
             new_begin = int(row)
     
 #Parser, convertendo os objetos para o formato exigido para empregados sem dados indenizatórios
-def employees(file_name,outputPath,year,month):
+def employees(file_name,outputPath,year,month,file_type):
 
     #Definindo main Data
     extension = file_name.split('.')
@@ -72,19 +72,19 @@ def employees(file_name,outputPath,year,month):
     end_string = "TOTAL GERAL"
     end_row = get_end_row(data,rows,end_string)
 
-    return all_employees_novi(data,begin_row,end_row)
+    return all_employees_novi(data,begin_row,end_row,file_type)
 
 #Para empregados sem dados de verbas indenizatórias 
-def all_employees_novi(data,begin_row,end_row):
+def all_employees_novi(data,begin_row,end_row,file_type):
     employees = []
     for i in range(begin_row,end_row):
         employee = {
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][0],
             'role': data.iloc[i][3],
-            'type': data.iloc[i][8],  
+            'type': file_type,  
             'workplace': data.iloc[i][13],
-            'active': True,
+            'active': True if ('Ativos' in file_type) else False,
             "income": 
             #Income Details
             {'total' : format_string(data.iloc[i][25]), # ? Total Liquido ??
@@ -104,11 +104,10 @@ def all_employees_novi(data,begin_row,end_row):
             } ,
             'discounts':
             { #Discounts Object
-              'total' : format_string(data.iloc[i][24]) * -1,
-              'prev_contribution': format_string(data.iloc[i][21]) * -1,
-              'ceil_retention': format_string(data.iloc[i][23]) * -1 ,
-              'income_tax': format_string(data.iloc[i][24]) * - 1,
-              'other': 0,
+              'total' : format_string(data.iloc[i][24]) * -1 if(format_string(data.iloc[i][24]) < 0) else format_string(data.iloc[i][24]),
+              'prev_contribution': format_string(data.iloc[i][21]) * -1 if(format_string(data.iloc[i][21]) < 0) else format_string(data.iloc[i][21]),
+              'ceil_retention': format_string(data.iloc[i][23]) * -1 if(format_string(data.iloc[i][24]) < 0) else format_string(data.iloc[i][23]),
+              'income_tax': format_string(data.iloc[i][22]) * - 1 if(format_string(data.iloc[i][22]) < 0) else format_string(data.iloc[i][22]),
             }
         }
         employees.append(employee)
@@ -116,15 +115,16 @@ def all_employees_novi(data,begin_row,end_row):
     return (employees)
 
 #Para empregados no formato de mês com indenização mas sem match
-def all_employees(data,begin_row,end_row):
+def all_employees(data,begin_row,end_row,file_type):
     employees = []
     for i in range(begin_row,end_row):
         employee = {
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][2],
             'role': data.iloc[i][7],
+            'type': file_type,
             'workplace': data.iloc[i][11],
-            'active': True,
+            'active': True if ('Ativos' in file_type) else False,
             "income": 
             #Income Details
             {'total' : format_string(data.iloc[i][26]), # ? Total Liquido ??
@@ -145,11 +145,10 @@ def all_employees(data,begin_row,end_row):
             } ,
             'discounts':
             { #Discounts Object
-              'total' : format_string(data.iloc[i][25]) * -1,
-              'prev_contribution': format_string(data.iloc[i][22]) * -1,
-              'ceil_retention': format_string(data.iloc[i][24]) * -1 ,
-              'income_tax': format_string(data.iloc[i][23]) * - 1,
-              'other': 0,
+              'total' : format_string(data.iloc[i][25]) * -1 if (format_string(data.iloc[i][25]) < 0) else format_string(data.iloc[i][25]),
+              'prev_contribution': format_string(data.iloc[i][22]) * -1 if(format_string(data.iloc[i][22]) < 0) else format_string(data.iloc[i][22]),
+              'ceil_retention': format_string(data.iloc[i][24]) * -1 if(format_string(data.iloc[i][24]) < 0) else format_string(data.iloc[i][24]),
+              'income_tax': format_string(data.iloc[i][23]) * - 1 if (format_string(data.iloc[i][23]) < 0) else format_string(data.iloc[i][23]),
             }
         }
         if(begin_row == end_row):
@@ -160,7 +159,7 @@ def all_employees(data,begin_row,end_row):
     return (employees)
 
 #Parser, convertendo os objetos para o formato exigido para empregados com dados indenizatórios
-def employees_indemnity(file_name,indemnity_name,outputPath,year,month):
+def employees_indemnity(file_name,indemnity_name,outputPath,year,month,file_type):
 
     #Definindo aspectos do main Data
     extension = file_name.split('.')
@@ -182,7 +181,7 @@ def employees_indemnity(file_name,indemnity_name,outputPath,year,month):
 
     indemnity_data =  read_data(indemnity_path,indemnity_extension)
 
-    return all_employees_indemnity(data,begin_row,end_row,indemnity_data)
+    return all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type)
 
 # Encontra a linha que representa um funcionário na planilha de indenizações por meio do ID
 def match_line(id,indemnity_data):
@@ -208,7 +207,7 @@ def format_string(string):
     return float(aux)
 
 #Função responsável por definir array com dados dos empregados + indenizações
-def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
+def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
     employees = []
     id = data.iloc[begin_row][0]
     match_row = match_line(id,indemnity_data)
@@ -222,9 +221,10 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
             employee = {
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][2],
-                'role': data.iloc[i][7],  
+                'role': data.iloc[i][7],
+                'type': file_type, 
                 'workplace': data.iloc[i][11],
-                'active': True,
+                'active': True if ('Ativos' in file_type) else False,
                 "income": 
                 #Income Details
                 {'total' : data.iloc[i][26], # ? Total Liquido ??
@@ -266,23 +266,20 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
                 } ,
                 'discounts':
                 { #Discounts Object
-                    'total' : data.iloc[i][25] * -1,
-                    'prev_contribution': data.iloc[i][22] * -1,
-                    'ceil_retention': data.iloc[i][24] * -1 ,
-                    'income_tax': data.iloc[i][23] * - 1,
-                    
+                    'total' : (data.iloc[i][25]) * -1 if(format_string(data.iloc[i][25]) < 0) else format_string(data.iloc[i][25]),
+                    'prev_contribution': data.iloc[i][22] * -1 if(format_string(data.iloc[i][22]) < 0) else format_string(data.iloc[i][22]),
+                    'ceil_retention': data.iloc[i][24] * -1 if(format_string(data.iloc[i][24]) < 0) else format_string(data.iloc[i][24]),
+                    'income_tax': (data.iloc[i][23] * - 1) if(format_string(data.iloc[i][23]) < 0) else format_string(data.iloc[i][23]),
                 }
             }            
         else:
-            #print("Sem indenização")
             id = data.iloc[i][0]
             before_match = match_row
             match_row = match_line(id,indemnity_data)
             if(match_row == None): 
-                employee = all_employees(data,i,i)
-                #print("Sem indenização None")
+                employee = all_employees(data,i,i,file_type)
             else:
-                employee = all_employees(data,i,i)
+                employee = all_employees(data,i,i,file_type)
                 
         if(match_row == None):
             match_row = before_match
@@ -297,7 +294,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data):
 
 #Função Auxiliar responsável pela tradução de um mês em um numero.
 def get_month_number(month):
-    meses = { 'Janeiro' : 1 ,
+    months = { 'Janeiro' : 1 ,
               'Fevereiro':2 ,
               'Março': 3,
               'Abril': 4,
@@ -310,7 +307,7 @@ def get_month_number(month):
               'Novembro':11,
               'Dezembro':12
             }
-    return meses[month]
+    return months[month]
 
 #Função destinada a verificar se exisem os dados acerca de verbas indenizatórias 
 #------ Apenas para querys pós julho de 2019 ------# 
@@ -326,15 +323,19 @@ def check_indemnity(year,month):
 
 #Processo de geração do objeto resultado do Crawler e Parser. 
 def crawler_result(year,month,outputPath,file_names):
+    #Ordem do tipo de arquivos
+    file_order = ['Membros Ativos','Membros Inativos','Servidores Ativos','Servidores Inativos','Pensionistas','Colaboradores Ativos']
+
+    #Realizando o processo de parser em todas as planilhas
     employee = []
     final_employees = [] 
     if(check_indemnity(year,month)):
         indemnity_names = file_names.pop(-1)
         for i in range(len(file_names)):
-            final_employees.append(employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month))
+            final_employees.append(employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month,file_order[i]))
     else:
         for i in range(len(file_names)):
-            final_employees.append(employees(file_names[i],outputPath,year,month))
+            final_employees.append(employees(file_names[i],outputPath,year,month,file_order[i]))
 
     #Armazenando Todos os Empregados em lista unica
     for lista in final_employees:
