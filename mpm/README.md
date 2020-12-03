@@ -25,6 +25,10 @@ Serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram 
     sudo docker build -t mpf .  
   ```
 
+  ```sh
+  sudo docker run -e MONTH=2 -e YEAR=2020 mpm
+  ```
+
  ### Executando sem Docker
 
    ```sh
