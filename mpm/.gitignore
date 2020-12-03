@@ -1,4 +1,6 @@
 mpm
 __pycache__
 output/
-env3
+venv
+src/result.json
+src/.env

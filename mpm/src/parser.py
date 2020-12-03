@@ -1,14 +1,12 @@
 import pandas as pd
 from datetime import datetime
-import os
 import math
-
-cwd = os.getcwd()
+import pathlib 
 
 # Read data downloaded from the crawler
 def read_data(path):
     try:
-        data = pd.read_excel(cwd + path)
+        data = pd.read_excel(pathlib.Path('./' + path))
         return data
     except:
         print('Cannot Read File.')
