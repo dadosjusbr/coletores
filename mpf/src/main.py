@@ -11,14 +11,32 @@ def get_args():
     load_dotenv(dotenv_path=env_path)
 
     month = os.getenv("MONTH")
+    month = get_month_name(int(month))
     year = os.getenv("YEAR")
-    outputPath = os.getenv("OUTPUT_FOLDER")
+    outputPath = os.getenv("OUTPUT")
 
     return {
         "month": month,
         "year": year,
         "outputPath": outputPath
     }
+
+#Metodo auxiliar responsável pela tradução do numero do mês em String
+def get_month_name(month):
+    months = { 1:'Janeiro' ,
+               2:'Fevereiro' ,
+               3:'Março',
+               4:'Abril',
+               5:'Maio',
+               6:'Junho',
+               7:'Julho',
+               8:'Agosto',
+               9:'Setembro',
+              10:'Outubro',
+              11:'Novembro',
+              12:'Dezembro'
+            }
+    return months[month]
 
 #Execução principal 
 def main(args):

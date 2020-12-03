@@ -6,6 +6,7 @@ _REMU_SERVIDORES_ATIVOS ='remuneracao-servidores-ativos'
 _PROV_SERVIDORES_INATIVOS = 'provento-servidores-inativos'
 _PROV_MEMBROS_INATIVOS ='provento-membros-inativos'
 _VALORES_PERCEBIDOS_PENSIONISTAS ='valores-percebidos-pensionistas'
+_VALORES_PERCEBIDOS_COLABORADORES ='valores-percebidos-colaboradores'
 _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS = 'verbas-indenizatorias-e-outras-remuneracoes-temporarias'
 
 #Url base para os metodos GET.
@@ -38,7 +39,7 @@ def specific_query(year,month,output_path):
 
     if(int(year) < 2019):
         raise ValueError('This kind of consult can be only done between now and July 2019')
-    elif((int(year) == 2019) and (month not in valid_months2019)):
+    if((int(year) == 2019) and (month not in valid_months2019)):
         raise ValueError('This kind of consult can be only done between now and July 2019')
     else:
 
@@ -101,6 +102,7 @@ def get_relevant_data(year,month,output_path):
     file_names.append(query(year,month,_REMU_SERVIDORES_ATIVOS,output_path))
     file_names.append(query(year,month,_PROV_SERVIDORES_INATIVOS,output_path))
     file_names.append(query(year,month,_VALORES_PERCEBIDOS_PENSIONISTAS,output_path))
+    file_names.append(query(year,month,_VALORES_PERCEBIDOS_COLABORADORES,output_path))
     try:
         file_names.append(query(year,month,_VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS,output_path))
     except ValueError:
