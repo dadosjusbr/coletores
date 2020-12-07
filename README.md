@@ -6,7 +6,7 @@ Coletores de dados sobre remunerações do sistema de justiça brasileiro
 
 ## Tutorial
 
-Quer contribuir com a libertação de dados do sistema de justiça do seu estado? Temos um [tutorial](TUTORIAL.md) para ajudar nessa tarefa.
+Quer contribuir com a libertação de dados do sistema de justiça do seu estado? Temos um [tutorial](collectors/TUTORIAL.md) para ajudar nessa tarefa.
 
 ## Contribuição
 
