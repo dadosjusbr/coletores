@@ -188,7 +188,7 @@ def match_line(id,indemnity_data):
     rows = list(indemnity_data.index.values)
     for row in rows:
         if(indemnity_data.iloc[row][0] == id):
-            return row
+            return  row
 
 # Formata as Strings para o json, retirando os (R$)
 def format_string(string):
@@ -211,13 +211,11 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
     employees = []
     id = data.iloc[begin_row][0]
     match_row = match_line(id,indemnity_data)
-
     i = begin_row
     while(i <= end_row):
         #Por motivos desconhecidos alguns funcionários não estão na planilha indenizatória
                         # --- mesmo estando na planilha comum ---#
         if(indemnity_data.iloc[match_row][0] == data.iloc[i][0]):
-            #print("Data com indenização" + str(data.iloc[i][0]))
             employee = {
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][2],
@@ -238,7 +236,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
                     'birth_aid': format_string(indemnity_data.iloc[match_row][21]),
                     'housing_aid': format_string(indemnity_data.iloc[match_row][23]),
                     'subistence': format_string(indemnity_data.iloc[match_row][22]),
-                    'compensatory_leave':format_string(indemnity_data.iloc[match_row][23]), 
+                    'compensatory_leave':format_string(indemnity_data.iloc[match_row][33]), 
                     'pecuniary':format_string(indemnity_data.iloc[match_row][24]),
                     'vacation_pecuniary':format_string(indemnity_data.iloc[match_row][15]),#Férias
                     'furniture_transport':format_string(indemnity_data.iloc[match_row][20]),
@@ -255,7 +253,6 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
                     format_string(indemnity_data.iloc[match_row][30]) + 
                     format_string(indemnity_data.iloc[match_row][31]),
                     'others_total': format_string(indemnity_data.iloc[match_row][32]) + 
-                    format_string(indemnity_data.iloc[match_row][33]) +
                     format_string(indemnity_data.iloc[match_row][34]) + 
                     format_string(indemnity_data.iloc[match_row][35]) + 
                     format_string(indemnity_data.iloc[match_row][36]) +

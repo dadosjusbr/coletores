@@ -37,7 +37,7 @@ Para consultas que se referem á meses iguais ou posteriores á Julho de 2019, s
 
 É importante verificar que os arquivos nomeados como verbas indenizatórias são responsáveis por detalhar com maior precisão a natureza de algumas remunerações associadas aos grupos 1 á 6.
 
-##Como utilizar 
+## Como utilizar 
 
 ### Executando com Docker
 
@@ -57,7 +57,7 @@ sudo docker run --env-file=./src/.env mpf
 ```
 ### Execução sem uso de Docker 
 
-- Inicialmente é preciso ter instalado o [Python] versão 3.8.5 (https://www.python.org/downloads/) na sua máquina.
+- Inicialmente é preciso ter instalado o [Python](https://www.python.org/downloads/) versão 3.8.5 na sua máquina.
   - Utilize o gerenciador de pacotes do python [PiP](https://pypi.org/) para instalar as dependências contidas no arquivo requirements.txt .
   - Para instalar as dependências execute o seguinte comando:
 
