@@ -3,6 +3,7 @@
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos
 dos funcionários do Tribunal de Justiça do Estado da Bahia (TJ-BA). O site com as informações
 pode ser acessado [aqui](https://transparencia.tjba.jus.br/transparencia/home#).
+A página conta com uma pequena página de orientações a respeito dos campos.
 
 O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e ano) e é baixado um
 arquivo no formato **JSON** representando a folha de pagamento da instituição.
@@ -14,82 +15,75 @@ O site com a resolução pode não funcionar caso você esteja acessando de fora
 
 ## Como usar
 
-### Executando com Docker
-
-- Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
-
-- Construção da imagem:
-
-```sh
-docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t tjba .
-```
-
-- Execução:
-	- Para executar é necessário passar o `.env` e um volume, caso deseje persistência dos dados.
-	No .env, o campo `OUTPUT_PATH` indica o path relativo dentro do container. 
-	- OBS: O path dos arquivos retornado no [CrawlingResult](https://github.com/dadosjusbr/storage/blob/master/agency.go)
-	será relativo ao container. Montar o volume de dados no mesmo path para diversos containers pode ser boa prática.
-	- Um arquivo `.env.example` na pasta raiz indica as variáveis de ambiente que precisam ser passadas para o coletor.
-
-
-```sh
-docker volume create dadosjus
-
-docker run \
---mount source=dadosjus,target=/dadojus_crawling_output/ \
---env-file=.env \
-tjba --mes=${MES} --ano=${ANO}
-```
-
-- `docker volume create dadosjus` cria um volume local que pode ser usado pelos containers com o nome "dadosjus".
-- No comando de run:
-	- `--mount source=dadosjus,target=/dadojus_crawling_output/` monta o volume que criamos anteriormente
-	no path `/dadojus_crawling_output/`, dessa forma, qualquer coisa que salvarmos dentro desse path será persistida
-	após o container ser derrubado.
-	- `--env-file=.env` especifica o path para o env-file.
-	- `tjba --mes=${MES} --ano=${ANO}` é o nome do container que queremos executar e os argumentos que serão
-	passados para a função de entrada.
-  
-### Executando sem uso do Docker
-
-É preciso ter o compilador de Go instalado em sua máquina. Mais informações [aqui](https://golang.org/dl/).
-
-- Um arquivo ``.env.example` na pasta raiz indica as variáveis de ambiente que precisam ser passadas para o coletor.
-- O resultado do coletor, [CrawlingResult](https://github.com/dadosjusbr/storage/blob/master/agency.go), possui um
-campo que indica o commit do git usado para dar o build. Para que ele seja setado adequadamente, é preciso passar o
-commit como argumento do build.
-
-```sh
-go get
-go build -ldflags "-X main.gitCommit=$(git rev-parse -1 HEAD)"
-./tjba --mes=${MES} --ano=${ANO}
-```
-
 ## Dicionário de Dados
 
-Para cada funcionário, o JSON possui os seguintes campos:
+Nas tabelas abaixo você poderá ver os campos apresentados no payload da API
+do TJ-BA explicados e mapeados com aos objetos desse projeto.
+Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 
-- **Id (Number)**: Matrícula do funcionário
-- **Nome (String)**: Nome completo do funcionário
-- **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha (Capítulo 2 - § 2º - I)
-- **Cargo (String)**: Cargo do funcionário dentro do tribunal (Capítulo 2 - § 2º - I)
-- **Rendimentos:**
-	- **Remuneração Paradigma (Number)**: Remuneração do cargo efetivo - Vencimento, G.A.J., V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza. (Capítulo 2 - § 2º - II)
-	- **Vantagens Pessoais (Number)**: V.P.N.I., Adicional por tempo de serviço, quintos, décimos e vantagens decorrentes de sentença judicial ou extensão administrativa, abono de permanência. (Capítulo 2 - § 2º - III)
-	- **Subsídio (Number)**: Rubricas que representam a retribuição paga pelo exercício de função (servidor efetivo) ou remuneração de cargo em comissão (servidor sem vínculo ou requisitado). (Capítulo 2 - § 2º - IV)
-	- **Indenizações (Number)**: Auxílio-alimentação, Auxílio-transporte, Auxílio Pré-escolar, Auxílio Saúde, Auxílio Natalidade, Auxílio Moradia, Ajuda de Custo, além de outras desta natureza. (Capítulo 2 - § 2º - V)
-	- **Vantagens Eventuais (Number)**: Abono constitucional de 1/3 de férias, indenização de férias, antecipação de férias, gratificação natalina, antecipação de gratificação natalina, serviço extraordinário, substituição, pagamentos retroativos, além de outras desta natureza. (Capítulo 2 - § 2º - VI)
-	- **Gratificações (Number)**
-	- **Total de Créditos (Number)**: Total dos rendimentos pagos no mês. (Capítulo 2 - § 2º - VIII)
-- **Descontos:**
-	- **Contribuição Previdenciária (Number)**: Contribuição Previdenciária Oficial (Plano de Seguridade Social do Servidor Público e Regime Geral de Previdência Social).
-	- **Imposto de Renda (Number)**: Imposto de Renda Retido na Fonte.
-	- **Descontos Diversos**: Cotas de participação de auxílio pré-escolar, auxílio transporte e demais descontos extraordinários de caráter não pessoal.
-	- **Retenção por Teto Constitucional (Number)**: Valores retidos por excederem ao teto remuneratório constitucional conforme Resoluções nº 13 e 14, do CNJ. (Capítulo 2 - § 2º - IX)
-	- **Total de Debitos (Number)**:  Total dos descontos efetuados no mês.
-- **Rendimento Líquido (Number)**: Rendimento líquido após os descontos referidos nos itens anteriores.
-- **Remuneração do órgão de origem (Number)**: Remuneração percebida no órgão de origem por magistrados e servidores, cedidos ou requisitados, optantes por aquela remuneração. (Capítulo 2 - § 2º - VII)
-- **Diárias**:  Valor de diárias efetivamente pago no mês de referência, ainda que o período de afastamento se estenda para além deste. (Capítulo 2 - § 2º - X)
+| Campo no TJ-BA | Campo no `collectors.Employee` | Descrição | Observações |
+| ------------- | ------------- | ------------- | ------------- |
+| `matricula` (Number) | `Reg` | Matrícula do funcionário | |
+| `dataReferencia` (Timestamp) | - | | |
+| `nome` (String) | `Name` | Nome completo do funcionário | |
+| `cargo` (String) | `Role` | Cargo do funcionário dentro do tribunal |  |
+| `tipoServidor` (String) | `Type` | | Servidor (`S`), Juiz (`J`), Desembargador (`D`) |
+| `lotacao` (String) | `Workplace` | Local (cidade, departamento, promotoria) em que o funcionário trabalha |  |
+| `status` (String) | `Active` | Se ativo ou inativo | Valores `A` ou `I` |
+| tabela abaixo | `Income` |  |  |
+| tabela abaixo | `Discounts` |  |  |
+| `ano` | - |  | Geralmente esse campo vem com valor `null` |
+| `mes` | - |  | Geralmente esse campo vem com valor `null` |
+| `id` | - |  | Mesmo valor da `matricula` |
+
+
+| Campo no TJ-BA | Campo no `collectors.IncomeDetails` | Descrição | Observações |
+| ------------- | ------------- | ------------- | ------------- |
+| `totalCredito` | `Total` | Rendimentos após os descontos. |  |
+| `valorParadigma` (Number) | `Wage` | Remuneração do cargo efetivo - vencimento básico, subsídio, gratificação de atividade judiciária, vantagem pecuniária individual (VPI), adicionais de qualificação, gratificação de atividade externa (GAE), gratificação de atividade de segurança (GAS), além de outras parcelas desta natureza. |  |
+| tabela abaixo | `Perks` |  |  |
+| tabela abaixo | `Other` |  |  |
+
+
+| Campo no TJ-BA | Campo no `collectors.Perks` | Descrição | Observações |
+| ------------- | ------------- | ------------- | ------------- |
+| `valorIndenizacao` | `Total` | Auxílio-alimentação, auxílio-transporte, auxílio pré-escolar, auxílio-saúde, auxílio-natalidade, auxílio-moradia, ajuda de custo, além de outras parcelas desta natureza. |  |
+| - | `Food` |  | |
+| - | `Vacations` |  | |
+| - | `Transportation` |  | |
+| - | `PreSchool` |  | |
+| - | `Health` |  | |
+| - | `BirthAid` |  | |
+| - | `HousingAid` |  | |
+| - | `Subsistence` |  | |
+| - | `CompensatoryLeave` |  | |
+| - | `Pecuniary` |  | |
+| - | `VacationPecuniary` |  | |
+| - | `FurnitureTransport` |  | |
+| - | `PremiumLicensePecuniary` |  | |
+
+
+| Campo no TJ-BA | Campo no `collectors.Funds` | Descrição | Observações |
+| ------------- | ------------- | ------------- | ------------- |
+| `valorLiquido` (Number) | `Total` | Valor após descontos. O rendimento líquido efetivamente recebido por desembargador, juiz de direito ou servidor pode ser inferior ao ora divulgado, por não estarem demonstrados os descontos pessoais, tais como pensões e consignações. | |
+| `valorVantagemPessoal` (Number) | `PersonalBenefits` | Vantagem pessoal nominalmente identificada (VPNI), adicional por tempo de serviço, quintos, décimos e vantagens decorrentes de sentença judicial ou extensão administrativa, abono de permanência. | No payload existe o campo `vantagensPessoais`, uma lista, que até agora só aparece vazia. |
+| `valorVantagemEventual` (Number) | `EventualBenefits` | Abono constitucional de um terço de férias, indenização de férias, antecipação de férias, gratificação natalina, antecipação de gratificação natalina, serviço extraordinário, substituição, pagamentos retroativos, além de outras parcelas desta natureza. | No payload existe o campo `vantagensEventuais`, uma lista, que até agora só aparece vazia. |
+| `valorComissao` | `PositionOfTrust` |  | |
+| `valorGratificacao` (Number) | `Gratification` | Gratificações de qualquer natureza. | |
+| `valorDiaria` (Number) | `Daily` | Valor de diárias efetivamente pago pelo Tribunal de Justiça do Estado da Bahia no mês de referência, ainda que o período de afastamento se estenda para além deste. | |
+| `valorRemuneracaoOrigem` (Number) | `OriginPosition` | Remuneração ou subsídio bruto percebido no órgão de origem por magistrado ou servidor, cedido ou requisitado. | |
+| - | `OtherFundsTotal` |  | |
+| - | `Others` |  | |
+
+| Campo no TJ-BA | Campo no `collectors.Discount` | Descrição | Observações |
+| ------------- | ------------- | ------------- | ------------- |
+| `totalDebito` | `Total` | Total dos descontos efetuados pelo Tribunal de Justiça da Bahia no mês. |  |
+| `valorPrevidencia` (Number) | `PrevContribution` | Contribuição Previdenciária Oficial (Plano de Seguridade Social do Servidor Público ou Regime Geral de Previdência Social). | |
+| `valorRetencaoTeto` (Number) | `CeilRetention` | Auxílio-alimentação, auxílio-transporte, auxílio pré-escolar, auxílio-saúde, auxílio-natalidade, auxílio-moradia, ajuda de custo, além de outras parcelas desta natureza. | |
+| `valorIR` (Number) | `IncomeTax` | Imposto de Renda Retido na Fonte. | |
+| `valorDescontoDiverso` (Number) | `OtherDiscountsTotal` | Cotas de participação de auxílio pré-escolar e auxílio-transporte e demais descontos extraordinários de caráter não pessoal. | |
+| - | `Others` | - | |
+
 
 ## Arquivos
   
@@ -99,8 +93,6 @@ O acesso pode ser feito a partir de uma API:
 
 - **URL Base**: [https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/<ano>/mes/<mes>](https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/2020/mes/1)
 - **Formato**: JSON
+- **Obs:** os dados estão disponíveis a partir de Junho de 2012.
 
 ## Dificuldades para libertação dos dados
-
-* Embora os campos `vantagensPessoais` e `vantagensEventuais` apareçam como listas no _payload_
-não foi encontrado nenhum valor na amostra investigada.
