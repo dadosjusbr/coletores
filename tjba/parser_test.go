@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/dadosjusbr/coletores"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +37,7 @@ const empSample = `[{
 	"id": 5014085
 }]`
 
-func TestGetListOfEmployees(t *testing.T) {
+func TestGetListOfTjbaEmployees(t *testing.T) {
 	employees, err := newTjbaEmployees(empSample)
 	assert.NoError(t, err)
 
@@ -103,4 +104,21 @@ func TestActiveOrNot(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestFromTjbaEmployeeToEmployeeBasicInfo(t *testing.T) {
+	tjbaEmployees, err := newTjbaEmployees(empSample)
+	assert.NoError(t, err)
+
+	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
+
+	var expectedEmployee = coletores.Employee{
+		Reg:       "5014085",
+		Name:      "ADAILTON",
+		Workplace: "COORDENACAO DE TRANSPORTE - SALVADOR",
+		Role:      "MOTORISTA JUDICIÁRIO",
+		Type:      "servidor",
+		Active:    true,
+	}
+	assert.Equal(t, employees[0], expectedEmployee)
 }

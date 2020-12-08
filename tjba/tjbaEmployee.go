@@ -7,7 +7,7 @@ type tjbaEmployee struct {
 	Role                  string  `json:"cargo"`
 	Status                string  `json:"status"`
 	EmployeeType          string  `json:"tipoServidor"`
-	Wage                  float64 `json:"valorParadigma"` // ?
+	Wage                  float64 `json:"valorParadigma"`
 	PersonalBenefitsValue float64 `json:"valorVantagemPessoal"`
 	ComissionValue        float64 `json:"valorComissao"`
 	PerksValue            float64 `json:"valorIndenizacao"`
