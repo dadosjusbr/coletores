@@ -106,12 +106,19 @@ func TestActiveOrNot(t *testing.T) {
 	}
 }
 
-func TestFromTjbaEmployeeToEmployeeBasicInfo(t *testing.T) {
+func TestFromTjbaEmployeeToEmployee(t *testing.T) {
 	tjbaEmployees, err := newTjbaEmployees(empSample)
 	assert.NoError(t, err)
 
 	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
 
+	var wage =  4896.59
+	var expectedPerks = coletores.Perks{Total: 1620}
+	var expectedIncome = coletores.IncomeDetails{
+		Total: 15726.41,
+		Wage: &wage,
+		Perks: &expectedPerks,
+	}
 	var expectedEmployee = coletores.Employee{
 		Reg:       "5014085",
 		Name:      "ADAILTON",
@@ -119,6 +126,7 @@ func TestFromTjbaEmployeeToEmployeeBasicInfo(t *testing.T) {
 		Role:      "MOTORISTA JUDICIÁRIO",
 		Type:      "servidor",
 		Active:    true,
+		Income: &expectedIncome,
 	}
 	assert.Equal(t, employees[0], expectedEmployee)
 }

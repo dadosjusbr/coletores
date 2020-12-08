@@ -35,15 +35,22 @@ func active(value string) bool {
 func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
+		var perks = coletores.Perks{Total:  tjbaEmployee[i].PerksValue}
+
+		var income = coletores.IncomeDetails{}
+		income.Total = tjbaEmployee[i].CreditTotal
+		income.Wage = &tjbaEmployee[i].Wage
+		income.Perks = &perks
+
 		var emp = coletores.Employee{}
 		emp.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
 		emp.Name = tjbaEmployee[i].Name
-		emp.Workplace = tjbaEmployee[i].Workplace
 		emp.Role = tjbaEmployee[i].Role
 		emp.Type = employeeType(tjbaEmployee[i].EmployeeType)
+		emp.Workplace = tjbaEmployee[i].Workplace
 		emp.Active = active(tjbaEmployee[i].Status)
-		//emp.Income = employeeIncomeMagMay(magMay[i])
-		//emp.Discounts = employeeDiscMagMay(magMay[i])
+		emp.Income = &income
+
 		employees = append(employees, emp)
 	}
 	return employees
