@@ -21,7 +21,7 @@ Nas tabelas abaixo você poderá ver os campos apresentados no payload da API
 do TJ-BA explicados e mapeados com aos objetos desse projeto.
 Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 
-| Campo no TJ-BA | Campo no `collectors.Employee` | Descrição | Observações |
+| Campo no TJ-BA | Campo no `coletores.Employee` | Descrição | Observações |
 | ------------- | ------------- | ------------- | ------------- |
 | `matricula` (Number) | `Reg` | Matrícula do funcionário | |
 | `dataReferencia` (Timestamp) | - | | |
@@ -37,7 +37,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | `id` | - |  | Mesmo valor da `matricula` |
 
 
-| Campo no TJ-BA | Campo no `collectors.IncomeDetails` | Descrição | Observações |
+| Campo no TJ-BA | Campo no `coletores.IncomeDetails` | Descrição | Observações |
 | ------------- | ------------- | ------------- | ------------- |
 | `totalCredito` | `Total` | Rendimentos após os descontos. |  |
 | `valorParadigma` (Number) | `Wage` | Remuneração do cargo efetivo - vencimento básico, subsídio, gratificação de atividade judiciária, vantagem pecuniária individual (VPI), adicionais de qualificação, gratificação de atividade externa (GAE), gratificação de atividade de segurança (GAS), além de outras parcelas desta natureza. |  |
@@ -45,7 +45,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | tabela abaixo | `Other` |  |  |
 
 
-| Campo no TJ-BA | Campo no `collectors.Perks` | Descrição | Observações |
+| Campo no TJ-BA | Campo no `coletores.Perks` | Descrição | Observações |
 | ------------- | ------------- | ------------- | ------------- |
 | `valorIndenizacao` | `Total` | Auxílio-alimentação, auxílio-transporte, auxílio pré-escolar, auxílio-saúde, auxílio-natalidade, auxílio-moradia, ajuda de custo, além de outras parcelas desta natureza. |  |
 | - | `Food` |  | |
@@ -63,7 +63,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | - | `PremiumLicensePecuniary` |  | |
 
 
-| Campo no TJ-BA | Campo no `collectors.Funds` | Descrição | Observações |
+| Campo no TJ-BA | Campo no `coletores.Funds` | Descrição | Observações |
 | ------------- | ------------- | ------------- | ------------- |
 | `valorLiquido` (Number) | `Total` | Valor após descontos. O rendimento líquido efetivamente recebido por desembargador, juiz de direito ou servidor pode ser inferior ao ora divulgado, por não estarem demonstrados os descontos pessoais, tais como pensões e consignações. | |
 | `valorVantagemPessoal` (Number) | `PersonalBenefits` | Vantagem pessoal nominalmente identificada (VPNI), adicional por tempo de serviço, quintos, décimos e vantagens decorrentes de sentença judicial ou extensão administrativa, abono de permanência. | No payload existe o campo `vantagensPessoais`, uma lista, que até agora só aparece vazia. |
@@ -75,7 +75,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | - | `OtherFundsTotal` |  | |
 | - | `Others` |  | |
 
-| Campo no TJ-BA | Campo no `collectors.Discount` | Descrição | Observações |
+| Campo no TJ-BA | Campo no `coletores.Discount` | Descrição | Observações |
 | ------------- | ------------- | ------------- | ------------- |
 | `totalDebito` | `Total` | Total dos descontos efetuados pelo Tribunal de Justiça da Bahia no mês. |  |
 | `valorPrevidencia` (Number) | `PrevContribution` | Contribuição Previdenciária Oficial (Plano de Seguridade Social do Servidor Público ou Regime Geral de Previdência Social). | |
