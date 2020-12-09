@@ -35,9 +35,9 @@ def employees(file_name):
     data = read_data(file_name)
     rows  = list(data.index.values)
 
-    active = False
-    if(file_name.__contains__("ativos")):
-        active = True
+    active = True
+    if(file_name.__contains__("inativos")):
+        active = False
 
     begin_string  = "Matrícula" # word before starting data
     begin_row = get_begin_row(data,rows,begin_string)
@@ -49,9 +49,9 @@ def employees_indemnity(file_name, indemnity_file_name):
     data = read_data(file_name)
     indemnity_data = read_data(indemnity_file_name)
 
-    active = False
-    if(file_name.__contains__("ativos")):
-        active = True
+    active = True
+    if(file_name.__contains__("inativos")):
+        active = False
 
     #define limits
     rows  = list(data.index.values)
