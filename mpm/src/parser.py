@@ -100,10 +100,10 @@ def all_employees(data,begin_row,end_row, active):
             } ,
      'discounts':
             { #Discounts Object
-              'total' : data.iloc[i][16],
-              'prev_contribution': data.iloc[i][13],
-              'ceil_retention': data.iloc[i][15], #Retenção por teto constitucional
-              'income_tax': data.iloc[i][14],
+              'total' : (data.iloc[i][16] * (-1)),
+              'prev_contribution': (data.iloc[i][13] * (-1)),
+              'ceil_retention': (data.iloc[i][15] * (-1)), #Retenção por teto constitucional
+              'income_tax': (data.iloc[i][14] * (-1)),
             }
         }
         if(begin_row == end_row):
@@ -154,10 +154,10 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 } ,
                 'discounts':
                 { #Discounts Object
-                    'total' : data.iloc[i][16],
-                    'prev_contribution': data.iloc[i][13],
-                    'cell_retention': data.iloc[i][15], #Retenção por teto constitucional
-                    'income_tax': data.iloc[i][14],
+                    'total' : (data.iloc[i][16] * (-1)),
+                    'prev_contribution': (data.iloc[i][13] * (-1)),
+                    'cell_retention': (data.iloc[i][15] * (-1)), #Retenção por teto constitucional
+                    'income_tax': (data.iloc[i][14] * (-1)),
                 }
                 }            
         else:
