@@ -3,7 +3,7 @@
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos
 dos funcionários do Tribunal de Justiça do Estado da Bahia (TJ-BA). O site com as informações
 pode ser acessado [aqui](https://transparencia.tjba.jus.br/transparencia/home#).
-A página conta com uma pequena página de orientações a respeito dos campos.
+A página conta com uma pequena seção de orientações a respeito dos campos.
 
 O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e ano) e é baixado um
 arquivo no formato **JSON** representando a folha de pagamento da instituição.
@@ -91,7 +91,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 
 O acesso pode ser feito a partir de uma API:
 
-- **URL Base**: [https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/<ano>/mes/<mes>](https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/2020/mes/1)
+- **URL Base**: [https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/{ano}/mes/{mes}](https://transparencia.tjba.jus.br/transparencia/api/v1/remuneracao/ano/2020/mes/1)
 - **Formato**: JSON
 - **Obs:** os dados estão disponíveis a partir de Junho de 2012.
 

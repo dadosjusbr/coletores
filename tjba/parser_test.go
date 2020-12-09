@@ -37,7 +37,7 @@ const empSample = `[{
 	"id": 5014085
 }]`
 
-func TestGetListOfTjbaEmployees(t *testing.T) {
+func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
 	employees, err := newTjbaEmployees(empSample)
 	assert.NoError(t, err)
 
@@ -67,7 +67,7 @@ func TestGetListOfTjbaEmployees(t *testing.T) {
 	assert.Equal(t, employees[0], expectedTjbaEmployee)
 }
 
-func TestEmployeeType(t *testing.T) {
+func TestConvertFromTjbaEmployeeTypeToEmployeeType(t *testing.T) {
 	tests := []struct {
 		name     string
 		value    string
@@ -87,7 +87,7 @@ func TestEmployeeType(t *testing.T) {
 	}
 }
 
-func TestActiveOrNot(t *testing.T) {
+func TestConvertFromTjbaEmployeeActiveToEmployeeActive(t *testing.T) {
 	tests := []struct {
 		name string
 		cat  string

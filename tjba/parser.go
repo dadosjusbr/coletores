@@ -14,9 +14,9 @@ func newTjbaEmployees(payload string) ([]tjbaEmployee, error) {
 	return employees, err
 }
 
-// employeeType returns employee.Type based in category string.
+// employeeType returns employee.Type
 func employeeType(value string) string {
-	// possible values from the source: S, D and J
+	// possible values from the source: S (servidor), D (desembargador) and J (juiz)
 	if value == "S" {
 		return "servidor"
 	} else if value == "D" || value == "J" {
@@ -25,9 +25,9 @@ func employeeType(value string) string {
 	return ""
 }
 
-// active returns Employee.Active based in category string.
+// active returns Employee.Active
 func active(value string) bool {
-	// possible values from the source: A or I
+	// possible values from the source: A (ativo) or I (inativo)
 	return value == "A"
 }
 
@@ -62,17 +62,17 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 			OtherDiscountsTotal: &tjbaEmployee[i].OtherDiscountsTotal,
 		}
 
-		var emp = coletores.Employee{}
-		emp.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
-		emp.Name = tjbaEmployee[i].Name
-		emp.Role = tjbaEmployee[i].Role
-		emp.Type = employeeType(tjbaEmployee[i].Type)
-		emp.Workplace = tjbaEmployee[i].Workplace
-		emp.Active = active(tjbaEmployee[i].Active)
-		emp.Income = &income
-		emp.Discounts = &discounts
+		var employee = coletores.Employee{}
+		employee.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
+		employee.Name = tjbaEmployee[i].Name
+		employee.Role = tjbaEmployee[i].Role
+		employee.Type = employeeType(tjbaEmployee[i].Type)
+		employee.Workplace = tjbaEmployee[i].Workplace
+		employee.Active = active(tjbaEmployee[i].Active)
+		employee.Income = &income
+		employee.Discounts = &discounts
 
-		employees = append(employees, emp)
+		employees = append(employees, employee)
 	}
 	return employees
 }
