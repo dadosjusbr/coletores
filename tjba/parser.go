@@ -31,16 +31,24 @@ func active(value string) bool {
 	return value == "A"
 }
 
-// FromTjbaEmployeeToEmployee convert from TJ-BA format to coletores.Employee
+// FromTjbaEmployeeToEmployee convert from TJ-BA employee to coletores.Employee
 func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
-		var perks = coletores.Perks{Total:  tjbaEmployee[i].PerksValue}
+		var perks = coletores.Perks{Total: tjbaEmployee[i].PerksValue}
 
 		var income = coletores.IncomeDetails{}
 		income.Total = tjbaEmployee[i].CreditTotal
 		income.Wage = &tjbaEmployee[i].Wage
 		income.Perks = &perks
+
+		var discounts = coletores.Discount{
+			Total:               tjbaEmployee[i].DebtTotal,
+			PrevContribution:    &tjbaEmployee[i].PrevContribution,
+			CeilRetention:       &tjbaEmployee[i].RetantionValue,
+			IncomeTax:           &tjbaEmployee[i].IncomeTax,
+			OtherDiscountsTotal: &tjbaEmployee[i].Sundry,
+		}
 
 		var emp = coletores.Employee{}
 		emp.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
@@ -50,6 +58,7 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 		emp.Workplace = tjbaEmployee[i].Workplace
 		emp.Active = active(tjbaEmployee[i].Status)
 		emp.Income = &income
+		emp.Discounts = &discounts
 
 		employees = append(employees, emp)
 	}

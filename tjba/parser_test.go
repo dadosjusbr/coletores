@@ -112,21 +112,33 @@ func TestFromTjbaEmployeeToEmployee(t *testing.T) {
 
 	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
 
-	var wage =  4896.59
+	var wage = 4896.59
+	var prevContribution = 1961.05
+	var ceilRetention = 0.0
+	var incomeTax = 1856.3
+	var otherDiscounts = 195.86
 	var expectedPerks = coletores.Perks{Total: 1620}
 	var expectedIncome = coletores.IncomeDetails{
 		Total: 15726.41,
-		Wage: &wage,
+		Wage:  &wage,
 		Perks: &expectedPerks,
+	}
+	var expectedDiscounts = coletores.Discount{
+		Total:               4013.21,
+		PrevContribution:    &prevContribution,
+		CeilRetention:       &ceilRetention,
+		IncomeTax:           &incomeTax,
+		OtherDiscountsTotal: &otherDiscounts,
 	}
 	var expectedEmployee = coletores.Employee{
 		Reg:       "5014085",
 		Name:      "ADAILTON",
-		Workplace: "COORDENACAO DE TRANSPORTE - SALVADOR",
 		Role:      "MOTORISTA JUDICIÁRIO",
 		Type:      "servidor",
+		Workplace: "COORDENACAO DE TRANSPORTE - SALVADOR",
 		Active:    true,
-		Income: &expectedIncome,
+		Income:    &expectedIncome,
+		Discounts: &expectedDiscounts,
 	}
 	assert.Equal(t, employees[0], expectedEmployee)
 }
