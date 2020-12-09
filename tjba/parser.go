@@ -35,40 +35,40 @@ func active(value string) bool {
 func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
-		var perks = coletores.Perks{Total: tjbaEmployee[i].PerksValue}
+		var perks = coletores.Perks{Total: tjbaEmployee[i].PerksTotal}
 
 		var funds = coletores.Funds{
-			Total:            tjbaEmployee[i].Value,
-			PersonalBenefits: &tjbaEmployee[i].PersonalBenefitsValue,
-			EventualBenefits: &tjbaEmployee[i].EventualBenefitsValue,
-			PositionOfTrust:  &tjbaEmployee[i].ComissionValue,
+			Total:            tjbaEmployee[i].FundsTotal,
+			PersonalBenefits: &tjbaEmployee[i].PersonalBenefits,
+			EventualBenefits: &tjbaEmployee[i].EventualBenefits,
+			PositionOfTrust:  &tjbaEmployee[i].PositionOfTrust,
 			Gratification:    &tjbaEmployee[i].Gratification,
 			Daily:            &tjbaEmployee[i].Daily,
-			OriginPosition:   &tjbaEmployee[i].WageOriginValue,
+			OriginPosition:   &tjbaEmployee[i].OriginPosition,
 		}
 
 		var income = coletores.IncomeDetails{
-			Total: tjbaEmployee[i].CreditTotal,
+			Total: tjbaEmployee[i].IncomeTotal,
 			Wage:  &tjbaEmployee[i].Wage,
 			Perks: &perks,
 			Other: &funds,
 		}
 
 		var discounts = coletores.Discount{
-			Total:               tjbaEmployee[i].DebtTotal,
+			Total:               tjbaEmployee[i].DiscountTotal,
 			PrevContribution:    &tjbaEmployee[i].PrevContribution,
-			CeilRetention:       &tjbaEmployee[i].RetantionValue,
+			CeilRetention:       &tjbaEmployee[i].CeilRetention,
 			IncomeTax:           &tjbaEmployee[i].IncomeTax,
-			OtherDiscountsTotal: &tjbaEmployee[i].Sundry,
+			OtherDiscountsTotal: &tjbaEmployee[i].OtherDiscountsTotal,
 		}
 
 		var emp = coletores.Employee{}
 		emp.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
 		emp.Name = tjbaEmployee[i].Name
 		emp.Role = tjbaEmployee[i].Role
-		emp.Type = employeeType(tjbaEmployee[i].EmployeeType)
+		emp.Type = employeeType(tjbaEmployee[i].Type)
 		emp.Workplace = tjbaEmployee[i].Workplace
-		emp.Active = active(tjbaEmployee[i].Status)
+		emp.Active = active(tjbaEmployee[i].Active)
 		emp.Income = &income
 		emp.Discounts = &discounts
 
