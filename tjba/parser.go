@@ -37,10 +37,22 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 	for i := range tjbaEmployee {
 		var perks = coletores.Perks{Total: tjbaEmployee[i].PerksValue}
 
-		var income = coletores.IncomeDetails{}
-		income.Total = tjbaEmployee[i].CreditTotal
-		income.Wage = &tjbaEmployee[i].Wage
-		income.Perks = &perks
+		var funds = coletores.Funds{
+			Total:            tjbaEmployee[i].Value,
+			PersonalBenefits: &tjbaEmployee[i].PersonalBenefitsValue,
+			EventualBenefits: &tjbaEmployee[i].EventualBenefitsValue,
+			PositionOfTrust:  &tjbaEmployee[i].ComissionValue,
+			Gratification:    &tjbaEmployee[i].Gratification,
+			Daily:            &tjbaEmployee[i].Daily,
+			OriginPosition:   &tjbaEmployee[i].WageOriginValue,
+		}
+
+		var income = coletores.IncomeDetails{
+			Total: tjbaEmployee[i].CreditTotal,
+			Wage:  &tjbaEmployee[i].Wage,
+			Perks: &perks,
+			Other: &funds,
+		}
 
 		var discounts = coletores.Discount{
 			Total:               tjbaEmployee[i].DebtTotal,

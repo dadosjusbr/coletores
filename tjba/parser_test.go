@@ -112,7 +112,19 @@ func TestFromTjbaEmployeeToEmployee(t *testing.T) {
 
 	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
 
-	var wage = 4896.59
+	var zero = 0.0
+	var expectedPersonalBenefits = 9209.82
+	var expectedFunds = coletores.Funds{
+		Total:            11713.2,
+		PersonalBenefits: &expectedPersonalBenefits,
+		EventualBenefits: &zero,
+		PositionOfTrust:  &zero,
+		Gratification:    &zero,
+		Daily:            &zero,
+		OriginPosition:   &zero,
+	}
+
+	var expectedWage = 4896.59
 	var prevContribution = 1961.05
 	var ceilRetention = 0.0
 	var incomeTax = 1856.3
@@ -120,8 +132,9 @@ func TestFromTjbaEmployeeToEmployee(t *testing.T) {
 	var expectedPerks = coletores.Perks{Total: 1620}
 	var expectedIncome = coletores.IncomeDetails{
 		Total: 15726.41,
-		Wage:  &wage,
+		Wage:  &expectedWage,
 		Perks: &expectedPerks,
+		Other: &expectedFunds,
 	}
 	var expectedDiscounts = coletores.Discount{
 		Total:               4013.21,

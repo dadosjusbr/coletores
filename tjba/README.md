@@ -42,7 +42,7 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | `totalCredito` | `Total` | Rendimentos após os descontos. |  |
 | `valorParadigma` (Number) | `Wage` | Remuneração do cargo efetivo - vencimento básico, subsídio, gratificação de atividade judiciária, vantagem pecuniária individual (VPI), adicionais de qualificação, gratificação de atividade externa (GAE), gratificação de atividade de segurança (GAS), além de outras parcelas desta natureza. |  |
 | tabela abaixo | `Perks` |  |  |
-| tabela abaixo | `Other` |  |  |
+| tabela abaixo | `Other` (`Funds`) |  |  |
 
 
 | Campo no TJ-BA | Campo no `coletores.Perks` | Descrição | Observações |
