@@ -225,8 +225,8 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
                 'active': True if ('Ativos' in file_type) else False,
                 "income": 
                 #Income Details
-                {'total' : data.iloc[i][26], # ? Total Liquido ??
-                    'wage'  : data.iloc[i][12],
+                {'total' : format_string(data.iloc[i][26]), # ? Total Liquido ??
+                    'wage'  : format_string(data.iloc[i][12]),
                     'perks' : 
                 #Perks Object 
                 { 'total' : format_string(indemnity_data.iloc[match_row][26]),
@@ -284,8 +284,8 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data,file_type):
         else:
             match_row += 1
             i += 1 
-
-        employees.append(employee)
+        if(len(employee) > 0):
+            employees.append(employee)
     
     return (employees)
 
