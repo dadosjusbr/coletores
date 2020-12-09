@@ -68,9 +68,23 @@ def match_line(id,indemnity_data):
         if(indemnity_data.iloc[row][0] == id):
             return row
 
+def type_employee(data):
+    if (data.iloc[6][0].__contains__("MEMBROS")):
+        return "membro"
+    elif(data.iloc[6][0].__contains__("SERVIDORES")):
+        return "servidor"
+    elif(data.iloc[6][0].__contains__("PENSIONISTAS")):
+        return "pensionista"
+    else:
+        return "indefinido"
+
+
+
 # Used when the employee is not on the indemnity list
 def all_employees(data,begin_row,end_row, active):
-    type_employee = data.iloc[6][0].split(" - ")
+    print(data.iloc[6][0])
+
+    type_employee = type_employee(data)
     employees = []
     for i in range(begin_row,end_row):
         id = data.iloc[i][0]
@@ -78,7 +92,7 @@ def all_employees(data,begin_row,end_row, active):
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][1],
             'role': data.iloc[i][2],
-            'type': type_employee[0].lower(),  
+            'type': type_employee(data),  
             'workplace': data.iloc[i][3],
             'active': active,
             "income": 
@@ -114,7 +128,6 @@ def all_employees(data,begin_row,end_row, active):
     return employees
 
 def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
-    type_employee = data.iloc[6][0].split(" - ")
     employees = []
     id = data.iloc[begin_row][0]
     match_row = match_line(id,indemnity_data)
@@ -126,7 +139,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 'reg' : data.iloc[i][0],
                 'name': data.iloc[i][1],
                 'role': data.iloc[i][2],
-                'type': type_employee[0].lower(),  
+                'type': type_employee(data),  
                 'workplace': data.iloc[i][3],
                 'active': active,
                 "income": 
