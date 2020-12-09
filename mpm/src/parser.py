@@ -146,8 +146,9 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 {'total': data.iloc[i][10],
                     'eventual_benefits': data.iloc[i][8], #Férias
                     'trust_position' : data.iloc[i][6], 
-                    'gratification': (data.iloc[i][4]) + (indemnity_data.iloc[match_row][11]), #gratificação natalina + grat. encargo cursou ou concurso
-                    'others_total': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]), 
+                    'gratification': (data.iloc[i][7]) + (indemnity_data.iloc[match_row][11]), #gratificação natalina + grat. encargo cursou ou concurso
+                    'others_total': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) +
+                     (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]), # Insalubridade 10% + atividade penosa + Substituição FC/CC + GECO
                     'others': data.iloc[i][5], #Outras verbas remuneratórias, legais ou judiciais
                 } ,
                 } ,

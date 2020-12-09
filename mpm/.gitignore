@@ -3,4 +3,4 @@ __pycache__
 output/
 venv
 src/result.json
-src/.env
+src/output_test
