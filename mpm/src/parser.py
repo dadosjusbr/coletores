@@ -169,7 +169,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 { #Discounts Object
                     'total' : (data.iloc[i][16] * (-1)),
                     'prev_contribution': (data.iloc[i][13] * (-1)),
-                    'cell_retention': (data.iloc[i][15] * (-1)), #Retenção por teto constitucional
+                    'ceil_retention': (data.iloc[i][15] * (-1)), #Retenção por teto constitucional
                     'income_tax': (data.iloc[i][14] * (-1)),
                 }
                 }            
