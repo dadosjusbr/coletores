@@ -32,5 +32,5 @@ Serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram 
  ### Executando sem Docker
 
    ```sh
-    python main.py 
+   MONTH=1 YEAR=2020 python3 main.py
   ```
