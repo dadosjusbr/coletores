@@ -96,3 +96,6 @@ O acesso pode ser feito a partir de uma API:
 - **Obs:** os dados estão disponíveis a partir de Junho de 2012.
 
 ## Dificuldades para libertação dos dados
+
+* Apesar de haver uma pequena seção sobre os campos na página,
+falta detalhamento com relação a remunerações e gratificações.

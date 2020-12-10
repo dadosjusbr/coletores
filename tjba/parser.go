@@ -35,9 +35,9 @@ func active(value string) bool {
 func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
-		var perks = coletores.Perks{Total: tjbaEmployee[i].PerksTotal}
+		perks := coletores.Perks{Total: tjbaEmployee[i].PerksTotal}
 
-		var funds = coletores.Funds{
+		funds := coletores.Funds{
 			Total:            tjbaEmployee[i].FundsTotal,
 			PersonalBenefits: &tjbaEmployee[i].PersonalBenefits,
 			EventualBenefits: &tjbaEmployee[i].EventualBenefits,
@@ -47,14 +47,14 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 			OriginPosition:   &tjbaEmployee[i].OriginPosition,
 		}
 
-		var income = coletores.IncomeDetails{
+		income := coletores.IncomeDetails{
 			Total: tjbaEmployee[i].IncomeTotal,
 			Wage:  &tjbaEmployee[i].Wage,
 			Perks: &perks,
 			Other: &funds,
 		}
 
-		var discounts = coletores.Discount{
+		discounts := coletores.Discount{
 			Total:               tjbaEmployee[i].DiscountTotal,
 			PrevContribution:    &tjbaEmployee[i].PrevContribution,
 			CeilRetention:       &tjbaEmployee[i].CeilRetention,
@@ -62,7 +62,7 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 			OtherDiscountsTotal: &tjbaEmployee[i].OtherDiscountsTotal,
 		}
 
-		var employee = coletores.Employee{}
+		employee := coletores.Employee{}
 		employee.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
 		employee.Name = tjbaEmployee[i].Name
 		employee.Role = tjbaEmployee[i].Role

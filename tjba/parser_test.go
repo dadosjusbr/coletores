@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const empSample = `[{
+const tjbaPayload = `[{
 	"matricula": 5014085,
 	"dataReferencia": 1577847600000,
 	"nome": "ADAILTON",
@@ -38,7 +38,7 @@ const empSample = `[{
 }]`
 
 func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
-	employees, err := newTjbaEmployees(empSample)
+	employees, err := newTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
 	var expectedTjbaEmployee = tjbaEmployee{
@@ -107,42 +107,19 @@ func TestConvertFromTjbaEmployeeActiveToEmployeeActive(t *testing.T) {
 }
 
 func TestFromTjbaEmployeeToEmployee(t *testing.T) {
-	tjbaEmployees, err := newTjbaEmployees(empSample)
+	tjbaEmployees, err := newTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
 	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
 
 	var zero = 0.0
 	var expectedPersonalBenefits = 9209.82
-	var expectedFunds = coletores.Funds{
-		Total:            11713.2,
-		PersonalBenefits: &expectedPersonalBenefits,
-		EventualBenefits: &zero,
-		PositionOfTrust:  &zero,
-		Gratification:    &zero,
-		Daily:            &zero,
-		OriginPosition:   &zero,
-	}
-
 	var expectedWage = 4896.59
 	var prevContribution = 1961.05
 	var ceilRetention = 0.0
 	var incomeTax = 1856.3
 	var otherDiscounts = 195.86
-	var expectedPerks = coletores.Perks{Total: 1620}
-	var expectedIncome = coletores.IncomeDetails{
-		Total: 15726.41,
-		Wage:  &expectedWage,
-		Perks: &expectedPerks,
-		Other: &expectedFunds,
-	}
-	var expectedDiscounts = coletores.Discount{
-		Total:               4013.21,
-		PrevContribution:    &prevContribution,
-		CeilRetention:       &ceilRetention,
-		IncomeTax:           &incomeTax,
-		OtherDiscountsTotal: &otherDiscounts,
-	}
+
 	var expectedEmployee = coletores.Employee{
 		Reg:       "5014085",
 		Name:      "ADAILTON",
@@ -150,8 +127,27 @@ func TestFromTjbaEmployeeToEmployee(t *testing.T) {
 		Type:      "servidor",
 		Workplace: "COORDENACAO DE TRANSPORTE - SALVADOR",
 		Active:    true,
-		Income:    &expectedIncome,
-		Discounts: &expectedDiscounts,
+		Income: &coletores.IncomeDetails{
+			Total: 15726.41,
+			Wage:  &expectedWage,
+			Perks: &coletores.Perks{Total: 1620},
+			Other: &coletores.Funds{
+				Total:            11713.2,
+				PersonalBenefits: &expectedPersonalBenefits,
+				EventualBenefits: &zero,
+				PositionOfTrust:  &zero,
+				Gratification:    &zero,
+				Daily:            &zero,
+				OriginPosition:   &zero,
+			},
+		},
+		Discounts: &coletores.Discount{
+			Total:               4013.21,
+			PrevContribution:    &prevContribution,
+			CeilRetention:       &ceilRetention,
+			IncomeTax:           &incomeTax,
+			OtherDiscountsTotal: &otherDiscounts,
+		},
 	}
 	assert.Equal(t, employees[0], expectedEmployee)
 }
