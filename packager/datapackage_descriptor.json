@@ -2,16 +2,16 @@
     "profile": "tabular-data-package",
     "resources": [
       {
-        "name": "data",
-        "path": "data.csv",
+        "name": "resumo",
+        "path": "resumo.csv",
         "profile": "tabular-data-resource",
         "schema": {
             "fields": [
                 {
-                    "name": "aid",
+                    "name": "id_agencia",
                     "type": "string",
                     "format": "default",
-                    "title": "Agency ID",
+                    "title": "ID da agência",
                     "description": "The ID of agency",
                     "description-ptbr": "A sigla da agência",
                     "Constraints": {
@@ -19,52 +19,61 @@
                     }
                 },
                 {
-                    "name": "month",
+                    "name": "mes",
                     "type": "integer",
                     "format": "default",
-                    "title": "Month",
+                    "title": "Mês",
                     "description": "Month of data collection",
                     "bareNumber": false,
                     "description-ptbr": "O mês que os dados foram coletados",
                     "constraints": {
                         "required": true,
-                        "minimum": "0",
-                        "maximum": "12"
+                        "minimum": 1,
+                        "maximum": 12
                     }
                 },
                 {
-                    "name": "year",
+                    "name": "ano",
                     "type": "integer",
-                    "title": "Year",
+                    "title": "Ano",
                     "description": "Year of data collection",
                     "description-ptbr": "O ano que os dados foram coletados",
                     "constraints": {
                         "required": true,
-                        "minimum": "0"
+                        "minimum": 2010
                     }
                 },
                 {
-                    "name": "reg",
-                    "title": "Register number",
+                    "name": "id_funcionario",
+                    "title": "Número do id dentro do pacote de dados",
+                    "type": "string",
+                    "format": "default",
+                    "description": "Employee registration word",
+                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado dentro do pacote de dados"
+                },
+                {
+                    "name": "reg_funcionario",
+                    "title": "Número de registro do funcionário no órgao",
                     "type": "string",
                     "format": "default",
                     "description": "Employee registration word",
                     "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado"
                 },
                 {
-                    "name": "name",
-                    "title": "Name",
+                    "name": "nome_funcionario",
+                    "title": "Nome do Funcionário",
                     "type": "string",
                     "description": "Employee Name",
                     "format": "default",
                     "description-ptbr": "O nome do empregado",
                     "constraints": {
-                        "required": true
+                        "required": true,
+                        "minLength": 2
                     }
                 },
                 {
-                    "name": "role",
-                    "title": "Role",
+                    "name": "cargo",
+                    "title": "Cargo",
                     "type": "string",
                     "description": "Role of the employee",
                     "format": "default",
@@ -74,8 +83,8 @@
                     }
                 },
                 {
-                    "name": "type",
-                    "title": "Type",
+                    "name": "tipo",
+                    "title": "Tipo",
                     "type": "string",
                     "description": "Describe if the employee is a servidor, membro, pensionista or indefinido",
                     "format": "default",
@@ -86,243 +95,232 @@
                     }
                 },
                 {
-                    "name": "worklplace",
-                    "title": "Workplace",
+                    "name": "lotacao",
+                    "title": "Lotacao",
                     "type": "string",
                     "description": "Employee workplace",
                     "format": "default",
                     "description-ptbr": "O local onde o empregado está alocado"
                 },
                 {
-                    "name": "active",
-                    "title": "Active",
+                    "name": "em_atividade",
+                    "title": "Em atividade",
                     "type": "boolean",
                     "description": "Active or inactive employee",
                     "description-ptbr": "Descreve se o funcionário está ativo ou inativo"
                 },
                 {
-                    "name": "income_total",
-                    "title": "Income Total",
+                    "name": "remuneracao_liquida",
+                    "title": "Remunaração líquida",
                     "type": "number",
-                    "description": "Describe employee income",
-                    "description-ptbr": "Corresponde a renda total do funcionário",
+                    "description": "Net amount received by the public official (sum of received less discounts)",
+                    "description-ptbr": "Valor líquido recebido pelo funcionário púlico (somatório dos recebidos menos descontos)",
                     "constraints": {
                         "required": true,
-                        "minimum": "0"
+                        "minimum": 0
                     }
                 },
                 {
-                    "name": "wage",
-                    "title": "Wage",
+                    "name": "remuneracao_bruta",
+                    "title": "Remunaração Bruta",
                     "type": "number",
-                    
-                    "description": "Describe employee wage",
-                    "description-ptbr": "Corresponde ao salário sem descontos"
-                },
-                {
-                    "name": "perks_total",
-                    "title": "Perks Total",
-                    "type": "number",
-                    "description": "Describes all perks received by a employee",
-                    "description-ptbr": "Corresponde aos benefícios recebidos pelo funcionário",
+                    "description": "Gross amount received by the public official (sum of received)",
+                    "description-ptbr": "Valor bruto recebido pelo funcionário público (somatórios dos recebidos)",
                     "constraints": {
                         "required": true,
-                        "minimum": "0"
+                        "minimum": 0
                     }
                 },
                 {
-                    "name": "perks_food",
-                    "title": "Perks Food",
+                    "name": "remuneracao_base",
+                    "title": "Remuneração Base",
                     "type": "number",
-                    "description": "Perks food amount",
-                    "description-ptbr": "Corresponde aos benefícios de alimentação recebidos pelo funcionário"
-                },
-                {
-                    "name": "perks_vacation",
-                    "title": "Perks Vacation",
-                    "type": "number",
-                    "description": "Perks vacation amount",
-                    "description-ptbr": "Corresponde as férias indenizadas quando não são gozadas."
-                },
-                {
-                    "name": "perks_transportation",
-                    "title": "Perks Transportation",
-                    "type": "number",
-                    "description": "Amount of transportation perks",
-                    "description-ptbr": "Corresponde aos benefícios de transporte recebidos pelo funcionário"
-                },
-                {
-                    "name": "perks_pre_school",
-                    "title": "Perks preschool",
-                    "type": "number",
-                    "description": "Amount of preschool perk",
-                    "description-ptbr": "Corresponde ao Auxílio creche recebidos pelo funcionário quando tem filho antes de entrar na escola"
-                },
-                {
-                    "name": "perks_health",
-                    "title": "Perks Health",
-                    "type": "number",
-                    "description": "Amount of perk health",
-                    "description-ptbr": "Corresponde ao Auxílio saúde"
-                },
-                {
-                    "name": "perks_birth",
-                    "title": "Perks Birthaid",
-                    "type": "number",
-                    "description": "Amount of perks birthaid",
-                    "description-ptbr": "Auxílio natalidade"
-                },
-                {
-                    "name": "perks_housing",
-                    "title": "Perks housing aid",
-                    "type": "number",
-                    "description": "Amount of housing aid perk",
-                    "description-ptbr": "Auxílio moradia"
-                },
-                {
-                    "name": "perks_subsistence",
-                    "title": "Perk Subsistence",
-                    "type": "number",
-                    "description": "Amount of perk subsistence",
-                    "description-ptbr": "Ajuda de custo recebida pelo empregado"
-                },
-                {
-                    "name": "perks_compensatory_leave",
-                    "title": "Perk Compensatory Leave",
-                    "type": "number",
-                    "description": "Compensation to the server for any acquired right.",
-                    "description-ptbr": "Compensação ao empregado por algum direito adquirido"
-                },
-                {
-                    "name": "perks_pecuniary",
-                    "title": "Perk Pecuniary",
-                    "type": "number",
-                    "description": "Payment of any advantage or right of the public servant",
-                    "description-ptbr": "Pagamento ao empregado por alguma vantagem e direito do servidor público"
-                },
-                {
-                    "name": "perks_vacation_pecuniary",
-                    "title": "Perks of Vacation Pecuniary",
-                    "type": "number",
-                    "description": "It consists of exchanging a few days of the vacation period for receiving an extra amount.",
-                    "description-ptbr": "Consiste na troca de alguns dias de férias por uma remuneração extra. "
-                },
-                {
-                    "name": "perks_furniture_transport",
-                    "title": "Perks of Furniture Transport",
-                    "type": "number",
-                    "description": "Amount related to the payment of the transportation of the employee's furniture in case of change",
-                    "description-ptbr": "Consiste no pagamento devido a alguma mudança mobiliária necessária pelo empregado."
-                },
-                {
-                    "name": "perks_premium_license_pecuniary",
-                    "title": "Perks of Premium License Pecuniary",
-                    "type": "number",
-                    "description": "Award to the assiduous and disciplined public employee, guaranteeing him the right to leave the public service for a period, without reducing his wages.",
-                    "description-ptbr": "Premio recebido pelo empregado assíduo e disciplinado, dando o direito de se ausentar do serviço por um período sem reduzir seu salário."
-                },
-                {
-                    "name": "funds_total",
-                    "title": "Sum of all funds",
-                    "type": "number",
-                    "description": "Describe all others amounts received by employee",
-                    "description-ptbr": "Corresponde a soma de todos os montantes acrescentados ao salário",
+                    "description": "Base of remuneration, without discounts",
+                    "description-ptbr": "Base da remuneração, sem descontos",
                     "constraints": {
                         "required": true,
-                        "minimum": "0"
+                        "minimum": 0
                     }
                 },
                 {
-                    "name": "funds_personal_benefits",
-                    "title": "Funds Personal Benefits",
+                    "name": "outros_remuneracoes_total",
+                    "title": "Outras Remunerações Total",
                     "type": "number",
-                    "description": "Others personal benefits amount, received by employee",
-                    "description-ptbr": "Benefícios como subsídios permantentes, adquiridos judicialmente e outros benefícios pessoais se encaixam nesse campo"
-                },
-                {
-                    "name": "funds_eventual_benefits",
-                    "title": "Funds Eventual Benefits",
-                    "type": "number",
-                    "description": "Others eventual benefits amount, received by employee",
-                    "description-ptbr": "Benefícios eventuais como bônus de natal e férias se encaixam nesse campo"
-                },
-                {
-                    "name": "funds_trust_position",
-                    "title": "Funds Position of trust benefit",
-                    "type": "number",
-                    "description": "Others Position of trust benefit amount, received by employee",
-                    "description-ptbr": "Benefício recebido pelo cargo de confiança exercido pelo empregado"
-                },
-                {
-                    "name": "funds_daily",
-                    "title": "Funds Daily",
-                    "type": "number",
-                    "description": "Daily benefit received by employee",
-                    "description-ptbr": "Diárias recebidas pelo empregado"
-                },
-                {
-                    "name": "funds_gratification",
-                    "title": "Gratification",
-                    "type": "number",
-                    "description": "Other gratifiation benefit received by employee",
-                    "description-ptbr": "Gratificações recebidas pelo empregado"
-                },
-                {
-                    "name": "funds_origin_pos",
-                    "title": "Origin Position",
-                    "type": "number",
-                    "description": "Benefit received by the employee, because he works in another position of the original.",
-                    "description-ptbr": "Montante recebido de outro órgão, transferido para o empregado"
-                },
-                {
-                    "name": "funds_others_total",
-                    "title": "Sum of other funds",
-                    "type": "number",
-                    "description": "Others types of benefits that are not described before",
-                    "description-ptbr": "Qualquer outro tipo de benefício não explicitado em outros campos"
-                },
-                {
-                    "name": "discounts_total",
-                    "title": "Total discounts",
-                    "type": "number",
-                    "description": "Represents the sum of discounts applied to the employee.",
-                    "description-ptbr": "Total de descontos aplicados ao empregado",
+                    "description": "Sum of any other received in addition to those listed above",
+                    "description-ptbr": "Soma de quais quer outros recebidos além dos listados acima",
                     "constraints": {
-                        "required": true,
-                        "minimum": "0"
+                        "minimum": 0
                     }
                 },
                 {
-                    "name": "discounts_prev_contribution",
-                    "title": "Social security discounts",
+                    "name": "outros_remuneracoes_detalhes",
+                    "title": "Outras Remunerações Detalhes",
                     "type": "number",
-                    "description": "Total of Social security discounts",
+                    "description": "If there are more receipts to consider. Detailed in another resource in the same package.",
+                    "description-ptbr": "Se existem mais recebidos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
+                    "constraints": {
+                        "minimum": 0
+                    }
+                },
+                {
+                    "name": "desconto_total",
+                    "title": "Desconto Total",
+                    "type": "number",
+                    "description": "Total discounts levied on those received from the civil servant",
+                    "description-ptbr": "Total de descontos que incide sobre os recebidos do funcionário público",
+                    "constraints": {
+                        "minimum": 0
+                    }
+                },
+                {
+                    "name": "desconto_prev",
+                    "title": "Desconto da contribuição para a previdência social",
+                    "type": "number",
+                    "description": "Discount of social security contribution",
                     "description-ptbr": "Desconto da contribuição para a previdência social",
                     "constraints": {
-                        "required": true,
                         "minimum": "0"
                     }
                 },
                 {
-                    "name": "discounts_ceil_retention",
-                    "title": "Ceil retention discount",
+                    "name": "desconto_irpf",
+                    "title": "Desconto do imposto sobre a renda",
                     "type": "number",
-                    "description": "Total of Ceil retention discount",
-                    "description-ptbr": "Retenção do montante que ultrapassa o teto estabelecido"
+                    "description": "Income tax rebate",
+                    "description-ptbr": "Desconto do imposto sobre a renda",
+                    "constraints": {
+                        "minimum": "0"
+                    }
                 },
                 {
-                    "name": "discounts_income_tax",
-                    "title": "Income Tax Discount",
+                    "name": "desconto_teto",
+                    "title": "Desconto da contribuição para a previdência social",
                     "type": "number",
-                    "description": "Total of tax discount",
-                    "description-ptbr": "Desconto do imposto sobre a renda"
+                    "description": "Constitutional ceiling discount",
+                    "description-ptbr": "Desconto por teto constitucional",
+                    "constraints": {
+                        "minimum": "0"
+                    }
                 },
                 {
-                    "name": "discounts_others_total",
-                    "title": "Sum of others discounts",
+                    "name": "outros_descontos_total",
+                    "title": "Soma de quais quaisquer outros descontos além dos listados acima",
                     "type": "number",
-                    "description": "Any other type of discount applied that does not fit into another field",
-                    "description-ptbr": "Qualquer outro tipo de desconto aplicado que não se encaixa em outro campo"
+                    "description": "Sum of any other discounts besides those listed above",
+                    "description-ptbr": "Soma de quais quaisquer outros descontos além dos listados acima",
+                    "constraints": {
+                        "minimum": "0"
+                    }
+                },
+                {
+                    "name": "outros_descontos_detalhes",
+                    "title": "Se existem mais descontos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
+                    "type": "number",
+                    "description": "If there are more discounts to be considered. Detailed in another resource in the same package.",
+                    "description-ptbr": "Se existem mais descontos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
+                    "constraints": {
+                        "minimum": "0"
+                    }
+                }
+              ]
+        }
+      },
+      {
+        "name": "detalhes",
+        "path": "detalhes.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+            "fields": [
+                {
+                    "name": "id_agencia",
+                    "type": "string",
+                    "format": "default",
+                    "title": "ID da agência",
+                    "description": "The ID of agency",
+                    "description-ptbr": "A sigla da agência",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "mes",
+                    "type": "integer",
+                    "format": "default",
+                    "title": "Mês",
+                    "description": "Month of data collection",
+                    "bareNumber": false,
+                    "description-ptbr": "O mês que os dados foram coletados",
+                    "constraints": {
+                        "required": true,
+                        "minimum": 1,
+                        "maximum": 12
+                    }
+                },
+                {
+                    "name": "ano",
+                    "type": "integer",
+                    "title": "Ano",
+                    "description": "Year of data collection",
+                    "description-ptbr": "O ano que os dados foram coletados",
+                    "constraints": {
+                        "required": true,
+                        "minimum": 2010
+                    }
+                },
+                {
+                    "name": "id_funcionario",
+                    "title": "Número do id dentro do pacote de dados",
+                    "type": "string",
+                    "format": "default",
+                    "description": "Employee registration word",
+                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado dentro do pacote de dados"
+                },
+                {
+                    "name": "nome_funcionario",
+                    "title": "Nome do Funcionário",
+                    "type": "string",
+                    "description": "Employee Name",
+                    "format": "default",
+                    "description-ptbr": "O nome do empregado",
+                    "constraints": {
+                        "required": true,
+                        "minLength": 2
+                    }
+                },
+
+                {
+                    "name": "tipo",
+                    "title": "Tipo",
+                    "type": "string",
+                    "description": "Categorical value, representing discount or one received. Ex: 'D' or 'R'",
+                    "format": "default",
+                    "description-ptbr": "Valor categório, representando desconto ou um recebido. Ex: 'D' ou 'R'",
+                    "constraints": {
+                        "required": true,
+                        "enum": [ "D", "R"]
+                    }
+                },
+                {
+                    "name": "valor",
+                    "title": "Valor",
+                    "type": "number",
+                    "description": "Discount amount or received (always positive)",
+                    "description-ptbr": "Valor do desconto ou recebido (sempre positivo)",
+                    "constraints": {
+                        "required": true,
+                        "minimum": 0
+                    }
+                },
+                {
+                    "name": "rotulo",
+                    "title": "Rótulo",
+                    "type": "number",
+                    "description": "Label of the discount or addition to the salary as the agency has appointed",
+                    "description-ptbr": "Rótulo do desconto ou adição ao salário da forma que o órgão nomeou",
+                    "constraints": {
+                        "required": true,
+                        "minimum": 0
+                    }
                 }
               ]
         }
