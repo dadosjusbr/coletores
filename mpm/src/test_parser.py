@@ -27,24 +27,48 @@ expected_servidores_ativos = [{'reg': '0376-0', 'name': 'ABEL DA COSTA VALE NETO
                              'eventual_benefits': 5185.32, 'trust_position': 3563.93, 'gratification': 7777.98, 'others_total': 1533.97, 'others': 237.46}}, 
                              'discounts': {'total': 4452.77, 'prev_contribution': 1319.12, 'ceil_retention': 0, 'income_tax': 3133.65}}]
 
+expected_servidores_inativos = [{'reg': '1103-7', 'name': 'ALBA REGINA BITENCOURT PEREIRA', 'role': 'TECNICO DO MPU/ADMINISTRAÇÃO', 'type': 'servidor', 'workplace': 'APOSENTADOS/INATIVOS', 
+                            'active': False, 'income': {'total': 15453.4, 'wage': 11754.58, 'perks': {'total': 0, 'food': 0, 'transportation': 0, 'birth_aid': 0, 'housing_aid': 0}, 
+                            'other': {'total': 6709.17, 'eventual_benefits': 0, 'trust_position': 0, 'gratification': 6154.58, 'others_total': 0, 'others': 554.59}}, 'discounts': 
+                            {'total': 3010.35, 'prev_contribution': 682.33, 'ceil_retention': 0, 'income_tax': 2328.02}}]
 
+expected_pensionistas = [{'reg': '1522-9', 'name': 'ABRAAO ANTONIO XAVIER DINIZ', 'role': 'PENSÃO CIVIL', 'type': 'pensionista', 'workplace': 'PENSÃO ESPECIAL', 'active': True, 'income': 
+                        {'total': 4030.39, 'wage': 2860.13, 'perks': {'total': 0, 'food': 0, 'transportation': 0, 'birth_aid': 0, 'housing_aid': 0}, 'other': {'total': 1377.66, 
+                        'eventual_benefits': 0, 'trust_position': 0, 'gratification': 1377.66, 'others_total': 0, 'others': 0}}, 'discounts': {'total': 207.4, 'prev_contribution': 146.7, 
+                        'ceil_retention': 0, 'income_tax': 60.7}}]
 
-test_crawler_result = parser.crawler_result(YEAR, MONTH, FILE_NAMES)
-employee = test_crawler_result['employees']
+expected_colaboradores = [{'reg': '7822-1', 'name': 'ANA VICTÓRIA DE PAULA SANTOS GUIMARÃES', 'role': 'ESTAGIÁRIO', 'type': 'indefinido', 'workplace': '5ª PROCURADORIA DE JUSTIÇA MILITAR NO RIO DE JANEIRO/RJ', 
+                        'active': True, 'income': {'total': 983, 'wage': 850, 'perks': {'total': 133, 'food': 0, 'transportation': 133, 'birth_aid': 0, 'housing_aid': 0}, 'other': {'total': 0, 'eventual_benefits': 0, 
+                        'trust_position': 0, 'gratification': 0, 'others_total': 0, 'others': 0}}, 'discounts': {'total': 0, 'prev_contribution': 0, 'ceil_retention': 0, 'income_tax': 0}}]
 
 class TestParser(unittest.TestCase):
+
+    test_crawler_result = parser.crawler_result(YEAR, MONTH, FILE_NAMES)
+    employee = test_crawler_result['employees']
     
     def test_membros_ativos(self):
-        membros_ativos = employee[0]
+        membros_ativos = self.employee[0]
         self.assertTrue(membros_ativos == expected_membros_ativos)
     
     def test_membros_inativos(self):
-        membros_inativos = employee[1]
+        membros_inativos = self.employee[1]
         self.assertTrue(membros_inativos == expected_membros_inativos)
 
     def test_servidores_ativos(self):
-        servidores_ativos = employee[2]
+        servidores_ativos = self.employee[2]
         self.assertTrue(servidores_ativos == expected_servidores_ativos)
+
+    def test_servidores_inativos(self):
+        servidores_inativos = self.employee[3]
+        self.assertTrue(servidores_inativos == expected_servidores_inativos)
+
+    def test_pensionistas(self):
+        pensionistas = self.employee[4]
+        self.assertTrue(pensionistas == expected_pensionistas)
+         
+    def test_colaboradores(self):
+        colaboradores = self.employee[5]
+        self.assertTrue(colaboradores == expected_colaboradores)
 
 if __name__ == '__main__':
     unittest.main()
