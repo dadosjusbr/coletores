@@ -12,8 +12,8 @@
                     "type": "string",
                     "format": "default",
                     "title": "ID da agência",
-                    "description": "The ID of agency",
-                    "description-ptbr": "A sigla da agência",
+                    "description": "A sigla da agência",
+                    "description-en": "The ID of agency",                    
                     "Constraints": {
                         "required": true
                     }
@@ -23,9 +23,9 @@
                     "type": "integer",
                     "format": "default",
                     "title": "Mês",
-                    "description": "Month of data collection",
+                    "description": "O mês que os dados se referem",
+                    "description-en": "Month of data collection",
                     "bareNumber": false,
-                    "description-ptbr": "O mês que os dados foram coletados",
                     "constraints": {
                         "required": true,
                         "minimum": 1,
@@ -36,8 +36,8 @@
                     "name": "ano",
                     "type": "integer",
                     "title": "Ano",
-                    "description": "Year of data collection",
-                    "description-ptbr": "O ano que os dados foram coletados",
+                    "description": "O Ano que os dados se referem",
+                    "description-en": "Year of data collection",
                     "constraints": {
                         "required": true,
                         "minimum": 2010
@@ -45,27 +45,28 @@
                 },
                 {
                     "name": "id_funcionario",
-                    "title": "Número do id dentro do pacote de dados",
+                    "title": "ID do funcionário",
                     "type": "string",
                     "format": "default",
-                    "description": "Employee registration word",
-                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado dentro do pacote de dados"
+                    "description": "dentificador único do funcionário público dentro pacote de dados. Criado de forma sintética e usado para associar recursos dentro desse pacote.",
+                    "description-en": "Unique identifier of the public employee within the data package. Synthetically created and used to associate resources within this package."
+                    
                 },
                 {
                     "name": "reg_funcionario",
-                    "title": "Número de registro do funcionário no órgao",
+                    "title": "Registro do funcionário",
                     "type": "string",
                     "format": "default",
-                    "description": "Employee registration word",
-                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado"
+                    "description": "Código de registro do funcionário no órgao",
+                    "description-en": "Employee register code provided by the agency."
                 },
                 {
                     "name": "nome_funcionario",
                     "title": "Nome do Funcionário",
                     "type": "string",
-                    "description": "Employee Name",
+                    "description": "O nome do funcionário público.",
+                    "description-en": "Employee Name",
                     "format": "default",
-                    "description-ptbr": "O nome do empregado",
                     "constraints": {
                         "required": true,
                         "minLength": 2
@@ -73,11 +74,11 @@
                 },
                 {
                     "name": "cargo",
-                    "title": "Cargo",
+                    "title": "Cargo do Funcionário",
                     "type": "string",
-                    "description": "Role of the employee",
+                    "description": "A função do empregado",
+                    "description-en": "Role of the employee",
                     "format": "default",
-                    "description-ptbr": "A função do empregado",
                     "constraints": {
                         "required": true
                     }
@@ -86,9 +87,9 @@
                     "name": "tipo",
                     "title": "Tipo",
                     "type": "string",
-                    "description": "Describe if the employee is a servidor, membro, pensionista or indefinido",
+                    "description": "Descreve se o empregado é um servidor, membro, pensionista ou indefinido",
+                    "description-en": "Describe if the employee is a servidor, membro, pensionista or indefinido",
                     "format": "default",
-                    "description-ptbr": "Descreve se o empregado é um servidor, membro, pensionista ou indefinido",
                     "constraints": {
                         "required": true,
                         "enum": ["servidor", "membro", "pensionista", "indefinido"]
@@ -98,23 +99,26 @@
                     "name": "lotacao",
                     "title": "Lotacao",
                     "type": "string",
-                    "description": "Employee workplace",
+                    "description-en": "Employee workplace",
                     "format": "default",
-                    "description-ptbr": "O local onde o empregado está alocado"
+                    "description": "O local onde o empregado está alocado",
+                    "constraints": {
+                        "required": true
+                    }
                 },
                 {
                     "name": "em_atividade",
                     "title": "Em atividade",
                     "type": "boolean",
-                    "description": "Active or inactive employee",
-                    "description-ptbr": "Descreve se o funcionário está ativo ou inativo"
+                    "description-en": "Active or inactive employee",
+                    "description": "Descreve se o funcionário está ativo ou inativo"
                 },
                 {
                     "name": "remuneracao_liquida",
                     "title": "Remunaração líquida",
                     "type": "number",
-                    "description": "Net amount received by the public official (sum of received less discounts)",
-                    "description-ptbr": "Valor líquido recebido pelo funcionário púlico (somatório dos recebidos menos descontos)",
+                    "description-en": "Net amount received by the public official (sum of received less discounts)",
+                    "description": "Valor líquido recebido pelo funcionário púlico (somatório dos recebidos menos descontos)",
                     "constraints": {
                         "required": true,
                         "minimum": 0
@@ -124,8 +128,8 @@
                     "name": "remuneracao_bruta",
                     "title": "Remunaração Bruta",
                     "type": "number",
-                    "description": "Gross amount received by the public official (sum of received)",
-                    "description-ptbr": "Valor bruto recebido pelo funcionário público (somatórios dos recebidos)",
+                    "description-en": "Gross amount received by the public official (sum of received)",
+                    "description": "Valor bruto recebido pelo funcionário público (somatórios dos recebidos)",
                     "constraints": {
                         "required": true,
                         "minimum": 0
@@ -135,8 +139,8 @@
                     "name": "remuneracao_base",
                     "title": "Remuneração Base",
                     "type": "number",
-                    "description": "Base of remuneration, without discounts",
-                    "description-ptbr": "Base da remuneração, sem descontos",
+                    "description": "Base da remuneração, sem descontos. Também conhecido como salário base ou subísdio base",
+                    "description-en": "Base of remuneration, without discounts",
                     "constraints": {
                         "required": true,
                         "minimum": 0
@@ -146,8 +150,8 @@
                     "name": "outros_remuneracoes_total",
                     "title": "Outras Remunerações Total",
                     "type": "number",
-                    "description": "Sum of any other received in addition to those listed above",
-                    "description-ptbr": "Soma de quais quer outros recebidos além dos listados acima",
+                    "description": "Soma de quais quer outras remunerações brutas, além das listadas acima",
+                    "description-en": "Sum of any other received in addition to those listed above",
                     "constraints": {
                         "minimum": 0
                     }
@@ -156,8 +160,8 @@
                     "name": "outros_remuneracoes_detalhes",
                     "title": "Outras Remunerações Detalhes",
                     "type": "number",
-                    "description": "If there are more receipts to consider. Detailed in another resource in the same package.",
-                    "description-ptbr": "Se existem mais recebidos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
+                    "description-en": "If there are more receipts to consider. Detailed in another resource in the same package.",
+                    "description": "Se existem mais recebidos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
                     "constraints": {
                         "minimum": 0
                     }
@@ -166,9 +170,10 @@
                     "name": "desconto_total",
                     "title": "Desconto Total",
                     "type": "number",
-                    "description": "Total discounts levied on those received from the civil servant",
-                    "description-ptbr": "Total de descontos que incide sobre os recebidos do funcionário público",
+                    "description-en": "Total discounts levied on those received from the civil servant",
+                    "description": "Total de descontos que incide sobre os recebidos do funcionário público",
                     "constraints": {
+                        "required": true,
                         "minimum": 0
                     }
                 },
@@ -176,8 +181,8 @@
                     "name": "desconto_prev",
                     "title": "Desconto da contribuição para a previdência social",
                     "type": "number",
-                    "description": "Discount of social security contribution",
-                    "description-ptbr": "Desconto da contribuição para a previdência social",
+                    "description-en": "Discount of social security contribution",
+                    "description": "Desconto da contribuição para a previdência social",
                     "constraints": {
                         "minimum": "0"
                     }
@@ -186,8 +191,8 @@
                     "name": "desconto_irpf",
                     "title": "Desconto do imposto sobre a renda",
                     "type": "number",
-                    "description": "Income tax rebate",
-                    "description-ptbr": "Desconto do imposto sobre a renda",
+                    "description-en": "Income tax rebate",
+                    "description": "Desconto do imposto sobre a renda",
                     "constraints": {
                         "minimum": "0"
                     }
@@ -196,8 +201,8 @@
                     "name": "desconto_teto",
                     "title": "Desconto da contribuição para a previdência social",
                     "type": "number",
-                    "description": "Constitutional ceiling discount",
-                    "description-ptbr": "Desconto por teto constitucional",
+                    "description-en": "Constitutional ceiling discount",
+                    "description": "Desconto por teto constitucional",
                     "constraints": {
                         "minimum": "0"
                     }
@@ -206,8 +211,8 @@
                     "name": "outros_descontos_total",
                     "title": "Soma de quais quaisquer outros descontos além dos listados acima",
                     "type": "number",
-                    "description": "Sum of any other discounts besides those listed above",
-                    "description-ptbr": "Soma de quais quaisquer outros descontos além dos listados acima",
+                    "description-en": "Sum of any other discounts besides those listed above",
+                    "description": "Soma de quais quaisquer outros descontos além dos listados acima",
                     "constraints": {
                         "minimum": "0"
                     }
@@ -215,12 +220,9 @@
                 {
                     "name": "outros_descontos_detalhes",
                     "title": "Se existem mais descontos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
-                    "type": "number",
-                    "description": "If there are more discounts to be considered. Detailed in another resource in the same package.",
-                    "description-ptbr": "Se existem mais descontos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
-                    "constraints": {
-                        "minimum": "0"
-                    }
+                    "type": "boolean",
+                    "description-en": "If there are more discounts to be considered. Detailed in another resource in the same package.",
+                    "description": "Se existem mais descontos a serem considerados. Detalhados em outro recurso no mesmo pacote.",
                 }
               ]
         }
@@ -236,8 +238,8 @@
                     "type": "string",
                     "format": "default",
                     "title": "ID da agência",
-                    "description": "The ID of agency",
-                    "description-ptbr": "A sigla da agência",
+                    "description-en": "The ID of agency",
+                    "description": "A sigla da agência",
                     "Constraints": {
                         "required": true
                     }
@@ -247,9 +249,9 @@
                     "type": "integer",
                     "format": "default",
                     "title": "Mês",
-                    "description": "Month of data collection",
+                    "description-en": "Month of data collection",
                     "bareNumber": false,
-                    "description-ptbr": "O mês que os dados foram coletados",
+                    "description": "O mês que os dados se referem",
                     "constraints": {
                         "required": true,
                         "minimum": 1,
@@ -260,8 +262,8 @@
                     "name": "ano",
                     "type": "integer",
                     "title": "Ano",
-                    "description": "Year of data collection",
-                    "description-ptbr": "O ano que os dados foram coletados",
+                    "description-en": "Year of data collection",
+                    "description": "O ano que os dados se referem",
                     "constraints": {
                         "required": true,
                         "minimum": 2010
@@ -272,16 +274,16 @@
                     "title": "Número do id dentro do pacote de dados",
                     "type": "string",
                     "format": "default",
-                    "description": "Employee registration word",
-                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado dentro do pacote de dados"
+                    "description-en": "Unique identifier of the public employee within the data package. Synthetically created and used to associate resources within this package.",
+                    "description": "Identificador único do funcionário público dentro pacote de dados. Criado de forma sintética e usado para associar recursos dentro desse pacote."
                 },
                 {
                     "name": "nome_funcionario",
                     "title": "Nome do Funcionário",
                     "type": "string",
-                    "description": "Employee Name",
+                    "description-en": "Employee Name",
                     "format": "default",
-                    "description-ptbr": "O nome do empregado",
+                    "description": "O nome do empregado",
                     "constraints": {
                         "required": true,
                         "minLength": 2
@@ -289,12 +291,12 @@
                 },
 
                 {
-                    "name": "tipo",
-                    "title": "Tipo",
+                    "name": "tipo_detalhe",
+                    "title": "Tipo do detalhe",
                     "type": "string",
-                    "description": "Categorical value, representing discount or one received. Ex: 'D' or 'R'",
+                    "description-en": "Categorical value, representing discount or one received: 'D' or 'R'",
                     "format": "default",
-                    "description-ptbr": "Valor categório, representando desconto ou um recebido. Ex: 'D' ou 'R'",
+                    "description": "Valor categório, representando desconto ou um recebido: 'D' ou 'R'",
                     "constraints": {
                         "required": true,
                         "enum": [ "D", "R"]
@@ -304,8 +306,8 @@
                     "name": "valor",
                     "title": "Valor",
                     "type": "number",
-                    "description": "Discount amount or received (always positive)",
-                    "description-ptbr": "Valor do desconto ou recebido (sempre positivo)",
+                    "description-en": "Discount amount or received (always positive)",
+                    "description": "Valor do desconto ou recebido (sempre positivo)",
                     "constraints": {
                         "required": true,
                         "minimum": 0
@@ -315,8 +317,8 @@
                     "name": "rotulo",
                     "title": "Rótulo",
                     "type": "number",
-                    "description": "Label of the discount or addition to the salary as the agency has appointed",
-                    "description-ptbr": "Rótulo do desconto ou adição ao salário da forma que o órgão nomeou",
+                    "description-en": "Label of the discount or addition to the salary as the agency has appointed",
+                    "description": "Rótulo do desconto ou adição ao salário da forma que o órgão nomeou",
                     "constraints": {
                         "required": true,
                         "minimum": 0
@@ -334,7 +336,7 @@
     ],
     "name": "remuneracoes-jusbr",
     "title": "Remunerações do Sistema de Justiça Brasileiro",
-    "description": "Remunerações do Sistema de Justiça Brasileiro, libertadas por DadosJusBR",
+    "description-en": "Remunerações do Sistema de Justiça Brasileiro, libertadas por DadosJusBR",
     "homepage": "https://dadosjusbr.org",
     "version": "1.0.0",
     "contributors": [
