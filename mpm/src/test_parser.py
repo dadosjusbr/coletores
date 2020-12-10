@@ -8,19 +8,25 @@ YEAR = 2019
 # Como não será utilizado todos os dados que estão na planilha, separamos esses arquivos para realizar os testes
 FILE_NAMES = ['/output_test/Membros ativos-1-2020.xlsx', '/output_test/Membros inativos-1-2020.xlsx', '/output_test/Servidores ativos-1-2020.xlsx', '/output_test/Servidores inativos-1-2020.xlsx', '/output_test/Pensionistas-1-2020.xlsx', '/output_test/Colaboradores-1-2020.xlsx', '/output_test/Membros ativos-Verbas Indenizatorias-1-2020.xlsx', '/output_test/Membros inativos-Verbas Indenizatorias-1-2020.xlsx', '/output_test/Servidores ativos-Verbas Indenizatorias-1-2020.xlsx', '/output_test/Servidores inativos-Verbas Indenizatorias-1-2020.xlsx', '/output_test/Pensionistas-Verbas Indenizatorias-1-2020.xlsx', '/output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx']
  
-# Saída esperada para um determinado membro ativo
+# Saídas esperadas
 expected_membros_ativos = [{'reg': '1191-6', 'name': 'ADILSON JOSE GUTIERREZ', 'role': 'PROMOTOR DE JUSTICA MILITAR', 'type': 'membro', 
                             'workplace': '1ª PROCURADORIA DE JUSTIÇA MILITAR EM SÃO PAULO/SP', 'active': True, 'income': {'total': 52059.5, 
                             'wage': 33689.11, 'perks': {'total': 910.08, 'food': 910.08, 'transportation': 0, 'birth_aid': 0, 'housing_aid': 0}, 
-                            'other': {'total': 0, 'eventual_benefits': 11229.7, 'trust_position': 0, 'gratification': 16844.55, 'others_total': 0, 
+                            'other': {'total': 28074.25, 'eventual_benefits': 11229.7, 'trust_position': 0, 'gratification': 16844.55, 'others_total': 0, 
                             'others': 0}}, 'discounts': {'total': 14319.74, 'prev_contribution': 3705.8, 'ceil_retention': 0, 'income_tax': 10613.94}}]
 
-# Saída esperada para um determinado membro inativo
 expected_membros_inativos = [{'reg': '0004-3', 'name': 'ANETE VASCONCELOS DE BORBOREMA', 'role': 'SUBPROCURADOR-GERAL DA JUSTIÇA MILITAR', 
                             'type': 'membro', 'workplace': 'APOSENTADOS/INATIVOS', 'active': False, 'income': {'total': 44630.55, 
                             'wage': 37328.65, 'perks': {'total': 0, 'food': 0, 'transportation': 0, 'birth_aid': 0, 'housing_aid': 0}, 
-                            'other': {'total': 0, 'eventual_benefits': 0, 'trust_position': 0, 'gratification': 18664.32, 'others_total': 0, 'others': 0}}, 
+                            'other': {'total': 18664.32, 'eventual_benefits': 0, 'trust_position': 0, 'gratification': 18664.32, 'others_total': 0, 'others': 0}}, 
                             'discounts': {'total': 11362.42, 'prev_contribution': 3434.48, 'ceil_retention': 0, 'income_tax': 7927.94}}]
+
+expected_servidores_ativos = [{'reg': '0376-0', 'name': 'ABEL DA COSTA VALE NETO', 'role': 'TECNICO DO MPU/ADMINISTRAÇÃO', 'type': 'servidor',
+                             'workplace': 'COORDENADORIA ADMINISTRATIVA DO PLAN-ASSISTE', 'active': True, 'income': {'total': 27232.94, 'wage': 11992.04,
+                             'perks': {'total': 2928.98, 'food': 910.08, 'transportation': 484.93, 'birth_aid': 0, 'housing_aid': 0}, 'other': {'total': 18298.66, 
+                             'eventual_benefits': 5185.32, 'trust_position': 3563.93, 'gratification': 7777.98, 'others_total': 1533.97, 'others': 237.46}}, 
+                             'discounts': {'total': 4452.77, 'prev_contribution': 1319.12, 'ceil_retention': 0, 'income_tax': 3133.65}}]
+
 
 
 test_crawler_result = parser.crawler_result(YEAR, MONTH, FILE_NAMES)
@@ -35,6 +41,10 @@ class TestParser(unittest.TestCase):
     def test_membros_inativos(self):
         membros_inativos = employee[1]
         self.assertTrue(membros_inativos == expected_membros_inativos)
+
+    def test_servidores_ativos(self):
+        servidores_ativos = employee[2]
+        self.assertTrue(servidores_ativos == expected_servidores_ativos)
 
 if __name__ == '__main__':
     unittest.main()

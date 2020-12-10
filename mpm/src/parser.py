@@ -105,7 +105,7 @@ def all_employees(data,begin_row,end_row, active):
             },
             'other': 
             { #Funds Object 
-              'total': data.iloc[i][10],
+              'total': (data.iloc[i][8] + data.iloc[i][6] + data.iloc[i][4] + data.iloc[i][5]),
               'eventual_benefits': data.iloc[i][8], #Férias
               'trust_position' : data.iloc[i][6], 
               'gratification': data.iloc[i][4], #gratificação natalina
@@ -156,7 +156,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 },
                 'other': 
                  #Funds Object 
-                {'total': data.iloc[i][10],
+                {'total': (data.iloc[i][8] + data.iloc[i][6] + (data.iloc[i][7]) + (indemnity_data.iloc[match_row][11]) + (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]) + data.iloc[i][5]),
                     'eventual_benefits': data.iloc[i][8], #Férias
                     'trust_position' : data.iloc[i][6], 
                     'gratification': (data.iloc[i][7]) + (indemnity_data.iloc[match_row][11]), #gratificação natalina + grat. encargo cursou ou concurso
