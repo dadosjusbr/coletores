@@ -48,27 +48,35 @@ class TestParser(unittest.TestCase):
     
     def test_membros_ativos(self):
         membros_ativos = self.employee[0]
-        self.assertTrue(membros_ativos == expected_membros_ativos)
+        # Verifica se contêm apenas 1 servidor do grupo membros ativos.
+        self.assertEqual(1, len(membros_ativos))
+        # Verifica se o resultado do parser para os membros ativos é igual ao resultado esperado.
+        self.assertEqual(membros_ativos, expected_membros_ativos)
     
     def test_membros_inativos(self):
         membros_inativos = self.employee[1]
-        self.assertTrue(membros_inativos == expected_membros_inativos)
+        self.assertEqual(1, len(membros_inativos))
+        self.assertEqual(membros_inativos, expected_membros_inativos)
 
     def test_servidores_ativos(self):
         servidores_ativos = self.employee[2]
-        self.assertTrue(servidores_ativos == expected_servidores_ativos)
+        self.assertEqual(1, len(servidores_ativos))
+        self.assertEqual(servidores_ativos, expected_servidores_ativos)
 
     def test_servidores_inativos(self):
         servidores_inativos = self.employee[3]
-        self.assertTrue(servidores_inativos == expected_servidores_inativos)
+        self.assertEqual(1, len(servidores_inativos))
+        self.assertEqual(servidores_inativos, expected_servidores_inativos)
 
     def test_pensionistas(self):
         pensionistas = self.employee[4]
-        self.assertTrue(pensionistas == expected_pensionistas)
+        self.assertEqual(1, len(pensionistas))
+        self.assertEqual(pensionistas, expected_pensionistas)
          
     def test_colaboradores(self):
         colaboradores = self.employee[5]
-        self.assertTrue(colaboradores == expected_colaboradores)
+        self.assertEqual(1, len(colaboradores))
+        self.assertEqual(colaboradores, expected_colaboradores)
 
 if __name__ == '__main__':
     unittest.main()
