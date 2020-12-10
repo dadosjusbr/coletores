@@ -1,6 +1,6 @@
 # Tribunal Regional Eleitoral da Paraíba
 
-Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Tribunal Regional Eleitoral da Paraíba. O site com as informações pode ser acessado [aqui](http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII).
+Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Tribunal Regional Eleitoral da Paraíba. O site com as informações pode ser acessado [aqui](https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII).
 
 O crawler está estruturado como uma CLI. Você passa quatro argumentos (mês, ano, cpf e nome) e é baixado um arquivo no formato **HTML** representando a folha de pagamento da instituição. O arquivo contêm dois elementos table, sendo a primeira um dicionário dos dados e a segunda a tabela de remunerações.
 
@@ -90,7 +90,7 @@ Para cada funcionário, o JSON possui os seguintes campos:
   
 ### Remunerações ###
 
-- **URL Base**: [http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?](http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?)
+- **URL Base**: [https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?](https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?)
     - **Parâmetros da URL**: mes=${MES}&ano=${ANO}&chaveDeAcesso=${CHAVE}
     - **Parâmetros fixos**: acao=AnexoVIII&folha=&valida=true&toExcel=false
 - **Formato**: Table html

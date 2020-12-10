@@ -34,7 +34,7 @@ func crawl(filePath, name, cpf string, month, year int) error {
 // queryData query server for data of a specified month and year.
 func queryData(acessCode string, month, year int) ([]*html.Node, error) {
 	query := fmt.Sprintf(`acao=AnexoVIII&folha=&valida=true&toExcel=false&chaveDeAcesso=%s&mes=%d&ano=%04d`, acessCode, month, year)
-	queryURL := fmt.Sprintf(`http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s`, query)
+	queryURL := fmt.Sprintf(`https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s`, query)
 	req, err := http.NewRequest("GET", queryURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating GET request to %s: %q", queryURL, err)

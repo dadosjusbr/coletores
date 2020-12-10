@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	baseURL         = "http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII"
+	baseURL         = "https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII"
 	questionXpath   = "/html/body/form/table/tbody/tr[2]/td/table/tbody/tr[3]/td/table/tbody/tr[3]/td[1]"
 	accessCodeXpath = "/html/body/form/input[5]"
 	accessCodeCache = "acessCode.txt"
@@ -86,7 +86,7 @@ func newAccessCode(name, cpf string) (string, error) {
 // validateKey makes a query to the TRE-PB API to assure key is valid.
 func validateKey(key string) error {
 	query := fmt.Sprintf(`acao=AnexoVIII&folha=&valida=true&toExcel=false&chaveDeAcesso=%s&mes=6&ano=2005`, key)
-	requestURL := fmt.Sprintf("http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s", query)
+	requestURL := fmt.Sprintf("https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s", query)
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		return fmt.Errorf("error creating GET request to %s: %q", requestURL, err)
@@ -174,7 +174,7 @@ func loginRequest(question, ans, name, cpf string) (string, error) {
 	body := fmt.Sprintf(
 		`nomeUsuario=%s&cpfUsuario=%s&respostaCaptcha=%s&btnLogin=Efetuar+login&identificaUsuario=&perguntaCaptcha=%s`,
 		url.QueryEscape(name), cpf, url.QueryEscape(ans), url.QueryEscape(url.QueryEscape(question)))
-	reqURL := fmt.Sprintf("http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s", body)
+	reqURL := fmt.Sprintf("https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?%s", body)
 
 	req, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
@@ -182,7 +182,7 @@ func loginRequest(question, ans, name, cpf string) (string, error) {
 	}
 	req.Header.Set("Accept", "text/html")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Referer", "http://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII")
+	req.Header.Set("Referer", "https://apps.tre-pb.jus.br/transparenciaDadosServidores/infoServidores?acao=Anexo_VIII")
 
 	doc, err := httpReq(req)
 	if err != nil {
