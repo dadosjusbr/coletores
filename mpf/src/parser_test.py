@@ -1,5 +1,6 @@
 import parser
 import os
+import unittest
 
 # Teste de unidade para cada planilha do mpf, de modo a aumentar a confiança no processo de parsing.
 # Objetos criados pela análise da unica linha em questão das planilhas referentes a Janeiro de 2020--- #
@@ -22,6 +23,7 @@ active_member = {
                 'food': 910.08,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 0.00,
@@ -76,6 +78,7 @@ inactive_member = {
                 'food': 0.00,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 0.00,
@@ -130,6 +133,7 @@ active_server = {
                 'food': 910.08,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 1466.5,
@@ -185,6 +189,7 @@ inactive_server = {
                 'food': 910.08,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 1358.3,
@@ -240,6 +245,7 @@ pensioner = {
                 'food': 0.00,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 0.00,
@@ -295,6 +301,7 @@ colaborator = {
                 'food': 910.08,
                 'transportation': 0.00,
                 'pre_school': 0.00,
+                'birth_aid': 0.0,
                 'housing_aid': 0.00,
                 'subistence': 0.00,
                 'compensatory_leave': 0.00,
@@ -368,56 +375,40 @@ def get_scenario_list():
 
     return scenarios
 
-result = get_parser_result_vi()
-result_employees = result['employees']
-expected_employees = get_scenario_list()
+#--- Definindo testes de Unidade --- #
+class ParserTest(unittest.TestCase):
+    result_employees = get_parser_result_vi()['employees']
+    expected_employees = get_scenario_list()
 
-# Expected e result keys são iguais para qualquer objeto
+    def test_active_member(self):
+        result_active_member = self.result_employees[0]
+        expected_active_member = self.expected_employees[0]
+        self.assertDictEqual(result_active_member,expected_active_member)
+    
+    def test_inactive_member(self):
+        result_inactive_member = self.result_employees[1]
+        expected_inactive_member = self.expected_employees[1]
+        self.assertTrue(result_inactive_member == expected_inactive_member)
+    
+    def test_active_server(self):
+        result_active_server = self.result_employees[2]
+        expected_active_server = self.expected_employees[2]
+        self.assertTrue(result_active_server == expected_active_server)
+    
+    def test_inactive_server(self):
+        result_inactive_server = self.result_employees[3]
+        expected_inactive_server = self.expected_employees[3]
+        self.assertTrue(result_inactive_server == expected_inactive_server)
 
-# keys de cada dicionário que compoe o objeto employee
-general_keys = ['reg', 'name', 'role', 'type', 'workplace', 'active']
-income_keys = ['total','wage'] #[income]
-perks_keys = ['total', 'food', 'transportation', 'pre_school', 'housing_aid', 'subistence',
-'compensatory_leave', 'pecuniary','vacation_pecuniary', 'furniture_transport', 'premium_license_pecuniary'] #[income][perks]
-funds_keys = ['total', 'eventual_benefits', 'trust_position', 'gratification', 'others_total', 'others'] #['income']['other']
-discounts_keys = ['total', 'prev_contribution', 'ceil_retention', 'income_tax'] #[discounts]
+    def test_pensioner(self):
+        result_pensioner = self.result_employees[4]
+        expected_pensioner = self.expected_employees[4]
+        self.assertTrue(result_pensioner == expected_pensioner)
 
-#--- Assertations para testes de unidade ---#
+    def test_colaborator(self):
+        result_colaborator = self.result_employees[5]
+        expected_colaborator =  self.expected_employees[5]
+        self.assertTrue(result_colaborator == expected_colaborator)
 
-#- Verifica se todos os funcionários são retornados --#
-assert len(result_employees) == len(expected_employees)
-
-#-- Verificando asserts de atributos gerais --#
-for i in range(len(expected_employees)):
-    for key in general_keys:
-        assert expected_employees[i][key] == result_employees[i][key], ("Was expected" + str(expected_employees[i][key]) + 'but was send: ' +
-        str(result_employees[i][key]) + ' .Object Number: ' + str(i) + ' .Field: '+
-        str(key) + " ." )
-
-#-- Verificando asserts de atributos do  objeto income -- #
-for i in range(len(expected_employees)):
-    for key in income_keys:
-        assert expected_employees[i]['income'][key] == result_employees[i]['income'][key], ("Was expected" + str(expected_employees[i]['income'][key]) + 'but was send: ' +
-        str(result_employees[i]['income'][key]) + ' .Object Number: ' + str(i) + ' .Field: '+
-        str(key) + " ." )
-
-#-- Verificando asserts de atributos do objeto perks --#
-for i in range(len(expected_employees)):
-    for key in perks_keys:
-        assert expected_employees[i]['income']['perks'][key] == result_employees[i]['income']['perks'][key], ("Was expected" + str(expected_employees[i]['income']['perks'][key]) + 'but was send: ' +
-        str(result_employees[i]['income']['perks'][key]) + ' .Object Number: ' + str(i) + ' .Field: '+
-        str(key) + " ." )
-
-#-- Verificando asserts de atributos do objeto Funds --#
-for i in range(len(expected_employees)):
-    for key in funds_keys:
-        assert expected_employees[i]['income']['other'][key] == result_employees[i]['income']['other'][key], ("Was expected" + str(expected_employees[i]['income']['other'][key]) + 'but was send: ' +
-        str(result_employees[i]['income']['perks'][key]) + ' .Object Number: ' + str(i) + ' .Field: '+
-        str(key) + " ." )
-
-#-- Verificando asserts de atributos do objeto Discounts --#
-for i in range(len(expected_employees)):
-    for key in discounts_keys:
-        assert expected_employees[i]['discounts'][key] == result_employees[i]['discounts'][key], ("Was expected" + str(expected_employees[i]['discounts'][key]) + 'but was send: ' +
-        str(result_employees[i]['discounts'][key]) + ' .Object Number: ' + str(i) + ' .Field: '+
-        str(key) + " ." )
+if __name__ == '__main__':
+    unittest.main()
