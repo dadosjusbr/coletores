@@ -351,63 +351,85 @@ vi = ["verbas-indenizatorias-e-outras-remuneracoes-temporarias_2020_Janeiro_memb
 "verbas-indenizatorias-e-outras-remuneracoes-temporarias_2020_Janeiro_pensionistas.ods",
 'verbas-indenizatorias-e-outras-remuneracoes-temporarias_2020_Janeiro_colaboradores.ods']
 
-def get_parser_result_vi():
-    file_path = 'test_files'
-    year = 2020
-    month = 'Janeiro'
 
-    all_files = [] 
+file_path = 'test_files'
+year = 2020
+month = 'Janeiro'
 
-    for file in simple_remuneration:
-        all_files.append(file)
-    all_files.append(vi)
 
-    return parser.crawler_result(year,month,file_path,all_files)
-
-def get_scenario_list():
-    scenarios = []
-    scenarios.append(active_member)
-    scenarios.append(inactive_member)
-    scenarios.append(active_server)
-    scenarios.append(inactive_server)
-    scenarios.append(pensioner)
-    scenarios.append(colaborator)
-
-    return scenarios
+all_files = []
+all_files.append(simple_remuneration[1])
+all_files.append([vi[1]])
+result_employees = parser.crawler_result(year,month,file_path,all_files)['employees']
 
 #--- Definindo testes de Unidade --- #
 class ParserTest(unittest.TestCase):
-    result_employees = get_parser_result_vi()['employees']
-    expected_employees = get_scenario_list()
 
     def test_active_member(self):
-        result_active_member = self.result_employees[0]
-        expected_active_member = self.expected_employees[0]
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[0])
+        all_files.append([vi[0]])
+        result_employees = parser.crawler_result(year,month,file_path,all_files)['employees']
+
+        result_active_member = result_employees[0]
+        expected_active_member = active_member
+
         self.assertDictEqual(result_active_member,expected_active_member)
     
     def test_inactive_member(self):
-        result_inactive_member = self.result_employees[1]
-        expected_inactive_member = self.expected_employees[1]
-        self.assertTrue(result_inactive_member == expected_inactive_member)
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[1])
+        all_files.append([vi[1]])
+
+        result_inactive_member = parser.crawler_result(year,month,file_path,all_files)['employees'][0]
+        expected_inactive_member = inactive_member
+
+        self.assertDictEqual(result_inactive_member,expected_inactive_member)
     
     def test_active_server(self):
-        result_active_server = self.result_employees[2]
-        expected_active_server = self.expected_employees[2]
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[2])
+        all_files.append([vi[2]])
+
+        result_active_server = parser.crawler_result(year,month,file_path,all_files)['employees'][0]
+        expected_active_server = active_server
+
         self.assertTrue(result_active_server == expected_active_server)
     
     def test_inactive_server(self):
-        result_inactive_server = self.result_employees[3]
-        expected_inactive_server = self.expected_employees[3]
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[3])
+        all_files.append([vi[3]])
+
+        result_inactive_server = parser.crawler_result(year,month,file_path,all_files)['employees'][0]
+        expected_inactive_server = inactive_server
+
         self.assertTrue(result_inactive_server == expected_inactive_server)
 
     def test_pensioner(self):
-        result_pensioner = self.result_employees[4]
-        expected_pensioner = self.expected_employees[4]
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[4])
+        all_files.append([vi[4]])
+
+        result_pensioner = parser.crawler_result(year,month,file_path,all_files)['employees'][0]
+        expected_pensioner = pensioner
+
         self.assertTrue(result_pensioner == expected_pensioner)
 
     def test_colaborator(self):
-        result_colaborator = self.result_employees[5]
-        expected_colaborator =  self.expected_employees[5]
+        #Pegando resultado do Parser
+        all_files = []
+        all_files.append(simple_remuneration[5])
+        all_files.append([vi[5]])
+
+        result_colaborator = parser.crawler_result(year,month,file_path,all_files)['employees'][0]
+        expected_colaborator = colaborator
+
         self.assertTrue(result_colaborator == expected_colaborator)
 
 if __name__ == '__main__':

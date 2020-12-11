@@ -318,21 +318,35 @@ def check_indemnity(year,month):
     else:
         return True
 
+#Retorna o tipo de planilha baseado no nome do arquivo
+def get_file_kind(name):
+    if("membros-ativos" in name):
+        return 'Membros Ativos'
+    elif('membros-inativos' in name):
+        return 'Membros Inativos'
+    elif('servidores-ativos' in name):
+        return 'Servidores Ativos'
+    elif('servidores-inativos' in name):
+        return 'Servidores Inativos'
+    elif('pensionistas' in name):
+        return "Pensionistas"
+    elif('colaboradores' in name):
+        return 'Colaboradores Ativos'
+    else:
+        raise ValueError('Invalid filename')
+
 #Processo de geração do objeto resultado do Crawler e Parser. 
 def crawler_result(year,month,outputPath,file_names):
-    #Ordem do tipo de arquivos
-    file_order = ['Membros Ativos','Membros Inativos','Servidores Ativos','Servidores Inativos','Pensionistas','Colaboradores Ativos']
-
     #Realizando o processo de parser em todas as planilhas
     employee = []
     final_employees = [] 
     if(check_indemnity(year,month)):
         indemnity_names = file_names.pop(-1)
         for i in range(len(file_names)):
-            final_employees.append(employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month,file_order[i]))
+            final_employees.append(employees_indemnity(file_names[i],indemnity_names[i],outputPath,year,month,get_file_kind(file_names[i])))
     else:
         for i in range(len(file_names)):
-            final_employees.append(employees(file_names[i],outputPath,year,month,file_order[i]))
+            final_employees.append(employees(file_names[i],outputPath,year,month,get_file_kind(file_names[i])))
 
     #Armazenando Todos os Empregados em lista unica
     for lista in final_employees:
