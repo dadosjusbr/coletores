@@ -2,16 +2,22 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
 
 	"github.com/dadosjusbr/coletores"
+	"github.com/dadosjusbr/coletores/status"
 )
 
-// newtjbaEmployee creates a tjbaEmployee from a map[string]interface{}
-func newTjbaEmployees(payload string) ([]tjbaEmployee, error) {
+// NewTjbaEmployees creates a tjbaEmployee from a map[string]interface{}
+func NewTjbaEmployees(payload string) ([]tjbaEmployee, error) {
 	var employees []tjbaEmployee
 	err := json.Unmarshal([]byte(payload), &employees)
-	return employees, err
+
+	if err != nil {
+		return nil, status.NewError(status.InvalidInput, errors.New("Error during JSON parsing"))
+	}
+	return employees, nil
 }
 
 // employeeType returns employee.Type

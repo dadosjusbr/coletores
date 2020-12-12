@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/dadosjusbr/coletores"
+	"github.com/dadosjusbr/coletores/status"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +40,7 @@ const tjbaPayload = `[{
 }]`
 
 func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
-	employees, err := newTjbaEmployees(tjbaPayload)
+	employees, err := NewTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
 	var expectedTjbaEmployee = tjbaEmployee{
@@ -65,6 +67,14 @@ func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
 		Gratification:       0,
 	}
 	assert.Equal(t, employees[0], expectedTjbaEmployee)
+}
+
+func TestFailWhenParsingInvalidTjbaEmployeesJSON(t *testing.T) {
+	expectedError := status.NewError(status.InvalidInput, errors.New("Error during JSON parsing"))
+	_, err := NewTjbaEmployees("[{]")
+
+	assert.Error(t, err)
+	assert.Equal(t, expectedError, err)
 }
 
 func TestConvertFromTjbaEmployeeTypeToEmployeeType(t *testing.T) {
