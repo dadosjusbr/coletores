@@ -117,10 +117,11 @@ func TestConvertFromTjbaEmployeeActiveToEmployeeActive(t *testing.T) {
 }
 
 func TestFromTjbaEmployeeToEmployee(t *testing.T) {
-	tjbaEmployees, err := newTjbaEmployees(tjbaPayload)
+	tjbaEmployees, err := NewTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
 	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
+	assert.Equal(t, len(employees), 1)
 
 	var zero = 0.0
 	var expectedPersonalBenefits = 9209.82

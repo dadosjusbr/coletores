@@ -41,33 +41,6 @@ func active(value string) bool {
 func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
-		perks := coletores.Perks{Total: tjbaEmployee[i].PerksTotal}
-
-		funds := coletores.Funds{
-			Total:            tjbaEmployee[i].FundsTotal,
-			PersonalBenefits: &tjbaEmployee[i].PersonalBenefits,
-			EventualBenefits: &tjbaEmployee[i].EventualBenefits,
-			PositionOfTrust:  &tjbaEmployee[i].PositionOfTrust,
-			Gratification:    &tjbaEmployee[i].Gratification,
-			Daily:            &tjbaEmployee[i].Daily,
-			OriginPosition:   &tjbaEmployee[i].OriginPosition,
-		}
-
-		income := coletores.IncomeDetails{
-			Total: tjbaEmployee[i].IncomeTotal,
-			Wage:  &tjbaEmployee[i].Wage,
-			Perks: &perks,
-			Other: &funds,
-		}
-
-		discounts := coletores.Discount{
-			Total:               tjbaEmployee[i].DiscountTotal,
-			PrevContribution:    &tjbaEmployee[i].PrevContribution,
-			CeilRetention:       &tjbaEmployee[i].CeilRetention,
-			IncomeTax:           &tjbaEmployee[i].IncomeTax,
-			OtherDiscountsTotal: &tjbaEmployee[i].OtherDiscountsTotal,
-		}
-
 		employee := coletores.Employee{}
 		employee.Reg = strconv.Itoa(tjbaEmployee[i].Reg)
 		employee.Name = tjbaEmployee[i].Name
@@ -75,8 +48,27 @@ func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employe
 		employee.Type = employeeType(tjbaEmployee[i].Type)
 		employee.Workplace = tjbaEmployee[i].Workplace
 		employee.Active = active(tjbaEmployee[i].Active)
-		employee.Income = &income
-		employee.Discounts = &discounts
+		employee.Income = &coletores.IncomeDetails{
+			Total: tjbaEmployee[i].IncomeTotal,
+			Wage:  &tjbaEmployee[i].Wage,
+			Perks: &coletores.Perks{Total: tjbaEmployee[i].PerksTotal},
+			Other: &coletores.Funds{
+				Total:            tjbaEmployee[i].FundsTotal,
+				PersonalBenefits: &tjbaEmployee[i].PersonalBenefits,
+				EventualBenefits: &tjbaEmployee[i].EventualBenefits,
+				PositionOfTrust:  &tjbaEmployee[i].PositionOfTrust,
+				Gratification:    &tjbaEmployee[i].Gratification,
+				Daily:            &tjbaEmployee[i].Daily,
+				OriginPosition:   &tjbaEmployee[i].OriginPosition,
+			},
+		}
+		employee.Discounts = &coletores.Discount{
+			Total:               tjbaEmployee[i].DiscountTotal,
+			PrevContribution:    &tjbaEmployee[i].PrevContribution,
+			CeilRetention:       &tjbaEmployee[i].CeilRetention,
+			IncomeTax:           &tjbaEmployee[i].IncomeTax,
+			OtherDiscountsTotal: &tjbaEmployee[i].OtherDiscountsTotal,
+		}
 
 		employees = append(employees, employee)
 	}
