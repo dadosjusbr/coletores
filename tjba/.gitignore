@@ -1,2 +1,3 @@
 tjba
 *.json
+!testdata/*.json
