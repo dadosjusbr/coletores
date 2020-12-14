@@ -1,6 +1,8 @@
 from dotenv import load_dotenv, find_dotenv
-from pathlib import Path 
-import sys, os, datetime
+from pathlib import Path
+import sys
+import os
+import datetime
 import crawler
 import parser
 
@@ -32,12 +34,11 @@ if(int(year) > current_year):
     sys.stderr.write("Invalid year {}: InvalidParameters.\n".format(year))
     os._exit(1)
 
- 
 
 # Main execution
 def main():
-    file_names  =  crawler.crawl(year, month, output_path)
-    result  =  parser.crawler_result(year, month, file_names)
+    file_names = crawler.crawl(year, month, output_path)
+    result = parser.crawler_result(year, month, file_names)
     print(result)
 
 
