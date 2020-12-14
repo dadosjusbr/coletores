@@ -1,12 +1,13 @@
 import pandas as pd
 from datetime import datetime
+from openpyxl import load_workbook
 import math
 import pathlib 
 
 # Read data downloaded from the crawler
 def read_data(path):
     try:
-        data = pd.read_excel(pathlib.Path('./' + path))
+        data = pd.read_excel(pathlib.Path('./' + path), engine = 'openpyxl')
         return data
     except:
         print('Cannot Read File.')
@@ -35,23 +36,16 @@ def employees(file_name):
     data = read_data(file_name)
     rows  = list(data.index.values)
 
-    active = True
-    if(file_name.__contains__("inativos") | (file_name.__contains__("pensionistas"))):
-        active = False
-
     begin_string  = "Matrícula" # word before starting data
     begin_row = get_begin_row(data,rows,begin_string)
     end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
     end_row = get_end_row(data,rows,end_string_remuneration)
-    return all_employees(data,begin_row,end_row, active)
+
+    return all_employees(data,begin_row,end_row)
 
 def employees_indemnity(file_name, indemnity_file_name):
     data = read_data(file_name)
     indemnity_data = read_data(indemnity_file_name)
-
-    active = True
-    if((file_name.__contains__("inativos")) | (file_name.__contains__("Pensionistas"))):
-        active = False
 
     #define limits
     rows  = list(data.index.values)
@@ -60,13 +54,19 @@ def employees_indemnity(file_name, indemnity_file_name):
     end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza." # phrase after finishing the data
     end_row = get_end_row(data,rows,end_string_remuneration)
     
-    return all_employees_indemnity(data, begin_row, end_row, indemnity_data, active)
+    return all_employees_indemnity(data, begin_row, end_row, indemnity_data)
 
-def match_line(id,indemnity_data):
+def match_line(matricula, indemnity_data):
     rows = list(indemnity_data.index.values)
     for row in rows:
-        if(indemnity_data.iloc[row][0] == id):
+        if(indemnity_data.iloc[row][0] == matricula):
             return row
+
+def is_active(data):
+    active = True
+    if((data.iloc[6][0].__contains__("INATIVOS")) | (data.iloc[6][0].__contains__("PENSIONISTAS"))):
+        active = False
+    return active
 
 def type_employee(data):
     if (data.iloc[6][0].__contains__("MEMBROS")):
@@ -81,20 +81,18 @@ def type_employee(data):
 
 
 # Used when the employee is not on the indemnity list
-def all_employees(data,begin_row,end_row, active):
-    print(data.iloc[6][0])
-
+def all_employees(data,begin_row,end_row):
     type_employee = type_employee(data)
     employees = []
     for i in range(begin_row,end_row):
-        id = data.iloc[i][0]
+        matricula = data.iloc[i][0]
         employee = {
             'reg' : data.iloc[i][0],
             'name': data.iloc[i][1],
             'role': data.iloc[i][2],
             'type': type_employee(data),  
             'workplace': data.iloc[i][3],
-            'active': active,
+            'active': is_active(data),
             "income": 
             #Income Details
             {'total' : data.iloc[i][17], # ? Total Liquido ??
@@ -127,10 +125,10 @@ def all_employees(data,begin_row,end_row, active):
        
     return employees
 
-def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
+def all_employees_indemnity(data,begin_row,end_row,indemnity_data, ):
     employees = []
-    id = data.iloc[begin_row][0]
-    match_row = match_line(id,indemnity_data)
+    matricula = data.iloc[begin_row][0]
+    match_row = match_line(matricula, indemnity_data)
     i = begin_row
 
     while(i <= end_row):
@@ -141,7 +139,7 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 'role': data.iloc[i][2],
                 'type': type_employee(data),  
                 'workplace': data.iloc[i][3],
-                'active': active,
+                'active': is_active(data),
                 "income": 
                 #Income Details
                 {'total' : data.iloc[i][17], # ? Total Liquido ??
@@ -174,11 +172,11 @@ def all_employees_indemnity(data,begin_row,end_row,indemnity_data, active):
                 }
                 }            
         else:
-            id = data.iloc[i][0]
+            matricula = data.iloc[i][0]
             before_match = match_row
-            match_row = match_line(id,indemnity_data)
+            match_row = match_line(matricula, indemnity_data)
             if(match_row == None): 
-                employee = all_employees(data,i,i, active)
+                employee = all_employees(data,i,i)
                 
         if(match_row == None):
             match_row = before_match
