@@ -3,16 +3,40 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
 
 	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
 )
 
-// NewTjbaEmployees creates a tjbaEmployee from a map[string]interface{}
-func NewTjbaEmployees(payload string) ([]tjbaEmployee, error) {
+func parse(filePath string) ([]coletores.Employee, error) {
+	tjbaEmployees, err := NewTjbaEmployees(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing employees: %q", err)
+	}
+
+	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
+	return employees, nil
+}
+
+// NewTjbaEmployees creates a tjbaEmployee from a JSON file
+func NewTjbaEmployees(filePath string) ([]tjbaEmployee, error) {
+	jsonFile, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error trying to open file at (%s) : %q", filePath, err)
+	}
+	defer jsonFile.Close()
+
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		return nil, fmt.Errorf("error trying to read file at (%s) to []byte : %q", filePath, err)
+	}
+
 	var employees []tjbaEmployee
-	err := json.Unmarshal([]byte(payload), &employees)
+	err = json.Unmarshal(byteValue, &employees)
 
 	if err != nil {
 		return nil, status.NewError(status.InvalidInput, errors.New("Error during JSON parsing"))

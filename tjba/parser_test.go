@@ -9,35 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const tjbaPayload = `[{
-	"matricula": 5014085,
-	"dataReferencia": 1577847600000,
-	"nome": "ADAILTON",
-	"lotacao": "COORDENACAO DE TRANSPORTE - SALVADOR",
-	"cargo": "MOTORISTA JUDICIÁRIO",
-	"status": "A",
-	"tipoServidor": "S",
-	"valorParadigma": 4896.59,
-	"valorVantagemPessoal": 9209.82,
-	"valorComissao": 0,
-	"valorIndenizacao": 1620,
-	"valorVantagemEventual": 0,
-	"totalCredito": 15726.41,
-	"valorPrevidencia": 1961.05,
-	"valorIR": 1856.3,
-	"valorDescontoDiverso": 195.86,
-	"valorRetencaoTeto": 0,
-	"totalDebito": 4013.21,
-	"valorLiquido": 11713.2,
-	"valorRemuneracaoOrigem": 0,
-	"valorDiaria": 0,
-	"valorGratificacao": 0,
-	"vantagensPessoais": [],
-	"vantagensEventuais": [],
-	"ano": null,
-	"mes": null,
-	"id": 5014085
-}]`
+const tjbaPayload = "testdata/payload.json"
 
 func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
 	employees, err := NewTjbaEmployees(tjbaPayload)
@@ -71,7 +43,7 @@ func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
 
 func TestFailWhenParsingInvalidTjbaEmployeesJSON(t *testing.T) {
 	expectedError := status.NewError(status.InvalidInput, errors.New("Error during JSON parsing"))
-	_, err := NewTjbaEmployees("[{]")
+	_, err := NewTjbaEmployees("testdata/invalid-payload.json")
 
 	assert.Error(t, err)
 	assert.Equal(t, expectedError, err)
