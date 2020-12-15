@@ -36,10 +36,13 @@ def links_other_funds(month, year):
 
 
 def download(url, file_path):
-    response = requests.get(url, allow_redirects=True)
-    with open(".//" + file_path, "wb") as file:
-        file.write(response.content)
-    file.close()
+    try:
+      response = requests.get(url, allow_redirects=True)
+      with open(".//" + file_path, "wb") as file:
+          file.write(response.content)
+      file.close()
+    except:
+      print('Não foi possível fazer o download do arquivo: ' + file_path)
 
 # Crawl retrieves payment files from MPM.
 

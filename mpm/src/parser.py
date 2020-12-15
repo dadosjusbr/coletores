@@ -12,7 +12,7 @@ def read_data(path):
         data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
         return data
     except:
-        print('Cannot Read File.')
+        print('Não foi possível ler o arquivo: ' + path)
 
 # Define first iterable line
 

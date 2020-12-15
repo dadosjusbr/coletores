@@ -39,7 +39,7 @@ if(int(year) > current_year):
 def main():
     file_names = crawler.crawl(year, month, output_path)
     result = parser.crawler_result(year, month, file_names)
-    print(result)
+    #print(result)
 
 
 main()
