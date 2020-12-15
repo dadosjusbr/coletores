@@ -54,7 +54,7 @@ type Employee struct {
 	Reg       string         `json:"reg" bson:"reg,omitempty" tableheader:"reg" csv:"reg"` // Register number
 	Name      string         `json:"name" bson:"name,omitempty" tableheader:"name" csv:"name"`
 	Role      string         `json:"role" bson:"role,omitempty" tableheader:"role" csv:"role"`
-	Type      string         `json:"type" bson:"type,omitempty" tableheader:"type" csv:"type"`                     // servidor, membro, pensionista or indefinido
+	Type      *string        `json:"type" bson:"type,omitempty" tableheader:"type" csv:"type"`                     // servidor, membro, pensionista or indefinido
 	Workplace string         `json:"workplace" bson:"workplace,omitempty" tableheader:"workplace" csv:"workplace"` // 'Lotacao' Like '10° Zona eleitoral'
 	Active    bool           `json:"active" bson:"active,omitempty" tableheader:"active" csv:"active"`             // 'Active' Or 'Inactive'
 	Income    *IncomeDetails `json:"income" bson:"income,omitempty" csv:"-"`

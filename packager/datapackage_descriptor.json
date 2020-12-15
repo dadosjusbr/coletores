@@ -81,8 +81,7 @@
                     "format": "default",
                     "description-ptbr": "Descreve se o empregado é um servidor, membro, pensionista ou indefinido",
                     "constraints": {
-                        "required": true,
-                        "enum": ["servidor", "membro", "pensionista", "indefinido"]
+                        "enum": ["servidor", "membro", "pensionista"]
                     }
                 },
                 {
