@@ -3,6 +3,7 @@ import sys
 import datetime
 
 import crawler
+import parser
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -38,3 +39,5 @@ if(int(year) > current_year):
     os._exit(1)
 
 files = crawler.crawl(output_path, driver_path, month, year)
+result  = parser.crawler_result(files,month,year)
+print(result)

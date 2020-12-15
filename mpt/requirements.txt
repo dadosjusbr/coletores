@@ -1,7 +1,12 @@
 DateTime==4.3
+defusedxml==0.6.0
+numpy==1.19.4
+odfpy==1.4.1
+pandas==1.1.5
 pathlib==1.0.1
-pkg-resources==0.0.0
+python-dateutil==2.8.1
 pytz==2020.4
 selenium==3.141.0
+six==1.15.0
 urllib3==1.26.2
 zope.interface==5.2.0
