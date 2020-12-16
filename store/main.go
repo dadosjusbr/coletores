@@ -95,16 +95,13 @@ func summary(employees []coletores.Employee) storage.Summaries {
 	memberActive := storage.Summary{}
 	undefined := storage.Summary{}
 	servantActive := storage.Summary{}
-	pensioner := storage.Summary{}
 	for _, emp := range employees {
 		updateSummary(&general, emp)
 		switch {
-		case emp.Type == "membro" && emp.Active:
+		case *emp.Type == "membro" && emp.Active:
 			updateSummary(&memberActive, emp)
-		case emp.Type == "servidor" && emp.Active:
+		case *emp.Type == "servidor" && emp.Active:
 			updateSummary(&servantActive, emp)
-		case emp.Type == "pensionista":
-			updateSummary(&pensioner, emp)
 		case emp.Type == nil:
 			updateSummary(&undefined, emp)
 		}
@@ -117,7 +114,6 @@ func summary(employees []coletores.Employee) storage.Summaries {
 		MemberActive:  memberActive,
 		Undefined:     undefined,
 		ServantActive: servantActive,
-		Pensioner:     pensioner,
 	}
 }
 
