@@ -13,7 +13,7 @@ def get_args():
     month = os.getenv("MONTH")
     month = get_month_name(int(month))
     year = os.getenv("YEAR")
-    outputPath = os.getenv("OUTPUT")
+    outputPath = os.getenv("OUTPUT_FOLDER")
 
     return {
         "month": month,
@@ -40,7 +40,7 @@ def get_month_name(month):
 
 #Execução principal 
 def main(args):
-    file_names  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
+    file_names  =  crawler.get_relevant_data(args["year"],args["month"],args["output_"])
     result  =  parser.crawler_result(args['year'],args['month'],args['outputPath'],file_names)
     print(result)
 
