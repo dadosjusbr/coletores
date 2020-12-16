@@ -1,6 +1,7 @@
 import requests
 import pathlib
-
+import sys
+import os
 baseURL = 'https://www.mpm.mp.br/sistemas/consultaFolha/php/'
 
 beneficiary_types = {1: 'Membros ativos',
@@ -42,7 +43,8 @@ def download(url, file_path):
           file.write(response.content)
       file.close()
     except:
-      print('Não foi possível fazer o download do arquivo: ' + file_path)
+       sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path )
+       os._exit(1)
 
 # Crawl retrieves payment files from MPM.
 

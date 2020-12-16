@@ -1,8 +1,11 @@
 import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
+from gitversion import rewritable_git_version
 import math
 import pathlib
+import sys
+import os
 
 # Read data downloaded from the crawler
 
@@ -12,7 +15,8 @@ def read_data(path):
         data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
         return data
     except:
-        print('Não foi possível ler o arquivo: ' + path)
+        sys.stderr.write("'Não foi possível ler o arquivo: " + path)
+        os._exit(1)
 
 # Define first iterable line
 
@@ -237,7 +241,7 @@ def crawler_result(year, month, file_names):
         'crawler':
         {  # CrawlerObject
             'crawlerID': 'mpm',
-            'crawlerVersion': 'inicial',
+            'crawlerVersion': rewritable_git_version(__file__),
         },
         # 'files' : file_names,
         'employees': final_employees,
