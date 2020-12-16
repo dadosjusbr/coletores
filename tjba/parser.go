@@ -13,17 +13,17 @@ import (
 )
 
 func parse(filePath string) ([]coletores.Employee, error) {
-	tjbaEmployees, err := NewTjbaEmployees(filePath)
+	tjbaEmployees, err := newTjbaEmployees(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing employees: %q", err)
 	}
 
-	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
+	employees := fromTjbaEmployeeToEmployee(tjbaEmployees)
 	return employees, nil
 }
 
-// NewTjbaEmployees creates a tjbaEmployee from a JSON file
-func NewTjbaEmployees(filePath string) ([]tjbaEmployee, error) {
+// newTjbaEmployees creates a tjbaEmployee from a JSON file
+func newTjbaEmployees(filePath string) ([]tjbaEmployee, error) {
 	jsonFile, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error trying to open file at (%s) : %q", filePath, err)
@@ -61,8 +61,8 @@ func active(value string) bool {
 	return value == "A"
 }
 
-// FromTjbaEmployeeToEmployee convert from TJ-BA employee to coletores.Employee
-func FromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
+// fromTjbaEmployeeToEmployee convert from TJ-BA employee to coletores.Employee
+func fromTjbaEmployeeToEmployee(tjbaEmployee []tjbaEmployee) []coletores.Employee {
 	var employees []coletores.Employee
 	for i := range tjbaEmployee {
 		employee := coletores.Employee{}

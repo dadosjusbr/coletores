@@ -12,7 +12,7 @@ import (
 const tjbaPayload = "testdata/payload.json"
 
 func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
-	employees, err := NewTjbaEmployees(tjbaPayload)
+	employees, err := newTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
 	var expectedTjbaEmployee = tjbaEmployee{
@@ -43,7 +43,7 @@ func TestCreateTjbaEmployeesFromJSON(t *testing.T) {
 
 func TestFailWhenParsingInvalidTjbaEmployeesJSON(t *testing.T) {
 	expectedError := status.NewError(status.InvalidInput, errors.New("Error during JSON parsing"))
-	_, err := NewTjbaEmployees("testdata/invalid-payload.json")
+	_, err := newTjbaEmployees("testdata/invalid-payload.json")
 
 	assert.Error(t, err)
 	assert.Equal(t, expectedError, err)
@@ -88,11 +88,11 @@ func TestConvertFromTjbaEmployeeActiveToEmployeeActive(t *testing.T) {
 	}
 }
 
-func TestFromTjbaEmployeeToEmployee(t *testing.T) {
-	tjbaEmployees, err := NewTjbaEmployees(tjbaPayload)
+func TestfromTjbaEmployeeToEmployee(t *testing.T) {
+	tjbaEmployees, err := newTjbaEmployees(tjbaPayload)
 	assert.NoError(t, err)
 
-	employees := FromTjbaEmployeeToEmployee(tjbaEmployees)
+	employees := fromTjbaEmployeeToEmployee(tjbaEmployees)
 	assert.Equal(t, len(employees), 1)
 
 	var zero = 0.0
