@@ -39,5 +39,5 @@ if(int(year) > current_year):
     os._exit(1)
 
 files = crawler.crawl(output_path, driver_path, month, year)
-result  = parser.crawler_result(files,month,year)
+result  = parser.parse(files,month,year)
 print(result)

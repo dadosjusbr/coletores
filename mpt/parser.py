@@ -2,6 +2,8 @@ import pandas as pd
 from datetime import datetime
 from pandas_ods_reader import read_ods
 import math
+import sys
+import os
 nan = float('nan')
 
 #Read excel file and turn data as a dataframe object
@@ -9,7 +11,8 @@ def read_data(file):
     try:
         data = pd.read_excel(file)
     except Exception as excep:
-        print(excep)
+        sys.stderr.write('Cannot read data from file. The following exception was raised: ' + excep)
+        os._exit(1)
     else: 
         return data
 
@@ -57,11 +60,6 @@ def get_employee_name(employee):
     reg_name = employee.split('-')
     return reg_name[1]
 
-#Return employee Reg
-def get_employee_reg(employee):
-    reg_name = employee.split('-')
-    return reg_name[0]
-
 #Return all employees in file on struct format 
 def all_employees(file):
 
@@ -79,7 +77,7 @@ def all_employees(file):
     return employees_struct(begin,end,data,file_type)
 
 #Format Values to valid string remove (R$)
-def format_string(string):
+def cleanup_currency(string):
     if(isinstance(string, float)):
         return string
     elif(isinstance(string,int)):
@@ -103,43 +101,43 @@ def employees_struct(begin,end,data,file_type):
     employees = []
     for i in range(begin,end):
         employee = {
-            'reg' : get_employee_reg(data.iloc[i][0]),
-            'name': get_employee_name(data.iloc[i][0]),
+            'reg' : data.iloc[i][0].split('-')[0],
+            'name': data.iloc[i][0].split('-')[1],
             'role': data.iloc[i][1],
             'type': file_type,  
             'workplace': data.iloc[i][2],
             'active': True if ('Ativos' in file_type) else False,
             "income": 
             #Income Details
-            {'total' : format_string(data.iloc[i][18]), #Total Liquido
-             'wage'  : format_string(data.iloc[i][4]),
+            {'total' : cleanup_currency(data.iloc[i][18]), #Total Liquido
+             'wage'  : cleanup_currency(data.iloc[i][4]),
              'perks' : 
             #Perks Object 
-            { 'total' : format_string(data.iloc[i][10]),
-               'compensatory_leave': format_string(data.iloc[i][9]),
-               'vacation_pecuniary':format_string(data.iloc[i][8]),#Férias
+            { 'total' : cleanup_currency(data.iloc[i][10]),
+               'compensatory_leave': cleanup_currency(data.iloc[i][9]),
+               'vacation_pecuniary':cleanup_currency(data.iloc[i][8]),#Férias
             },
             'other': 
             { #Funds Object 
-              'total': format_string(data.iloc[i][11]),
-              'trust_position' : format_string(data.iloc[i][6]), 
-              'gratification': format_string(data.iloc[i][7]),
+              'total': cleanup_currency(data.iloc[i][11]),
+              'trust_position' : cleanup_currency(data.iloc[i][6]), 
+              'gratification': cleanup_currency(data.iloc[i][7]),
             } ,
             } ,
             'discounts':
             { #Discounts Object
-              'total' : format_string(data.iloc[i][17]) * -1  if ( format_string(data.iloc[i][17]) < 0) else (format_string(data.iloc[i][17])),
-              'prev_contribution': format_string(data.iloc[i][13]) * -1  if ( format_string(data.iloc[i][13]) < 0) else (format_string(data.iloc[i][13])),
-              'ceil_retention': format_string(data.iloc[i][15]) * -1  if ( format_string(data.iloc[i][15]) < 0) else (format_string(data.iloc[i][15])),
-              'income_tax': format_string(data.iloc[i][14]) * -1  if ( format_string(data.iloc[i][14]) < 0) else (format_string(data.iloc[i][14])),
+              'total' : cleanup_currency(data.iloc[i][17]) * -1  if ( cleanup_currency(data.iloc[i][17]) < 0) else (cleanup_currency(data.iloc[i][17])),
+              'prev_contribution': cleanup_currency(data.iloc[i][13]) * -1  if ( cleanup_currency(data.iloc[i][13]) < 0) else (cleanup_currency(data.iloc[i][13])),
+              'ceil_retention': cleanup_currency(data.iloc[i][15]) * -1  if ( cleanup_currency(data.iloc[i][15]) < 0) else (cleanup_currency(data.iloc[i][15])),
+              'income_tax': cleanup_currency(data.iloc[i][14]) * -1  if ( cleanup_currency(data.iloc[i][14]) < 0) else (cleanup_currency(data.iloc[i][14])),
             }
         }
         employees.append(employee)
 
     return (employees)
 
-#Return Crawler result object 
-def crawler_result(files,month,year):
+#Return Result object 
+def parse(files,month,year):
     employees = []
     for file in files:
         file_employees = all_employees(file)
@@ -147,13 +145,13 @@ def crawler_result(files,month,year):
             employees.append(employee)
 
     return {
-        'agencyID' : 'MPF' ,
+        'agencyID' : 'mpt' ,
         'month' : month,
         'year' : year,
         'crawler': 
         { #CrawlerObject
-             'crawlerID': 'MPT',
-             'crawlerVersion': 'Inicial' ,  
+             'crawlerID': 'mpt',
+             'crawlerVersion': os.environ['GIT_COMMIT'] ,  
         },
         'files' : files,
         'employees': employees,
