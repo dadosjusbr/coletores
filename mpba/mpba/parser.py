@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 
 def build_crawler_result(month, year, employees):
@@ -8,7 +9,7 @@ def build_crawler_result(month, year, employees):
         "year": year,
         "crawler": {
             "crawlerID": "mpba",
-            "crawlerVersion": "",  # FIXME git commit
+            "crawlerVersion": os.getenv("GIT_COMMIT"),
         },
         "files": [],
         "employees": employees,

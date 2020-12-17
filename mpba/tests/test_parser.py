@@ -103,7 +103,9 @@ def test_get_status(workplace, expected_status):
     assert _status(workplace) is expected_status
 
 
-def test_crawler_result():
+def test_crawler_result(monkeypatch):
+    expected_git_commit = "a1b2c3"
+    monkeypatch.setenv("GIT_COMMIT", expected_git_commit)
     employees = parse(payload)
     expected_crawler_result = {
         "agencyID": "MP-BA",
@@ -111,7 +113,7 @@ def test_crawler_result():
         "year": 2020,
         "crawler": {
             "crawlerID": "mpba",
-            "crawlerVersion": "",  # FIXME git commit
+            "crawlerVersion": expected_git_commit,
         },
         "files": [],
         "employees": employees,
@@ -125,3 +127,11 @@ def test_crawler_result():
     assert crawler_result["month"] == expected_crawler_result["month"]
     assert crawler_result["year"] == expected_crawler_result["year"]
     assert crawler_result["employees"] == expected_crawler_result["employees"]
+    assert (
+        crawler_result["crawler"]["crawlerID"]
+        == expected_crawler_result["crawler"]["crawlerID"]
+    )
+    assert (
+        crawler_result["crawler"]["crawlerVersion"]
+        == expected_crawler_result["crawler"]["crawlerVersion"]
+    )
