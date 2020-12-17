@@ -4,14 +4,53 @@ Este crawler tem como objetivo a recuperação de informações sobre folhas de 
 dos funcionários do Ministério Público do Estado da Bahia (MP-BA). O site com as informações
 pode ser acessado [aqui](https://lai.sistemas.mpba.mp.br/).
 
-O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e ano) e é baixado um
-arquivo no formato **JSON** representando a folha de pagamento da instituição.
+O crawler está estruturado como uma CLI. Você passa dois argumentos (mês e ano) e é impresso um
+**JSON** representando a folha de pagamento da instituição.
 
 ## Legislação
 
 Os dados devem estar de acordo com a [Resolução 102 do CNJ](https://atos.cnj.jus.br/atos/detalhar/69).
 
 ## Como usar
+
+Execute os comandos dentro da pasta do coletor `mpba/`.
+
+### Executando com Docker
+
+Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/).
+
+Para construir a imagem, execute:
+
+```sh
+docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mpba .
+```
+
+Antes de rodar o comando, caso ainda não tenha, crie um volume do `dadosjus`:
+
+```sh
+docker volume create dadosjus
+```
+
+Rode o comando passando o mês e o ano como argumentos:
+
+```sh
+docker run --mount source=dadosjus,target=/dadojus_crawling_output/ mpba mpba --mes=${MES} --ano=${ANO}
+```
+
+### Executando sem uso do docker:
+
+É preciso ter o Python +3.8 instalado em sua máquina. Mais informações [aqui](https://www.python.org/downloads/).
+Depois, instale as dependências executando `pip install -r requirements.txt`.
+É recomendado o uso de _virtual environments_ para manter as dependências e
+variáveis isoladas. Agora você pode executar:
+
+```sh
+MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python mpba/cli.py
+```
+
+## Testes
+
+Você pode executar os testes (após instalar as dependências) com o comando `pytest`.
 
 ## Dicionário de Dados
 
