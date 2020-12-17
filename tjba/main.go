@@ -3,23 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
 
 	"github.com/dadosjusbr/coletores"
 	"github.com/dadosjusbr/coletores/status"
-	"github.com/joho/godotenv"
 )
 
 var gitCommit string
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file to load.")
-	}
-
 	month, err := strconv.Atoi(os.Getenv("MONTH"))
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("Invalid month (\"%s\"): %q", os.Getenv("MONTH"), err)))
