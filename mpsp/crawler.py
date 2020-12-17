@@ -72,10 +72,10 @@ def links_remuneration(month, year):
                     link = baseURL + beneficiary_types[key] + '/Tabela%201%20Servidores%20Inativos%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(beneficiary_types[key] == 'Pensionistas_membros'):
-                    link = baseURL + beneficiary_types[key] + '/Beneficiarios%20Membros%20ref%20' + month + '-' + year + '.ods'
+                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Beneficiarios%20Membros%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(beneficiary_types[key] == 'Pensionistas_servidores'):
-                    link = baseURL + beneficiary_types[key] + '/Beneficiarios%20Servidores%20ref%20' + month + '-' + year + '.ods'
+                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Beneficiarios%20servidores%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
 
             elif(month == '10'):
@@ -147,11 +147,17 @@ def links_remuneration(month, year):
                     links_type[beneficiary_types[key]] = link
 
             elif(beneficiary_types[key] == 'Servidores_ativos'):
-                if(month in  ['01', '03', '04', '05', '06']):
+                if(month in  ['01', '03']):
                     link = baseURL + beneficiary_types[key] + '/Tabela%20I%20%20servidores%20ativos%20ref' + month + '19.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '02'):
                     link = baseURL + beneficiary_types[key] + '/Tabela%20I%20%20servidores%20ativos%20ref' + month + '19-a.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month in ['04', '05']):
+                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20servidores%20ativos%20ref' + month + '19.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '06'):
+                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20Servidores%20Ativos%20ref' + month + '19.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '07'):
                     link = baseURL + beneficiary_types[key] + '/Servidores%20Ativos%20-%20Tabela%20I%20ref%20' + month + year +'.ods'
@@ -174,19 +180,19 @@ def links_remuneration(month, year):
 
             elif(beneficiary_types[key] == 'Servidores_inativos'):
                 if(month in ['01', '02', '03', '04', '05']):
-                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20servidores%20inativos%20ref' + month + '19.ods'
-                    links_type[beneficiary_types[key]] = link
+                    link = baseURL + 'servidores_inativos/Tabela%20I%20servidores%20inativos%20ref' + month + '19.ods'
+                    links_type[beneficiary_types[key]] = link    
                 elif(month == '06'):
-                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20Servidores%20Inativos%20ref' + month + '19.ods'
+                    link = baseURL + 'servidores_inativos/Tabela%20I%20Servidores%20Inativos%20ref' + month + '19.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '07'):
-                    link = baseURL + beneficiary_types[key] + '/Servidores%20Inativos%20-%20Tabela%20I%20ref%20' + month + year +'.ods'
+                    link = baseURL + 'servidores_inativos/Servidores%20Inativos%20-%20Tabela%20I%20ref%20' + month + year +'.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '08'):
-                    link = baseURL + beneficiary_types[key] + 'Servidores%20Inativos%20-%20Tabela%20I%20ref' + month + year + '.ods'
+                    link = baseURL + 'servidores_inativos/Servidores%20Inativos%20-%20Tabela%20I%20ref' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month in ['09', '11', '12']):
-                    link = baseURL + beneficiary_types[key] + 'Tabela%20I%20servinat' + month + year + '.ods'
+                    link = baseURL + 'servidores_inativos/Tabela%20I%20servinat' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
                     link = baseURL + beneficiary_types[key] + '/Tabela%20I%20servinat09' + year + '_1.ods'
@@ -194,13 +200,13 @@ def links_remuneration(month, year):
             
             elif(beneficiary_types[key] == 'Pensionistas_membros'):
                 if(month == '01'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Membros%20ref%20' + month + year +'.ods'
+                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Membros%20ref%20' + month + '19.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '02'):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20do%20Minist%C3%A9rio%20P%C3%BAblico%20Membros%20ref%20' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month in ['03', '04', '05', '06']):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20' + month + year +'.ods'
+                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '07'):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_JULHO_' + year + '.ods'
@@ -223,7 +229,7 @@ def links_remuneration(month, year):
             
             elif(beneficiary_types[key] == 'Pensionistas_servidores'):
                 if(month == '01'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Servidores%20ref%20' + month + year +'.ods'
+                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Servidores%20ref%20' + month + '19.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '02'):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20do%20Minist%C3%A9rio%20P%C3%BAblico%20Servidores%20ref%20' + month + year + '.ods'
@@ -253,6 +259,7 @@ def links_remuneration(month, year):
     return links_type
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
+    print(response.status_code)
     with open(".//" + file_path, "wb") as file:
         file.write(response.content)
     file.close()
