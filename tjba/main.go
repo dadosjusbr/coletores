@@ -47,22 +47,20 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(status.DataUnavailable, fmt.Errorf("JSON marshaling error: %q", err)))
 	}
-	log.Println(string(b))
+	fmt.Println(string(b))
 }
 
 func newCrawlingResult(emps []coletores.Employee, filePath string, month, year int) coletores.CrawlingResult {
-	crawlerInfo := coletores.Crawler{
-		CrawlerID:      "tjba",
-		CrawlerVersion: gitCommit,
-	}
-	cr := coletores.CrawlingResult{
+	return coletores.CrawlingResult{
 		AgencyID:  "tjba",
 		Month:     month,
 		Year:      year,
 		Files:     []string{filePath},
 		Employees: emps,
-		Crawler:   crawlerInfo,
+		Crawler: coletores.Crawler{
+			CrawlerID:      "tjba",
+			CrawlerVersion: gitCommit,
+		},
 		Timestamp: time.Now(),
 	}
-	return cr
 }

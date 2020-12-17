@@ -29,7 +29,10 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Build a small image
-FROM scratch
+FROM alpine:3.7
+RUN apk update && \
+    apk add ca-certificates && \
+    rm -rf /var/cache/apk/*
 
 COPY --from=builder /dist/ /
 
