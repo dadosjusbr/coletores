@@ -22,7 +22,7 @@ Serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram 
  - Construção da imagem:
 
   ```sh
-    sudo docker build -t mpf .  
+    sudo docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mpm .  
   ```
 
   ```sh

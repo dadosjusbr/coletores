@@ -1,7 +1,6 @@
 import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
-from gitversion import rewritable_git_version
 import math
 import pathlib
 import sys
@@ -215,7 +214,7 @@ def all_employees_indemnity(data, begin_row, end_row, indemnity_data, ):
     return (employees)
 
 
-def crawler_result(year, month, file_names):
+def crawler_result(year, month, file_names, version_crawler):
     final_employees = []
     indemnity_files_names = []
     files_names = []
@@ -241,7 +240,7 @@ def crawler_result(year, month, file_names):
         'crawler':
         {  # CrawlerObject
             'crawlerID': 'mpm',
-            'crawlerVersion': rewritable_git_version(__file__),
+            'crawlerVersion': version_crawler,
         },
         # 'files' : file_names,
         'employees': final_employees,

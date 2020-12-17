@@ -24,6 +24,8 @@ else:
 now = datetime.datetime.now()
 current_year = now.year
 current_month = now.month
+version_crawler = os.getenv('GIT_COMMIT')
+
 if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
     os._exit(1)
@@ -38,7 +40,7 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    result = parser.crawler_result(year, month, file_names)
+    result = parser.crawler_result(year, month, file_names, version_crawler)
     print(result)
 
 
