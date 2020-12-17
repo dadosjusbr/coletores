@@ -13,12 +13,14 @@ def get_args():
     month = os.getenv("MONTH")
     month = get_month_name(int(month))
     year = os.getenv("YEAR")
-    outputPath = os.getenv("OUTPUT")
+    outputPath = os.getenv("OUTPUT_FOLDER")
+    crawl_version = os.getenv('GIT_COMMIT')
 
     return {
         "month": month,
         "year": year,
-        "outputPath": outputPath
+        "outputPath": outputPath,
+        'version':crawl_version
     }
 
 #Metodo auxiliar responsável pela tradução do numero do mês em String
@@ -41,7 +43,7 @@ def get_month_name(month):
 #Execução principal 
 def main(args):
     file_names  =  crawler.get_relevant_data(args["year"],args["month"],args["outputPath"])
-    result  =  parser.crawler_result(args['year'],args['month'],args['outputPath'],file_names)
+    result  =  parser.crawler_result(args['year'],args['month'],args['outputPath'],args['version'],file_names)
     print(result)
 
 args = get_args()

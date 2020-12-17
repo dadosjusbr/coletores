@@ -5,9 +5,9 @@ Este crawler tem como objetivo a recuperação de informações sobre folhas de 
 O crawler está estruturado de modo que serão passadas via cli três parâmetros descritos abaixo:
 
 ```sh
-MONTH= (Inteiro entre 1 - 12 responsável por indicar o mês)
-YEAR= (Inteiro entre 2015 - 2020 responsável por indicar o ano)
-OUTPUT= (Parâmetro no formato ./nomeDaPastaDestino responsável por indicar em qual diretório filho de src o download dos arquivos deve ser realizado, caso o diretório não exista ele será criado)
+MONTH = (Inteiro entre 1 - 12 responsável por indicar o mês)
+YEAR = (Inteiro entre 2015 - 2020 responsável por indicar o ano)
+OUTPUT_FOLDER = (Parâmetro no formato ./nomeDaPastaDestino responsável por indicar em qual diretório filho de src o download dos arquivos deve ser realizado, caso o diretório não exista ele será criado)
 ```
 O número de arquivos baixados e seus respectivos formatos variam de acordo com o mês e ano solicitado na consulta.
 
@@ -41,13 +41,13 @@ Para consultas que se referem á meses iguais ou posteriores á Julho de 2019, s
 
 ### Executando com Docker
 
-- Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/
+- Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/).
 
 - Construção da imagem:
 
 ```sh
 cd coletores/mpf
-sudo docker build -t mpf .
+sudo docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mpf .
 ``` 
 - Execução:  
     - Para executar será necessário utilizar-se  do seguinte comando:   

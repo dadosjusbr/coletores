@@ -1,5 +1,7 @@
 import requests
 import pathlib 
+import os
+import sys
 
 _REMU_MEMBROS_ATIVOS ='remuneracao-membros-ativos'
 _REMU_SERVIDORES_ATIVOS ='remuneracao-servidores-ativos'
@@ -19,10 +21,13 @@ def write_file(response,file_name,output_path):
     pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
 
     #Transcrição da resposta HTTP para o disco
-    with open(".//" + output_path + "//" + file_name, "wb") as file :
-        file.write(response.content)
-    
-    file.close()
+    try:
+        with open(".//" + output_path + "//" + file_name, "wb") as file :
+            file.write(response.content)
+        file.close()
+    except:
+        sys.stderr.write('Não foi possivel armazenar em disco o seguinte arquivo: ' + file_name)
+        os._exit(1)
 
 #Processo de download Especifico para Verbas Indenizatórias e remunerações Temporarias
 def specific_query(year,month,output_path):
@@ -51,8 +56,16 @@ def specific_query(year,month,output_path):
             
             try:
                 response  = requests.get(final_url, allow_redirects=True)
-            except  requests.ConnectionError:
-                print('Failed to connect')
+                response.raise_for_status()
+            except  requests.exceptions.Timeout:
+                sys.stderr.write('A requisição para a url { ' + final_url + ' } excedeu o tempo limite.')
+                os._exit(1)
+            except requests.exceptions.TooManyRedirects:
+                sys.stderr.write('A requisição para a url { ' + final_url + ' } não pôde acessar a pagina requisitada por ter sido redicionada muitas vezes.')
+                os._exit(1)
+            except requests.exceptions.HTTPError as error:
+                sys.stderr.write('A requisição para a url { ' + final_url + ' } falhou retornando erro HTTP: ' + error) 
+                os.exit(1)  
 
             #Escreve em disco conteudo da resposta HTTP 
             write_file(response,file_name,output_path)
@@ -84,9 +97,17 @@ def query(year,month,data_type,output_path):
     final_url  = url + year + '/'+ data_type + '_' + year + "_" + month + extension
 
     try:
-        response  = requests.get(final_url, allow_redirects=True)
-    except  requests.ConnectionError:
-        print('Failed to connect')
+        response = requests.get(final_url, allow_redirects=True)
+        response.raise_for_status()
+    except requests.exceptions.Timeout:
+        sys.stderr.write('A requisição para a url { ' + final_url + ' } excedeu o tempo limite.')
+        os._exit(1)
+    except requests.exceptions.TooManyRedirects:
+        sys.stderr.write('A requisição para a url { ' + final_url + ' } não pôde acessar a pagina requisitada por ter sido redicionada muitas vezes.')
+        os._exit(1)
+    except requests.exceptions.HTTPError as error:
+        sys.stderr.write('A requisição para a url { ' + final_url + ' } falhou retornando erro HTTP: ' + error) 
+        os.exit(1)
  
     file_name =  data_type + '_' + year + "_" + month + extension
     write_file(response,file_name,output_path)

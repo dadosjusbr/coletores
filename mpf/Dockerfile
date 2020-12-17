@@ -1,6 +1,8 @@
 # set base image (host OS)
 FROM python:3.8
 
+ARG GIT_COMMIT=unspecified
+ENV GIT_COMMIT=$GIT_COMMIT
 # set the working directory in the container
 WORKDIR /code
 

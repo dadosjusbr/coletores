@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime
 import math
+import sys
+import os
 nan = float('nan')
 
 #Definindo primeira Linha iterável da planilha 
@@ -17,6 +19,7 @@ def get_begin_row(data,rows,begin_string):
                 return i 
         except:
             return i
+
 #Definindo ultima Linha Iterável da Planilha
 def get_end_row(data,rows,end_string):
     rows.reverse()
@@ -46,7 +49,8 @@ def read_data(path,extension):
     try:
         data = pd.read_excel(path,engine = df_engine)
     except Exception as excep:
-        print(excep)
+        sys.stderr('Não foi possível fazer a leitura do arquivo: ' + path +'e o seguinte error foi gerado:' + excep)
+        os._exit(1)
     return data
 
 #Definindo primeira Linha iterável da planilha para planilhas sem Indenizações
@@ -333,10 +337,11 @@ def get_file_kind(name):
     elif('colaboradores' in name):
         return 'Colaboradores Ativos'
     else:
-        raise ValueError('Invalid filename')
+        sys.stderr.write('Tipo de arquivo não identificado: ' + name)
+        os._exit(1)
 
 #Processo de geração do objeto resultado do Crawler e Parser. 
-def crawler_result(year,month,outputPath,file_names):
+def crawler_result(year,month,outputPath,version,file_names):
     #Realizando o processo de parser em todas as planilhas
     employee = []
     final_employees = [] 
@@ -357,16 +362,15 @@ def crawler_result(year,month,outputPath,file_names):
     now  = datetime.now()
 
     return {
-        'agencyID' : 'MPF' ,
+        'agencyID' : 'mpf' ,
         'month' : month_number,
         'year' : int(year),
         'crawler': 
         { #CrawlerObject
              'crawlerID': 'mpf',
-             'crawlerVersion': 'Inicial' ,  
+             'crawlerVersion': version,  
         },
         'files' : file_names,
         'employees': employee,
         'timestamp': now.strftime("%H:%M:%S"),
-        'procInfo' : ''
     }
