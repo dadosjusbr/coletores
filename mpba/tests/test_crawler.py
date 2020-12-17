@@ -1,4 +1,3 @@
-import pytest
 from mpba.crawler import crawl
 from unittest.mock import patch
 

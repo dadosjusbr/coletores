@@ -1,6 +1,6 @@
-from mpba.parser import parse, _status
+from datetime import datetime
+from mpba.parser import build_crawler_result, parse, _status
 import pytest
-import json
 
 
 payload = [
@@ -101,3 +101,27 @@ def test_raise_exception_when_payload_is_invalid():
 )
 def test_get_status(workplace, expected_status):
     assert _status(workplace) is expected_status
+
+
+def test_crawler_result():
+    employees = parse(payload)
+    expected_crawler_result = {
+        "agencyID": "MP-BA",
+        "month": 1,
+        "year": 2020,
+        "crawler": {
+            "crawlerID": "mpba",
+            "crawlerVersion": "",  # FIXME git commit
+        },
+        "files": [],
+        "employees": employees,
+        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "procInfo": None,
+    }
+
+    crawler_result = build_crawler_result(1, 2020, employees)
+    assert crawler_result.keys() == expected_crawler_result.keys()
+    assert crawler_result["agencyID"] == expected_crawler_result["agencyID"]
+    assert crawler_result["month"] == expected_crawler_result["month"]
+    assert crawler_result["year"] == expected_crawler_result["year"]
+    assert crawler_result["employees"] == expected_crawler_result["employees"]

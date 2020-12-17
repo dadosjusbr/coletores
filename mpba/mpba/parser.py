@@ -1,3 +1,22 @@
+from datetime import datetime
+
+
+def build_crawler_result(month, year, employees):
+    return {
+        "agencyID": "MP-BA",
+        "month": month,
+        "year": year,
+        "crawler": {
+            "crawlerID": "mpba",
+            "crawlerVersion": "",  # FIXME git commit
+        },
+        "files": [],
+        "employees": employees,
+        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "procInfo": None,
+    }
+
+
 def parse(payload):
     employees = []
     for item in payload:
