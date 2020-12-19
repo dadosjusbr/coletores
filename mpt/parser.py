@@ -17,14 +17,14 @@ def read_data(file):
         return data
 
 #Return frist row (int) of interesting data
-def get_begin_row(data,rows,begin_string):
+def get_begin_row(data, rows, begin_string):
     for row in rows:
         if(data.iloc[row][0] == begin_string):
             new_begin = int(row)
     
     #Frist not none id afther begin_string
     begin = new_begin + 1
-    for i in range(begin,len(data.index)):
+    for i in range(begin, len(data.index)):
         try:
             if(not math.isnan(data.iloc[i][0])):
                 return i 
@@ -32,7 +32,7 @@ def get_begin_row(data,rows,begin_string):
             return i
 
 #Return last row (int) of interesting data
-def get_end_row(data,rows,end_string):
+def get_end_row(data, rows, end_string):
     rows.reverse()
     for row in rows:
         if(data.iloc[row][0] == end_string):
@@ -62,23 +62,23 @@ def all_employees(file):
     rows = list(data.index.values)
 
     begin_string = "Matrícula ou Nome"
-    begin = get_begin_row(data,rows,begin_string)
+    begin = get_begin_row(data, rows, begin_string)
 
     end_string =  "Fonte da Informação: Sistema MentorRH"
-    end = get_end_row(data,rows,end_string)
+    end = get_end_row(data, rows, end_string)
 
     file_type = get_file_type(file)
 
-    return employees_struct(begin,end,data,file_type)
+    return employees_struct(begin, end, data, file_type)
 
 #Format Values to valid string remove (R$)
 def cleanup_currency(string):
-    if(isinstance(string, float)):
+    if(isinstance(string,  float)):
         return string
-    elif(isinstance(string,int)):
+    elif(isinstance(string, int)):
         return float(string)
 
-    aux  = str(string).split(',')
+    aux  = str(string).split(', ')
     int_part = aux[0]
     cents = aux[1]
 
@@ -92,41 +92,41 @@ def cleanup_currency(string):
     return float(final_int + '.' + cents)
 
 # Return all employees of a sheet in a struct
-def employees_struct(begin,end,data,file_type):
+def employees_struct(begin, end, data, file_type):
     employees = []
-    for i in range(begin,end):
+    for i in range(begin, end):
         employee = {
-            'reg' : int(data.iloc[i][0].split('-')[0]),
-            'name': data.iloc[i][0].split('-')[1],
-            'role': data.iloc[i][1],
-            'type': file_type,  
-            'workplace': data.iloc[i][2],
-            'active': True if ('Ativos' in file_type) else False,
+            'reg' : int(data.iloc[i][0].split('-')[0]), 
+            'name': data.iloc[i][0].split('-')[1], 
+            'role': data.iloc[i][1], 
+            'type': file_type,   
+            'workplace': data.iloc[i][2], 
+            'active': True if ('Ativos' in file_type) else False, 
             "income": 
             #Income Details
-            {'total' : cleanup_currency(data.iloc[i][18]), #Total Liquido
-             'wage'  : cleanup_currency(data.iloc[i][4]),
+            {'total' : cleanup_currency(data.iloc[i][18]),  #Total Liquido
+             'wage'  : cleanup_currency(data.iloc[i][4]), 
              'perks' : 
             #Perks Object 
-            { 'total' : cleanup_currency(data.iloc[i][10]),
-               'compensatory_leave': cleanup_currency(data.iloc[i][9]),
-               'vacation_pecuniary':cleanup_currency(data.iloc[i][8]),#Férias
-            },
+            { 'total' : cleanup_currency(data.iloc[i][10]), 
+               'compensatory_leave': cleanup_currency(data.iloc[i][9]), 
+               'vacation_pecuniary':cleanup_currency(data.iloc[i][8]), #Férias
+            }, 
             'other': 
             { #Funds Object 
-              'total': cleanup_currency(data.iloc[i][11]),
-              'trust_position' : cleanup_currency(data.iloc[i][6]), 
-              'gratification': cleanup_currency(data.iloc[i][7]),
+              'total': cleanup_currency(data.iloc[i][11]), 
+              'trust_position' : cleanup_currency(data.iloc[i][6]),  
+              'gratification': cleanup_currency(data.iloc[i][7]), 
               'others':cleanup_currency(data.iloc[i][5])
 
-            } ,
-            } ,
+            } , 
+            } , 
             'discounts':
             { #Discounts Object
-              'total' : cleanup_currency(data.iloc[i][17]) * -1  if ( cleanup_currency(data.iloc[i][17]) < 0) else (cleanup_currency(data.iloc[i][17])),
-              'prev_contribution': cleanup_currency(data.iloc[i][13]) * -1  if ( cleanup_currency(data.iloc[i][13]) < 0) else (cleanup_currency(data.iloc[i][13])),
-              'ceil_retention': cleanup_currency(data.iloc[i][15]) * -1  if ( cleanup_currency(data.iloc[i][15]) < 0) else (cleanup_currency(data.iloc[i][15])),
-              'income_tax': cleanup_currency(data.iloc[i][14]) * -1  if ( cleanup_currency(data.iloc[i][14]) < 0) else (cleanup_currency(data.iloc[i][14])),
+              'total' : cleanup_currency(data.iloc[i][17]) * -1  if ( cleanup_currency(data.iloc[i][17]) < 0) else (cleanup_currency(data.iloc[i][17])), 
+              'prev_contribution': cleanup_currency(data.iloc[i][13]) * -1  if ( cleanup_currency(data.iloc[i][13]) < 0) else (cleanup_currency(data.iloc[i][13])), 
+              'ceil_retention': cleanup_currency(data.iloc[i][15]) * -1  if ( cleanup_currency(data.iloc[i][15]) < 0) else (cleanup_currency(data.iloc[i][15])), 
+              'income_tax': cleanup_currency(data.iloc[i][14]) * -1  if ( cleanup_currency(data.iloc[i][14]) < 0) else (cleanup_currency(data.iloc[i][14])), 
             }
         }
         employees.append(employee)
@@ -134,7 +134,7 @@ def employees_struct(begin,end,data,file_type):
     return (employees)
 
 #Return Result object 
-def parse(files,month,year,version):
+def parse(files, month, year, version):
     employees = []
     for file in files:
         file_employees = all_employees(file)
@@ -142,15 +142,15 @@ def parse(files,month,year,version):
             employees.append(employee)
 
     return {
-        'agencyID' : 'mpt' ,
-        'month' : month,
-        'year' : year,
+        'agencyID' : 'mpt' , 
+        'month' : month, 
+        'year' : year, 
         'crawler': 
         { #CrawlerObject
-             'crawlerID': 'mpt',
-             'crawlerVersion': version, 
-        },
-        'files' : files,
-        'employees': employees,
-        'timestamp': datetime.now().strftime("%H:%M:%S"),
+             'crawlerID': 'mpt', 
+             'crawlerVersion': version,  
+        }, 
+        'files' : files, 
+        'employees': employees, 
+        'timestamp': datetime.now().strftime("%H:%M:%S"), 
 }

@@ -33,7 +33,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 0.00,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary': 0.00,#Férias
+               'vacation_pecuniary': 0.00, #Férias
             },
             'other': 
             { #Funds Object 
@@ -74,7 +74,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 0.00,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary': 0.00,#Férias
+               'vacation_pecuniary': 0.00, #Férias
             },
             'other': 
             { #Funds Object 
@@ -115,7 +115,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 0.00,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary': 0.00,#Férias
+               'vacation_pecuniary': 0.00, #Férias
             },
             'other': 
             { #Funds Object 
@@ -156,7 +156,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 0.00,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary':0.00,#Férias
+               'vacation_pecuniary':0.00, #Férias
             },
             'other': 
             { #Funds Object 
@@ -197,7 +197,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 0.00,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary':0.00,#Férias
+               'vacation_pecuniary':0.00, #Férias
             },
             'other': 
             { #Funds Object 
@@ -238,7 +238,7 @@ class ParserTest(unittest.TestCase):
             #Perks Object 
             { 'total' : 949.87,
                'compensatory_leave': 0.00,
-               'vacation_pecuniary':339.72,#Férias
+               'vacation_pecuniary':339.72, #Férias
             },
             'other': 
             { #Funds Object 
@@ -260,7 +260,7 @@ class ParserTest(unittest.TestCase):
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
-        self.assertDictEqual(result_employees[0],expected_colaborator)
+        self.assertDictEqual(result_employees[0], expected_colaborator)
 
 if __name__ == '__main__':
     unittest.main()
