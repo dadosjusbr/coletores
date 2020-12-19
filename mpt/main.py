@@ -20,10 +20,14 @@ if('DRIVER_PATH' in os.environ):
 else:
     sys.stderr.write("Invalid arguments, missing parameter: 'DRIVER_PATH'.\n")
     os._exit(1)
-if('OUTPUT_PATH' in os.environ):
-    output_path = os.environ['OUTPUT_PATH']
+if('OUTPUT_FOLDER' in os.environ):
+    output_path = os.environ['OUTPUT_FOLDER']
 else:
     output_path = "/output"
+if('GIT_COMMIT' in os.environ):
+    version = os.environ['GIT_COMMIT']
+else:
+    version = 'unspecified'
 
 now = datetime.datetime.now()
 current_year = now.year
@@ -39,5 +43,5 @@ if(int(year) > current_year):
     os._exit(1)
 
 files = crawler.crawl(output_path, driver_path, month, year)
-result  = parser.parse(files,month,year)
+result  = parser.parse(files, month, year, version)
 print(result)

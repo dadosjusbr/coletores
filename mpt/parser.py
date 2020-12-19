@@ -11,7 +11,7 @@ def read_data(file):
     try:
         data = pd.read_excel(file)
     except Exception as excep:
-        sys.stderr.write('Cannot read data from file. The following exception was raised: ' + excep)
+        sys.stderr.write('Cannot read data from file. The following exception was raised: ' + str(excep))
         os._exit(1)
     else: 
         return data
@@ -36,7 +36,7 @@ def get_end_row(data,rows,end_string):
     rows.reverse()
     for row in rows:
         if(data.iloc[row][0] == end_string):
-            return int(row)  - 1
+            return int(row)
 
 #Return File type based on fileName
 def get_file_type(file):
@@ -53,12 +53,7 @@ def get_file_type(file):
     elif('Colaboradores' in file):
         return 'Colaboradores Ativos'
     else:
-        raise(ValueError)
-
-#Return employee Name 
-def get_employee_name(employee):
-    reg_name = employee.split('-')
-    return reg_name[1]
+        return 'Irregular/Unknown type'
 
 #Return all employees in file on struct format 
 def all_employees(file):
@@ -101,7 +96,7 @@ def employees_struct(begin,end,data,file_type):
     employees = []
     for i in range(begin,end):
         employee = {
-            'reg' : data.iloc[i][0].split('-')[0],
+            'reg' : int(data.iloc[i][0].split('-')[0]),
             'name': data.iloc[i][0].split('-')[1],
             'role': data.iloc[i][1],
             'type': file_type,  
@@ -122,6 +117,8 @@ def employees_struct(begin,end,data,file_type):
               'total': cleanup_currency(data.iloc[i][11]),
               'trust_position' : cleanup_currency(data.iloc[i][6]), 
               'gratification': cleanup_currency(data.iloc[i][7]),
+              'others':cleanup_currency(data.iloc[i][5])
+
             } ,
             } ,
             'discounts':
@@ -137,7 +134,7 @@ def employees_struct(begin,end,data,file_type):
     return (employees)
 
 #Return Result object 
-def parse(files,month,year):
+def parse(files,month,year,version):
     employees = []
     for file in files:
         file_employees = all_employees(file)
@@ -151,7 +148,7 @@ def parse(files,month,year):
         'crawler': 
         { #CrawlerObject
              'crawlerID': 'mpt',
-             'crawlerVersion': os.environ['GIT_COMMIT'] ,  
+             'crawlerVersion': version, 
         },
         'files' : files,
         'employees': employees,
