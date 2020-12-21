@@ -3,8 +3,7 @@ from pathlib import Path
 import sys
 import os
 import datetime
-import crawler
-import parser
+import crawler, parser
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -24,8 +23,11 @@ else:
 now = datetime.datetime.now()
 current_year = now.year
 current_month = now.month
-version_crawler = os.getenv('GIT_COMMIT')
+crawler_version = os.getenv('GIT_COMMIT')
 
+if(crawler_version == ''):
+    sys.stderr.write("crawler_version cannot be empty")
+    os._exit(1)
 if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
     os._exit(1)
@@ -40,7 +42,7 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    result = parser.crawler_result(year, month, file_names, version_crawler)
+    result = parser.crawler_result(year, month, file_names, crawler_version)
     print(result)
 
 

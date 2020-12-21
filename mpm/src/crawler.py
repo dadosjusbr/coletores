@@ -42,9 +42,9 @@ def download(url, file_path):
       with open(".//" + file_path, "wb") as file:
           file.write(response.content)
       file.close()
-    except:
-       sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path )
-       os._exit(1)
+    except Exception as excep:
+        sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path + '. O seguinte erro foi gerado: ' + excep )
+        os._exit(1)
 
 # Crawl retrieves payment files from MPM.
 

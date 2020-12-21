@@ -13,8 +13,8 @@ def read_data(path):
     try:
         data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
         return data
-    except:
-        sys.stderr.write("'Não foi possível ler o arquivo: " + path)
+    except Exception as excep:
+        sys.stderr.write("'Não foi possível ler o arquivo: " + path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
 # Define first iterable line
@@ -214,7 +214,7 @@ def all_employees_indemnity(data, begin_row, end_row, indemnity_data, ):
     return (employees)
 
 
-def crawler_result(year, month, file_names, version_crawler):
+def crawler_result(year, month, file_names, crawler_version):
     final_employees = []
     indemnity_files_names = []
     files_names = []
@@ -240,7 +240,7 @@ def crawler_result(year, month, file_names, version_crawler):
         'crawler':
         {  # CrawlerObject
             'crawlerID': 'mpm',
-            'crawlerVersion': version_crawler,
+            'crawlerVersion': crawler_version,
         },
         # 'files' : file_names,
         'employees': final_employees,
