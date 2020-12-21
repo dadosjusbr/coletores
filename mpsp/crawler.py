@@ -4,6 +4,8 @@ import requests
 from pandas_ods_reader import read_ods
 import pathlib
 
+# O links disponibilizado para os pensionistas membros e servidores são iguais no mes 07, 08 e 09 de 2019
+
 beneficiary_types = {1: 'Membros_ativos',
                      2: 'Membros_inativos',
                      3: 'Servidores_ativos',
@@ -137,13 +139,13 @@ def links_remuneration(month, year):
                     link = baseURL + beneficiary_types[key] + '/Membros%20Inativos%20-%20Tabela%20I%20ref%20' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '08'):
-                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20membros%20inativos%20ref' + month + 'A' + '.ods'
+                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20membros%20inativos%20ref' + month  + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month in ['09', '11', '12']):
-                    link = baseURL + beneficiary_types[key] + 'Tabela%20I%20membinat' + month + year + 'a.ods'
+                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20membinat' + month + year + 'a.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
-                    link = baseURL + beneficiary_types[key] + 'Tabela%20I%20membinat' + month + year + '.ods'
+                    link = baseURL + beneficiary_types[key] + '/Tabela%20I%20membinat' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
 
             elif(beneficiary_types[key] == 'Servidores_ativos'):
@@ -209,13 +211,13 @@ def links_remuneration(month, year):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '07'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_JULHO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_JULHO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '08'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_AGOSTO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_AGOSTO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '09'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_SETEMBRO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_SETEMBRO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Beneficiarios'  + month + year + 'Membros.xlsx'
@@ -238,13 +240,13 @@ def links_remuneration(month, year):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Benefici%C3%A1rios%20Servidores%20do%20Minist%C3%A9rio%20P%C3%BAblico%20' + month + year +'.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '07'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_JULHO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_JULHO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '08'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_AGOSTO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_AGOSTO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '09'):
-                    link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Pensionista_SETEMBRO_' + year + '.ods'
+                    link = 'http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Gestao_Pessoas/Pensionistas_gestao/Pensionistas_2019/Pensionista_SETEMBRO_2019.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
                     link = baseURL + 'Pensionistas/' + beneficiary_types[key] + '/Beneficiarios'  + month + year + 'Membros.xlsx'
