@@ -11,7 +11,7 @@ def read_data(file):
     try:
         data = pd.read_excel(file)
     except Exception as excep:
-        sys.stderr.write('Cannot read data from file. The following exception was raised: ' + str(excep))
+        sys.stderr.write('Cannot read data from file: ' + file + ' .Err: ' + str(excep))
         os._exit(1)
     else: 
         return data
@@ -53,7 +53,8 @@ def get_file_type(file):
     elif('Colaboradores' in file):
         return 'Colaboradores Ativos'
     else:
-        return 'Irregular/Unknown type'
+        sys.stderr.write("Irregular/Unknown filetype on file: " + file)
+        os._exit(1)
 
 #Return all employees in file on struct format 
 def all_employees(file):
@@ -78,7 +79,7 @@ def cleanup_currency(string):
     elif(isinstance(string, int)):
         return float(string)
 
-    aux  = str(string).split(', ')
+    aux  = str(string).split(',')
     int_part = aux[0]
     cents = aux[1]
 

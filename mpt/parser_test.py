@@ -5,11 +5,6 @@ import os
 # Unit test for each mpt spreadsheet, in order to increase confidence in the parsing process.
 # Objects created by analyzing the single line in question from the test spreadsheets for January 2020- #
 
-# Spreadsheets list
-remuneration = ['.//test_files//remuneracaoMembrosAtivos-1-2020.xls', './/test_files//proventosMembrosInativos-1-2020.xls',
-'.//test_files//remuneracaoServidoresAtivos-1-2020.xls', './/test_files//proventosServidoresInativos-1-2020.xls',
-'.//test_files//proventosPensionistas-1-2020.xls', './/test_files//proventosColaboradores-1-2020.xls']
-
 #Variables for test
 year = 2020
 month = 1
@@ -51,7 +46,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 7323.91,
             }
         }
-        test_file = [remuneration[0]]
+        test_file = ['.//test_files//remuneracaoMembrosAtivos-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
@@ -92,7 +87,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 7875.65,
             }
         }
-        test_file = [remuneration[1]]
+        test_file = ['.//test_files//proventosMembrosInativos-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
@@ -133,7 +128,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 1833.94,
             }
         }
-        test_file = [remuneration[2]]
+        test_file = ['.//test_files//remuneracaoServidoresAtivos-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
@@ -174,7 +169,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 0.00,
             }
         }
-        test_file = [remuneration[3]]
+        test_file = ['.//test_files//proventosServidoresInativos-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
@@ -215,7 +210,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 3562.60,
             }
         }
-        test_file = [remuneration[4]]
+        test_file = ['.//test_files//proventosPensionistas-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
@@ -256,7 +251,7 @@ class ParserTest(unittest.TestCase):
               'income_tax': 4.87,
             }
         }
-        test_file = [remuneration[5]]
+        test_file = ['.//test_files//proventosColaboradores-1-2020.xls']
         result_employees = parser.parse(test_file,1,2020,'unspecified')['employees']
 
         self.assertEqual(1,len(result_employees))
