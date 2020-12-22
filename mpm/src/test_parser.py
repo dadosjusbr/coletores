@@ -2,12 +2,13 @@ import os
 import parser
 import unittest
 
-
 class TestParser(unittest.TestCase):
     # Para realizar os testes utilizamos o mês e ano especificado abaixo
     MONTH = 2
     YEAR = 2019
-
+    crawler_version = os.environ['GIT_COMMIT']
+    expected_version = 'f3e7ce28e21f3b6c806148b64260aecc71be7bc4'
+    
     def test_membros_ativos(self):
         # Saída esperada
         expected_membros_ativos = [[{'reg': '1191-6', 'name': 'ADILSON JOSE GUTIERREZ', 'role': 'PROMOTOR DE JUSTICA MILITAR', 'type': 'membro',
@@ -21,12 +22,18 @@ class TestParser(unittest.TestCase):
                                      '/output_test/Membros ativos-Verbas Indenizatorias-1-2020.xlsx')
         # Parser apenas com os membros ativos
         membros_ativos = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_membros_ativos)['employees']
+            self.YEAR, self.MONTH, file_names_membros_ativos, self.crawler_version)['employees']
+
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_membros_ativos, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
 
         # Verifica se contêm apenas 1 servidor do grupo membros ativos.
         self.assertEqual(1, len(membros_ativos))
         # Verifica se o resultado do parser para os membros ativos é igual ao resultado esperado.
         self.assertEqual(membros_ativos, expected_membros_ativos)
+        self.assertEqual(version, self.expected_version)
 
     def test_membros_inativos(self):
         expected_membros_inativos = [[{'reg': '0004-3', 'name': 'ANETE VASCONCELOS DE BORBOREMA', 'role': 'SUBPROCURADOR-GERAL DA JUSTIÇA MILITAR',
@@ -38,10 +45,16 @@ class TestParser(unittest.TestCase):
         file_names_membros_inativos = ('/output_test/Membros inativos-1-2020.xlsx',
                                        '/output_test/Membros inativos-Verbas Indenizatorias-1-2020.xlsx')
         membros_inativos = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_membros_inativos)['employees']
+            self.YEAR, self.MONTH, file_names_membros_inativos, self.crawler_version)['employees']
+
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_membros_inativos, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
 
         self.assertEqual(1, len(membros_inativos))
         self.assertEqual(membros_inativos, expected_membros_inativos)
+        self.assertEqual(version, self.expected_version)
 
     def test_servidores_ativos(self):
         expected_servidores_ativos = [[{'reg': '0376-0', 'name': 'ABEL DA COSTA VALE NETO', 'role': 'TECNICO DO MPU/ADMINISTRAÇÃO', 'type': 'servidor',
@@ -53,10 +66,16 @@ class TestParser(unittest.TestCase):
         file_names_servidores_ativos = ('/output_test/Servidores ativos-1-2020.xlsx',
                                         '/output_test/Servidores ativos-Verbas Indenizatorias-1-2020.xlsx')
         servidores_ativos = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_servidores_ativos)['employees']
+            self.YEAR, self.MONTH, file_names_servidores_ativos, self.crawler_version)['employees']
+
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_servidores_ativos, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
 
         self.assertEqual(1, len(servidores_ativos))
         self.assertEqual(servidores_ativos, expected_servidores_ativos)
+        self.assertEqual(version, self.expected_version)
 
     def test_servidores_inativos(self):
         expected_servidores_inativos = [[{'reg': '1103-7', 'name': 'ALBA REGINA BITENCOURT PEREIRA', 'role': 'TECNICO DO MPU/ADMINISTRAÇÃO', 'type': 'servidor', 'workplace': 'APOSENTADOS/INATIVOS',
@@ -67,10 +86,16 @@ class TestParser(unittest.TestCase):
         file_names_servidores_inativos = ('/output_test/Servidores inativos-1-2020.xlsx',
                                           '/output_test/Servidores inativos-Verbas Indenizatorias-1-2020.xlsx')
         servidores_inativos = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_servidores_inativos)['employees']
+            self.YEAR, self.MONTH, file_names_servidores_inativos, self.crawler_version)['employees']
+
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_servidores_inativos, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
 
         self.assertEqual(1, len(servidores_inativos))
         self.assertEqual(servidores_inativos, expected_servidores_inativos)
+        self.assertEqual(version, self.expected_version)
 
     def test_pensionistas(self):
         expected_pensionistas = [[{'reg': '1522-9', 'name': 'ABRAAO ANTONIO XAVIER DINIZ', 'role': 'PENSÃO CIVIL', 'type': 'pensionista', 'workplace': 'PENSÃO ESPECIAL', 'active': False, 'income':
@@ -81,8 +106,14 @@ class TestParser(unittest.TestCase):
         file_names_pensionistas = ('/output_test/Pensionistas-1-2020.xlsx',
                                    '/output_test/Pensionistas-Verbas Indenizatorias-1-2020.xlsx')
         pensionistas = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_pensionistas)['employees']
+            self.YEAR, self.MONTH, file_names_pensionistas, self.crawler_version)['employees']
 
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_pensionistas, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
+
+        self.assertEqual(version, self.expected_version)
         self.assertEqual(1, len(pensionistas))
         self.assertEqual(pensionistas, expected_pensionistas)
 
@@ -94,10 +125,16 @@ class TestParser(unittest.TestCase):
         file_names_colaboradores = ('/output_test/Colaboradores-1-2020.xlsx',
                                     '/output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx')
         colaboradores = parser.crawler_result(
-            self.YEAR, self.MONTH, file_names_colaboradores)['employees']
+            self.YEAR, self.MONTH, file_names_colaboradores, self.crawler_version)['employees']
+
+        crawler = parser.crawler_result(
+            self.YEAR, self.MONTH, file_names_colaboradores, self.crawler_version)['crawler']
+
+        version = list(crawler.values())[1]
 
         self.assertEqual(1, len(colaboradores))
         self.assertEqual(colaboradores, expected_colaboradores)
+        self.assertEqual(version, self.expected_version)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público Militar. O site com as informações pode ser acessado [aqui](https://www.mpm.mp.br/folha-de-pagamento/).
 
-Serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram passados como argurmentos, as mesmas são correpondentes a remuneração mensal e verbas indenizatórias dos seguintes grupo:
+O crawler está estruturado como uma CLI. É necessário passar os argumentos mês e ano. E então, serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram passados como argurmentos, as mesmas são correpondentes a remuneração mensal e verbas indenizatórias dos seguintes grupo:
 
 - Grupo 1: Membros ativos;
 - Grupo 2: Membros inativos;
@@ -22,15 +22,16 @@ Serão baixadas 12 planilhas no formato xlsx referentes ao mês e ano que foram 
  - Construção da imagem:
 
   ```sh
-    sudo docker build -t mpf .  
+    sudo docker build -t mpm .
   ```
-
+ - Execução:
+ 
   ```sh
-  sudo docker run -e MONTH=2 -e YEAR=2020 mpm
+    sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpm 
   ```
 
  ### Executando sem Docker
 
    ```sh
-   MONTH=1 YEAR=2020 python3 main.py
+    MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
   ```
