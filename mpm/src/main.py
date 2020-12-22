@@ -19,15 +19,16 @@ if('OUTPUT_PATH' in os.environ):
     output_path = os.environ['OUTPUT_PATH']
 else:
     output_path = "/output"
+if('GIT_COMMIT' in os.environ):
+    crawler_version = os.environ['GIT_COMMIT']
+else:
+    sys.stderr.write("crawler_version cannot be empty")
+    os._exit(1)
 
 now = datetime.datetime.now()
 current_year = now.year
 current_month = now.month
-crawler_version = os.getenv('GIT_COMMIT')
 
-if(crawler_version == ''):
-    sys.stderr.write("crawler_version cannot be empty")
-    os._exit(1)
 if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
     os._exit(1)
@@ -38,12 +39,10 @@ if(int(year) > current_year):
     sys.stderr.write("Invalid year {}: InvalidParameters.\n".format(year))
     os._exit(1)
 
-
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
     result = parser.crawler_result(year, month, file_names, crawler_version)
     print(result)
-
 
 main()

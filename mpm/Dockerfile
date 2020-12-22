@@ -1,9 +1,6 @@
 # set base image (host OS)
 FROM python:3.8
 
-ARG GIT_COMMIT=unspecified
-ENV GIT_COMMIT=$GIT_COMMIT
-
 # set the working directory in the container
 WORKDIR /code
 
@@ -17,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY src/ .
 
 # command to run on container start
-CMD [ "python", "./main.py" ]
+CMD [ "python", "./main.py", "./test_parse" ]

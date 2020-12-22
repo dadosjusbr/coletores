@@ -22,16 +22,16 @@ O crawler está estruturado como uma CLI. É necessário passar os argumentos m�
  - Construção da imagem:
 
   ```sh
-    sudo docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t mpm .  
+    sudo docker build -t mpm .
   ```
  - Execução:
  
   ```sh
-  sudo docker run -e MONTH=2 -e YEAR=2020 mpm
+    sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpm 
   ```
 
  ### Executando sem Docker
 
    ```sh
-   MONTH=1 YEAR=2020 python3 main.py
+    MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
   ```
