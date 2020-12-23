@@ -54,7 +54,7 @@ def main():
             'version': crawler_version,
         },
         'employees': employees,
-        'timestamp': now.strftime("%m/%d/%Y, %H:%M:%S"),
+        'timestamp': now.isoformat(),
     }
     print(json.dumps({'cr': cr}))
 
