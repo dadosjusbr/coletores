@@ -33,7 +33,7 @@ O crawler está estruturado como uma CLI. É necessário passar os argumentos m�
  ### Executando sem Docker
 
  - É necessário ter instalado o [Python] (https://www.python.org/downloads/release/python-385/) versão 3.8.5;
- - Utilize o PiP para instalar as dependências que estão listadas no arquivo requirements.txt.
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
   
     ```sh
       cd coletores/mpm
