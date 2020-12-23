@@ -185,7 +185,7 @@ def parse(year, month, file_names, crawler_version):
         os._exit(1)
 
     return {
-        'agencyID': 'mpm',
+        'aid': 'mpm',
         'month': month,
         'year': year,
         'crawler': {
