@@ -44,7 +44,7 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    employees = parser.parse(file_names)
+    employees = parser.parse(file_names )
     cr = {
         'aid': 'mpm',
         'month': month,
@@ -54,7 +54,7 @@ def main():
             'version': crawler_version,
         },
         'employees': employees,
-        'timestamp': datetime.now()
+        'timestamp': now,
     }
     print(json.dumps({'cr': cr}))
 
