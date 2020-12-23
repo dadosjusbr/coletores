@@ -174,9 +174,14 @@ def parse(year, month, file_names, crawler_version):
             # Puts all parsed employees in the big map
             employees.update(parse_employees(fn))
 
-    for fn in file_names:
-        if 'Verbas Indenizatorias' in fn:
-            update_employee_indemnity(fn, employees)
+    try:
+        for fn in file_names:
+            if 'Verbas Indenizatorias' in fn:
+                update_employee_indemnity(fn, employees)
+    except KeyError as e:
+        sys.stderr.write('Registro inválido ao processar verbas indenizatórias: ' + e)
+        sys.stderr.write('Mapa de funcionários: ' + employees)
+        os._exit(1)
 
     return {
         'agencyID': 'mpm',
