@@ -12,3 +12,4 @@ pytz==2020.4
 requests==2.25.1
 six==1.15.0
 urllib3==1.26.2
+xlrd==2.0.1
