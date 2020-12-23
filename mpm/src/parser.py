@@ -179,8 +179,8 @@ def parse(year, month, file_names, crawler_version):
             if 'Verbas Indenizatorias' in fn:
                 update_employee_indemnity(fn, employees)
     except KeyError as e:
-        sys.stderr.write('Registro inválido ao processar verbas indenizatórias: ' + e)
-        sys.stderr.write('Mapa de funcionários: ' + employees)
+        sys.stderr.write('Registro inválido ao processar verbas indenizatórias: {}'.format(e))
+        sys.stderr.write('Mapa de funcionários: {}'.format(employees))
         os._exit(1)
 
     return {
