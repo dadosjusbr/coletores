@@ -16,8 +16,8 @@ if('YEAR' in os.environ):
 else:
     sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
     os._exit(1)
-if('OUTPUT_PATH' in os.environ):
-    output_path = os.environ['OUTPUT_PATH']
+if('OUTPUT_FOLDER' in os.environ):
+    output_path = os.environ['OUTPUT_FOLDER']
 else:
     output_path = "/output"
 if('GIT_COMMIT' in os.environ):
