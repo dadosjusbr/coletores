@@ -1,5 +1,5 @@
 mpm
-__pycache__
 output/
 venv
 src/result.json
+src/__pycache__
