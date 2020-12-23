@@ -39,7 +39,7 @@ def links_other_funds(month, year):
 def download(url, file_path):
     try:
       response = requests.get(url, allow_redirects=True)
-      with open(".//" + file_path, "wb") as file:
+      with open(file_path, "wb") as file:
           file.write(response.content)
       file.close()
     except Exception as excep:
