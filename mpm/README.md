@@ -32,6 +32,23 @@ O crawler está estruturado como uma CLI. É necessário passar os argumentos m�
 
  ### Executando sem Docker
 
+ - É necessário ter instalado o [Python] (https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ - Utilize o PiP para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      cd coletores/mpm
+      pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
    ```sh
-    MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+      cd src
+      MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```
+
+  - Para gerar um arquivo json com o resultado do parser, rode o seguinte comando:
+
+  ```sh
+    MONTH=2 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py > result.json
   ```
