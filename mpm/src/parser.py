@@ -40,14 +40,19 @@ def get_begin_row(rows, begin_string):
     return begin_row
 
 
-def get_end_row(rows, end_string):
+def get_end_row(rows, begin_row):
     end_row = 0
     for row in rows:
-        end_row += 1
-        if row[0] == end_string:
+        # First goes to begin_row.
+        if end_row < begin_row:
+            end_row += 1
+            continue
+        # Then keep moving until find a blank row.
+        if isNaN(row[0]):
             break
+        end_row += 1
 
-    return end_row - 3
+    return end_row
 
 
 def type_employee(fn):
@@ -68,9 +73,7 @@ def parse_employees(file_name):
 
     begin_string = "Matrícula"
     begin_row = get_begin_row(rows, begin_string)
-
-    end_string = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza."
-    end_row = get_end_row(rows, end_string)
+    end_row = get_end_row(rows, begin_row)
 
     typeE = type_employee(file_name)
     activeE = 'inativos' not in file_name and 'Pensionistas' not in file_name
@@ -130,9 +133,7 @@ def update_employee_indemnity(file_name, employees):
 
     begin_string = "Matrícula"  # word before starting data
     begin_row = get_begin_row(rows, begin_string)
-
-    end_string = '1 Auxílio-alimentação, Auxílio-transporte, Auxílio-Moradia, Ajuda de Custo e outras dessa natureza, exceto diárias, que serão divulgadas no Portal da Transparência, discriminada de forma individualizada.'
-    end_row = get_end_row(rows, end_string)
+    end_row = get_end_row(rows, begin_row)
     curr_row = 0
 
     for row in rows:
