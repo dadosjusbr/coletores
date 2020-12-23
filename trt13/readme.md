@@ -93,5 +93,6 @@ Para cada funcionário, o JSON possui os seguintes campos:
 
 De maneira geral, o TRT13 é um ótimo exemplo de API para acesso aos dados de remuneração. Existe uma API própria para isso e os dados são exportados em formato aberto fácil de ser manipulado por programas de computador (JSON). Porém:
 
-- Há valores negativos nos totais de benefícios e de indenizações
+- Há valores negativos nos totais de benefícios e de indenizações, sem documentação a respeito
 - Não há discriminação dos valores para diferentes tipos de indenizações
+- Há valores duplicados na folha, como por exemplo em 01/2020 temos a pessoa de matrícula "1124 / 6893D" aparecendo 32 vezes com o mesmo rendimento
