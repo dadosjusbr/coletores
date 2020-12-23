@@ -44,6 +44,6 @@ if(int(year) > current_year):
 def main():
     file_names = crawler.crawl(year, month, output_path)
     result = parser.parse(year, month, file_names, crawler_version)
-    json.dumps(result)
+    print(json.dumps(result))
 
 main()
