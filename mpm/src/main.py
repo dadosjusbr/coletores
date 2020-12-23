@@ -54,7 +54,8 @@ def main():
             'version': crawler_version,
         },
         'employees': employees,
-        'timestamp': now.isoformat(),
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
     print(json.dumps({'cr': cr}))
 
