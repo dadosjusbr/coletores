@@ -22,6 +22,7 @@ O crawler está estruturado como uma CLI. É necessário passar os argumentos m�
  - Construção da imagem:
 
   ```sh
+    cd coletores/mpm
     sudo docker build -t mpm .
   ```
  - Execução:
