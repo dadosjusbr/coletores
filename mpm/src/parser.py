@@ -3,6 +3,8 @@ from datetime import datetime
 from openpyxl import load_workbook
 import math
 import pathlib
+import sys
+import os
 
 # Read data downloaded from the crawler
 
@@ -11,8 +13,9 @@ def read_data(path):
     try:
         data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
         return data
-    except:
-        print('Cannot Read File.')
+    except Exception as excep:
+        sys.stderr.write("'Não foi possível ler o arquivo: " + path + '. O seguinte erro foi gerado: ' + excep)
+        os._exit(1)
 
 # Define first iterable line
 
@@ -211,7 +214,7 @@ def all_employees_indemnity(data, begin_row, end_row, indemnity_data, ):
     return (employees)
 
 
-def crawler_result(year, month, file_names):
+def crawler_result(year, month, file_names, crawler_version):
     final_employees = []
     indemnity_files_names = []
     files_names = []
@@ -237,7 +240,7 @@ def crawler_result(year, month, file_names):
         'crawler':
         {  # CrawlerObject
             'crawlerID': 'mpm',
-            'crawlerVersion': 'inicial',
+            'crawlerVersion': crawler_version,
         },
         # 'files' : file_names,
         'employees': final_employees,

@@ -13,8 +13,15 @@ O crawler está estruturado como uma CLI. Você deve passar quatro argumentos (m
 
 ## Como usar
 
- - Para executar o script é necessário rodar o seguinte comando, a partir do diretório mpt, adicionando às variáveis seus respectivos valores, a depender da consulta desejada:
+### Execução com Python:
+
+ - Para executar o script é necessário rodar o seguinte comando, a partir do diretório mpt, adicionando às variáveis seus respectivos valores, a depender da consulta desejada. É válido lembrar que faz-se necessario ter o [Python](https://www.python.org/downloads/) instalado.
  
     ```sh
-    MONTH=1 YEAR=2020 OUTPUT_PATH=/output DRIVER_PATH=/chromedriver python main.py
+    MONTH=1 YEAR=2020 OUTPUT_FOLDER=/output DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
     ```
+ - Para que a execução do script possa ser corretamente executada é necessário que todos os requirements sejam devidamente instalados. Para isso, executar o [PIP](https://pypi.org/project/pip/) passando o arquivo requiments.txt, por meio do seguinte comando:
+   
+   ```sh
+      pip install -r requirements.txt
+   ```

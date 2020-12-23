@@ -1,6 +1,7 @@
 import requests
 import pathlib
-
+import sys
+import os
 baseURL = 'https://www.mpm.mp.br/sistemas/consultaFolha/php/'
 
 beneficiary_types = {1: 'Membros ativos',
@@ -36,10 +37,14 @@ def links_other_funds(month, year):
 
 
 def download(url, file_path):
-    response = requests.get(url, allow_redirects=True)
-    with open(".//" + file_path, "wb") as file:
-        file.write(response.content)
-    file.close()
+    try:
+      response = requests.get(url, allow_redirects=True)
+      with open(".//" + file_path, "wb") as file:
+          file.write(response.content)
+      file.close()
+    except Exception as excep:
+        sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path + '. O seguinte erro foi gerado: ' + excep )
+        os._exit(1)
 
 # Crawl retrieves payment files from MPM.
 
