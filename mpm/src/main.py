@@ -4,6 +4,7 @@ import sys
 import os
 import datetime
 import crawler, parser
+import json
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -43,6 +44,6 @@ if(int(year) > current_year):
 def main():
     file_names = crawler.crawl(year, month, output_path)
     result = parser.parse(year, month, file_names, crawler_version)
-    print(result)
+    json.dumps(result)
 
 main()

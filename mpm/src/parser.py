@@ -59,8 +59,7 @@ def type_employee(fn):
         return 'pensionista'
     if 'Colaboradores' in fn:
         return 'colaborador'
-    raise ValueError(
-        'Tipo de inválido de funcionário público (' + prefix + '): ' + fn)
+    raise ValueError('Tipo de inválido de funcionário público: ' + fn)
 
 
 # Used when the employee is not on the indemnity list
@@ -92,7 +91,8 @@ def parse_employees(file_name):
             "income":
             {
                 'total': row[12],
-                'wage': row[4]+row[5],  # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
+                # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
+                'wage': row[4]+row[5],
                 'perks': {
                     'total': row[11],
                 },
@@ -148,8 +148,8 @@ def update_employee_indemnity(file_name, employees):
             'housing_aid': row[4],
         })
         emp['income']['other'].update({
-            'total': round(emp['income']['other']['total'] + row[8]+row[9]+row[10]+row[11]+row[12], 3),
-            'others_total': round(emp['income']['other']['others_total'] + row[8]+row[9]+row[10]+row[11]+row[12], 3),
+            'total': round(emp['income']['other']['total'] + row[8] + row[9] + row[10] + row[11] + row[12], 3),
+            'others_total': round(emp['income']['other']['others_total'] + row[8] + row[9] + row[10] + row[11] + row[12], 3),
         })
         emp['income']['other']['others'].update({
             'INSALUBRIDADE 10%': row[8],
