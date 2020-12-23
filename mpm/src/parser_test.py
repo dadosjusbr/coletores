@@ -2,12 +2,6 @@ import os
 import parser
 import unittest
 
-CRAWLER_ID = 'mpm'
-CRAWLER_VERSION = '123'
-os.environ['GIT_COMMIT'] = CRAWLER_VERSION
-MONTH = 2
-YEAR = 2019
-
 
 class TestParser(unittest.TestCase):
 
@@ -56,15 +50,11 @@ class TestParser(unittest.TestCase):
 
         files = ('./output_test/Membros ativos-1-2020.xlsx',
                  './output_test/Membros ativos-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+        employees = parser.parse(files)
 
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
     def test_membros_inativos(self):
         self.maxDiff = None
@@ -111,15 +101,11 @@ class TestParser(unittest.TestCase):
 
         files = ('./output_test/Membros inativos-1-2020.xlsx',
                  './output_test/Membros inativos-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+        employees = parser.parse(files)
 
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
     def test_servidores_ativos(self):
         self.maxDiff = None
@@ -166,15 +152,11 @@ class TestParser(unittest.TestCase):
 
         files = ('./output_test/Servidores ativos-1-2020.xlsx',
                  './output_test/Servidores ativos-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+        employees = parser.parse(files)
 
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
     def test_servidores_inativos(self):
         self.maxDiff = None
@@ -221,14 +203,11 @@ class TestParser(unittest.TestCase):
 
         files = ('./output_test/Servidores inativos-1-2020.xlsx',
                  './output_test/Servidores inativos-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+        employees = parser.parse(files)
+
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
     def test_pensionistas(self):
         self.maxDiff = None
@@ -275,15 +254,11 @@ class TestParser(unittest.TestCase):
 
         files = ('./output_test/Pensionistas-1-2020.xlsx',
                  './output_test/Pensionistas-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+        employees = parser.parse(files)
 
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
     def test_colaboradores(self):
         self.maxDiff = None
@@ -304,21 +279,21 @@ class TestParser(unittest.TestCase):
                     'transportation': 133,
                     'birth_aid': 0,
                     'housing_aid': 0
-                    },
-            'other': {
-                'total': 0,
-                'trust_position': 0,
-                'others_total': 0,
-                'others': {
-                    'Gratificação Natalina': 0,
-                    'Férias (1/3 constitucional)': 0,
-                    'Abono de Permanência': 0,
-                    'GRAT ENCARGO CURSO OU CONCURSO': 0,
-                    'INSALUBRIDADE 10%': 0,
-                    'ATIVIDADE PENOSA': 0,
-                    'SUBSTITUIÇÃO FC/CC': 0,
-                    'GECO': 0,
-                }}
+                },
+                'other': {
+                    'total': 0,
+                    'trust_position': 0,
+                    'others_total': 0,
+                    'others': {
+                        'Gratificação Natalina': 0,
+                        'Férias (1/3 constitucional)': 0,
+                        'Abono de Permanência': 0,
+                        'GRAT ENCARGO CURSO OU CONCURSO': 0,
+                        'INSALUBRIDADE 10%': 0,
+                        'ATIVIDADE PENOSA': 0,
+                        'SUBSTITUIÇÃO FC/CC': 0,
+                        'GECO': 0,
+                    }}
             },
             'discounts': {
                 'total': 0,
@@ -329,16 +304,12 @@ class TestParser(unittest.TestCase):
         }
 
         files = ('/output_test/Colaboradores-1-2020.xlsx',
-                                    '/output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx')
-        result = parser.parse(YEAR, MONTH, files, CRAWLER_VERSION)
+                 '/output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx')
+        employees = parser.parse(files)
 
         # Verificações
-        employees = result['employees']
-        crawler = result['crawler']
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
-        self.assertEqual(crawler['id'], CRAWLER_ID)
-        self.assertEqual(crawler['version'], CRAWLER_VERSION)
 
 
 if __name__ == '__main__':

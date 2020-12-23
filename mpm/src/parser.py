@@ -168,7 +168,7 @@ def update_employee_indemnity(file_name, employees):
     return employees
 
 
-def parse(year, month, file_names, crawler_version):
+def parse(file_names):
     employees = {}
     for fn in file_names:
         if 'Verbas Indenizatorias' not in fn:
@@ -184,14 +184,4 @@ def parse(year, month, file_names, crawler_version):
         sys.stderr.write('Mapa de funcionários: {}'.format(employees))
         os._exit(1)
 
-    return {
-        'aid': 'mpm',
-        'month': month,
-        'year': year,
-        'crawler': {
-            'id': 'mpm',
-            'version': crawler_version,
-        },
-        'employees': list(employees.values()),
-        'timestamp': datetime.now().strftime("%H:%M:%S")
-    }
+    return list(employees.values())

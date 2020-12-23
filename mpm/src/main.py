@@ -3,7 +3,8 @@ from pathlib import Path
 import sys
 import os
 import datetime
-import crawler, parser
+import crawler
+import parser
 import json
 
 if('MONTH' in os.environ):
@@ -43,7 +44,20 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    result = parser.parse(year, month, file_names, crawler_version)
-    print(json.dumps(result))
+    employees = parser.parse(year, month, file_names, crawler_version)
+    cr = {
+        'aid': 'mpm',
+        'month': month,
+        'year': year,
+        'crawler': {
+            'id': 'mpm',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        'timestamp': datetime.now()
+    }
+    print(json.dumps({'cr': cr}))
 
-main()
+
+if __name__ == '__main__':
+    main()
