@@ -47,8 +47,8 @@ def main():
     employees = parser.parse(file_names )
     cr = {
         'aid': 'mpm',
-        'month': month,
-        'year': year,
+        'month': int(month),
+        'year': int(year),
         'crawler': {
             'id': 'mpm',
             'version': crawler_version,
