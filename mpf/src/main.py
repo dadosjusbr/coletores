@@ -4,6 +4,7 @@ import pathlib
 from pathlib import Path 
 import crawler
 import parser
+import json
 
 #Pegando argumentos da variável ambiente
 def get_args():
@@ -44,7 +45,7 @@ def get_month_name(month):
 def main(args):
     file_names  =  crawler.get_relevant_data(args["year"], args["month"], args["outputPath"])
     result  =  parser.crawler_result(args['year'], args['month'], args['outputPath'], args['version'], file_names)
-    print(result)
+    print(json.dumps({'cr': result}, ensure_ascii=False))
 
 args = get_args()
 main(args)

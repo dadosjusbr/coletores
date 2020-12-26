@@ -72,14 +72,3 @@ sudo docker run --env-file=./src/.env mpf
     cd coletores/mpf/src
     python3 main.py
     ```
-
-
-
-
-
-
-
-
-
-
-
