@@ -1,28 +1,12 @@
 from dotenv import load_dotenv,  find_dotenv
 import os
 import pathlib 
+import datetime
+import numpy
 from pathlib import Path 
 import crawler
-import parser
+import parserA
 import json
-
-#Pegando argumentos da variável ambiente
-def get_args():
-    env_path = Path('.') / '.env'
-    load_dotenv(dotenv_path=env_path)
-
-    month = os.getenv("MONTH")
-    month = get_month_name(int(month))
-    year = os.getenv("YEAR")
-    outputPath = os.getenv("OUTPUT_FOLDER")
-    crawl_version = os.getenv('GIT_COMMIT')
-
-    return {
-        "month": month, 
-        "year": year, 
-        "outputPath": outputPath, 
-        'version':crawl_version
-    }
 
 #Metodo auxiliar responsável pela tradução do numero do mês em String
 def get_month_name(month):
@@ -41,11 +25,60 @@ def get_month_name(month):
             }
     return months[month]
 
-#Execução principal 
-def main(args):
-    file_names  =  crawler.get_relevant_data(args["year"], args["month"], args["outputPath"])
-    result  =  parser.crawler_result(args['year'], args['month'], args['outputPath'], args['version'], file_names)
-    print(json.dumps({'cr': result}, ensure_ascii=False))
+#Pegando argumentos da variável ambiente
+if('MONTH' in os.environ):
+    month = os.environ['MONTH']
+    month_name = get_month_name(int(month))
+else:
+    sys.stderr.write("Invalid arguments, missing parameter: 'MONTH'.\n")
+    os._exit(1)
+if('YEAR' in os.environ):
+    year = os.environ['YEAR']
+else:
+    sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
+    os._exit(1)
+if('OUTPUT_FOLDER' in os.environ):
+    output_path = os.environ['OUTPUT_FOLDER']
+else:
+    output_path = "/output"
+if('GIT_COMMIT' in os.environ):
+    crawler_version = os.environ['GIT_COMMIT']
+else:
+    sys.stderr.write("crawler_version cannot be empty")
+    os._exit(1)
 
-args = get_args()
-main(args)
+now = datetime.datetime.now()
+current_year = now.year
+current_month = now.month
+
+if((int(month) < 1) | (int(month) > 12)):
+    sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
+    os._exit(1)
+if((int(year) == current_year) & (int(month) > current_month)):
+    sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
+    os._exit(1)
+if(int(year) > current_year):
+    sys.stderr.write("Invalid year {}: InvalidParameters.\n".format(year))
+    os._exit(1)
+
+# Main execution
+def main():
+    file_names  =  crawler.crawl(year, month_name, output_path)
+    employees = parserA.parse(file_names)
+    cr = {
+        'aid': 'mpf',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpf',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
+
+if __name__ == '__main__':
+    main()
