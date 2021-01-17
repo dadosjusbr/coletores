@@ -6,6 +6,7 @@ import numpy
 from pathlib import Path 
 import crawler
 import parserA
+import parserB
 import json
 
 #Metodo auxiliar responsável pela tradução do numero do mês em String
@@ -50,6 +51,8 @@ else:
 now = datetime.datetime.now()
 current_year = now.year
 current_month = now.month
+months_b = list(range(7,13))
+
 
 if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
@@ -62,9 +65,15 @@ if(int(year) > current_year):
     os._exit(1)
 
 # Main execution
+# There is two model of parser's, parser A cover months since 07/2019, 
+# and parserB cover months before 07/2019.
+# parserA is our default parser, because cover the last month with data.
 def main():
     file_names  =  crawler.crawl(year, month_name, output_path)
-    employees = parserA.parse(file_names)
+    if(((int(month) not in months_b) and year == '2019') or year =='2018'):
+        employees = parserB.parse(file_names, year, month)
+    else:
+        employees = parserA.parse(file_names)
     cr = {
         'aid': 'mpf',
         'month': int(month),

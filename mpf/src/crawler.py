@@ -43,9 +43,9 @@ def specific_query(year, month, output_path):
     valid_months2019 = ['Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
     if(int(year) < 2019):
-        raise ValueError('This kind of consult can be only done between now and July 2019')
+        return
     if((int(year) == 2019) and (month not in valid_months2019)):
-        raise ValueError('This kind of consult can be only done between now and July 2019')
+        return
     else:
 
         file_names = []
