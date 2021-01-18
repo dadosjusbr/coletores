@@ -3,7 +3,9 @@ from pathlib import Path
 import sys
 import os
 import datetime
-import crawler, parser
+import crawler
+import parser
+import json
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -15,8 +17,8 @@ if('YEAR' in os.environ):
 else:
     sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
     os._exit(1)
-if('OUTPUT_PATH' in os.environ):
-    output_path = os.environ['OUTPUT_PATH']
+if('OUTPUT_FOLDER' in os.environ):
+    output_path = os.environ['OUTPUT_FOLDER']
 else:
     output_path = "/output"
 if('GIT_COMMIT' in os.environ):
@@ -42,7 +44,21 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    result = parser.crawler_result(year, month, file_names, crawler_version)
-    print(result)
+    employees = parser.parse(file_names )
+    cr = {
+        'aid': 'mpm',
+        'month': int(month),
+        'year': int(year),
+        'crawler': {
+            'id': 'mpm',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
-main()
+
+if __name__ == '__main__':
+    main()

@@ -14,235 +14,174 @@ def read_data(path):
         data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
         return data
     except Exception as excep:
-        sys.stderr.write("'Não foi possível ler o arquivo: " + path + '. O seguinte erro foi gerado: ' + excep)
+        sys.stderr.write("'Não foi possível ler o arquivo: " +
+                         path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
-# Define first iterable line
 
-
-def get_begin_row(data, rows, begin_string):
-    new_begin = ''
-    for row in rows:
-        if(data.iloc[row][0] == begin_string):
-            new_begin = int(row) + 1
-
-    while(isNaN(data.iloc[new_begin][0])):
-        new_begin += 1
-    return new_begin
-
-
+# Strange way to check nan. Only I managed to make work
+# Source: https://stackoverflow.com/a/944712/5822594
 def isNaN(string):
     return string != string
 
-# Define last iterable line
 
-
-def get_end_row(data, rows, end_string):
+def get_begin_row(rows, begin_string):
+    begin_row = 0
     for row in rows:
-        if(data.iloc[row][0] == end_string):
-            return int(row) - 2
+        begin_row += 1
+        if row[0] == begin_string:
+            break
+
+    # We need to continue interate until wee a value that is not
+    # whitespace. That happen due to the spreadsheet formatting.
+    while isNaN(rows[begin_row][0]):
+        begin_row += 1
+
+    return begin_row
 
 
-def employees(file_name):
-    data = read_data(file_name)
-    rows = list(data.index.values)
-
-    begin_string = "Matrícula"  # word before starting data
-    begin_row = get_begin_row(data, rows, begin_string)
-    # phrase after finishing the data
-    end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza."
-    end_row = get_end_row(data, rows, end_string_remuneration)
-
-    return all_employees(data, begin_row, end_row)
-
-
-def employees_indemnity(file_name, indemnity_file_name):
-    data = read_data(file_name)
-    indemnity_data = read_data(indemnity_file_name)
-
-    # define limits
-    rows = list(data.index.values)
-    begin_string = "Matrícula"  # word before starting data
-    begin_row = get_begin_row(data, rows, begin_string)
-    # phrase after finishing the data
-    end_string_remuneration = "1  Remuneração do cargo efetivo - Subsídio, Vencimento, GAMPU, V.P.I, Adicionais de Qualificação, G.A.E e G.A.S, além de outras desta natureza."
-    end_row = get_end_row(data, rows, end_string_remuneration)
-
-    return all_employees_indemnity(data, begin_row, end_row, indemnity_data)
-
-
-def match_line(matricula, indemnity_data):
-    rows = list(indemnity_data.index.values)
+def get_end_row(rows, begin_row):
+    end_row = 0
     for row in rows:
-        if(indemnity_data.iloc[row][0] == matricula):
-            return row
+        # First goes to begin_row.
+        if end_row < begin_row:
+            end_row += 1
+            continue
+        # Then keep moving until find a blank row.
+        if isNaN(row[0]):
+            break
+        end_row += 1
+
+    return end_row
 
 
-def is_active(data):
-    active = True
-    if((data.iloc[6][0].__contains__("INATIVOS")) | (data.iloc[6][0].__contains__("PENSIONISTAS"))):
-        active = False
-    return active
-
-
-def type_employee(data):
-    if (data.iloc[6][0].__contains__("MEMBROS")):
-        return "membro"
-    elif(data.iloc[6][0].__contains__("SERVIDORES")):
-        return "servidor"
-    elif(data.iloc[6][0].__contains__("PENSIONISTAS")):
-        return "pensionista"
-    else:
-        return "indefinido"
+def type_employee(fn):
+    if 'Membros' in fn:
+        return 'membro'
+    if 'Servidores' in fn:
+        return 'servidor'
+    if 'Pensionistas' in fn:
+        return 'pensionista'
+    if 'Colaboradores' in fn:
+        return 'colaborador'
+    raise ValueError('Tipo de inválido de funcionário público: ' + fn)
 
 
 # Used when the employee is not on the indemnity list
-def all_employees(data, begin_row, end_row):
-    type_employee = type_employee(data)
-    employees = []
-    for i in range(begin_row, end_row):
-        matricula = data.iloc[i][0]
-        employee = {
-            'reg': data.iloc[i][0],
-            'name': data.iloc[i][1],
-            'role': data.iloc[i][2],
-            'type': type_employee(data),
-            'workplace': data.iloc[i][3],
-            'active': is_active(data),
+def parse_employees(file_name):
+    rows = read_data(file_name).to_numpy()
+
+    begin_string = "Matrícula"
+    begin_row = get_begin_row(rows, begin_string)
+    end_row = get_end_row(rows, begin_row)
+
+    typeE = type_employee(file_name)
+    activeE = 'inativos' not in file_name and 'Pensionistas' not in file_name
+    employees = {}
+    curr_row = 0
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        employees[row[0]] = {
+            'reg': row[0],
+            'name': row[1],
+            'role': row[2],
+            'type': typeE,
+            'workplace': row[3],
+            'active': activeE,
             "income":
-            # Income Details
-            {'total': data.iloc[i][17],  # ? Total Liquido ??
-             'wage': data.iloc[i][4],
-             'perks':
-             # Perks Object
-             {'total': data.iloc[i][11],
-              },
-             'other':
-             {  # Funds Object
-                'total': (data.iloc[i][8] + data.iloc[i][6] + data.iloc[i][4] + data.iloc[i][5]),
-                'eventual_benefits': data.iloc[i][8],  # Férias
-                'trust_position': data.iloc[i][6],
-                'gratification': data.iloc[i][4],  # gratificação natalina
-                # Outras verbas remuneratórias, legais ou judiciais
-                'others': data.iloc[i][5],
-            },
+            {
+                'total': row[12],
+                # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
+                'wage': row[4]+row[5],
+                'perks': {
+                    'total': row[11],
+                },
+                'other':
+                {  # Gratificações
+                    'total': row[6] + row[7] + row[8]+row[9],
+                    'trust_position': row[6],
+                    'others_total': row[7]+row[8]+row[9],
+                    'others': {
+                        'Gratificação Natalina': row[7],
+                        'Férias (1/3 constitucional)': row[8],
+                        'Abono de Permanência': row[9],
+                    }
+                },
             },
             'discounts':
-            {  # Discounts Object
-                'total': (data.iloc[i][16] * (-1)),
-                'prev_contribution': (data.iloc[i][13] * (-1)),
+            {  # Discounts Object. Using abs to garantee numbers are positivo (spreadsheet have negative discounts).
+                'total': abs(row[16]),
+                'prev_contribution': abs(row[13]),
                 # Retenção por teto constitucional
-                'ceil_retention': (data.iloc[i][15] * (-1)),
-                'income_tax': (data.iloc[i][14] * (-1)),
+                'ceil_retention': abs(row[15]),
+                'income_tax': abs(row[14]),
             }
         }
-        if(begin_row == end_row):
-            return employee
-        else:
-            employees.append(employee)
+
+        curr_row += 1
+        if curr_row >= end_row:
+            break
 
     return employees
 
 
-def all_employees_indemnity(data, begin_row, end_row, indemnity_data, ):
-    employees = []
-    matricula = data.iloc[begin_row][0]
-    match_row = match_line(matricula, indemnity_data)
-    i = begin_row
+def update_employee_indemnity(file_name, employees):
+    rows = read_data(file_name).to_numpy()
 
-    while(i <= end_row):
-        if(indemnity_data.iloc[match_row][0] == data.iloc[i][0]):
-            employee = {
-                'reg': data.iloc[i][0],
-                'name': data.iloc[i][1],
-                'role': data.iloc[i][2],
-                'type': type_employee(data),
-                'workplace': data.iloc[i][3],
-                'active': is_active(data),
-                "income":
-                # Income Details
-                {'total': data.iloc[i][17],  # ? Total Liquido ??
-                    'wage': data.iloc[i][4],
-                    'perks':
-                 # Perks Object
-                 {'total': indemnity_data.iloc[match_row][13],
-                    'food': indemnity_data.iloc[match_row][5],
-                    'transportation': indemnity_data.iloc[match_row][7],
-                    'birth_aid': indemnity_data.iloc[match_row][6],
-                    'housing_aid': indemnity_data.iloc[match_row][4],
-                  },
-                 'other':
-                 # Funds Object
-                 {'total': (data.iloc[i][8] + data.iloc[i][6] + (data.iloc[i][7]) + (indemnity_data.iloc[match_row][11]) + (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) + (indemnity_data.iloc[match_row][10]) + (indemnity_data.iloc[match_row][12]) + data.iloc[i][5]),
-                    'eventual_benefits': data.iloc[i][8],  # Férias
-                    'trust_position': data.iloc[i][6],
-                    # gratificação natalina + grat. encargo cursou ou concurso
-                    'gratification': (data.iloc[i][7]) + (indemnity_data.iloc[match_row][11]),
-                    'others_total': (indemnity_data.iloc[match_row][8]) + (indemnity_data.iloc[match_row][9]) +
-                  # Insalubridade 10% + atividade penosa + Substituição FC/CC + GECO
-                  (indemnity_data.iloc[match_row][10]) + \
-                  (indemnity_data.iloc[match_row][12]),
-                    # Outras verbas remuneratórias, legais ou judiciais
-                    'others': data.iloc[i][5],
-                  },
-                 },
-                'discounts':
-                {  # Discounts Object
-                    'total': (data.iloc[i][16] * (-1)),
-                    'prev_contribution': (data.iloc[i][13] * (-1)),
-                    # Retenção por teto constitucional
-                    'ceil_retention': (data.iloc[i][15] * (-1)),
-                    'income_tax': (data.iloc[i][14] * (-1)),
-                }
-            }
-        else:
-            matricula = data.iloc[i][0]
-            before_match = match_row
-            match_row = match_line(matricula, indemnity_data)
-            if(match_row == None):
-                employee = all_employees(data, i, i)
+    begin_string = "Matrícula"  # word before starting data
+    begin_row = get_begin_row(rows, begin_string)
+    end_row = get_end_row(rows, begin_row)
+    curr_row = 0
 
-        if(match_row == None):
-            match_row = before_match
-            i += 1
-        else:
-            match_row += 1
-            i += 1
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
 
-        employees.append(employee)
+        emp = employees[row[0]]
+        emp['income']['perks'].update({
+            'food': row[5],
+            'transportation': row[7],
+            'birth_aid': row[6],
+            'housing_aid': row[4],
+        })
+        emp['income']['other'].update({
+            'total': round(emp['income']['other']['total'] + row[8] + row[9] + row[10] + row[11] + row[12], 3),
+            'others_total': round(emp['income']['other']['others_total'] + row[8] + row[9] + row[10] + row[11] + row[12], 3),
+        })
+        emp['income']['other']['others'].update({
+            'INSALUBRIDADE 10%': row[8],
+            'ATIVIDADE PENOSA': row[9],
+            'SUBSTITUIÇÃO FC/CC': row[10],
+            'GRAT ENCARGO CURSO OU CONCURSO': row[11],
+            'GECO': row[12],
+        })
+        employees[row[0]] = emp
 
-    return (employees)
+        curr_row += 1
+        if curr_row >= end_row:
+            break
+
+    return employees
 
 
-def crawler_result(year, month, file_names, crawler_version):
-    final_employees = []
-    indemnity_files_names = []
-    files_names = []
-    j = 0
+def parse(file_names):
+    employees = {}
+    for fn in file_names:
+        if 'Verbas Indenizatorias' not in fn:
+            # Puts all parsed employees in the big map
+            employees.update(parse_employees(fn))
 
-    for i in range(len(file_names)):
-        if(file_names[i].__contains__('Verbas Indenizatorias')):
-            indemnity_files_names.append(file_names[i])
-        else:
-            files_names.append(file_names[i])
+    try:
+        for fn in file_names:
+            if 'Verbas Indenizatorias' in fn:
+                update_employee_indemnity(fn, employees)
+    except KeyError as e:
+        sys.stderr.write('Registro inválido ao processar verbas indenizatórias: {}'.format(e))
+        sys.stderr.write('Mapa de funcionários: {}'.format(employees))
+        os._exit(1)
 
-    for i in range(len(files_names)):
-        final_employees.append(employees_indemnity(
-            files_names[i], indemnity_files_names[j]))
-        j += 1
-
-    now = datetime.now()
-
-    return {
-        'agencyID': 'mpm',
-        'month': month,
-        'year': year,
-        'crawler':
-        {  # CrawlerObject
-            'crawlerID': 'mpm',
-            'crawlerVersion': crawler_version,
-        },
-        # 'files' : file_names,
-        'employees': final_employees,
-        'timestamp': now.strftime("%H:%M:%S")
-    }
+    return list(employees.values())

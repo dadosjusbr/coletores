@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"io"
 	"math"
+	"os"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/dadosjusbr/coletores"
@@ -67,10 +69,14 @@ func loadTable(r io.Reader) ([]*html.Node, error) {
 
 // employeeRecords will retrieve a list of employees from the data table. Status 1 if any errors trying to parse employees, 0 if none.
 func employeeRecords(records []*html.Node) ([]coletores.Employee, error) {
+	roles, err := loadRoles()
+	if err != nil {
+		return nil, err
+	}
 	var employees []coletores.Employee
 	var errs parsingErrors
 	for i, row := range records[1:] {
-		e, err := newEmployee(row)
+		e, err := newEmployeeWithType(row, roles)
 		if err != nil {
 			err = fmt.Errorf("error trying to parse employee columns(position %d): %q. Row: \n%s", i, err, htmlquery.OutputHTML(row, true))
 			errs = append(errs, err)
@@ -82,6 +88,24 @@ func employeeRecords(records []*html.Node) ([]coletores.Employee, error) {
 		return employees, errs
 	}
 	return employees, nil
+}
+
+func loadRoles() (map[string]string, error) {
+	f, err := os.Open("roles.csv")
+	if err != nil {
+		return nil, fmt.Errorf("error opening roles file (roles.csv):%q", err)
+	}
+	defer f.Close()
+	r := csv.NewReader(f)
+	rows, err := r.ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("error reading roles file (roles.csv):%q", err)
+	}
+	ret := make(map[string]string)
+	for _, row := range rows[1:] {
+		ret[row[0]] = row[2]
+	}
+	return ret, nil
 }
 
 // newEmployee will create a new employee from a row.
@@ -100,6 +124,20 @@ func newEmployee(row *html.Node) (coletores.Employee, error) {
 	}
 	if err := employeeDiscounts(row, e.Discounts); err != nil {
 		return e, fmt.Errorf("error retrieving employee discounts info: %q", err)
+	}
+	return e, nil
+}
+
+func newEmployeeWithType(row *html.Node, roles map[string]string) (coletores.Employee, error) {
+	e, err := newEmployee(row)
+	if err != nil {
+		return e, err
+	}
+	// Inferindo o tipo do TREPB baseado numa planilha de associações a partir dos cargos.
+	if _, ok := roles[e.Role]; ok {
+		e.Type = roles[e.Role]
+	} else {
+		e.Type = roles["NA"]
 	}
 	return e, nil
 }
