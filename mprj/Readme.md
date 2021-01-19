@@ -2,7 +2,7 @@
 
 Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público do Estado do Rio de Janeiro. O site com as informações pode ser acessado [aqui](http://transparencia.mprj.mp.br/contracheque).
 
-O coletor será estruturado como uma CLI. Cada planilha é referente a uma dessas categorias: 
+O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e ano, será feito o download de treze planilhas no formato ODS. Cada planilha é referente a uma dessas categorias: 
 
 - Tipo I - Folha de remuneração: Membros Ativos, Membros Inativos, Servidores Ativos, Servidores Inativos, Pensionistas, Colaboradores. 
 
