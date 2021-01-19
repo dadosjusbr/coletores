@@ -1,4 +1,4 @@
 mpsp
-__pycache__
-output/
+src/__pycache__
+src/output
 
