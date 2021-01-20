@@ -2,9 +2,18 @@
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público de São Paulo. O site com as informações pode ser acessado [aqui](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque).
 
+O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e ano, será feito o download de planilhas no formato ODS e XLSX. Cada planilha é referente a uma dessas categorias:
+
+    Tipo I - Folha de remuneração: Membros Ativos, Membros Inativos, Servidores Ativos, Servidores Inativos, Pensionistas, Colaboradores.
+
+    Tipo II - Verbas Referentes á exercícios anteriores.
+
+    Tipo III - Verbas Indenizatórias e outras remunerações temporárias.
+
 ## Dicionário de Dados
 
-As planilhas com a remuneração de membros e servidores possuem as seguintes colunas:
+As planilhas com a remuneração de membros e servidores possuem as seguintes colunas:   
+
 
 - **Nome (String)**: Nome completo do funcionário
 - **Matrícula (String)**: Matrícula do funcionário  
@@ -36,7 +45,7 @@ As planilhas com os valores recebidos por pensionistas possuem as seguintes colu
 - **Situação_beneficiario (String)** Situação do beneficio recebido (vigente, suspenso)
 - **Dat_Ini_Ben (Date)**: Data de inicio do pagamento do benefício
 - **Num_portaria (String)**: Número da portaria que permite o recebimento do benefício
-- **Dat_Publ (Date)**:
+- **Dat_Publ (Date)**: Não foi possível identificar a qual publicação se refere essa data
 - **Val_Bruto (Number)**: Total dos rendimentos brutos pagos no mês
 - **Val_Liq (Number)**: Total após os descontos
 - **Periodo_Folha (Date)**: Período referente ao contra-cheque
@@ -48,7 +57,7 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 - **Cargo (String)**: Cargo do funcionário dentro do MP
 - **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha
 - **Aux Alimentação (Number)**: Auxílio Alimentação pago por mês
-- **Licença Compensatória ato 1124/18 (Number)**:
+- **Licença Compensatória ato 1124/18 (Number)**: Valor correspondente a compensação ao  servidor por qualquer direito adquirido.
 - **Férias em pecúnia (Number)**: Valor correspondente a ⅓ das férias que o trabalhador pode vender 
 - **LP em pecúnia (Number)**: Valor correspondente a licensa prêmio pago ao trabalhador
 - **Gratificação Cumulativa (Number)**: quantia paga pelo Ministério Público a membro da Instituição quando este for designado para, sem prejuízo das atribuições de seu cargo, acumular ou auxiliar em cargo ou funções de execução da própria sede ou localidade;
@@ -58,3 +67,15 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 ## Dificuldades para libertação dos dados
 
 - A URL para baixar as planilhas variam bastante de acordo com o grupo, mês e anos. Sendo necessário testar todos os links.
+
+    Abaixo, temos alguns exemplos das urls para downloads das planilhas referentes aos meses outubro, novembro e dezembro, respectivamente. No mês outubro o campo que seria referente ao mês se encontra com o dígito 09, além de também conter  "_1" que não está presente nos demais links.
+        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb092019_1.ods
+        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb112019A.ods
+        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb122019.ods
+
+    Essa variação na formação do link está presente em diversos meses, em todos os anos analisados (2018, 2019 e 2020)
+
+    Alguns links com diferenças entre letras minúsculas e maiúsculas também dificultam a coleta, visto quê por ser uma pequena diferença é necessário testar todos os links.
+
+        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20membros%20ativos%20ref0519.ods
+        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20Membros%20Ativos%20ref0619.ods
