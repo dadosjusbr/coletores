@@ -79,3 +79,5 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
         - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20membros%20ativos%20ref0519.ods
         - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20Membros%20Ativos%20ref0619.ods
+
+- A planilha referente a pensionistas não apresenta explicações sobre o significado das variáveis. Houve dúvidas no entendimento da Dat_Publ, uma vez que foi induzido que essa data era referente a publicação da portaria que estabelece o recebimento do beneficio, mas tem outro atributo que é referente a data do inicio do recebimento. E o inicio do beneficio começou antes dessa dat_publ.
