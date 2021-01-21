@@ -1,6 +1,8 @@
-import pyexcel_ods
-import pyexcel_xls
+
 import pandas as pd
+from pandas_ods_reader import read_ods
+from openpyxl import load_workbook
+from unidecode import unidecode
 import math
 import sys
 import os
@@ -12,26 +14,52 @@ cwd = os.getcwd()
 def read_data(path):
     if('ods' in path):
         try:
-            data = pyexcel_ods.get_data(cwd + path)
+            data = read_ods(cwd + path, 1)
         except Exception as excep:
             sys.stderr('Não foi possível fazer a leitura do arquivo: ' + path +'e o seguinte error foi gerado:' + str(excep))
             os._exit(1)
     else:
         try:
-            data = pyexcel_xls.get_data(cwd + path)
+             data = pd.read_excel(cwd + path, engine='openpyxl')
         except Exception as excep:
             sys.stderr('Não foi possível fazer a leitura do arquivo: ' + path +'e o seguinte error foi gerado:' + str(excep))
             os._exit(1)
-    #print(data)
+
     return data
 
+def get_begin_row(rows):
+    begin_row = 0
+
+    # We need to continue interate until wee a value that is not
+    # whitespace. That happen due to the spreadsheet formatting.
+    while rows[begin_row][0] == None:
+        begin_row += 1
+
+    return begin_row
+
+def get_end_row(rows, begin_row, file_name):
+
+    end_row = begin_row 
+    array_len = len(rows)
+
+    if 'Pensionistas' in file_name:
+        end_row = array_len
+
+    else: 
+        # Then keep moving until find a different type of float.  
+        while type(rows[end_row][0]) == float:
+            end_row += 1
+       
+    end_row -= 1
+   
+    return end_row 
+
 def parse_employees(file_name):
-    rows = np.asarray(read_data(file_name))
+    rows = read_data(file_name).to_numpy()
 
-    # begin_string = "MATRÍCULA"
-    # begin_row = get_begin_row(rows, begin_string)
-    # end_row = get_end_row(rows, begin_row)
-
+    begin_row = get_begin_row(rows)
+    end_row = get_end_row(rows, begin_row, file_name)
+   
     # typeE = type_employee(file_name)
     # activeE = 'inativos' not in file_name and 'Pensionistas' not in file_name
     # employees = {}
@@ -91,11 +119,11 @@ def parse(file_names):
     for fn in file_names:
         if 'Verbas Indenizatorias' not in fn:
             # Puts all parsed employees in the big map
-            print("PARSEE EMPLOYEE")
-            print(parse_employees(fn))
+           # print("PARSEE EMPLOYEE")
+            #print(parse_employees(fn))
             employees.update(parse_employees(fn))
-    print("EMPLOYEE")
-    print(employees)
+   # print("EMPLOYEE")
+   # print(employees)
     # try:
     #     for fn in file_names:
     #         if 'Verbas Indenizatorias' in fn:
