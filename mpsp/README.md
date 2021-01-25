@@ -83,8 +83,19 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
         - Pensionistas Membros;
         - Pensionistas Servidores
 
-    - O formato das tabelas listadas a cima, exceto as de pensionistas, seguem o modelo [Tipo I](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf) 
+    - O formato das tabelas listadas a cima, exceto as de pensionistas, seguem o modelo [Tipo I](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
     
+### Tipo 3 - Tabela de Indenizações ### 
+    As planilhas são referentes a:
+            - Membros Ativos;
+            - Membros Inativos;
+            - Servidores Ativos;
+            - Servidores Inativos;
+
+
+    - Formato das tabelas: [Tipo III](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
+
+    - Obs: Indenizações disponíveis apenas para alguns meses dos anos de 2018, 2019 e 2020.
 
 ## Dificuldades para libertação dos dados
 
