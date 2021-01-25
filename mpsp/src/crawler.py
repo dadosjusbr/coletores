@@ -274,6 +274,7 @@ def links_remuneration(month, year):
                     links_type[beneficiary_types[key]] = link
 
     return links_type
+
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
     with open(".//" + file_path, "wb") as file:
@@ -291,3 +292,6 @@ def crawl(year, month, output_path):
         files.append(file_path)
 
     return files
+
+
+
