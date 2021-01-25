@@ -1,6 +1,6 @@
 # Ministério Público de São Paulo
 
-Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público de São Paulo. O site com as informações pode ser acessado [aqui](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque).
+Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos funcionários do Ministério Público de São Paulo, nos anos 2018, 2019 e 2020. O site com as informações pode ser acessado [aqui](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque).
 
 O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e ano, será feito o download de planilhas no formato ODS e XLSX. Cada planilha é referente a uma dessas categorias:
 
@@ -63,7 +63,40 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 - **Gratificação Cumulativa (Number)**: quantia paga pelo Ministério Público a membro da Instituição quando este for designado para, sem prejuízo das atribuições de seu cargo, acumular ou auxiliar em cargo ou funções de execução da própria sede ou localidade;
 - **Gratificação de Natureza Especial (Number)**: quantia paga pelo Ministério Público ao membro da Instituição que, mediante designação das autoridades competentes, executar funções atinentes ao seu cargo fora dos períodos normais de expediente;
 - **Gratificação de Grupo de Atuação Especial (Number)**: Gratificação Especial aos servidores e inativos do Quadro do Ministério Público.
-		 		
+
+## Planilhas
+
+- Lista de planilhas: [http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque)
+
+- Para obter as planilhas que não estão presentes em nosso coletor, é necessário consultar o site, listado anteriormente, e verificar o link de acordo com o tipos de pagamento, mês e ano desejado. Uma vez que os links não são formados seguindo um padrão (É possível entender mais sobre isso lendo o tópico Dificuldades para libertação dos dados).
+
+- Nos anos analisados (2018, 2019 e 2020) não houve declaração de pagamentos de remunerações, proventos, indenizações ou outros valores pagos a qualquer título, a Colaboradores
+
+
+### Tipo 1 - Remunerações ###
+
+    As planilhas são referentes a:
+        - Membros Ativos;
+        - Membros Inativos;
+        - Servidores Ativos;
+        - Servidores Inativos;
+        - Pensionistas Membros;
+        - Pensionistas Servidores
+
+    - O formato das tabelas listadas a cima, exceto as de pensionistas, seguem o modelo [Tipo I](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
+    
+### Tipo 3 - Tabela de Indenizações ### 
+    As planilhas são referentes a:
+            - Membros Ativos;
+            - Membros Inativos;
+            - Servidores Ativos;
+            - Servidores Inativos;
+
+
+    - Formato das tabelas: [Tipo III](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf)
+
+    - Obs: Indenizações disponíveis apenas para alguns meses dos anos de 2018, 2019 e 2020.
+
 ## Dificuldades para libertação dos dados
 
 - A URL para baixar as planilhas variam bastante de acordo com o grupo, mês e anos. Sendo necessário testar todos os links.
