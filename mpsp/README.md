@@ -83,7 +83,7 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
         - Pensionistas Membros;
         - Pensionistas Servidores
 
-    - O formato das tabelas listadas a cima, exceto as de pensionistas, seguem o modelo [Tipo I](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf). 
+    - O formato das tabelas listadas a cima, exceto as de pensionistas, seguem o modelo [Tipo I](http://www.cnmp.mp.br/portal/images/Resolucoes/Anexo-200---RES-89.pdf) 
     
 
 ## Dificuldades para libertação dos dados
