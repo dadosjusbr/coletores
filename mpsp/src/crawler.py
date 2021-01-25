@@ -298,8 +298,11 @@ def links_other_funds(month, year):
                     links_type[beneficiary_types[key]] = link
             
             elif(beneficiary_types[key] == 'Servidores_ativos'):    
-                if(month in ['07', '08']):
+                if(month == '07'):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20-%20Tabela%20III%20ref%20' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '08'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20-%20Tabela%20III%20ref' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '09'):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv' + month + year + '.ods'
@@ -318,18 +321,14 @@ def links_other_funds(month, year):
                     link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month in ['08', '09']):
-                    link = baseURL + 'verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20' + month + '-' + year + '.ods'
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
                     link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20tabela%203%20ref%20' + month + '-' + year + '.ods'                    
                     links_type[beneficiary_types[key]] = link
                 elif(month == '11'):
-                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20Tabela%203%20ref%20' + month + '-' + year + 'ods'                    
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
                     links_type[beneficiary_types[key]] = link
-                elif(month == '12'):
-                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'                    
-                    links_type[beneficiary_types[key]] = link
-           
             elif(beneficiary_types[key] == 'Membros_inativos'):
                 if(month in ['08', '09']):
                     link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Tabela%203%20Membros%20Inativos%20ref%20' + month + '-' + year + '.ods'
@@ -349,7 +348,7 @@ def links_other_funds(month, year):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
-                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20' + month + '-' + year + '.ods'                    
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20tabela%203%20ref%20' + month + '-' + year + '.ods'                    
                     links_type[beneficiary_types[key]] = link
                 elif(month == '11'):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
@@ -376,6 +375,7 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
+    print(urls_other_funds)
     files = []
 
     for element in urls_remuneration:
