@@ -275,6 +275,98 @@ def links_remuneration(month, year):
 
     return links_type
 
+def links_other_funds(month, year):
+    links_type = {}
+    link = ""
+    if(year == '2019'):
+        for key in beneficiary_types:
+            if(beneficiary_types[key] == 'Membros_ativos'):
+                if(month in ['07', '08']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20-%20Tabela%20III%20ref%20' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '09'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb09' + year + '_1.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '11'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + 'A.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '12'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+            
+            elif(beneficiary_types[key] == 'Servidores_ativos'):    
+                if(month in ['07', '08']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20-%20Tabela%20III%20ref%20' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '09'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv09' + year + '_1.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month in ['11', '12']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv' + month + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+               
+    elif(year == '2020'):
+        for key in beneficiary_types:
+            if(beneficiary_types[key] == 'Membros_ativos'):
+                if(month in ['01', '02', '03', '04', '05', '06', '07']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month in ['08', '09']):
+                    link = baseURL + 'verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20' + month + '-' + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '11'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Membros%20Ativos%20Tabela%203%20ref%20' + month + '-' + year + 'ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '12'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%20III%20memb' + month + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+           
+            elif(beneficiary_types[key] == 'Membros_inativos'):
+                if(month in ['08', '09']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Tabela%203%20Membros%20Inativos%20ref%20' + month + '-' + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Membros%20Inativos%20tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '11'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Membros%20Inativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+
+            elif(beneficiary_types[key] == 'Servidores_ativos'): 
+                if(month in ['01', '02', '03', '04', '05', '06', '07']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv' + month + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month in ['08', '09']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20' + month + '-' + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '11'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Servidores%20Ativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+
+            elif(beneficiary_types[key] == 'Servidores_inativos'):
+                if(month in ['08', '09']):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_inativos/Tabela%203%20Servidores%20Inativos%20ref%20' + month + '-' + year + '.ods'
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '10'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_inativos/Servidores%20Inativos%20tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+                elif(month == '11'):
+                    link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_inativos/Servidores%20Inativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
+                    links_type[beneficiary_types[key]] = link
+    return links_type
+
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
     with open(".//" + file_path, "wb") as file:
@@ -283,13 +375,23 @@ def download(url, file_path):
     
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
+    urls_other_funds = links_other_funds(month, year)
     files = []
+
     for element in urls_remuneration:
         pathlib.Path('./' + output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + '-' + year + '.ods'
         file_path = output_path + "/" + file_name
         download(urls_remuneration[element], file_path)
         files.append(file_path)
+
+    for element in urls_other_funds:
+        pathlib.Path('./' + output_path).mkdir(exist_ok=True)
+        file_name_indemnity = element + "-" + \
+            "Verbas Indenizatorias" + "-" + month + '-' + year + '.xlsx'
+        file_path_indemnity = output_path + "/" + file_name_indemnity
+        download(urls_other_funds[element], file_path_indemnity)
+        files.append(file_path_indemnity)
 
     return files
 
