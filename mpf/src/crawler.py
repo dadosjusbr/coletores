@@ -18,11 +18,11 @@ _BASE_URL = 'http://www.transparencia.mpf.mp.br/conteudo/contracheque/'
 def write_file(response, file_name, output_path):
 
     #Cria o diretório de download (caso nao exista)
-    pathlib.Path('.//' + output_path).mkdir(exist_ok=True) 
+    pathlib.Path('./src/' + output_path).mkdir(exist_ok=True) 
 
     #Transcrição da resposta HTTP para o disco
     try:
-        with open(".//" + output_path + "//" + file_name,  "wb") as file :
+        with open("./src/" + file_name,  "wb") as file :
             file.write(response.content)
         file.close()
     except Exception as excep:
@@ -43,17 +43,16 @@ def specific_query(year, month, output_path):
     valid_months2019 = ['Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
     if(int(year) < 2019):
-        raise ValueError('This kind of consult can be only done between now and July 2019')
+        return
     if((int(year) == 2019) and (month not in valid_months2019)):
-        raise ValueError('This kind of consult can be only done between now and July 2019')
+        return
     else:
 
         file_names = []
         #Download dos dados para cada Tipo
         for kind in query_type:
             final_url = url +'/'+ kind + '/' + year +'/' + _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS + '_' + year + '_' + month + extension 
-            file_name = _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS + '_' + year + '_' + month + '_' + kind + extension
-            
+    
             try:
                 response  = requests.get(final_url,  allow_redirects=True)
                 response.raise_for_status()
@@ -65,7 +64,9 @@ def specific_query(year, month, output_path):
                 os._exit(1)
             except requests.exceptions.HTTPError as error:
                 sys.stderr.write('A requisição para a url { ' + final_url + ' } falhou retornando erro HTTP: ' + error) 
-                os.exit(1)  
+                os.exit(1) 
+
+            file_name = output_path + '/' + _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS + '_' + year + '_' + month + '_' + kind + extension 
 
             #Escreve em disco conteudo da resposta HTTP 
             write_file(response, file_name, output_path)
@@ -109,14 +110,13 @@ def query(year, month, data_type, output_path):
         sys.stderr.write('A requisição para a url { ' + final_url + ' } falhou retornando erro HTTP: ' + error) 
         os.exit(1)
  
-    file_name =  data_type + '_' + year + "_" + month + extension
+    file_name =  output_path + '/' + data_type + '_' + year + "_" + month + extension
     write_file(response, file_name, output_path)
-
     return file_name
 
 #Implementando o reuso de codigo,  de modo que só muda o data-type que buscamos 
 #                       em cada consulta 
-def get_relevant_data(year, month, output_path):
+def crawl(year, month, output_path):
     file_names = []
     file_names.append(query(year, month, _REMU_MEMBROS_ATIVOS, output_path))
     file_names.append(query(year, month, _PROV_MEMBROS_INATIVOS, output_path))
@@ -125,7 +125,8 @@ def get_relevant_data(year, month, output_path):
     file_names.append(query(year, month, _VALORES_PERCEBIDOS_PENSIONISTAS, output_path))
     file_names.append(query(year, month, _VALORES_PERCEBIDOS_COLABORADORES, output_path))
     try:
-        file_names.append(query(year, month, _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS, output_path))
+        for file in query(year, month, _VERBAS_INDENIZATORIAS_REMU_TEMPORARIAS, output_path):
+            file_names.append(file)
     except ValueError:
         print('This kind of consult can be only done between now and July 2019')
     finally:
