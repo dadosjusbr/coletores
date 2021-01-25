@@ -5,31 +5,17 @@ import datetime
 import numpy
 from pathlib import Path 
 import crawler
-import parserA
-import parserB
+import july19Forward
+import jun19Backward
+import utils
 import json
 
-#Metodo auxiliar responsável pela tradução do numero do mês em String
-def get_month_name(month):
-    months = { 1:'Janeiro' , 
-               2:'Fevereiro' , 
-               3:'Março', 
-               4:'Abril', 
-               5:'Maio', 
-               6:'Junho', 
-               7:'Julho', 
-               8:'Agosto', 
-               9:'Setembro', 
-              10:'Outubro', 
-              11:'Novembro', 
-              12:'Dezembro'
-            }
-    return months[month]
+
 
 #Pegando argumentos da variável ambiente
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
-    month_name = get_month_name(int(month))
+    month_name = utils.get_month_name(int(month))
 else:
     sys.stderr.write("Invalid arguments, missing parameter: 'MONTH'.\n")
     os._exit(1)
@@ -66,28 +52,26 @@ if(int(year) > current_year):
 
 # Main execution
 # There is two model of parser's, parser A cover months since 07/2019, 
-# and parserB cover months before 07/2019.
-# parserA is our default parser, because cover the last month with data.
-def main():
-    file_names  =  crawler.crawl(year, month_name, output_path)
-    if(((int(month) not in months_b) and year == '2019') or year =='2018'):
-        employees = parserB.parse(file_names, year, month)
-    else:
-        employees = parserA.parse(file_names)
-    cr = {
-        'aid': 'mpf',
-        'month': int(month),
-        'year': int(year),
-        'files': file_names,
-        'crawler': {
-            'id': 'mpf',
-            'version': crawler_version,
-        },
-        'employees': employees,
-        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    }
-    print(json.dumps({'cr': cr}, ensure_ascii=False))
+# and jun19Backward cover months before 07/2019.
+# july19Forward is our default parser, because cover the last month with data.
 
-if __name__ == '__main__':
-    main()
+file_names  =  crawler.crawl(year, month_name, output_path)
+if(((int(month) not in months_b) and year == '2019') or year =='2018'):
+    employees = jun19Backward.parse(file_names, year, month)
+else:
+    employees = july19Forward.parse(file_names)
+cr = {
+    'aid': 'mpf',
+    'month': int(month),
+    'year': int(year),
+    'files': file_names,
+    'crawler': {
+        'id': 'mpf',
+        'version': crawler_version,
+    },
+    'employees': employees,
+    # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+    'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+}
+print(json.dumps({'cr': cr}, ensure_ascii=False))
+
