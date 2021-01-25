@@ -35,6 +35,34 @@ url_funds_complements = {1: 'membros-ativos',
                          4: 'servidores-inativos',
                          5: 'pensionistas'
                          }
+
+url_prev_complements = {'MATIV': 'membros_ativos',
+                        'MINAT': 'membros_inativos',
+                        'SATIV': 'servidores_ativos',
+                        'SINAT': 'servidores_inativos',
+                        'PENSI': 'pensionistas'
+                        }
+
+url_prev_id = {'MATIV':'58394309',
+                'MINAT': '58394307',
+                'SATIV': '58394274',
+                'SINAT':'58394272',
+                'PENSI': '58394285'
+                }
+
+prev_exer_month = {1: 'janeiro',
+                   2: 'fev',
+                   3: 'mar',
+                   4: 'abr',
+                   5: 'maio',
+                   6: 'junho',
+                   7: 'julho',
+                   8: 'agosto',
+                   9: 'setembro',
+                   10: 'outubro',
+                   11: 'novembro',
+                   12: 'dezembro'
+                   }
                          
 # Adquire o conjunto de links para envio de requisições post.
 def content_links():
@@ -107,7 +135,24 @@ def generate_other_funds_url(year, month):
         other_content_links[func_types[key]] = url
 
     return other_content_links
-    
+
+# Gera a url para o endpoint de acesso ás informações de verbas referentes á exercicios anteriores daquele mes e ano de um tipo de funcionário
+def generate_prev_exer_url(year, month):
+    prev_exerc_url = {}
+
+    for key in url_prev_complements:
+        # Para todos os tipos de funcionários no mês de Janeiro temos um formato de url distinto 
+        if month == 1:
+            prev_url = "http://transparencia.mprj.mp.br/documents/8378943/{}/verb_ant_{}_{}".format(url_prev_id[key], 
+            prev_exer_month[month], url_prev_complements[key])
+        else: 
+            prev_url = "http://transparencia.mprj.mp.br/documents/8378943/{}/verbasdeexerciciosanteriores{}_{}{}.xlsx".format(
+            url_prev_id[key], url_prev_complements[key].replace('_',''), prev_exer_month[int(month)], str(year)[-2:])  
+
+        prev_exerc_url[key] = prev_url
+
+    return prev_exerc_url
+
 def download(url, file_path, method):
     try:
         if method == 'GET':
@@ -122,8 +167,9 @@ def download(url, file_path, method):
         os._exit(1)
 
 def crawl(year, month, output_path):
-    urls_remunerations  = generate_remuneration_url(year,month)
-    urls_other_funds = generate_other_funds_url(year,month)
+    urls_remunerations  = generate_remuneration_url(year, month)
+    urls_other_funds = generate_other_funds_url(year, month)
+    urls_prev_exerc =  generate_prev_exer_url(year, month)
 
     files = []
     for key in urls_remunerations:
@@ -147,5 +193,16 @@ def crawl(year, month, output_path):
 
         download(urls_other_funds[key], file_path, method)
         files.append(file_path)
+
+    # A existência de dados acerca de verbas de exercícios anteriores só foi disponibilizada em 2020.
+    if int(year) >= 2020 :
+        for key in urls_prev_exerc:
+            pathlib.Path(output_path).mkdir(exist_ok=True)
+            file_name =  year + "_" + month + '_' + 'verbas referentes a exercícios anteriores-' + key +'.xlsx'
+            file_path =  output_path + '/' + file_name
+            method = 'GET'
+
+            download(urls_prev_exerc[key], file_path, method)
+            files.append(file_path)
 
     return files
