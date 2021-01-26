@@ -71,3 +71,5 @@ Por fim, as planilhas do Tipo III - Verbas Indenizatórias e outras remuneraçõ
 ## Dificuldades para libertação dos dados
 
 Observa-se, no site, um formato diferente na apresentação dos dados dos colaboradores. Tanto a interface de busca quanto a apresentação da tabela diferem do padrão utilizado nas demais planilhas, bem como a URL de acesso ao download, que normalmente é assim "https://transparencia.mprs.mp.br/contracheque/download/M/2020/01/NORMAL/", mas nessa área é assim "https://transparencia.mprs.mp.br/contracheque/estagiarios/?ano=2020&mes=1&procurar=+Procurar+#".
+
+Não foi possível identificar o significado do campo "QTD.", quarta coluna presente na planilha de colaboradores. Disponível [aqui](https://transparencia.mprs.mp.br/contracheque/estagiarios/)
