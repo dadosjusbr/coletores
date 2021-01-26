@@ -58,3 +58,12 @@ As planilhas do Tipo II - Verbas Referentes a Exercícios Anteriores seguem o fo
 - **Imposto de Renda (Number)**: Imposto de Renda Retido na Fonte.
 - **Total de Descontos (Number)**: Soma dos descontos efetuados.
 - **Valor Líquido (Number)**: Valor líquido recebido.
+
+Por fim, as planilhas do Tipo III - Verbas Indenizatórias e outras remunerações temporárias seguem o formato seguinte:
+
+- **Matrícula (String)**: Matrícula do funcionário.
+- **Nome (String)**: Nome completo do funcionário.
+- **Cargo (String)**: Cargo do funcionário dentro do MP.
+- **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
+- **Verbas Indenizatórias**: Auxílio-alimentação, Auxílio-transporte, Auxílio-moradia, Ajuda de Custo e outras dessa natureza, exceto diárias, que serão divulgadas no Portal Transparência, discriminada de forma individualizada.
+- **Outras Remunerações Temporárias**: Valores pagos a título de Adicional de Insalubridade ou de Periculosidade, Adicional Noturno, Serviço Extraordinário, Substituição de Função, Cumulações.
