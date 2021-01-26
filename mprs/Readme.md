@@ -43,3 +43,18 @@ As planilhas dos colaboradores (estagiários) seguem o formato seguinte:
 - **INDENIZAÇÃO DE RECESSO (Number)**: Quando os dias a que o Estagiário tem direito lhe são pagos.
 - **DESCONTOS (Number)**:  Impostos e taxas a serem abatidas da remuneração
 - **REMUNERAÇÃO LÍQUIDA (Number)**: Valor líquido, retirados os descontos.
+
+As planilhas do Tipo II - Verbas Referentes a Exercícios Anteriores seguem o formato seguinte:
+
+- **Matrícula (String)**: Matrícula do funcionário.
+- **Nome (String)**: Nome completo do funcionário.
+- **Cargo (String)**: Cargo do funcionário dentro do MP.
+- **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
+- **Nr. Processo (String)**: Número do processo com a devida caracterização de seu órgão de origem.
+- **Objeto do Processo (String)**: Denomnação da verba objeto do processo ou justificativa do pagamento.
+- **Origem do Processo (String)**: Classificação do processo de concessão da verba como de natureza judicial ou administrativa.
+- **Valor Bruto (Number)**: Valor bruto recebido no mês.
+- **Contribuição Previdenciária (Number)**: Contribuição Previdenciária Oficial (IPERGS ou INSS) e IPERGS-Saúde.
+- **Imposto de Renda (Number)**: Imposto de Renda Retido na Fonte.
+- **Total de Descontos (Number)**: Soma dos descontos efetuados.
+- **Valor Líquido (Number)**: Valor líquido recebido.
