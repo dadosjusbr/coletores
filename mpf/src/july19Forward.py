@@ -28,15 +28,15 @@ def parse_employees(file_name):
     for row in emps_clean:
         employees[row[0]] = {
             'reg': str(row[0]),
-            'name': row[1],
-            'role': row[2],
+            'name': str(row[1]),
+            'role': str(row[2]),
             'type': typeE,
-            'workplace': row[3],
+            'workplace': str(row[3]),
             'active': activeE,
             "income":
             {
                 #Soma de todos os recebidos do funcionário
-                'total': row[4]+row[5]+row[6]+row[7]+row[8]+row[9]+row[10]+row[11],
+                'total': float(row[4]+row[5]+row[6]+row[7]+row[8]+row[9]+row[10]+row[11]),
                 # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
                 'wage': row[4]+row[5],
                 'perks': {
