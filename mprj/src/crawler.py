@@ -141,7 +141,7 @@ def crawl(year, month, output_path):
     
     for key in urls_other_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = year + '_' + month + '_' + 'verbas indenizatórias-' + key
+        file_name = year + '_' + month + '_' + 'Verbas Indenizatórias-' + key
         file_path =  output_path + '/' + file_name
         method = 'POST'
 
