@@ -67,3 +67,7 @@ Por fim, as planilhas do Tipo III - Verbas Indenizatórias e outras remuneraçõ
 - **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
 - **Verbas Indenizatórias**: Auxílio-alimentação, Auxílio-transporte, Auxílio-moradia, Ajuda de Custo e outras dessa natureza, exceto diárias, que serão divulgadas no Portal Transparência, discriminada de forma individualizada.
 - **Outras Remunerações Temporárias**: Valores pagos a título de Adicional de Insalubridade ou de Periculosidade, Adicional Noturno, Serviço Extraordinário, Substituição de Função, Cumulações.
+
+## Dificuldades para libertação dos dados
+
+Observa-se, no site, um formato diferente na apresentação dos dados dos colaboradores. Tanto a interface de busca quanto a apresentação da tabela diferem do padrão utilizado nas demais planilhas, bem como a URL de acesso ao download, que normalmente é assim "https://transparencia.mprs.mp.br/contracheque/download/M/2020/01/NORMAL/", mas nessa área é assim "https://transparencia.mprs.mp.br/contracheque/estagiarios/?ano=2020&mes=1&procurar=+Procurar+#".
