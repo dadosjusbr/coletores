@@ -32,3 +32,14 @@ As planilhas do Tipo I, exceto a dos colaboradores, segue o formato seguinte:
 - **Retenção por Teto Constitucional (Number)**: Valor deduzido da remuneração bruta, quando esta ultrapassa o teto constitucional, de acordo com a Resolução nº 09/2006 do CNMP.
 - **Total de Descontos (Number)**: Soma dos descontos referidos nos itens 8, 9 e 10.
 - **Total Líquido (Number)**: Rendimento obtido após o abatimento dos descontos referidos no item 11. O valor líquido efetivamente recebido pelo membro ou servidor pode ser inferior ao ora divulgado, porque não são considerados os descontos de caráter pessoal.
+
+As planilhas dos colaboradores (estagiários) seguem o formato seguinte:
+
+- **NOME (String)**: Nome completo do funcionário.
+- **BOLSA-AUXÍLIO - HORAS (Number)**: Horas cumpridas na função.
+- **BOLSA-AUXÍLIO - VALOR (Number)**: Valor bruto da bolsa-auxílio.
+- **BENEFÍCIO - QTD. (Number)**:
+- **BENEFÍCIO - VALOR (Number)**: Valor bruto dos benefícios recebidos.
+- **INDENIZAÇÃO DE RECESSO (Number)**: Quando os dias a que o Estagiário tem direito lhe são pagos.
+- **DESCONTOS (Number)**:  Impostos e taxas a serem abatidas da remuneração
+- **REMUNERAÇÃO LÍQUIDA (Number)**: Valor líquido, retirados os descontos.
