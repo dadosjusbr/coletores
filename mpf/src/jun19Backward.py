@@ -13,7 +13,6 @@ def read_data(path, year, month):
         eng = 'odf'
     else:
         eng = 'xlrd'
-    path = './src/' + path
     try:
         data = pd.read_excel(path, engine=eng)
         return data

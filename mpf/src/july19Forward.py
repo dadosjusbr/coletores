@@ -9,7 +9,6 @@ import sys
 import os
 
 def read_data(path):
-    path = './src/' + path
     try:
         data = pd.read_excel(path, engine='odf')
         return data
