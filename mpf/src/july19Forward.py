@@ -27,7 +27,7 @@ def parse_employees(file_name):
     curr_row = 0
     for row in emps_clean:
         employees[row[0]] = {
-            'reg': row[0],
+            'reg': str(row[0]),
             'name': row[1],
             'role': row[2],
             'type': typeE,

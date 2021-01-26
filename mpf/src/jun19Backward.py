@@ -31,7 +31,7 @@ def parse_employees(file_name, year, month):
     curr_row = 0
     for row in emps_clean:
         employees[row[0]] = {
-            'name': row[0],
+            'name': str(row[0]),
             'role': row[1],
             'type': typeE,
             'workplace': row[3],
