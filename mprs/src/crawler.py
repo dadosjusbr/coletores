@@ -1,6 +1,8 @@
 import requests
 import pathlib
 
+# Os tipos descritos abaixo são: M = Membros, MI = Membros inativos,
+# S = Servidores, SI = Servidores Inativos, P = Pensionistas
 beneficiary_types = {1: 'M/',
                      2: 'MI/',
                      3: 'S/',
