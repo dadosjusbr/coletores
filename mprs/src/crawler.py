@@ -27,17 +27,17 @@ def generate_remuneration_url(year, month):
     links = {}
     link = ""
 
-    for key in beneficiary_types:
+    for key, value in beneficiary_types.items():
         if key < 6:
-            for value in payroll_types.values():
-                link = base_URL + "download/" + beneficiary_types[key] + year + "/" + month + "/" + value
-                links[beneficiary_types[key] + value] = link
+            for value_payroll in payroll_types.values():
+                link = base_URL + "download/" + value + year + "/" + month + "/" + value_payroll
+                links[value + value_payroll] = link
         elif key == 6:
-            link = base_URL + beneficiary_types[key] + "?ano=" + year + "&mes=" + month.lstrip("0") + "&procurar=+Procurar+#"
-            links[beneficiary_types[key]] = link
+            link = base_URL + value + "?ano=" + year + "&mes=" + month.lstrip("0") + "&procurar=+Procurar+#"
+            links[value] = link
         else:
-            link = base_URL + beneficiary_types[key] + year + "/" + month + "/#"
-            links[beneficiary_types[key]] = link
+            link = base_URL + value + year + "/" + month + "/#"
+            links[value] = link
 
     return links
 
@@ -52,11 +52,11 @@ def crawl(year, month, output_path):
     files = []
     cwd = os.getcwd()
 
-    for element in urls_remunerations:
+    for key, value in urls_remunerations.items():
         pathlib.Path(cwd + output_path).mkdir(exist_ok=True)
-        file_name = element + month + '-' + year + '.csv'
+        file_name = key + month + '-' + year + '.csv'
         file_path = output_path + "/" + file_name.replace("/", "-")
-        download(urls_remunerations[element], file_path, cwd)
+        download(value, file_path, cwd)
         files.append(file_path)
 
     return files
