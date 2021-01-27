@@ -4,15 +4,7 @@ Este coletor tem como objetivo a recuperação de informações sobre folhas de 
 
 O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e ano, será feito o download de planilhas, no formato CSV, sendo cada uma referente a uma dessas categorias:
 
-- Tipo I - Folha de remuneração: Membros Ativos, Membros Inativos, Servidores Ativos, Servidores Inativos, Pensionistas, Colaboradores.
-
-- Tipo II - Verbas Referentes a exercícios anteriores.
-
-- Tipo III - Verbas Indenizatórias e outras remunerações temporárias.
-
-## Dicionário de Dados
-
-As planilhas do Tipo I, exceto a dos colaboradores, segue o formato seguinte:
+- Tipo I - Folha de remuneração: Membros Ativos, Membros Inativos, Servidores Ativos, Servidores Inativos, Pensionistas, Colaboradores. As planilhas deste tipo, com exceção das dos colaboradores, seguem o formato seguinte:
 
 - **Nome (String)**: Nome completo do funcionário.
 - **Matrícula (String)**: Matrícula do funcionário.
@@ -33,7 +25,7 @@ As planilhas do Tipo I, exceto a dos colaboradores, segue o formato seguinte:
 - **Total de Descontos (Number)**: Soma dos descontos referidos nos itens 8, 9 e 10.
 - **Total Líquido (Number)**: Rendimento obtido após o abatimento dos descontos referidos no item 11. O valor líquido efetivamente recebido pelo membro ou servidor pode ser inferior ao ora divulgado, porque não são considerados os descontos de caráter pessoal.
 
-As planilhas dos colaboradores (estagiários) seguem o formato seguinte:
+As planilhas dos colaboradores (estagiários), por sua vez, seguem o formato seguinte:
 
 - **NOME (String)**: Nome completo do funcionário.
 - **BOLSA-AUXÍLIO - HORAS (Number)**: Horas cumpridas na função.
@@ -44,7 +36,7 @@ As planilhas dos colaboradores (estagiários) seguem o formato seguinte:
 - **DESCONTOS (Number)**:  Impostos e taxas a serem abatidas da remuneração
 - **REMUNERAÇÃO LÍQUIDA (Number)**: Valor líquido, retirados os descontos.
 
-As planilhas do Tipo II - Verbas Referentes a Exercícios Anteriores seguem o formato seguinte:
+- Tipo II - Verbas Referentes a exercícios anteriores. Apesar de não coletarmos essas planilhas, elas seguem o formato seguinte:
 
 - **Matrícula (String)**: Matrícula do funcionário.
 - **Nome (String)**: Nome completo do funcionário.
@@ -59,7 +51,7 @@ As planilhas do Tipo II - Verbas Referentes a Exercícios Anteriores seguem o fo
 - **Total de Descontos (Number)**: Soma dos descontos efetuados.
 - **Valor Líquido (Number)**: Valor líquido recebido.
 
-Por fim, as planilhas do Tipo III - Verbas Indenizatórias e outras remunerações temporárias seguem o formato seguinte:
+- Tipo III - Verbas Indenizatórias e outras remunerações temporárias. Seguem o formato seguinte:
 
 - **Matrícula (String)**: Matrícula do funcionário.
 - **Nome (String)**: Nome completo do funcionário.
