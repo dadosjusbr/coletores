@@ -12,6 +12,8 @@ beneficiary_types = {1: 'M/',
                      7: 'verbas_indenizatorias_temporarias/'
                     }
 
+# Os tipos descritos abaixo são as folhas de pagamento, que podem ser: 
+# Normal, Complementar e 13 (décimo terceiro salário).
 payroll_types = {1: 'NORMAL/',
                  2: 'COMPLEMENTAR/',
                  3: '13/'
