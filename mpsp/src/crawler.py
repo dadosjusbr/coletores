@@ -340,11 +340,12 @@ def links_other_funds(month, year):
                     link = baseURL + 'verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Membros%20Inativos%20Tabela%203%20ref%20' + month + '-' + year + '.ods'                    
                     links_type[beneficiary_types[key]] = link
 
+            # Não possue link para o mês 09 porque a tabela de remunerações mensais não está disponibilizada. O link encaminha para tabela de verbas indenizatórias 
             elif(beneficiary_types[key] == 'Servidores_ativos'): 
                 if(month in ['01', '02', '03', '04', '05', '06', '07']):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%20III%20serv' + month + year + '.ods'
                     links_type[beneficiary_types[key]] = link
-                elif(month in ['08', '09']):
+                elif(month in ['08']):
                     link = baseURL + 'verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20' + month + '-' + year + '.ods'
                     links_type[beneficiary_types[key]] = link
                 elif(month == '10'):
@@ -375,7 +376,6 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
-    print(urls_other_funds)
     files = []
 
     for element in urls_remuneration:
@@ -388,7 +388,7 @@ def crawl(year, month, output_path):
     for element in urls_other_funds:
         pathlib.Path('./' + output_path).mkdir(exist_ok=True)
         file_name_indemnity = element + "-" + \
-            "Verbas Indenizatorias" + "-" + month + '-' + year + '.xlsx'
+            "Verbas Indenizatorias" + "-" + month + '-' + year + '.ods'
         file_path_indemnity = output_path + "/" + file_name_indemnity
         download(urls_other_funds[element], file_path_indemnity)
         files.append(file_path_indemnity)
