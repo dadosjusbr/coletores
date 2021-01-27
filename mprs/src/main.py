@@ -38,6 +38,6 @@ if(int(year) > current_year):
     os._exit(1)
 
 # Main execution
-if _name_ == '_main_':
+if __name__ == '__main__':
     file_names = crawler.crawl(year, month, output_path)
     print(file_names)
