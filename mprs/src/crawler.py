@@ -1,5 +1,6 @@
 import requests
 import pathlib
+import os
 
 # Os tipos descritos abaixo são: M = Membros, MI = Membros inativos,
 # S = Servidores, SI = Servidores Inativos, P = Pensionistas
@@ -40,21 +41,22 @@ def generate_remuneration_url(year, month):
 
     return links
 
-def download(url, file_path):
+def download(url, file_path, cwd):
     response = requests.get(url, allow_redirects=True, verify = False)
-    with open("./" + file_path, "wb") as file:
+    with open(cwd + file_path, "wb") as file:
         file.write(response.content)
     file.close()
 
 def crawl(year, month, output_path):
     urls_remunerations  = generate_remuneration_url(year,month)
     files = []
+    cwd = os.getcwd()
 
     for element in urls_remunerations:
-        pathlib.Path('./' + output_path).mkdir(exist_ok=True)
+        pathlib.Path(cwd + output_path).mkdir(exist_ok=True)
         file_name = element + month + '-' + year + '.csv'
         file_path = output_path + "/" + file_name.replace("/", "-")
-        download(urls_remunerations[element], file_path)
+        download(urls_remunerations[element], file_path, cwd)
         files.append(file_path)
 
     return files
