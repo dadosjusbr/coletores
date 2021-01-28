@@ -16,16 +16,16 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ### Coletados e disponibilizados no [site](https://dadosjusbr.org)
 
-| Nome do Coletor | Coleta | Tradução  |
-|:--------------- |:-------------:|:----------------:|
-| [MP-PB](https://github.com/dadosjusbr/coletores/tree/master/mppb)             | X             | X                |
-| [MP-M](https://github.com/dadosjusbr/coletores/tree/master/mpm)           | X             |         x        |
-| [TJ-PB](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         X        |
-| [TRT13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
-| [TRE-PB](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
+- [MPPB](https://github.com/dadosjusbr/coletores/tree/master/mppb)
+- [MPM](https://github.com/dadosjusbr/coletores/tree/master/mpm)
+- [TJPB](https://github.com/dadosjusbr/coletores/tree/master/tjpb)
+- [TRT13](https://github.com/dadosjusbr/coletores/tree/master/trt13)
+- [TREPB](https://github.com/dadosjusbr/coletores/tree/master/trepb)
 
 ### Em progresso ou ainda não são coletados frequentemente
 
+| Nome do Coletor | Coleta | Tradução  |
+|:--------------- |:-------------:|:----------------:|
 | [TJ-BA](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
 | [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
 
