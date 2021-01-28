@@ -14,7 +14,7 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ## Status
 
-## Coletados e disponibilizados no [site](https://dadosjusbr.org)
+### Coletados e disponibilizados no [site](https://dadosjusbr.org)
 
 | Nome do Coletor | Coleta | Tradução  |
 |:--------------- |:-------------:|:----------------:|
@@ -24,7 +24,7 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 | [TRT13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
 | [TRE-PB](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
 
-## Em progresso ou ainda não são coletados frequentemente
+### Em progresso ou ainda não são coletados frequentemente
 
 | [TJ-BA](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
 | [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
