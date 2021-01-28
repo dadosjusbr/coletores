@@ -5,11 +5,10 @@ import pathlib
 import sys
 import os
 
-
 #Lê os dados baixados pelo crawler
 def read_data(path):
     try:
-        data = pd.read_excel(pathlib.Path('./' + path), engine= 'odf')
+        data = pd.read_excel(pathlib.Path(path), engine= 'odf')
         return data
     except Exception as excep:
         sys.stderr.write("'Não foi possível ler o arquivo: " +
@@ -90,6 +89,10 @@ def parse_employees(file_name):
         if curr_row < begin_row:
             curr_row += 1
             continue 
+
+        trust_pos = float(row[6])
+        christmas_bonus = float(row[7])
+        abono_permanencia = float(row[9])
         
         employees[row[0]] = {
             'reg': row[0],
@@ -107,23 +110,25 @@ def parse_employees(file_name):
                 },
                 'other': 
                 { #Gratificações
-                    'total': float(row[6]) + float(row[7]) + float(row[8]) + float(row[9]),
-                    'trust_position': float(row[6]),
-                    'others_total': float(row[7]) + float(row[8]) + float(row[9]),
+                        #Posição de confiança + Gratificação natalina + Férias (1/3 constitucional) + Abono de permanência
+                    'total': trust_pos + christmas_bonus + float(row[8]) + abono_permanencia,
+                    'trust_position': trust_pos,
+                        # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
+                    'others_total': christmas_bonus + float(row[8]) + abono_permanencia,
                     'others': {
-                        'Gratificação Natalina': float(row[7]),
+                        'Gratificação Natalina': christmas_bonus,
                         'Férias (1/3 constitucional)': float(row[8]),
-                        'Abono de Permanência': float(row[9]),
+                        'Abono de Permanência': abono_permanencia,
                     }
                 },
 
             },
             'discounts':
             {
-                'total': abs(float(row[16])),
-                'prev_contribution': abs(float(row[13])),
-                'ceil_retention': abs(float(row[15])),
-                'income_tax': abs(float(row[14]))
+                'total': float(row[16]),
+                'prev_contribution': float(row[13]),
+                'ceil_retention': float(row[15]),
+                'income_tax': float(row[14])
             }
         }
 
