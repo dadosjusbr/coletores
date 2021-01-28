@@ -14,14 +14,20 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ## Status
 
+## Coletados e disponibilizados no [site](https://dadosjusbr.org)
+
 | Nome do Coletor | Coleta | Tradução  |
 |:--------------- |:-------------:|:----------------:|
-| [mppb](https://github.com/dadosjusbr/coletores/tree/master/mppb)             | X             | X                |
-| [trt13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
-| [trepb](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
-| [tjba](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
-| [tjpb](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         X        |
-| [mppe](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
+| [MP-PB](https://github.com/dadosjusbr/coletores/tree/master/mppb)             | X             | X                |
+| [MP-M](https://github.com/dadosjusbr/coletores/tree/master/mpm)           | X             |         x        |
+| [TJ-PB](https://github.com/dadosjusbr/coletores/tree/master/tjpb)           | X             |         X        |
+| [TRT13](https://github.com/dadosjusbr/coletores/tree/master/trt13)           | X             | X                |
+| [TRE-PB](https://github.com/dadosjusbr/coletores/tree/master/trepb)           | X             | X                |
+
+## Em progresso ou ainda não são coletados frequentemente
+
+| [TJ-BA](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
+| [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
 
 ## Transparência do Sistema de Justiça na Mídia
 
