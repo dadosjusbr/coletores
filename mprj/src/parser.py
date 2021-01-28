@@ -17,7 +17,7 @@ def read_data(path):
 
 # Strange way to check nan. Only I managed to make work
 # Source: https://stackoverflow.com/a/944712/5822594
-def isNaN(string):
+def is_nan(string):
     return string != string
 
 def get_begin_row(rows, begin_string):
@@ -26,9 +26,9 @@ def get_begin_row(rows, begin_string):
         begin_row += 1
         if row[0] == begin_string:
             break
-    #Continua interando até encontrarmos um valor que não seja string em 
+    #Continua interando até encontrarmos um valor que não seja string em
     #branco. Isto ocorre pelo formato da planilha
-    while isNaN(rows[begin_row][0]):
+    while is_nan(rows[begin_row][0]):
         begin_row += 1
 
     return begin_row
@@ -39,12 +39,12 @@ def get_end_row(rows, begin_row):
         # Primeiro vamos ao row inicial
         if end_row < begin_row:
             end_row += 1
-            continue 
+            continue
         # Continuamos movendo até achar um row em branco
-        if isNaN(row[0]):
+        if is_nan(row[0]):
             break
         end_row += 1
-    
+
     return end_row
 
 def type_employee(fn):
@@ -84,16 +84,25 @@ def parse_employees(file_name):
     activeE = 'INAT' not in file_name and "PENSI" not in file_name
     employees = {}
     curr_row = 0
-    
+
     for row in rows:
         if curr_row < begin_row:
             curr_row += 1
-            continue 
+            continue
 
-        trust_pos = float(row[6])
-        christmas_bonus = float(row[7])
-        abono_permanencia = float(row[9])
-        
+        remuneration = float(row[4]) #Remuneração do cargo efetivo
+        other_verbs = float(row[5]) #Outras verbas remuneratórias, legais ou judiciais
+        trust_pos = float(row[6]) #Posição de Confiança
+        christmas_bonus = float(row[7]) #Gratificação natalina
+        abono_permanencia = float(row[9]) #Abono Permanência
+        terco_ferias = float(row[8]) # Férias (1/3 constitucional)
+        idemnity = float(row[10]) #Indenizações
+        temp_remu = float(row[11]) # Outras remunerações retroativas/temporárias
+
+        prev_contrib = float(row[13]) #Contribuição previdenciária
+        ceil_ret = float(row[15]) #Retenção por teto constitucional
+        income_tax = float(row[14]) #Imposto de renda
+
         employees[row[0]] = {
             'reg': row[0],
             'name': row[1],
@@ -103,39 +112,41 @@ def parse_employees(file_name):
             'active': activeE,
             "income":
             {
-                'total':float(row[12]),
-                'wage': float(row[4]) + float(row[5]),
+                'total': remuneration + other_verbs + trust_pos + christmas_bonus + abono_permanencia + terco_ferias
+                + idemnity + temp_remu,
+                'wage': remuneration + other_verbs,
                 'perks':{
-                    'total': float(row[11]),
+
+                    'total': temp_remu,
                 },
-                'other': 
+                'other':
                 { #Gratificações
                         #Posição de confiança + Gratificação natalina + Férias (1/3 constitucional) + Abono de permanência
-                    'total': trust_pos + christmas_bonus + float(row[8]) + abono_permanencia,
+                    'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia,
                     'trust_position': trust_pos,
                         # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
-                    'others_total': christmas_bonus + float(row[8]) + abono_permanencia,
+                    'others_total': christmas_bonus + terco_ferias + abono_permanencia,
                     'others': {
-                        'Gratificação Natalina': christmas_bonus,
-                        'Férias (1/3 constitucional)': float(row[8]),
-                        'Abono de Permanência': abono_permanencia,
+                        'gratificação natalina': christmas_bonus,
+                        'ferias (1/3 constitucional)': terco_ferias,
+                        'abono de permanência': abono_permanencia,
                     }
                 },
 
             },
             'discounts':
             {
-                'total': float(row[16]),
-                'prev_contribution': float(row[13]),
-                'ceil_retention': float(row[15]),
-                'income_tax': float(row[14])
+                'total': prev_contrib + ceil_ret + income_tax ,
+                'prev_contribution': prev_contrib,
+                'ceil_retention': ceil_ret,
+                'income_tax': income_tax
             }
         }
 
         curr_row += 1
         if curr_row >= end_row:
             break
-    
+
     return employees
 
 def parse_colab(file_name):
@@ -156,12 +167,12 @@ def parse_colab(file_name):
         if curr_row < begin_row:
             curr_row += 1
             continue
-        
-        #O identificador de colaboradores é o nome 
+
+        #O identificador de colaboradores é o nome
         employees[row[1]] = {
             'name': row[1],
-            #Descrição  + Processo  + Competência
-            'role': str(row[9]) + ' ' + str(row[8]), 
+            #Descrição do serviço prestado e número do processo de pagamento ao servidor
+            'role': str(row[9]) + ' ' + str(row[8]),
             'type': typeE,
             'workplace': row[0],
             'active': activeE,
@@ -171,15 +182,15 @@ def parse_colab(file_name):
             },
             'discounts':
             {
-                'total': abs(float(row[4])),
-                'income_tax': abs(float(row[3]))
+                'total': float(row[4]),
+                'income_tax': float(row[3])
             }
         }
-    
+
         curr_row += 1
         if curr_row >= end_row:
             break
-    
+
     return employees
 
 def update_employee_indemnity(file_name, employees):
@@ -197,38 +208,56 @@ def update_employee_indemnity(file_name, employees):
             curr_row += 1
             continue
 
+        #Variáveis
+        aux_ali =  float(row[4]) # AUXÍLIO-ALIMENTAÇÃO/VERBAS INDENIZATÓRIAS
+        aux_ali_remu = float(row[11])  #AUXÍLIO-ALIMENTAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        aux_saude = float(row[6]) #AUXÍLIO-SAÚDE/VERBAS INDENIZATÓRIAS
+        aux_saude_remu = float(row[13]) #AUXÍLIO-SAÚDE/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        aux_edu = float(row[5]) #AUXÍLIO-EDUCAÇÃO/VERBAS INDENIZATÓRIAS
+        aux_edu_remu = float(row[12]) #AUXÍLIO-EDUCAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        conversao_licenca = float(row[7]) #CONVERSÃO DE LICENÇA ESPECIAL
+        devolucao_rra = float(row[8]) #DEVOLUÇÃO IR RRA
+        indemnity_vacation = float(row[9]) #INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS
+        indemnity_licence = float(row[10]) #INDENIZAÇÃO POR LICENÇA NÃO GOZADA
+        devolucao_fundo = float(row[14]) #DEVOLUÇÃO FUNDO DE RESERVA
+        diff_aux = float(row[15]) #DIFERENÇAS DE AUXÍLIOS
+        gratification = float(row[16])
+        parcelas_atraso = float(row[18]) #PARCELAS PAGAS EM ATRASO
+
         emp = employees[row[0]]
         emp['income']['perks'].update({
-            #Auxilios saúde e alimentação estão dispostos em 2 colunas diferentes 
-            'food': float(row[4]) + float(row[11]),
+            #Auxilios saúde e alimentação estão dispostos em 2 colunas diferentes
+            'food':  aux_ali + aux_ali_remu ,
             'transportation': float(row[17]),
-            'health': float(row[6]) + float(row[13]),
+            'health': aux_saude + aux_saude_remu,
         })
         emp['income']['other'].update({
-            'total': round (emp['income']['other']['total'] + float(row[5]) + float(row[12]) 
-            + float(row[7]) + float(row[8]) + float(row[9]) + float(row[10]) + float(row[14]) + float(row[15]) +
-            float(row[18]), 3),
-            'Gratification': float(row[16]),
-            'others_total': round(emp['income']['other']['others_total'] + float(row[5]) + float(row[12]) 
-            + float(row[7]) + float(row[8]) + float(row[9]) + float(row[10]) + float(row[14]) + float(row[15]) +
-            float(row[18]), 3),
+            'total': round (emp['income']['other']['total'] + aux_edu + aux_edu_remu +
+            conversao_licenca + devolucao_rra + indemnity_vacation + indemnity_licence +
+            devolucao_fundo + diff_aux + parcelas_atraso + gratification, 3),
+            'gratification': gratification,
+            'others_total': round(emp['income']['other']['others_total'] +
+            aux_edu + aux_edu_remu + conversao_licenca + devolucao_rra +
+            indemnity_vacation + indemnity_licence + devolucao_fundo +
+            diff_aux + parcelas_atraso, 3),
         })
         emp['income']['other']['others'].update({
-            #Auxílio educação está disposto em 2 colunas diferentes 
-            'AUXÍLIO-EDUCAÇÃO': float(row[5]) + float(row[12]),
-            'CONVERSÃO DE LICENÇA ESPECIAL': float(row[7]),
-            'DEVOLUÇÃO IR RRA': float(row[8]),
-            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': float(row[9]),
-            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': float(row[10]),
-            'DEVOLUÇÃO FUNDO DE RESERVA': float(row[14]),
-            'DIFERENÇAS DE AUXÍLIOS': float(row[15]),
-            'PARCELAS PAGAS EM ATRASO': float(row[18])
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'auxilio_educacao': aux_edu + aux_edu_remu,
+            'conversao_licenca': conversao_licenca,
+            'devolucao_rra': devolucao_rra,
+            'indenizacao_ferias': indemnity_vacation,
+            'indenizacao_licenca': indemnity_licence,
+            'devolucao_fundo': devolucao_fundo,
+            'diferencas_aux': diff_aux,
+            'parcelas_atraso': parcelas_atraso
         })
+
         employees[row[0]] = emp
         curr_row += 1
         if curr_row >= end_row:
             break
-    
+
     return employees
 
 def parse(file_names):
