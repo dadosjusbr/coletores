@@ -369,7 +369,7 @@ def links_other_funds(month, year):
 
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
-    with open(".//" + file_path, "wb") as file:
+    with open(file_path, "wb") as file:
         file.write(response.content)
     file.close()
     
@@ -379,14 +379,14 @@ def crawl(year, month, output_path):
     files = []
 
     for element in urls_remuneration:
-        pathlib.Path('./' + output_path).mkdir(exist_ok=True)
+        pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + '-' + year + '.ods'
         file_path = output_path + "/" + file_name
         download(urls_remuneration[element], file_path)
         files.append(file_path)
 
     for element in urls_other_funds:
-        pathlib.Path('./' + output_path).mkdir(exist_ok=True)
+        pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name_indemnity = element + "-" + \
             "Verbas Indenizatorias" + "-" + month + '-' + year + '.ods'
         file_path_indemnity = output_path + "/" + file_name_indemnity
