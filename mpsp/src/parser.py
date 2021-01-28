@@ -4,29 +4,27 @@ from openpyxl import load_workbook
 import math
 import sys
 import os
-import pathlib
-
-cwd = os.getcwd()
+import active_members_specific_parser
 
 def read_data(path):
     if('ods' in path):
         try:
-            data = read_ods(cwd + path, 1)
+            # load a sheet based on its index (1 based)
+            data = read_ods(path, 1)
         except Exception as excep:
             sys.stderr('Não foi possível fazer a leitura do arquivo: ' + path +'e o seguinte error foi gerado:' + str(excep))
             os._exit(1)
     else:
         try:
-             data = pd.read_excel(cwd + path, engine='openpyxl')
+             data = pd.read_excel(path, engine='openpyxl')
         except Exception as excep:
             sys.stderr('Não foi possível fazer a leitura do arquivo: ' + path +'e o seguinte error foi gerado:' + str(excep))
             os._exit(1)
-
     return data
 
 # Strange way to check nan. Only I managed to make work
 # Source: https://stackoverflow.com/a/944712/5822594
-def isNaN(string):
+def is_nan(string):
     return string != string
 
 def get_begin_row(rows):
@@ -34,7 +32,7 @@ def get_begin_row(rows):
 
     # We need to continue interate until wee a value that is not
     # None or NaN. That happen due to the spreadsheet formatting.
-    while rows[begin_row][0] == None or isNaN(rows[begin_row][0]):
+    while rows[begin_row][0] == None or is_nan(rows[begin_row][0]):
         begin_row += 1
 
     return begin_row
@@ -72,9 +70,10 @@ def type_employee(fn):
 def format_value(element):
     if(element == None):
         return 0.0
-    if(type(element) == str and '-' in element):
+    elif(type(element) == str and '-' in element):
         return 0.0
-    return element
+    elif(type(element) == float):
+        return element
 
 # Parser for the months from July 2019 to November 2020 
 def parse_employees(file_name):
@@ -90,42 +89,59 @@ def parse_employees(file_name):
         if curr_row < begin_row:
             curr_row += 1
             continue
-    
-        employees[str(int(row[0]))] = {
-            'reg': str(int(row[0])),
-            'name': row[1],
-            'role': row[2],
+        
+        mat = str(int(row[0])) # convert to string by removing the '.0'
+        name = row[1].strip() # removes blank spaces present in some cells
+        role = row[2] # cargo
+        workplace = row[3]
+        total_bruto = format_value(row[12])
+        remuneracao_cargo_efetivo = format_value(row[4])
+        outras_verbas_remuneratorias = format_value(row[5])
+        total_verbas_indenizatorias = format_value(row[11])
+        trust_position = format_value(row[6])
+        gratificacao_natalina= format_value(row[7])
+        ferias = format_value(row[8]) #(1/3 constitucional)
+        abono_permanencia = format_value(row[9])
+        temporary_remunerations = format_value(row[10]) # Valor total das remunerações temporárias
+        total_discounts = abs(format_value(row[16]))
+        prev_contribution = abs(format_value(row[13])) # Contribuição Previdenciária
+        ceil_retention = abs(format_value(row[15])) # Retenção por teto constitucional
+        income_tax = format_value(row[14]) # Imposto de Renda
+
+        employees[mat] = {
+            'reg': mat,
+            'name': name,   
+            'role': role,
             'type': typeE,
-            'workplace': row[3],
+            'workplace': workplace,
         
             'active': activeE,
             "income":
             {
-                'total': row[12],
-                # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
-                'wage': format_value(row[4]) + format_value(row[5]),
+                'total': total_bruto,
+                'wage': remuneracao_cargo_efetivo + outras_verbas_remuneratorias ,
                 'perks': {
-                    'total': row[11],
+                    'total': total_verbas_indenizatorias,
                 },
                 'other':
                 {  # Gratificações
-                    'total': format_value(row[6]) + format_value(row[7]) + format_value(row[8])+ format_value(row[9]),
-                    'trust_position': row[6],
-                    'others_total': format_value(row[7]) + format_value(row[8]) + format_value(row[9]),
+                    'total': trust_position + gratificacao_natalina + ferias + abono_permanencia + temporary_remunerations,
+                    'trust_position': trust_position,
+                    'others_total': temporary_remunerations + gratificacao_natalina + ferias + abono_permanencia,
                     'others': {
-                        'Gratificação Natalina': row[7],
-                        'Férias (1/3 constitucional)': row[8],
-                        'Abono de Permanência': row[9],
+                        'Gratificação Natalina': gratificacao_natalina,
+                        'Férias (1/3 constitucional)': ferias,
+                        'Abono de Permanência': abono_permanencia,
+                        'Outras remunerações temporárias': temporary_remunerations
                     }
                 },
             },
             'discounts':
             {  # Discounts Object. Using abs to garantee numbers are positivo (spreadsheet have negative discounts).
-                'total': abs(format_value(row[16])),
-                'prev_contribution': abs(format_value(row[13])),
-                # Retenção por teto constitucional
-                'ceil_retention': abs(format_value(row[15])),
-                'income_tax':abs(format_value(row[14])),
+                'total': total_discounts,
+                'prev_contribution': prev_contribution,
+                'ceil_retention': ceil_retention,
+                'income_tax': income_tax
             }
         }
 
@@ -133,17 +149,34 @@ def parse_employees(file_name):
         if curr_row >= end_row:
             break
     
-    
+    # print(employees)
     return employees
 
-def parse(file_names):
-    print(file_names)
+def parse(file_names, month, year):
     employees = {}
     for fn in file_names:
-        if 'Verbas Indenizatorias' not in fn and 'Pensionistas' not in fn:
-            # Puts all parsed employees in the big map
-   
-            employees.update(parse_employees(fn))
-       
+        if("Membros_ativos" in fn and 'Verbas Indenizatorias' not in fn):
+            if(year == '2020'):
+                employees.update(parse_employees(fn))
+            elif(month in ['07', '08', '09', '10', '11', '12'] and year == '2019'):
+                employees.update(parse_employees(fn))
+            elif(month == '01' and year == '2019'):
+                employees.update(active_members_specific_parser.parse_active_members_1(fn))
+            elif(month in ['02', '03', '04', '05']):
+                employees.update(active_members_specific_parser.parse_active_members_2(fn))
+            elif(month == '06'):
+                employees.update(active_members_specific_parser.parse_active_members_3(fn))
 
+        elif("Membros_inativos" in fn and 'Verbas Indenizatorias' not in fn):
+            if(year == '2020'):
+                employees.update(parse_employees(fn))
+            
+        elif("Servidores_ativos" in fn and 'Verbas Indenizatorias' not in fn):
+            if(year == '2020'):
+                employees.update(parse_employees(fn))
+
+        elif("Servidores_inativos" in fn and 'Verbas Indenizatorias' not in fn):
+            if(year == '2020'):
+                employees.update(parse_employees(fn))
+           
     return list(employees.values())
