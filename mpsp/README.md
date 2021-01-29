@@ -68,11 +68,19 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
 - Lista de planilhas: [http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque)
 
-- Panilhas que não conseguimos obter: [Link](https://docs.google.com/spreadsheets/d/1QknqNLq6bRqhRhojqfR0EO2aTQTkKLI-YFo19HF89kU/edit#gid=0)
-
 - Para obter as planilhas que não estão presentes em nosso coletor, é necessário consultar o site, listado anteriormente, e verificar o link de acordo com o tipos de pagamento, mês e ano desejado. Uma vez que os links não são formados seguindo um padrão (É possível entender mais sobre isso lendo o tópico Dificuldades para libertação dos dados).
 
 - Nos anos analisados (2018, 2019 e 2020) não houve declaração de pagamentos de remunerações, proventos, indenizações ou outros valores pagos a qualquer título, a Colaboradores
+
+- Planilhas que não conseguimos obter:
+
+    Mês | Ano |  Tipo Funcionario | Tipo planilha | Motivo
+    :------:|:------:|:-------------:|:-------------:|:--------------:
+    09     | 2019  | Servidores Ativos | Remuneração Mensal | No lugar está disponibilizada a planilha referente a Verbas indenizatórias desse mesmo mês.
+
+
+
+
 
 
 ### Tipo 1 - Remunerações ###
