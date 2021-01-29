@@ -4,11 +4,45 @@ import math
 import pathlib
 import sys
 import os
+from pyexcel_ods import get_data
+
+#Transforma uma tupla em um objeto dataframe do pandas
+def mount_df(sheet):
+    keys = []
+    #Coletando keys para o df
+    for key in sheet[0][0:4]:
+        keys.append(key)
+    for key in sheet[1]:
+        keys.append(key)
+
+    #Tratando colunas com nomes iguais
+    equal_columns = ['AUXÍLIO-ALIMENTAÇÃO','AUXÍLIO-EDUCAÇÃO','AUXÍLIO-SAÚDE']
+    indexes = []
+    for col in keys:
+        if col in equal_columns:
+            indexes.append(keys.index(col))
+
+    for i in range(len(indexes)):
+        if  (i % 2) == 0:
+            keys[indexes[i]] = keys[indexes[i]] + '/VERBAS INDENIZATÓRIAS'
+        else:
+            keys[indexes[i]] = keys[indexes[i]] + '/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS'
+
+    print(keys)
+    #Remove nome das colunas
+    sheet.pop(0)
+    sheet.pop(0)
+
+    return pd.DataFrame(sheet, columns=keys)
 
 #Lê os dados baixados pelo crawler
 def read_data(path):
     try:
         data = pd.read_excel(pathlib.Path(path), engine= 'odf')
+        #Se o pandas tiver problemas ao ler os heathers seu retorno é um df Null
+        if data.isnull().all().all():
+            sheet = get_data(path)['Sheet1']
+            data = mount_df(sheet)
         return data
     except Exception as excep:
         sys.stderr.write("'Não foi possível ler o arquivo: " +
@@ -26,6 +60,7 @@ def get_begin_row(rows, begin_string):
         begin_row += 1
         if row[0] == begin_string:
             break
+
     #Continua interando até encontrarmos um valor que não seja string em
     #branco. Isto ocorre pelo formato da planilha
     while is_nan(rows[begin_row][0]):
@@ -69,6 +104,10 @@ def clean_df(data):
 
 def clean_colab_df(data):
     for col in data.columns[2:5]:
+        data[col] = data[col].apply(clean_currency)
+
+def clean_df_vi(data):
+    for col in data.columns[4:19]:
         data[col] = data[col].apply(clean_currency)
 
 def parse_employees(file_name):
@@ -195,19 +234,13 @@ def parse_colab(file_name):
 
 def update_employee_indemnity(file_name, employees):
     rows  = read_data(file_name)
-    print(rows)
-    clean_df(rows)
+    clean_df_vi(rows)
+    rows = rows.to_numpy()
 
-    begin_string = "MATRÍCULA"  # word before starting data
-    begin_row = get_begin_row(rows, begin_string)
-    end_row = get_end_row(rows, begin_row)
+    #Questões de formato foram abstraídas na montagem do dataframe
     curr_row = 0
 
     for row in rows:
-        if curr_row < begin_row:
-            curr_row += 1
-            continue
-
         #Variáveis
         aux_ali =  float(row[4]) # AUXÍLIO-ALIMENTAÇÃO/VERBAS INDENIZATÓRIAS
         aux_ali_remu = float(row[11])  #AUXÍLIO-ALIMENTAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
@@ -255,7 +288,7 @@ def update_employee_indemnity(file_name, employees):
 
         employees[row[0]] = emp
         curr_row += 1
-        if curr_row >= end_row:
+        if (rows[curr_row] == rows[-1]).all():
             break
 
     return employees
@@ -269,8 +302,8 @@ def parse(file_names):
         elif ('COLAB' in fn):
             employees.update(parse_colab(fn))
 
-    # for fn in file_names:
-    #     if 'Verbas Indenizatórias' in fn:
-    #         update_employee_indemnity(fn, employees)
+    for fn in file_names:
+        if 'Verbas Indenizatórias' in fn:
+            update_employee_indemnity(fn, employees)
 
     return list(employees.values())
