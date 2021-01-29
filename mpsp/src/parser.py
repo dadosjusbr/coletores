@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 import math
 import sys
 import os
-import active_members_specific_parser
+import active_members_parser
 
 def read_data(path):
     if('ods' in path):
@@ -90,26 +90,26 @@ def parse_employees(file_name):
             curr_row += 1
             continue
         
-        mat = str(int(row[0])) # convert to string by removing the '.0'
+        matricula = str(int(row[0])) # convert to string by removing the '.0'
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
-        workplace = row[3]
-        total_bruto = format_value(row[12])
-        remuneracao_cargo_efetivo = format_value(row[4])
-        outras_verbas_remuneratorias = format_value(row[5])
-        total_verbas_indenizatorias = format_value(row[11])
-        trust_position = format_value(row[6])
+        workplace = row[3] # Lotação
+        total_bruto = format_value(row[12]) # TOTAL DE RENDIMENTOS BRUTOS9
+        remuneracao_cargo_efetivo = format_value(row[4]) # Remuneração Cargo Efetivo
+        outras_verbas_remuneratorias = format_value(row[5]) # Outras Verbas Remuneratórias, Legais ou Judiciais
+        total_verbas_indenizatorias = format_value(row[11]) # VERBAS INDENIZATÓRIAS8
+        trust_position = format_value(row[6]) # Função de Confiança ou Cargo em Comissão³
         gratificacao_natalina= format_value(row[7])
         ferias = format_value(row[8]) #(1/3 constitucional)
-        abono_permanencia = format_value(row[9])
+        abono_permanencia = format_value(row[9]) # Abono de Permanência6
         temporary_remunerations = format_value(row[10]) # Valor total das remunerações temporárias
-        total_discounts = abs(format_value(row[16]))
+        total_discounts = abs(format_value(row[16])) # TOTAL DE DESCONTOS
         prev_contribution = abs(format_value(row[13])) # Contribuição Previdenciária
         ceil_retention = abs(format_value(row[15])) # Retenção por teto constitucional
         income_tax = format_value(row[14]) # Imposto de Renda
 
-        employees[mat] = {
-            'reg': mat,
+        employees[matricula] = {
+            'reg': matricula,
             'name': name,   
             'role': role,
             'type': typeE,
@@ -161,11 +161,11 @@ def parse(file_names, month, year):
             elif(month in ['07', '08', '09', '10', '11', '12'] and year == '2019'):
                 employees.update(parse_employees(fn))
             elif(month == '01' and year == '2019'):
-                employees.update(active_members_specific_parser.parse_active_members_1(fn))
+                employees.update(active_members_parser.parse_jan_19(fn))
             elif(month in ['02', '03', '04', '05']):
-                employees.update(active_members_specific_parser.parse_active_members_2(fn))
+                employees.update(active_members_parser.parse_feb_to_may_19(fn))
             elif(month == '06'):
-                employees.update(active_members_specific_parser.parse_active_members_3(fn))
+                employees.update(active_members_parser.parse_jun_19(fn))
 
         elif("Membros_inativos" in fn and 'Verbas Indenizatorias' not in fn):
             if(year == '2020'):
