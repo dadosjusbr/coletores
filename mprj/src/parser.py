@@ -122,7 +122,13 @@ def parse_employees(file_name):
             curr_row += 1
             continue
 
-        reg = float(row[0])
+        #Se possível é preferível tratar a matrícula como float do que como string
+        #Pois a situação  matricula.0 =  matricula  
+        try:
+            reg = float(row[0])
+        except:
+            reg = str(row[0])
+
         remuneration = float(row[4]) #Remuneração do cargo efetivo
         other_verbs = float(row[5]) #Outras verbas remuneratórias, legais ou judiciais
         trust_pos = float(row[6]) #Posição de Confiança
@@ -223,11 +229,7 @@ def parse_colab(file_name):
 
     return employees
 
-def update_employee_indemnity(file_name, employees):
-    rows  = read_data(file_name)
-    clean_currency(rows, 4, len(rows.columns))
-    rows = rows.to_numpy()
-    #Questões de formato foram abstraídas na montagem do dataframe
+def update_mativ_indemnity(rows, employees):
     curr_row = 0
     begin_row = 1
 
@@ -272,10 +274,9 @@ def update_employee_indemnity(file_name, employees):
             'PARCELAS PAGAS EM ATRASO': parcelas_atraso
         })
         emp['income']['other'].update({
-            # total + gratification + others_total
             'total': round(emp['income']['other']['total'] + aux_edu + aux_edu_remu +
             conversao_licenca + devolucao_rra + indemnity_vacation + indemnity_licence +
-            devolucao_fundo + diff_aux + parcelas_atraso + gratification, 2 ),
+            devolucao_fundo + diff_aux + parcelas_atraso + gratification, 2),
             'gratification': gratification,
             'others_total': round(emp['income']['other']['others_total'] +
             aux_edu + aux_edu_remu + conversao_licenca + devolucao_rra +
@@ -286,7 +287,7 @@ def update_employee_indemnity(file_name, employees):
             'total': round( aux_ali + aux_ali_remu + transportation + aux_saude + aux_saude_remu , 2)
         })
         emp['income'].update({
-            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2 )
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
 
         employees[row[0]] = emp
@@ -295,6 +296,239 @@ def update_employee_indemnity(file_name, employees):
         curr_row += 1
 
     return employees
+
+def update_minat_indemnity(rows, employees):
+    curr_row = 0
+    begin_row = 1
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        reg = float(row[0])
+        aux_edu =  float(row[4]) # AUXÍLIO-EDUCAÇÃO/VERBAS_INDENIZATÒRIAS
+        aux_edu_remu = float(row[9]) #AUXÍLIO-EDUCAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        aux_saude = float(row[5]) #AUXÍLIO-SAÚDE/VERBAS_INDENIZATÒRIAS
+        aux_saude_remu = float(row[10]) #AUXÍLIO-SAÚDE/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        devolucao_rra = float(row[6]) #DEVOLUÇÃO IR RRA
+        indemnity_vacation = float(row[7]) #INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS
+        licence = float(row[8]) #INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA
+        devolucao_fundo = float(row[11]) #DEVOLUÇÃO FUNDO DE RESERVA
+
+        emp = employees[reg]
+
+        emp['income']['perks'].update({
+            'health': aux_saude + aux_saude_remu,
+        })
+        emp['income']['other']['others'].update({
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'AUXÍLIO-EDUCAÇÃO': aux_edu + aux_edu_remu,
+            'DEVOLUÇÃO IR RRA': devolucao_rra,
+            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': indemnity_vacation,
+            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': licence,
+            'DEVOLUÇÃO FUNDO DE RESERVA': devolucao_fundo,
+        })
+        emp['income']['other'].update({
+            'total': round(emp['income']['other']['total'] + aux_edu + aux_edu_remu +
+            devolucao_rra + indemnity_vacation + licence + devolucao_fundo, 2),
+            'others_total': round(emp['income']['other']['others_total'] +
+            aux_edu + aux_edu_remu + devolucao_rra + indemnity_vacation + licence + devolucao_fundo, 2),
+        })
+        emp['income']['perks'].update({
+            'total': round(aux_saude + aux_saude_remu, 2)
+        })
+        emp['income'].update({
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
+        })
+        employees[row[0]] = emp
+        if (rows[curr_row] == rows[-1]).all():
+            break
+        curr_row += 1
+
+    return employees
+
+def update_sativ_indemnity(rows, employees):
+    curr_row = 0
+    begin_row = 1
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        reg = float(row[0])
+        aux_adocao = float(row[4]) #AUXÍLIO-ADOÇÃO/VERBAS INDENIZATÓRIAS
+        aux_ali = float(row[5]) #AUXÍLIO-ALIMENTAÇÃO/VERBAS INDENIZATÓRIAS
+        aux_ali_remu = float(row[10]) #AUXÍLIO-ALIMENTAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        aux_edu = float(row[6]) #AUXÍLIO-EDUCAÇÃO/VERBAS INDENIZATÓRIAS
+        aux_edu_remu = float(row[11]) #AUXÍLIO-EDUCAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        aux_saude = float(row[7]) #AUXÍLIO-SAÚDE/VERBAS INDENIZATÓRIAS
+        aux_saude_remu = float(row[13]) #AUXÌLIO-SAUDE?OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        indemnity_vacation = float(row[8]) #INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS
+        licence = float(row[9]) #INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA
+        transportation = float(row[12]) #AUXÍLIO-LOCOMOÇÃO
+        diff_aux = float(row[14]) #DIFERENÇAS DE AUXÍLIOS
+        gratification = float(row[15]) #GRATIFICAÇÕES EVENTUAIS
+        parcelas_atraso = float(row[16]) #PARCELAS PAGAS EM ATRASO
+        sub = float(row[17]) #SUBSTITUIÇÃO DE CARGO EM COMISSÃO / FUNÇÃO GRATIFICADA
+
+        emp = employees[reg]
+
+        emp['income']['perks'].update({
+            'food':  aux_ali + aux_ali_remu ,
+            'transportation': transportation,
+            'health': aux_saude + aux_saude_remu,
+        })
+        emp['income']['other']['others'].update({
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'AUXÍLIO-ADOÇÃO': aux_adocao,
+            'AUXÍLIO-EDUCAÇÃO': aux_edu + aux_edu_remu,
+            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': indemnity_vacation,
+            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': licence,
+            'DIFERENÇAS DE AUXÍLIOS': diff_aux,
+            'PARCELAS PAGAS EM ATRASO': parcelas_atraso,
+            'SUBSTITUIÇÃO DE CARGO EM COMISSÃO / FUNÇÃO GRATIFICADA': sub
+
+        })
+        emp['income']['other'].update({
+            'total': round(emp['income']['other']['total'] + aux_adocao + aux_edu +
+            aux_edu_remu  + indemnity_vacation + licence + diff_aux + parcelas_atraso
+            + sub + gratification, 2),
+            'gratification': gratification,
+            'others_total': round(emp['income']['other']['others_total'] + aux_adocao +
+            aux_edu + aux_edu_remu + indemnity_vacation + licence + diff_aux +
+            parcelas_atraso + sub, 2),
+        })
+        emp['income']['perks'].update({
+            'total': round( aux_ali + aux_ali_remu + transportation + aux_saude + aux_saude_remu , 2)
+        })
+        emp['income'].update({
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
+        })
+        employees[row[0]] = emp
+        if (rows[curr_row] == rows[-1]).all():
+            break
+        curr_row += 1
+
+    return employees
+
+def update_sinat_indemnity(rows, employees):
+    curr_row = 0
+    begin_row = 1
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        reg = float(row[0])
+        aux_adocao = float(row[4]) #AUXÍLIO-ADOÇÃO/VERBAS INDENIZATÓRIAS
+        aux_ali = float(row[5]) #AUXÍLIO-ALIMENTAÇÃO/VERBAS INDENIZATÓRIAS
+        aux_saude = float(row[6]) #AUXÍLIO-SAÚDE/VERBAS INDENIZATÓRIAS
+        aux_saude_remu = float(row[10]) #AUXÍLIO-SAÚDE/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
+        indemnity_vacation = float(row[7]) #INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS
+        licence = float(row[8]) #INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA
+        transportation = float(row[9])
+        diff_aux = float(row[11]) #DIFERENÇAS DE AUXÍLIOS
+        parcelas_atraso = float(row[12]) #PARCELAS PAGAS EM ATRASO
+
+        emp = employees[reg]
+
+        emp['income']['perks'].update({
+            'food':  aux_ali ,
+            'transportation': transportation,
+            'health': aux_saude + aux_saude_remu,
+        })
+        emp['income']['other']['others'].update({
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'AUXÍLIO-ADOÇÃO': aux_adocao,
+            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': indemnity_vacation,
+            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': licence,
+            'DIFERENÇAS DE AUXÍLIOS': diff_aux,
+            'PARCELAS PAGAS EM ATRASO': parcelas_atraso,
+        })
+        emp['income']['other'].update({
+            'total': round(emp['income']['other']['total'] + aux_adocao + indemnity_vacation
+            + licence + diff_aux + parcelas_atraso, 2),
+            'others_total': round(emp['income']['other']['others_total'] + aux_adocao +
+            indemnity_vacation + licence + diff_aux + parcelas_atraso , 2),
+        })
+        emp['income']['perks'].update({
+            'total': round( aux_ali  + transportation + aux_saude + aux_saude_remu , 2)
+        })
+        emp['income'].update({
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
+        })
+        employees[row[0]] = emp
+        if (rows[curr_row] == rows[-1]).all():
+            break
+        curr_row += 1
+
+    return employees
+
+def update_pensi_indemnity(rows, employees):
+    curr_row = 0
+    begin_row = 1
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        reg = row[0]
+        aux_saude = row[4] #AUXÍLIO-SAÚDE/VERBAS INDENIZATÓRIAS
+        devolucao_rra = row[5] #DEVOLUÇÃO IR RRA
+        devolucao_fundo = row[6] #DEVOLUÇÃO FUNDO DE RESERVA
+        p_equi = row[7] #PARCELA AUTÔNOMA DE EQUIVALÊNCIA
+        parcelas_atraso = row[8] #PARCELAS PAGAS EM ATRASO
+
+        emp = employees[reg]
+
+        emp['income']['perks'].update({
+            'health': aux_saude,
+        })
+        emp['income']['other']['others'].update({
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'DEVOLUÇÃO IR RRA': devolucao_rra,
+            'DEVOLUÇÃO FUNDO DE RESERVA': devolucao_fundo,
+            'PARCELA AUTÔNOMA DE EQUIVALÊNCIA': p_equi,
+            'PARCELAS PAGAS EM ATRASO': parcelas_atraso,
+        })
+        emp['income']['other'].update({
+            'total': round(emp['income']['other']['total'] + devolucao_fundo +
+            devolucao_rra + p_equi + parcelas_atraso, 2),
+            'others_total': round(emp['income']['other']['others_total'] + devolucao_rra +
+            devolucao_fundo + p_equi  + parcelas_atraso , 2),
+        })
+        emp['income']['perks'].update({
+            'total': round(aux_saude , 2)
+        })
+        emp['income'].update({
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
+        })
+        employees[row[0]] = emp
+        if (rows[curr_row] == rows[-1]).all():
+            break
+        curr_row += 1
+
+    return employees
+
+
+def update_employee_indemnity(file_name, employees):
+    rows  = read_data(file_name)
+    clean_currency(rows, 4, len(rows.columns))
+    rows = rows.to_numpy()
+
+    if 'MATIV' in file_name:
+        update_mativ_indemnity(rows, employees)
+    elif 'MINAT' in file_name:
+        update_minat_indemnity(rows, employees)
+    elif 'SATIV' in file_name:
+        update_sativ_indemnity(rows, employees)
+    elif 'SINAT' in file_name:
+        update_sinat_indemnity(rows, employees)
+    elif 'PENSI' in file_name:
+        update_pensi_indemnity(file_name, employees)
 
 def parse(file_names):
     employees = {}
