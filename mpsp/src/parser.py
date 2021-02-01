@@ -5,6 +5,9 @@ import math
 import sys
 import os
 import active_members_parser
+import inactive_members_parser
+import active_serveres_parser
+import inactive_serveres_parser
 
 def read_data(path):
     if('ods' in path):
@@ -74,6 +77,8 @@ def format_value(element):
         return 0.0
     elif(type(element) == float):
         return element
+    elif(element == '#N/DISP'):
+        return 0.0
 
 # Parser for the months from July 2019 to November 2020 
 def parse_employees(file_name):
@@ -90,7 +95,7 @@ def parse_employees(file_name):
             curr_row += 1
             continue
         
-        matricula = str(int(row[0])) # convert to string by removing the '.0'
+        matricula = str(int(row[0])) # The value is returned in float, to remove the '.0' this conversion is necessary
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
@@ -166,17 +171,39 @@ def parse(file_names, month, year):
                 employees.update(active_members_parser.parse_feb_to_may_19(fn))
             elif(month == '06'):
                 employees.update(active_members_parser.parse_jun_19(fn))
+            elif(month in ['07', '08', '09', '10', '11', '12'] and year == '2019'):
+                employees.update(parse_employees(fn))
 
         elif("Membros_inativos" in fn and 'Verbas Indenizatorias' not in fn):
             if(year == '2020'):
                 employees.update(parse_employees(fn))
-            
+            elif(month in ['01', '02', '03', '04', '08'] and year == '2019'):
+                employees.update(inactive_members_parser.parse_jan_to_april_aug_19(fn))
+            elif(month == '05' and year == '2019'):
+                employees.update(inactive_members_parser.parse_may_19(fn))
+            elif(month == '06' and year == '2019'):
+                employees.update(inactive_members_parser.parse_june_19(fn))
+            elif(month in ['07', '08', '09', '10', '11', '12'] and year == '2019'):
+                employees.update(parse_employees(fn))
+
         elif("Servidores_ativos" in fn and 'Verbas Indenizatorias' not in fn):
             if(year == '2020'):
+                employees.update(parse_employees(fn))
+            elif(month in ['01', '02', '03', '04', '05', '06'] and year == '2019'):
+                employees.update(active_serveres_parser.parse_jan_to_june_19(fn))
+            elif(month in ['07', '08', '10', '11', '12'] and year == '2019'):
                 employees.update(parse_employees(fn))
 
         elif("Servidores_inativos" in fn and 'Verbas Indenizatorias' not in fn):
             if(year == '2020'):
                 employees.update(parse_employees(fn))
-           
+            elif(month in ['01', '02', '03', '04'] and year == '2019'):
+                employees.update(inactive_serveres_parser.parse_jan_to_april_19(fn))
+            elif(month == '05' and year == '2019'):
+                employees.update(inactive_serveres_parser.parse_may_19(fn))
+            elif(month == '06' and year == '2019'):
+                employees.update(inactive_serveres_parser.parse_june_19(fn))
+            elif(month in ['07', '08', '09', '10', '11', '12'] and year == '2019'):
+                employees.update(parse_employees(fn))
+            
     return list(employees.values())
