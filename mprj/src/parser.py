@@ -6,7 +6,9 @@ import sys
 import os
 from pyexcel_ods import get_data
 
-#Transforma uma tupla em um objeto dataframe do pandas
+#Transforma uma tupla em um objeto dataframe do pandas . Este método é necessário
+#devido á inabilidade do pandas de converter certas planilhas em um dataframe
+# sem determinados tratamentos;
 def mount_df(sheet):
     keys = []
     #Coletando keys para o df
@@ -28,7 +30,6 @@ def mount_df(sheet):
         else:
             keys[indexes[i]] = keys[indexes[i]] + '/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS'
 
-    print(keys)
     #Remove nome das colunas
     sheet.pop(0)
     sheet.pop(0)
@@ -93,26 +94,18 @@ def type_employee(fn):
         return 'colaborador'
     raise ValueError('Tipo inválido de funcionário público: ' + fn)
 
-def clean_currency(value):
+def clean_currency_val(value):
     if isinstance(value, str):
         return value.replace('R$', '').replace('.', '').replace(',', '.').replace(' ', '')
     return value
 
-def clean_df(data):
-    for col in data.columns[4:]:
-        data[col] = data[col].apply(clean_currency)
-
-def clean_colab_df(data):
-    for col in data.columns[2:5]:
-        data[col] = data[col].apply(clean_currency)
-
-def clean_df_vi(data):
-    for col in data.columns[4:19]:
-        data[col] = data[col].apply(clean_currency)
+def clean_currency(data, beg_col, end_col):
+    for col in data.columns[beg_col:end_col]:
+        data[col] = data[col].apply(clean_currency_val)
 
 def parse_employees(file_name):
     rows = read_data(file_name)
-    clean_df(rows)
+    clean_currency(rows, 4, len(rows.columns))
     rows = rows.to_numpy()
 
     begin_string = 'Matrícula'
@@ -129,6 +122,7 @@ def parse_employees(file_name):
             curr_row += 1
             continue
 
+        reg = float(row[0])
         remuneration = float(row[4]) #Remuneração do cargo efetivo
         other_verbs = float(row[5]) #Outras verbas remuneratórias, legais ou judiciais
         trust_pos = float(row[6]) #Posição de Confiança
@@ -142,8 +136,8 @@ def parse_employees(file_name):
         ceil_ret = float(row[15]) #Retenção por teto constitucional
         income_tax = float(row[14]) #Imposto de renda
 
-        employees[row[0]] = {
-            'reg': row[0],
+        employees[reg] = {
+            'reg': reg,
             'name': row[1],
             'role': row[2],
             'type': typeE,
@@ -151,12 +145,9 @@ def parse_employees(file_name):
             'active': activeE,
             "income":
             {
-                'total': remuneration + other_verbs + trust_pos + christmas_bonus + abono_permanencia + terco_ferias
-                + idemnity + temp_remu,
+                'total': remuneration + other_verbs,
                 'wage': remuneration + other_verbs,
                 'perks':{
-
-                    'total': temp_remu,
                 },
                 'other':
                 { #Gratificações
@@ -166,9 +157,9 @@ def parse_employees(file_name):
                         # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
                     'others_total': christmas_bonus + terco_ferias + abono_permanencia,
                     'others': {
-                        'gratificação natalina': christmas_bonus,
-                        'ferias (1/3 constitucional)': terco_ferias,
-                        'abono de permanência': abono_permanencia,
+                        'Gratificação natalina': christmas_bonus,
+                        'Férias (1/3 constitucional)': terco_ferias,
+                        'Abono de permanência': abono_permanencia,
                     }
                 },
 
@@ -190,7 +181,7 @@ def parse_employees(file_name):
 
 def parse_colab(file_name):
     rows  = read_data(file_name)
-    clean_colab_df(rows)
+    clean_currency(rows, 2, 5)
     rows =  rows.to_numpy()
 
     begin_string = 'LOTAÇÃO'
@@ -234,14 +225,18 @@ def parse_colab(file_name):
 
 def update_employee_indemnity(file_name, employees):
     rows  = read_data(file_name)
-    clean_df_vi(rows)
+    clean_currency(rows, 4, len(rows.columns))
     rows = rows.to_numpy()
-
     #Questões de formato foram abstraídas na montagem do dataframe
     curr_row = 0
+    begin_row = 1
 
     for row in rows:
-        #Variáveis
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        reg = float(row[0])
         aux_ali =  float(row[4]) # AUXÍLIO-ALIMENTAÇÃO/VERBAS INDENIZATÓRIAS
         aux_ali_remu = float(row[11])  #AUXÍLIO-ALIMENTAÇÃO/OUTRAS REMUNERAÇÕES RETROATIVAS/TEMPORÁRIAS
         aux_saude = float(row[6]) #AUXÍLIO-SAÚDE/VERBAS INDENIZATÓRIAS
@@ -255,41 +250,49 @@ def update_employee_indemnity(file_name, employees):
         devolucao_fundo = float(row[14]) #DEVOLUÇÃO FUNDO DE RESERVA
         diff_aux = float(row[15]) #DIFERENÇAS DE AUXÍLIOS
         gratification = float(row[16])
+        transportation = float(row[17])
         parcelas_atraso = float(row[18]) #PARCELAS PAGAS EM ATRASO
 
-        emp = employees[row[0]]
+        emp = employees[reg]
+
         emp['income']['perks'].update({
-            #Auxilios saúde e alimentação estão dispostos em 2 colunas diferentes
             'food':  aux_ali + aux_ali_remu ,
-            'transportation': float(row[17]),
+            'transportation': transportation,
             'health': aux_saude + aux_saude_remu,
         })
+        emp['income']['other']['others'].update({
+            #Auxílio educação está disposto em 2 colunas diferentes
+            'AUXÍLIO-EDUCAÇÃO': aux_edu + aux_edu_remu,
+            'CONVERSÃO DE LICENÇA ESPECIAL': conversao_licenca,
+            'DEVOLUÇÃO IR RRA': devolucao_rra,
+            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': indemnity_vacation,
+            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': indemnity_licence,
+            'DEVOLUÇÃO FUNDO DE RESERVA': devolucao_fundo,
+            'DIFERENÇAS DE AUXÍLIOS': diff_aux,
+            'PARCELAS PAGAS EM ATRASO': parcelas_atraso
+        })
         emp['income']['other'].update({
-            'total': round (emp['income']['other']['total'] + aux_edu + aux_edu_remu +
+            # total + gratification + others_total
+            'total': round(emp['income']['other']['total'] + aux_edu + aux_edu_remu +
             conversao_licenca + devolucao_rra + indemnity_vacation + indemnity_licence +
-            devolucao_fundo + diff_aux + parcelas_atraso + gratification, 3),
+            devolucao_fundo + diff_aux + parcelas_atraso + gratification, 2 ),
             'gratification': gratification,
             'others_total': round(emp['income']['other']['others_total'] +
             aux_edu + aux_edu_remu + conversao_licenca + devolucao_rra +
             indemnity_vacation + indemnity_licence + devolucao_fundo +
-            diff_aux + parcelas_atraso, 3),
+            diff_aux + parcelas_atraso,2),
         })
-        emp['income']['other']['others'].update({
-            #Auxílio educação está disposto em 2 colunas diferentes
-            'auxilio_educacao': aux_edu + aux_edu_remu,
-            'conversao_licenca': conversao_licenca,
-            'devolucao_rra': devolucao_rra,
-            'indenizacao_ferias': indemnity_vacation,
-            'indenizacao_licenca': indemnity_licence,
-            'devolucao_fundo': devolucao_fundo,
-            'diferencas_aux': diff_aux,
-            'parcelas_atraso': parcelas_atraso
+        emp['income']['perks'].update({
+            'total': round( aux_ali + aux_ali_remu + transportation + aux_saude + aux_saude_remu , 2)
+        })
+        emp['income'].update({
+            'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2 )
         })
 
         employees[row[0]] = emp
-        curr_row += 1
         if (rows[curr_row] == rows[-1]).all():
             break
+        curr_row += 1
 
     return employees
 
