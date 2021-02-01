@@ -4,15 +4,17 @@ import parser
 
 # Due to the different format of the spreadsheets, a specific parser is required for a few months
 # This class contains the parsers for active members:
-    # parse_active_members_1: January 2019
-    # parse_active_members_2: February to May 2019
-    # parse_active_members_3: June 2019
+    # parse_jan_19: January 2019
+    # parse_feb_to_may_19: February to May 2019
+    # parse_jun_19: June 2019
 
 # Adjust existing spreadsheet variations
 def format_value(element):
     if(element == None):
         return 0.0
     if(type(element) == str and '-' in element):
+        return 0.0
+    if(element == '#N/DISP'):
         return 0.0
     return element
 
@@ -35,7 +37,6 @@ def parse_jan_19(file_name):
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
-        total_bruto = format_value(row[10])
         sal_base = format_value(row[4])  # Salário Base
         outras_remuneracoes = format_value(row[5]) #Outras Verbas Remuneratórias, Legais ou Judiciais
         alimentacao = format_value(row[16]) # Auxilio alimentação
@@ -49,7 +50,9 @@ def parse_jan_19(file_name):
         contribuicao_previdenciaria = format_value(row[11])
         teto_constitucional = format_value(row[13]) # Retenção por teto constitucional
         imposto_renda = format_value(row[12])
-
+        total_indenizacoes = alimentacao + moradia
+        total_bruto = format_value(row[10]) + total_indenizacoes # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
+        
         employees[matricula] = {
             'reg': matricula,
             'name': name,
@@ -63,7 +66,7 @@ def parse_jan_19(file_name):
                 'total': total_bruto,
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': alimentacao + moradia,
+                    'total': total_indenizacoes,
                     'food': alimentacao,
                     'housing_aid': moradia,
                 },
@@ -115,7 +118,6 @@ def parse_feb_to_may_19(file_name):
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
-        total_bruto = format_value(row[10])
         sal_base = format_value(row[4])  # Salário Base
         outras_remuneracoes = format_value(row[5]) #Outras Verbas Remuneratórias, Legais ou Judiciais
         alimentacao = format_value(row[16]) # Auxilio alimentação
@@ -129,7 +131,9 @@ def parse_feb_to_may_19(file_name):
         contribuicao_previdenciaria = format_value(row[11])
         teto_constitucional = format_value(row[13]) # Retenção por teto constitucional
         imposto_renda = format_value(row[12])
-        
+        total_indenizacoes = alimentacao + ferias_pc
+        total_bruto = format_value(row[10]) + total_indenizacoes # # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
+
         employees[matricula] = {
             'reg': matricula,
             'name': name,
@@ -143,7 +147,7 @@ def parse_feb_to_may_19(file_name):
                 'total': total_bruto,
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': alimentacao + ferias_pc,
+                    'total': total_indenizacoes,
                     'food': alimentacao,
                     'ferias em pecunia': ferias_pc,
                 },  
@@ -194,7 +198,6 @@ def parse_jun_19(file_name):
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
-        total_bruto = format_value(row[10])
         sal_base = format_value(row[4])  # Salário Base
         outras_remuneracoes = format_value(row[5]) #Outras Verbas Remuneratórias, Legais ou Judiciais
         alimentacao = format_value(row[15]) # Auxilio alimentação
@@ -208,7 +211,9 @@ def parse_jun_19(file_name):
         total_descontos = format_value(row[13])
         contribuicao_previdenciaria = format_value(row[11])
         imposto_renda = format_value(row[12])
-    
+        total_indenizacoes = alimentacao + ferias_pc + licensa_pc
+        total_bruto = format_value(row[10]) + total_indenizacoes # # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
+
         employees[matricula] = {
             'reg': matricula,
             'name': name,
@@ -222,7 +227,7 @@ def parse_jun_19(file_name):
                 'total': total_bruto,
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': alimentacao + ferias_pc + licensa_pc,
+                    'total': total_indenizacoes,
                     'food': alimentacao,
                     'ferias em pecunia': ferias_pc,
                     'LP em pecunia': licensa_pc,
