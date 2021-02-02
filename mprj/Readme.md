@@ -40,3 +40,22 @@ As planilhas referentes ás verbas de exercícios anteriores possuem as seguinte
 - **Origem do processo**: Natureza do processo definida pelo tipo de direito
 
 Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento especial, gerando significativo custo adicional ao código e foge dos objetivos descritos neste coletor. 
+
+# Dificuldades para libertação dos dados
+
+- A url de download de planilhas sofre muita variação de acordo com o tipo de funcionário e mês.
+    Para download de planilhas de verbas indenizatórias referentes aos servidores ativos, é necessário que a url contenha trẽs parâmetros de identificação do tipo de funcionário denominados tipoFunc1, tipoFunc2 e tipoFunc3, respectivamente, além de mês e ano. Seguindo a seguinte estrutura: 
+    
+    - http://transparencia.mprj.mp.br/contrachequeverbas-indenizatorias-e-outras-remuneracoes-temporarias-de-servidores-ativos&mes=11&ano=2020&tipoFunc1=11&tipoFunc2=21&tipoFunc3=23
+
+- Não há logica aparente na distribuição os parâmetros mencionados acima.
+- A matrícula ou registro do funcionário fornecido pelo orgão não segue uma padronização sucinta no que diz respeito á caracteres. Existem funcionarios cuja identificação varia entre as planilhas. Abaixo seguem alguns exemplos ilustrativos com matrículas fictícias que demonstram algumas situações reais de formatação.
+    - Exemplo: 
+        - O funcionário X pode ser identificado pela matrícula : 123123 e pela matrícula: 123123.0
+        - O funcionário Y é identificado pela matrícula 123123-1
+    
+    De modo geral não há problemas em diferenciar os funcionários X e Y, porém é confuso ter 2 formas de identificar o funcionário X. Além de sofrermos certo custo pra lidar com o caso de funcionários como Y que possuem caracteres especiais em sua matrícula '-' .
+
+- Existe variação entre meses na quantidade de disposição de colunas em planilhas referentes á verbas indenizatórias de um mesmo tipo de funcionário. Exemplo:
+    - Há 13 colunas na planilha de verbas Indenizatórias referentes á servidores inativos do mês de novembro de 2020.
+    - Há 11 colunas na planilha de verbas indenizatórias referentes á servidores inativos do mẽs de outubro de 2020.
