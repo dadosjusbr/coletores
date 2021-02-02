@@ -111,7 +111,8 @@ def parse_may_19(file_name):
         ferias_pc = format_value(row[16]) # Férias em pecunia
         remuneracoes_temporarias = format_value(row[17]) # Outras Remunerações Temporárias
         total_indenizacoes = alimentacao + ferias_pc + transporte
-        total_bruto = format_value(row[9]) + total_indenizacoes + remuneracoes_temporarias # A coluna 9 apresenta o total bruto sem o valor das indenizações e sem o valor das remunerações temporárias
+        total_gratificacoes = grat_natal + comissao + permanencia + remuneracoes_temporarias
+        total_bruto = total_gratificacoes + total_indenizacoes + sal_base + outras_remuneracoes
 
         employees[matricula] = {
             'reg': matricula,
@@ -126,7 +127,7 @@ def parse_may_19(file_name):
                 'total': round(total_bruto,2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': total_indenizacoes,
+                    'total': round(total_indenizacoes, 2),
                     'food': alimentacao,
                     'transportation': transporte,
                     'ferias em pecunia': ferias_pc,
@@ -134,7 +135,7 @@ def parse_may_19(file_name):
                 },
                 'other':
                 {  # Gratificações
-                    'total': grat_natal + comissao + permanencia + remuneracoes_temporarias,
+                    'total': round(total_gratificacoes, 2),
                     'trust_position': comissao,
                     'others_total': grat_natal + permanencia + remuneracoes_temporarias,
                     'others': {
@@ -188,7 +189,8 @@ def parse_june_19(file_name):
         alimentacao = format_value(row[15]) # Auxilio alimentação
         transporte = format_value(row[16]) # Auxilio transporte
         total_indenizacoes = alimentacao +  transporte
-        total_bruto = format_value(row[10]) + total_indenizacoes # A coluna 10 apresenta o total bruto sem o valor das indenizações
+        total_gratificacoes = grat_natal + comissao + permanencia + qualificacao
+        total_bruto = total_gratificacoes + total_indenizacoes + sal_base + outras_remuneracoes
 
 
         employees[matricula] = {
@@ -201,7 +203,7 @@ def parse_june_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
                     'total': total_indenizacoes,

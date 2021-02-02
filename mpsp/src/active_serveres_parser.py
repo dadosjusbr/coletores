@@ -51,7 +51,8 @@ def parse_jan_to_june_19(file_name):
         alimentacao = format_value(row[18]) # Auxilio alimentação
         creche = format_value(row[19]) # Auxílio Creche 
         total_indenizacoes = alimentacao + transporte + creche
-        total_bruto = format_value(row[11]) + total_indenizacoes # o valor retornado em row[11] não é acrescido pelo valor correspondente as indenizações 
+        total_gratificacoes = comissao + grat_natal + ferias + permanencia + grat_qualificacao
+        total_bruto = total_indenizacoes + total_gratificacoes + sal_base + outras_remuneracoes  
 
         employees[matricula] = {
             'reg': matricula,
@@ -73,7 +74,7 @@ def parse_jan_to_june_19(file_name):
                 },
                 'other':
                 {  # Gratificações
-                    'total': comissao + grat_natal + ferias + permanencia + grat_qualificacao,
+                    'total': round(total_gratificacoes,2),
                     'trust_position': comissao,
                     'others_total': grat_natal + ferias + permanencia + grat_qualificacao, 
                     'others': {

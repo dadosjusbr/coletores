@@ -130,7 +130,7 @@ class TestParser(unittest.TestCase):
     def test_active_members_march_2019(self):
         self.maxDiff = None
 
-        expected = {'reg': '3725', 'name': 'ABNER CASTORINO', 'role': 'PROMOTOR DE JUSTICA (ENTRANCIA FINAL)', 'type': 'membro', 'workplace': 'PROMOTORIA DE JUSTICA DE SAO BERNARDO DO CAMPO', 'active': True, 'income': {'total': 34609.1, 'wage': 33689.1, 'perks': {'total': 920.0, 'food': 920.0, 'ferias em pecunia': 0.0}, 'other': {
+        expected = {'reg': '3725', 'name': 'ABNER CASTORINO', 'role': 'PROMOTOR DE JUSTICA (ENTRANCIA FINAL)', 'type': 'membro', 'workplace': 'PROMOTORIA DE JUSTICA DE SAO BERNARDO DO CAMPO', 'active': True, 'income': {'total': 38651.78, 'wage': 33689.1, 'perks': {'total': 920.0, 'food': 920.0, 'ferias em pecunia': 0.0}, 'other': {
             'total': 4042.68, 'trust_position': 0.0, 'others_total': 4042.68, 'others': {'Gratificação Natalina': 0.0, 'Férias (1/3 constitucional)': 0.0, 'Abono de Permanência': 0.0, 'Outras remunerações temporárias': 4042.68}}}, 'discounts': {'total': 12193.58, 'prev_contribution': 3705.8, 'ceil_retention': 0.0, 'income_tax': 8487.78}}
 
         files = ('./output_test/Membros_ativos-03-2019.ods', )

@@ -51,7 +51,8 @@ def parse_jan_19(file_name):
         teto_constitucional = format_value(row[13]) # Retenção por teto constitucional
         imposto_renda = format_value(row[12])
         total_indenizacoes = alimentacao + moradia
-        total_bruto = format_value(row[10]) + total_indenizacoes # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
+        total_gratificacoes = comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias
+        total_bruto =  total_indenizacoes + total_gratificacoes + sal_base + outras_remuneracoes
         
         employees[matricula] = {
             'reg': matricula,
@@ -63,16 +64,16 @@ def parse_jan_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': total_indenizacoes,
+                    'total': round(total_indenizacoes, 2 ),
                     'food': alimentacao,
                     'housing_aid': moradia,
                 },
                 'other':
                 {  # Gratificações
-                    'total': comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias,
+                    'total': round(total_gratificacoes,2),
                     'trust_position': comissao,
                     'others_total': grat_natal + ferias + permanencia + remuneracoes_temporarias, 
                     'others': {
@@ -132,8 +133,9 @@ def parse_feb_to_may_19(file_name):
         teto_constitucional = format_value(row[13]) # Retenção por teto constitucional
         imposto_renda = format_value(row[12])
         total_indenizacoes = alimentacao + ferias_pc
-        total_bruto = format_value(row[10]) + total_indenizacoes # # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
-
+        total_gratificacoes = comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias
+        total_bruto = total_gratificacoes + total_indenizacoes + sal_base + outras_remuneracoes
+        
         employees[matricula] = {
             'reg': matricula,
             'name': name,
@@ -144,16 +146,16 @@ def parse_feb_to_may_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto,2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': total_indenizacoes,
+                    'total': round(total_indenizacoes,2),
                     'food': alimentacao,
                     'ferias em pecunia': ferias_pc,
                 },  
                 'other':
                 {  # Gratificações
-                    'total': comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias,
+                    'total': round(total_gratificacoes,2),
                     'trust_position': comissao,
                     'others_total': grat_natal + ferias + permanencia + remuneracoes_temporarias,
                     'others': {
@@ -212,7 +214,8 @@ def parse_jun_19(file_name):
         contribuicao_previdenciaria = format_value(row[11])
         imposto_renda = format_value(row[12])
         total_indenizacoes = alimentacao + ferias_pc + licensa_pc
-        total_bruto = format_value(row[10]) + total_indenizacoes # # A coluna 10 retorna o valor bruto sem o valor correspondente a indinizações 
+        total_gratificacoes = comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias
+        total_bruto = total_indenizacoes + total_gratificacoes + sal_base + outras_remuneracoes 
 
         employees[matricula] = {
             'reg': matricula,
@@ -224,17 +227,17 @@ def parse_jun_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': total_indenizacoes,
+                    'total': round(total_indenizacoes, 2),
                     'food': alimentacao,
                     'ferias em pecunia': ferias_pc,
                     'LP em pecunia': licensa_pc,
                 },
                 'other':
                 {  # Gratificações
-                    'total': comissao + grat_natal + ferias + permanencia + remuneracoes_temporarias,
+                    'total': round(total_gratificacoes, 2),
                     'trust_position': comissao,
                     'others_total': grat_natal + ferias + permanencia + remuneracoes_temporarias,
                     'others': {

@@ -37,7 +37,6 @@ def parse_jan_to_april_aug_19(file_name):
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
-        total_bruto = format_value(row[7]) # Total de Rendimentos Brutos
         sal_base = format_value(row[4])  # Salário Base
         outras_remuneracoes = format_value(row[5]) #Outras Verbas Remuneratórias, Legais ou Judiciais
         grat_natal = format_value(row[6]) # Gratificação Natalina (13º  sal.)
@@ -45,6 +44,7 @@ def parse_jan_to_april_aug_19(file_name):
         teto_constitucional = format_value(row[10]) # Retenção por teto constitucional
         contribuicao_previdenciaria = format_value(row[8])
         imposto_renda = format_value(row[12])
+        total_bruto = sal_base + outras_remuneracoes + grat_natal
        
         employees[matricula] = {
             'reg': matricula,
@@ -56,7 +56,7 @@ def parse_jan_to_april_aug_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'other':
                 {  # Gratificações
@@ -114,7 +114,8 @@ def parse_may_19(file_name):
         alimentacao = format_value(row[16]) # Auxilio alimentação
         ferias_pc = format_value(row[17]) # Férias em pecunia
         total_indenizacoes = alimentacao +  ferias_pc
-        total_bruto = format_value(row[10]) + total_indenizacoes # A coluna 10 apresenta o total bruto sem o valor das indenizações
+        total_gratificacoes = grat_natal + comissao + permanencia
+        total_bruto = total_gratificacoes + total_indenizacoes + sal_base + outras_remuneracoes
    
         employees[matricula] = {
             'reg': matricula,
@@ -126,7 +127,7 @@ def parse_may_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
                     'total': total_indenizacoes,
@@ -191,7 +192,8 @@ def parse_june_19(file_name):
         alimentacao = format_value(row[15]) # Auxilio alimentação
         ferias_pc = format_value(row[16]) # Férias em pecunia
         total_indenizacoes = alimentacao +  ferias_pc
-        total_bruto = format_value(row[9]) + total_indenizacoes # A coluna 9 apresenta o total bruto sem o valor das indenizações
+        total_gratificacoes = grat_natal  + permanencia
+        total_bruto = total_gratificacoes + total_indenizacoes  + sal_base + outras_remuneracoes
            
         employees[matricula] = {
             'reg': matricula,
@@ -203,16 +205,16 @@ def parse_june_19(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': sal_base + outras_remuneracoes,
                 'perks': {
-                    'total': total_indenizacoes,
+                    'total': round(total_indenizacoes, 2),
                     'food': alimentacao,
                     'ferias em pecunia': ferias_pc,
                 },
                 'other':
                 {  # Gratificações
-                    'total': grat_natal  + permanencia,
+                    'total':round(total_gratificacoes, 2),
                     'others_total': grat_natal + permanencia,
                     'others': {
                         'Gratificação Natalina': grat_natal,

@@ -73,12 +73,19 @@ def type_employee(fn):
 def format_value(element):
     if(element == None):
         return 0.0
-    elif(type(element) == str and '-' in element):
-        return 0.0
+    elif(type(element) == str):
+        if('-' in element):
+            return 0.0
+        elif(',' in element):
+            # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
+            element = element.replace('.', '').replace(',', '.').replace(' ', '')
+            return(float(element))
+        elif(element == '#N/DISP'):
+            return 0.0
     elif(type(element) == float):
         return element
-    elif(element == '#N/DISP'):
-        return 0.0
+   
+    return(element)
 
 # Parser for the months from July 2019 to November 2020 
 def parse_employees(file_name):
@@ -99,7 +106,6 @@ def parse_employees(file_name):
         name = row[1].strip() # removes blank spaces present in some cells
         role = row[2] # cargo
         workplace = row[3] # Lotação
-        total_bruto = format_value(row[12]) # TOTAL DE RENDIMENTOS BRUTOS9
         remuneracao_cargo_efetivo = format_value(row[4]) # Remuneração Cargo Efetivo
         outras_verbas_remuneratorias = format_value(row[5]) # Outras Verbas Remuneratórias, Legais ou Judiciais
         total_verbas_indenizatorias = format_value(row[11]) # VERBAS INDENIZATÓRIAS8
@@ -112,7 +118,9 @@ def parse_employees(file_name):
         prev_contribution = abs(format_value(row[13])) # Contribuição Previdenciária
         ceil_retention = abs(format_value(row[15])) # Retenção por teto constitucional
         income_tax = format_value(row[14]) # Imposto de Renda
-
+        total_gratificacoes = trust_position + gratificacao_natalina + ferias + abono_permanencia + temporary_remunerations
+        total_bruto = remuneracao_cargo_efetivo + outras_verbas_remuneratorias + total_verbas_indenizatorias + total_gratificacoes
+        
         employees[matricula] = {
             'reg': matricula,
             'name': name,   
@@ -123,14 +131,14 @@ def parse_employees(file_name):
             'active': activeE,
             "income":
             {
-                'total': total_bruto,
+                'total': round(total_bruto, 2),
                 'wage': remuneracao_cargo_efetivo + outras_verbas_remuneratorias ,
                 'perks': {
                     'total': total_verbas_indenizatorias,
                 },
                 'other':
                 {  # Gratificações
-                    'total': trust_position + gratificacao_natalina + ferias + abono_permanencia + temporary_remunerations,
+                    'total': round(total_gratificacoes,2),
                     'trust_position': trust_position,
                     'others_total': temporary_remunerations + gratificacao_natalina + ferias + abono_permanencia,
                     'others': {
