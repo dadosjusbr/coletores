@@ -109,7 +109,7 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
 ## Dificuldades para libertação dos dados
 
-- A URL para baixar as planilhas variam bastante de acordo com o grupo, mês e anos. Sendo necessário testar todos os links.
+- Problema para automatizar a coleta dos dados devido a URL para baixar as planilhas variarem bastante de acordo com o grupo, mês e anos. Sendo necessário testar todos os links.
 
     Abaixo, temos alguns exemplos das urls para downloads das planilhas referentes aos meses outubro, novembro e dezembro, respectivamente. No mês outubro o campo que seria referente ao mês se encontra com o dígito 09, além de também conter  "_1" que não está presente nos demais links.
         - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb092019_1.ods
@@ -124,3 +124,14 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
         - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20Membros%20Ativos%20ref0619.ods
 
 - A planilha referente a pensionistas não apresenta explicações sobre o significado das variáveis. Houve dúvidas no entendimento da Dat_Publ, uma vez que foi induzido que essa data era referente a publicação da portaria que estabelece o recebimento do beneficio, mas tem outro atributo que é referente a data do inicio do recebimento. E o inicio do beneficio começou antes dessa dat_publ.
+
+- Problemas para automatizar o parser das planilhas de Remuneraões Mensais por possuirem formatos diferentes, algunas incluem algumas verbas indenizatórias outras não, além disso algumas informações estão presentes em algumas planilhas e em outras não. Como exemplo, as planilhas dos Servidores Inativos dos meses de abril, maio, junho e julho de 2019, respectivamente, existem diferenças na quantidade de valores que são informados bem como na ordem de alguns valores apresentados:
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0419.ods
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0519.ods
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20Servidores%20Inativos%20ref0619.ods
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Servidores%20Inativos%20-%20Tabela%20I%20ref%20072019.ods
+
+
+- Existem alguns valores negativos relacionados indenizações, como é o caso do funcionario que possuí matrícula 2720, na tabela referente a servidores inativos do mês de maio de 2019. (http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_inativos/Tabela%20I%20membros%20inativos%20ref0519.ods)
+
+- Existem pensionistas com valores líquido maiores que os valores bruto. Houve dificuldade para entender o porquê disso ocorrer. Pode ser visto um exemplo na planilha referente a pensionistas membros do mês de maio de 2019. No beneficiário correspondente ao código 60601181. (Link)[http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Pensionistas/Pensionistas_membros/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20052019.ods]
