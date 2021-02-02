@@ -43,22 +43,21 @@ def generate_remuneration_url(year, month):
 
     return links
 
-def download(url, file_path, cwd):
+def download(url, file_path):
     response = requests.get(url, allow_redirects=True, verify = False)
-    with open(cwd + file_path, "wb") as file:
+    with open(file_path, "wb") as file:
         file.write(response.content)
     file.close()
 
 def crawl(year, month, output_path):
     urls_remunerations  = generate_remuneration_url(year,month)
     files = []
-    cwd = os.getcwd()
 
     for key, value in urls_remunerations.items():
-        pathlib.Path(cwd + output_path).mkdir(exist_ok=True)
+        pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = key + "-" + month + '-' + year + '.json'
         file_path = output_path + "/" + file_name.replace("/", "")
-        download(value, file_path, cwd)
+        download(value, file_path)
         files.append(file_path)
 
     return files
