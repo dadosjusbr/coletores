@@ -18,11 +18,11 @@ _BASE_URL = 'http://www.transparencia.mpf.mp.br/conteudo/contracheque/'
 def write_file(response, file_name, output_path):
 
     #Cria o diretório de download (caso nao exista)
-    pathlib.Path('./src/' + output_path).mkdir(exist_ok=True) 
+    pathlib.Path(output_path).mkdir(exist_ok=True) 
 
     #Transcrição da resposta HTTP para o disco
     try:
-        with open("./src/" + file_name,  "wb") as file :
+        with open(file_name,  "wb") as file :
             file.write(response.content)
         file.close()
     except Exception as excep:

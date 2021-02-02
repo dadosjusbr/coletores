@@ -11,7 +11,7 @@ import os
 
 def read_data(path):
     try:
-        data = pd.read_excel(pathlib.Path('./' + path), engine='openpyxl')
+        data = pd.read_excel(path, engine='openpyxl')
         return data
     except Exception as excep:
         sys.stderr.write("'Não foi possível ler o arquivo: " +

@@ -1,5 +1,4 @@
 import pandas as pd
-from pandas_ods_reader import read_ods
 import pyexcel_ods
 from datetime import datetime
 import math
@@ -10,7 +9,6 @@ import sys
 import os
 
 def read_data(path):
-    path = './src/' + path
     try:
         data = pd.read_excel(path, engine='odf')
         return data
@@ -28,16 +26,16 @@ def parse_employees(file_name):
     curr_row = 0
     for row in emps_clean:
         employees[row[0]] = {
-            'reg': row[0],
-            'name': row[1],
-            'role': row[2],
+            'reg': str(row[0]),
+            'name': str(row[1]),
+            'role': str(row[2]),
             'type': typeE,
-            'workplace': row[3],
+            'workplace': str(row[3]),
             'active': activeE,
             "income":
             {
                 #Soma de todos os recebidos do funcionário
-                'total': row[4]+row[5]+row[6]+row[7]+row[8]+row[9]+row[10]+row[11],
+                'total': float(row[4]+row[5]+row[6]+row[7]+row[8]+row[9]+row[10]+row[11]),
                 # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
                 'wage': row[4]+row[5],
                 'perks': {
@@ -70,38 +68,43 @@ def update_employee_indemnity(file_name, employees):
     rows = read_data(file_name).to_numpy()
     emp_idemnity = utils.treat_rows(rows)
     for row in emp_idemnity:
-        emp = employees[row[0]]
-        emp['income']['perks'].update({
-            'total': sum(row[4:14]),
-            'vacation': row[4],
-            'food': row[5],
-            'pre_school': row[6],
-            'transportation': row[7],
-            'furniture_transport': row[8],
-            'birth_aid': row[9],
-            'subsistence': row[10],
-            'housing_aid': row[11],
-            'pecuniary': row[12],
-            'premium_license_pecuniary': row[13],
-        })
-        emp['income']['other'].update({
-            'total': round(emp['income']['other']['total'] + row[15] + row[16] + row[17] + row[18] + row[20] + row[22] + row[23] + row[24] + row[25] + row[26], 3),
-            'others_total': round(emp['income']['other']['others_total'] + row[15] + row[16] + row[17] + row[18] + row[20] + row[22] + row[23] + row[24] + row[25] + row[26], 3),
-        })
-        emp['income']['other']['others'].update({
-            'Gratificação de Perícia e Projeto': row[15],
-            'Gratificação Exercício Cumulativo de Ofício': row[16],
-            'Gratificação Encargo de Curso e Concurso': row[17],
-            'Gratificação Local de Trabalho': row[18],
-            'Hora Extra': row[20],
-            'Adicional Noturno': row[22],
-            'Adicional Atividade Penosa': row[23],
-            'Adicional Insalubridade': row[24],
-            'Outras Verbas Remuneratórias': row[25],
-            'Outras Verbas Remuneratórias Retroativas/Temporárias': row[26],
+        exists_employee = employees.get(row[0])
+        if exists_employee:
+            emp = employees[row[0]]
+            emp['income']['perks'].update({
+                'total': sum(row[4:14]),
+                'vacation': row[4],
+                'food': row[5],
+                'pre_school': row[6],
+                'transportation': row[7],
+                'furniture_transport': row[8],
+                'birth_aid': row[9],
+                'subsistence': row[10],
+                'housing_aid': row[11],
+                'pecuniary': row[12],
+                'premium_license_pecuniary': row[13],
+            })
+            emp['income']['other'].update({
+                'total': round(emp['income']['other']['total'] + row[15] + row[16] + row[17] + row[18] + row[20] + row[22] + row[23] + row[24] + row[25] + row[26], 3),
+                'others_total': round(emp['income']['other']['others_total'] + row[15] + row[16] + row[17] + row[18] + row[20] + row[22] + row[23] + row[24] + row[25] + row[26], 3),
+            })
+            emp['income']['other']['others'].update({
+                'Gratificação de Perícia e Projeto': row[15],
+                'Gratificação Exercício Cumulativo de Ofício': row[16],
+                'Gratificação Encargo de Curso e Concurso': row[17],
+                'Gratificação Local de Trabalho': row[18],
+                'Hora Extra': row[20],
+                'Adicional Noturno': row[22],
+                'Adicional Atividade Penosa': row[23],
+                'Adicional Insalubridade': row[24],
+                'Outras Verbas Remuneratórias': row[25],
+                'Outras Verbas Remuneratórias Retroativas/Temporárias': row[26],
 
-        })
-        employees[row[0]] = emp
+            })
+            employees[row[0]] = emp
+        else:
+            continue
+        
 
     return employees
 
@@ -111,13 +114,7 @@ def parse(file_names):
         if 'verbas-indenizatorias' not in fn:
             # Puts all parsed employees in the big map
             employees.update(parse_employees(fn))
-    try:
-        for fn in file_names:
-            if 'verbas-indenizatorias' in fn:
-                update_employee_indemnity(fn, employees)
-    except KeyError as e:
-        sys.stderr.write('Registro inválido ao processar verbas indenizatórias: {}'.format(e))
-        sys.stderr.write('Mapa de funcionários: {}'.format(employees))
-        os._exit(1)
-
+    for fn in file_names:
+        if 'verbas-indenizatorias' in fn:
+            update_employee_indemnity(fn, employees)
     return list(employees.values())

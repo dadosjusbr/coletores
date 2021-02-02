@@ -7,7 +7,6 @@ lxml==4.6.2
 numpy==1.19.4
 odfpy==1.4.1
 pandas==1.1.5
-pkg-resources==0.0.0
 pyexcel-ezodf==0.3.4
 pyexcel-io==0.6.3
 pyexcel-ods==0.6.0
