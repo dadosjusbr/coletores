@@ -72,6 +72,16 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
 - Nos anos analisados (2018, 2019 e 2020) não houve declaração de pagamentos de remunerações, proventos, indenizações ou outros valores pagos a qualquer título, a Colaboradores
 
+- Planilhas que não conseguimos obter:
+
+    Mês | Ano |  Tipo Funcionario | Tipo planilha | Motivo
+    :------:|:------:|:-------------:|:-------------:|:--------------:
+    09     | 2019  | Servidores Ativos | Remuneração Mensal | No lugar está disponibilizada a planilha referente a Verbas indenizatórias desse mesmo mês.
+
+
+
+
+
 
 ### Tipo 1 - Remunerações ###
 
