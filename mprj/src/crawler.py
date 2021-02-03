@@ -11,7 +11,9 @@ func_types =  {1:'MATIV',
                2:'MINAT',
                3:'SATIV',
                4:'SINAT',
-               5:'PENSI',
+               # Reservado para quando corrigir um erro de leitura da planilha de
+               # verbas indenizatórias de pensionistas.
+               # 5:'PENSI',
                6:'COLAB'
             }
 
@@ -19,21 +21,27 @@ fund_types = { 1: 1,
                2: 2,
                3: {'tipo1':11, 'tipo2':21, 'tipo3':23},
                4: 12,
-               5: 4
+               # Reservado para quando corrigir um erro de leitura da planilha de
+               # verbas indenizatórias de pensionistas.
+               # 5: 4
             }
 
 url_complements = {1: 'remuneracao-de-todos-os-membros-ativos',
                    2: 'proventos-de-todos-os-membros-inativos',
                    3: 'remuneracao-de-todos-os-servidores-ativos',
                    4: 'proventos-de-todos-os-servidores-inativos',
-                   5: 'valores-percebidos-por-todos-os-pensionistas'
+                   # Reservado para quando corrigir um erro de leitura da planilha de
+                   # verbas indenizatórias de pensionistas.
+                   # 5: 'valores-percebidos-por-todos-os-pensionistas'
                    }
 
 url_funds_complements = {1: 'membros-ativos',
                          2: 'membros-inativos',
                          3: 'servidores-ativos',
                          4: 'servidores-inativos',
-                         5: 'pensionistas'
+                         # Reservado para quando corrigir um erro de leitura da planilha de
+                         # verbas indenizatórias de pensionistas.
+                         # 5: 'pensionistas'
                          }
 
 # Adquire o conjunto de links para envio de requisições post.
