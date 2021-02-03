@@ -247,6 +247,49 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    # Tests for archives containing indemnity funds and temporary remuneration
+
+    def test_inactive_members_aug(self):
+        self.maxDiff = None
+
+        expected = {'reg': '322959', 'name': 'WALERIA GARCELAN LOMA GARCIA', 'role': 'PROCURADOR DE JUSTICA', 'type': 'membro', 'workplace': 'PROCURADORIA DE JUSTICA CRIMINAL', 'active': False, 'income': {'total': 88834.87, 'wage': 38072.09, 'perks': {'total': 50762.78, 'vacation_pecuniary': 50762.78}, 'other': {
+            'total': 0.0, 'trust_position': 0.0, 'others_total': 0.0, 'others': {'Gratificação Natalina': 0.0, 'Férias (1/3 constitucional)': 0.0, 'Abono de Permanência': 0.0, 'Outras remunerações temporárias': 0.0}}}, 'discounts': {'total': 11004.51, 'prev_contribution': 5115.36, 'ceil_retention': 0.0, 'income_tax': 16119.87}}
+
+        files = ('./output_test/Membros_inativos-08-2020.ods',
+                 './output_test/Membros_inativos-Verbas Indenizatorias-08-2020.ods')
+        employees = parser.parse(files, "08", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_inactive_members_sept(self):
+        self.maxDiff = None
+
+        expected = {'reg': '730', 'name': 'DIANA MARIA SILVA BRAUS', 'role': 'PROMOTOR DE JUSTICA (ENTRANCIA INTERMEDIARIA)', 'type': 'membro', 'workplace': 'PROMOTORIA DE JUSTICA DE BIRIGUI', 'active': False, 'income': {'total': 46228.93, 'wage': 32004.65, 'perks': {'total': 14224.28, 'food': 0.0, 'vacation_pecuniary': 14224.28}, 'other': {
+            'total': 0.0, 'trust_position': 0.0, 'others_total': 0.0, 'others': {'Gratificação Natalina': 0.0, 'Férias (1/3 constitucional)': 0.0, 'Abono de Permanência': 0.0, 'Outras remunerações temporárias': 0.0}}}, 'discounts': {'total': 10936.73, 'prev_contribution': 4144.57, 'ceil_retention': 0.0, 'income_tax': 6792.16}}
+
+        files = ('./output_test/Membros_inativos-09-2020.ods',
+                 './output_test/Membros_inativos-Verbas Indenizatorias-09-2020.ods')
+        employees = parser.parse(files, "09", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_inactive_members_nov(self):
+        self.maxDiff = None
+
+        expected = {'reg': '204231', 'name': 'AIRTON GRAZZIOLI', 'role': 'PROCURADOR DE JUSTICA', 'type': 'membro', 'workplace': 'PROCURADORIA DE JUSTICA CRIMINAL', 'active': False, 'income': {'total': 54466.36, 'wage': 37707.48, 'perks': {'total': 16758.88, 'vacation_pecuniary': 16758.88, 'premium_license_pecuniary': 0.0}, 'other': {
+            'total': 0.0, 'trust_position': 0.0, 'others_total': 0.0, 'others': {'Gratificação Natalina': 0.0, 'Férias (1/3 constitucional)': 0.0, 'Abono de Permanência': 0.0, 'Outras remunerações temporárias': 0.0}}}, 'discounts': {'total': 13651.37, 'prev_contribution': 5725.76, 'ceil_retention': 0.0, 'income_tax': 7925.61}}
+        files = ('./output_test/Membros_inativos-11-2020.ods',
+                 './output_test/Membros_inativos-Verbas Indenizatorias-11-2020.ods')
+        employees = parser.parse(files, "11", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == '__main__':
     unittest.main()
