@@ -8,6 +8,15 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
 - Tipo II - Verbas Indenizatórias e outras remunerações temporárias.
 
+# Coletando usando Docker
+
+Por exemplo, para coletar o mês de novembro de 2020, basta executar o seguinte comando:
+
+```sh
+$ sudo docker build -t mprj .
+sudo docker run -e MONTH=11 -e YEAR=2020 -e GIT_COMMIT=$(git rev-parse HEAD) -e OUTPUT_FOLDER='/output
+```
+
 # Dicionário de dados
 
 As planilhas referentes á remunerações possuem as seguintes colunas:
