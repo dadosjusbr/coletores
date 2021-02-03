@@ -141,7 +141,7 @@ def crawl(year, month, output_path):
             method = 'GET'
 
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = year +'_' + month + '_' +  key
+        file_name = year +'_' + month + '_' +  key + '.ods'
         file_path = output_path + "/" + file_name
 
         download(urls_remunerations[key], file_path, method)

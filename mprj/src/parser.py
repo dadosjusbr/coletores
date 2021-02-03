@@ -6,6 +6,7 @@ import pathlib
 import sys
 import os
 from pyexcel_ods import get_data
+import sativ_indemnity_parser_out_2020
 
 #Transforma uma tupla em um objeto dataframe do pandas . Este método é necessário
 #devido á inabilidade do pandas de converter certas planilhas em um dataframe
@@ -19,7 +20,7 @@ def mount_df(sheet):
         keys.append(key)
 
     #Tratando colunas com nomes iguais
-    equal_columns = ['AUXÍLIO-ALIMENTAÇÃO','AUXÍLIO-EDUCAÇÃO','AUXÍLIO-SAÚDE']
+    equal_columns = ['AUXÍLIO-ALIMENTAÇÃO','AUXÍLIO-EDUCAÇÃO','AUXÍLIO-SAÚDE','AUXÍLIO-LOCOMOÇÃO']
     indexes = []
     for col in keys:
         if col in equal_columns:
@@ -124,7 +125,7 @@ def parse_employees(file_name):
             continue
 
         #Se possível é preferível tratar a matrícula como float do que como string
-        #Pois a situação  matricula.0 =  matricula  
+        #Pois a situação  matricula.0 =  matricula
         try:
             reg = float(row[0])
         except:
@@ -534,7 +535,10 @@ def update_employee_indemnity(file_name, employees):
     elif 'MINAT' in file_name:
         update_minat_indemnity(rows, employees)
     elif 'SATIV' in file_name:
-        update_sativ_indemnity(rows, employees)
+        if '2020_10'in file_name:
+            sativ_indemnity_parser_out_2020.parse(rows, employees)
+        else:
+            update_sativ_indemnity(rows, employees)
     elif 'SINAT' in file_name:
         update_sinat_indemnity(rows, employees)
     elif 'PENSI' in file_name:

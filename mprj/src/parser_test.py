@@ -55,7 +55,7 @@ class TestParser(unittest.TestCase):
                     'income_tax': 7952.28,
                 }
         }
-        files = [('./output_test/2020_11_MATIV') , ('./output_test/2020_11_Verbas Indenizatórias-MATIV')]
+        files = [('./output_test/2020_11_MATIV.ods') , ('./output_test/2020_11_Verbas Indenizatórias-MATIV.ods')]
         employees = parser.parse(files)
 
         #Verificações
@@ -104,7 +104,7 @@ class TestParser(unittest.TestCase):
                     'income_tax': 0.00,
                 }
         }
-        files = [('./output_test/2020_11_MINAT'), ('./output_test/2020_11_Verbas Indenizatórias-MINAT')]
+        files = [('./output_test/2020_11_MINAT.ods'), ('./output_test/2020_11_Verbas Indenizatórias-MINAT.ods')]
         employees = parser.parse(files)
 
         #Verificações
@@ -160,7 +160,7 @@ class TestParser(unittest.TestCase):
                     'income_tax': 2133.68,
                 }
         }
-        files = [('./output_test/2020_11_SATIV'), ('./output_test/2020_11_Verbas Indenizatórias-SATIV')]
+        files = [('./output_test/2020_11_SATIV.ods'), ('./output_test/2020_11_Verbas Indenizatórias-SATIV.ods')]
         employees = parser.parse(files)
 
         #Verificações
@@ -211,7 +211,7 @@ class TestParser(unittest.TestCase):
                     'income_tax': 929.58,
                 }
         }
-        files = [('./output_test/2020_11_SINAT'), ('./output_test/2020_11_Verbas Indenizatórias-SINAT')]
+        files = [('./output_test/2020_11_SINAT.ods'), ('./output_test/2020_11_Verbas Indenizatórias-SINAT.ods')]
         employees = parser.parse(files)
 
         #Verificações
@@ -252,7 +252,7 @@ class TestParser(unittest.TestCase):
                 }
         }
 
-        files = [('./output_test/2020_11_PENSI')]
+        files = [('./output_test/2020_11_PENSI.ods')]
         employees = parser.parse(files)
 
         #Verificações
@@ -279,12 +279,69 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = [('./output_test/2020_11_COLAB')]
+        files = [('./output_test/2020_11_COLAB.ods')]
         employees = parser.parse(files)
 
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+
+    def teste_servidores_ativos_outubro_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': 00004938.0,
+            'name': 'ZILMA OLIVEIRA MARQUES',
+            'role': 'TÉCNICO DO MP - ÁREA: ADMINISTRATIVA',
+            'type': 'servidor',
+            'workplace': 'SECRETARIA DA 2ª PROMOTORIA DE JUSTIÇA DE FAMÍLIA DA CAPITAL',
+            'active': True,
+            'income':
+                {
+                    'total': 11316.45,
+                    'wage': 9217.66,
+                    'perks':{
+                        'total': 2098.79,
+                        'food':1230.00,
+                        'transportation':0.00,
+                        'health':868.79
+                    },
+                    'other':
+                    {
+                        'total': 0.00,
+                        'trust_position': 0.00,
+                        'gratification': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00,
+                            'SUBSTITUIÇÃO DE CARGO EM COMISSÃO / FUNÇÃO GRATIFICADA': 0.00
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 2601.08,
+                    'prev_contribution': 1290.47,
+                    'ceil_retention':0.00,
+                    'income_tax': 1310.61,
+                }
+        }
+        files = [('./output_test/2020_10_SATIV.ods'),('./output_test/2020_10_Verbas Indenizatórias-SATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+
 
 if __name__ == '__main__':
     unittest.main()
