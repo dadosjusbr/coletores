@@ -93,31 +93,27 @@ func newClient(conf config) (*storage.Client, error) {
 func summary(employees []coletores.Employee) storage.Summaries {
 	general := storage.Summary{}
 	memberActive := storage.Summary{}
-	memberInactive := storage.Summary{}
+	undefined := storage.Summary{}
 	servantActive := storage.Summary{}
-	servantInactive := storage.Summary{}
 	for _, emp := range employees {
 		updateSummary(&general, emp)
 		switch {
-		case emp.Type == "membro" && emp.Active:
+		case *emp.Type == "membro" && emp.Active:
 			updateSummary(&memberActive, emp)
-		case emp.Type == "membro" && !emp.Active:
-			updateSummary(&memberInactive, emp)
-		case emp.Type == "servidor" && emp.Active:
+		case *emp.Type == "servidor" && emp.Active:
 			updateSummary(&servantActive, emp)
-		case emp.Type == "servidor" && !emp.Active:
-			updateSummary(&servantInactive, emp)
+		case emp.Type == nil:
+			updateSummary(&undefined, emp)
 		}
 	}
 	if general.Count == 0 {
 		return storage.Summaries{}
 	}
 	return storage.Summaries{
-		General:         general,
-		MemberActive:    memberActive,
-		MemberInactive:  memberInactive,
-		ServantActive:   servantActive,
-		ServantInactive: servantInactive,
+		General:       general,
+		MemberActive:  memberActive,
+		Undefined:     undefined,
+		ServantActive: servantActive,
 	}
 }
 
