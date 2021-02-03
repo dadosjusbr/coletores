@@ -2,8 +2,11 @@ certifi==2020.12.5
 chardet==4.0.0
 defusedxml==0.6.0
 idna==2.10
+lml==0.1.0
 numpy==1.19.5
 odfpy==1.4.1
+pyexcel-io==0.6.4
+pyexcel-ods==0.6.0
 pandas==1.2.1
 python-dateutil==2.8.1
 python-dotenv==0.15.0
