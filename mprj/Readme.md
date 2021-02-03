@@ -14,7 +14,7 @@ Por exemplo, para coletar o mês de novembro de 2020, basta executar o seguinte 
 
 ```sh
 $ sudo docker build -t mprj .
-sudo docker run -e MONTH=11 -e YEAR=2020 -e GIT_COMMIT=$(git rev-parse HEAD) -e OUTPUT_FOLDER='/output
+sudo docker run -e MONTH=11 -e YEAR=2020 -e GIT_COMMIT=$(git rev-parse HEAD) -e OUTPUT_FOLDER='/output mprj
 ```
 
 # Dicionário de dados
