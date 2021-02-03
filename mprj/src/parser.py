@@ -1,3 +1,4 @@
+import numpy
 import pandas as pd
 from datetime import datetime
 import math
@@ -129,6 +130,8 @@ def parse_employees(file_name):
         except:
             reg = str(row[0])
 
+        role = row[2]
+        workplace = row[3]
         remuneration = float(row[4]) #Remuneração do cargo efetivo
         other_verbs = float(row[5]) #Outras verbas remuneratórias, legais ou judiciais
         trust_pos = float(row[6]) #Posição de Confiança
@@ -145,9 +148,7 @@ def parse_employees(file_name):
         employees[reg] = {
             'reg': reg,
             'name': row[1],
-            'role': row[2],
             'type': typeE,
-            'workplace': row[3],
             'active': activeE,
             "income":
             {
@@ -178,6 +179,15 @@ def parse_employees(file_name):
                 'income_tax': income_tax
             }
         }
+        # Esta condição é necesssária pois a coluna de local de trabalho e role
+        # podem não ser preenchidas. Por exemplo, servidores e membros inativos.
+        # Quando a coluna é vazia, o tipo que vem é float e o conteúdo nan
+        # Quando a coluna está preenchida, o tipo que vem é str.
+        if type(workplace) == str:
+            employees[reg]['workplace'] = workplace
+        if type(role) == str:
+            employees[reg]['role'] = role
+
 
         curr_row += 1
         if curr_row >= end_row:

@@ -70,7 +70,6 @@ class TestParser(unittest.TestCase):
             'name': 'ADA BUKSMAN',
             'role': 'PROMOTOR DE JUSTICA',
             'type': 'membro',
-            'workplace': np.nan,
             'active': False,
             'income':
                 {
@@ -176,7 +175,6 @@ class TestParser(unittest.TestCase):
             'name': 'ADELAIDE BURATTO',
             'role': 'AUXILIAR DO MP - ÁREA: ADMINISTRATIVA',
             'type': 'servidor',
-            'workplace': np.nan,
             'active': False,
             'income':
                 {
@@ -226,31 +224,22 @@ class TestParser(unittest.TestCase):
         expected = {
             'reg': '02002761-1',
             'name':'ACASSIA MARIA CARVALHO PEREIRA',
-            'role': np.nan,
             'type': 'pensionista',
-            'workplace': np.nan,
             'active': False,
             'income':
                 {
                     'total': 26473.52,
                     'wage': 26473.52,
-                    'perks':{
-                        'total':0.00,
-                        'health': 0.00,
-                    },
+                    'perks':{},
                     'other':
                     {
                         'total': 0.00,
                         'trust_position': 0.00,
-                        'others_total': 4901.13,
+                        'others_total': 0.00,
                         'others':{
                             'Gratificação natalina': 0.00,
                             'Férias (1/3 constitucional)': 0.00,
                             'Abono de permanência': 0.00,
-                            'DEVOLUÇÃO IR RRA': 4901.13,
-                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
-                            'PARCELA AUTÔNOMA DE EQUIVALÊNCIA':0.00,
-                            'PARCELAS PAGAS EM ATRASO': 0.00,
                         },
                     },
                 },
@@ -263,7 +252,7 @@ class TestParser(unittest.TestCase):
                 }
         }
 
-        files = [('./output_test/2020_11_PENSI'), ('./output_test/2020_11_Verbas Indenizatórias-PENSI')]
+        files = [('./output_test/2020_11_PENSI')]
         employees = parser.parse(files)
 
         #Verificações
