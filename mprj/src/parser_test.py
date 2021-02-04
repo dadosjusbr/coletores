@@ -341,7 +341,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def teste_servidores_ativos_outubro_2020(self):
+    def teste_servidores_inativos_outubro_2020(self):
         self.maxDiff = None
 
         expected = {
