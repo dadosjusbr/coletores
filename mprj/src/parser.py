@@ -7,6 +7,7 @@ import sys
 import os
 from pyexcel_ods import get_data
 import sativ_indemnity_parser_out_2020
+import sinat_indemnity_parser_out_2020
 
 #Transforma uma tupla em um objeto dataframe do pandas . Este método é necessário
 #devido á inabilidade do pandas de converter certas planilhas em um dataframe
@@ -174,7 +175,7 @@ def parse_employees(file_name):
             },
             'discounts':
             {
-                'total': prev_contrib + ceil_ret + income_tax ,
+                'total': round(prev_contrib + ceil_ret + income_tax, 2),
                 'prev_contribution': prev_contrib,
                 'ceil_retention': ceil_ret,
                 'income_tax': income_tax
@@ -540,7 +541,10 @@ def update_employee_indemnity(file_name, employees):
         else:
             update_sativ_indemnity(rows, employees)
     elif 'SINAT' in file_name:
-        update_sinat_indemnity(rows, employees)
+        if '2020_10' in file_name:
+                sinat_indemnity_parser_out_2020.parse(rows, employees)
+        else:
+            update_sinat_indemnity(rows, employees)
     elif 'PENSI' in file_name:
         update_pensi_indemnity(file_name, employees)
 
