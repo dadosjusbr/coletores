@@ -341,7 +341,54 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_servidores_ativos_outubro_2020(self):
+        self.maxDiff = None
 
+        expected = {
+            'reg': 00198219.0,
+            'name': 'ANA CHRISTINA ARAGÃO COSTA',
+            'role': 'ANALISTA DO MP - ÁREA: ADMINISTRATIVA',
+            'type': 'servidor',
+            'active': False,
+            'income':
+                {
+                    'total': 39321.04,
+                    'wage': 28245.21,
+                    'perks':{
+                        'total': 1100.00,
+                        'transportation':0.00,
+                        'health':1100.00
+                    },
+                    'other':
+                    {
+                        'total': 9975.83,
+                        'trust_position': 0.00,
+                        'others_total': 9975.83,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 9975.83,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 8989.29,
+                    'prev_contribution': 3100.18,
+                    'ceil_retention':0.00,
+                    'income_tax': 5889.11,
+                }
+        }
+        files = [('./output_test/2020_10_SINAT.ods'),('./output_test/2020_10_Verbas Indenizatórias-SINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
