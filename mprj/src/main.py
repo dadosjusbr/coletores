@@ -51,7 +51,7 @@ if __name__ == '__main__':
         'year': int(year),
         'files': file_names,
         'crawler': {
-            'id': 'mpm',
+            'id': 'mprj',
             'version': crawler_version,
         },
         'employees': employees,
