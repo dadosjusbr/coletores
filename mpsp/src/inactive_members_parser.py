@@ -3,11 +3,13 @@ import math
 import parser
 
 # Due to the different format of the spreadsheets, a specific parser is required for a few months
-# This class contains the parsers for inactive members:
+# Contains the parsers for monthly remuneration worksheets for inactive members:
     # parse_jan_to_april_aug_19: January to April and August 2019
     # parse_may_19: May 2019
     # parse_june_19: June
-    
+
+# It also contains the parser for worksheet of indemnification funds and temporary remuneration from August to November 2020
+
 # Adjust existing spreadsheet variations
 def format_value(element):
     if(element == None):
@@ -237,6 +239,9 @@ def parse_june_19(file_name):
     
     return employees
 
+# Planilhas com verbas indenizatórias e remunerações temporárias
+
+# August and October 2020
 def update_employee_indemnity_aug_oct(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
@@ -251,10 +256,11 @@ def update_employee_indemnity_aug_oct(file_name, employees):
             continue
 
         matricula = str(int(row[0])) # convert to string by removing the '.0'
-        ferias_pc = row[4]
+        ferias_pc = format_value(row[4])
 
         emp = employees[matricula]
         emp['income']['perks'].update({
+            'total': ferias_pc,
             'vacation_pecuniary': ferias_pc,
         })
        
@@ -266,6 +272,7 @@ def update_employee_indemnity_aug_oct(file_name, employees):
 
     return employees
 
+# September 2020
 def update_employee_indemnity_sept(file_name, employees):
     
     rows = parser.read_data(file_name).to_numpy()
@@ -280,11 +287,12 @@ def update_employee_indemnity_sept(file_name, employees):
             continue
 
         matricula = str(int(row[0])) # convert to string by removing the '.0'
-        alimentacao = row[4]
-        ferias_pc = row[5]
+        alimentacao = format_value(row[4])
+        ferias_pc = format_value(row[5])
 
         emp = employees[matricula]
         emp['income']['perks'].update({
+            'total': alimentacao + ferias_pc,
             'food': alimentacao,
             'vacation_pecuniary': ferias_pc,
         })
@@ -297,6 +305,7 @@ def update_employee_indemnity_sept(file_name, employees):
 
     return employees
 
+# November 2020
 def update_employee_indemnity_nov(file_name, employees):
     
     rows = parser.read_data(file_name).to_numpy()
@@ -311,11 +320,13 @@ def update_employee_indemnity_nov(file_name, employees):
             continue
 
         matricula = str(int(row[0])) # convert to string by removing the '.0'
-        ferias_pc = row[4]
-        licensa_pc = row[5]
+        ferias_pc = format_value(row[4])
+        licensa_pc = format_value(row[5])
 
         emp = employees[matricula]
+
         emp['income']['perks'].update({
+            'total': round(ferias_pc + licensa_pc, 2),
             'vacation_pecuniary': ferias_pc,
             'premium_license_pecuniary': licensa_pc,
         })
