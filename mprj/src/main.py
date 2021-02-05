@@ -46,12 +46,12 @@ if __name__ == '__main__':
     file_names = crawler.crawl(year, month, output_path)
     employees = parser.parse(file_names)
     cr = {
-        'aid': 'mpm',
+        'aid': 'mprj',
         'month': int(month),
         'year': int(year),
         'files': file_names,
         'crawler': {
-            'id': 'mpm',
+            'id': 'mprj',
             'version': crawler_version,
         },
         'employees': employees,
