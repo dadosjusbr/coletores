@@ -10,7 +10,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 02003042.0 ,
+            'reg': '02003042' ,
             'name': 'ADELIA BARBOZA DE CARVALHO',
             'role': 'PROCURADOR DE JUSTICA',
             'type': 'membro',
@@ -66,7 +66,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 00179515.0,
+            'reg': '00179515',
             'name': 'ADA BUKSMAN',
             'role': 'PROMOTOR DE JUSTICA',
             'type': 'membro',
@@ -115,7 +115,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 00003189.0,
+            'reg': '00003189',
             'name': 'ACELINO AMURIM DA SILVA',
             'role': 'TÉCNICO DO MP - ÁREA: PROCESSUAL',
             'type': 'servidor',
@@ -171,7 +171,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 00001322.0,
+            'reg': '00001322',
             'name': 'ADELAIDE BURATTO',
             'role': 'AUXILIAR DO MP - ÁREA: ADMINISTRATIVA',
             'type': 'servidor',
@@ -290,7 +290,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 00004938.0,
+            'reg':'00004938',
             'name': 'ZILMA OLIVEIRA MARQUES',
             'role': 'TÉCNICO DO MP - ÁREA: ADMINISTRATIVA',
             'type': 'servidor',
@@ -345,7 +345,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 00198219.0,
+            'reg': '00198219',
             'name': 'ANA CHRISTINA ARAGÃO COSTA',
             'role': 'ANALISTA DO MP - ÁREA: ADMINISTRATIVA',
             'type': 'servidor',

@@ -147,8 +147,11 @@ def parse_employees(file_name):
         ceil_ret = float(row[15]) #Retenção por teto constitucional
         income_tax = float(row[14]) #Imposto de renda
 
+        #Importante devido  a natureza das formas de registro o orgão já reportadas o registro ou matrícula
+        #para fins de comparação e de chave deve ser visto como um number(Float). entretanto para fins de armazenamento
+        #deve-se considera-lo como uma string, de modo a manter a coerência com nosso pipeline.
         employees[reg] = {
-            'reg': reg,
+            'reg': str(row[0]),
             'name': row[1],
             'type': typeE,
             'active': activeE,
