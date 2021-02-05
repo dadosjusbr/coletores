@@ -271,6 +271,7 @@ class TestParser(unittest.TestCase):
             'income':
             {
                 'total': 870.00,
+                'wage': 870.00,
             },
             'discounts':
             {
