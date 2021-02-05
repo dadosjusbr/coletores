@@ -21,7 +21,7 @@ else:
 if('OUTPUT_FOLDER' in os.environ):
     output_path = os.environ['OUTPUT_FOLDER']
 else:
-    output_path = "/output"
+    output_path = "./output"
 if('GIT_COMMIT' in os.environ):
     crawler_version = os.environ['GIT_COMMIT']
 else:
@@ -45,7 +45,7 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    employees = parser.parse(file_names)
+    employees = parser.parse(file_names, month, year)
     # cr = {
     #     'aid': 'mpsp',
     #     'month': int(month),

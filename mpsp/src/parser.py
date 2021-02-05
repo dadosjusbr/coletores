@@ -8,6 +8,10 @@ import active_members_parser
 import inactive_members_parser
 import active_serveres_parser
 import inactive_serveres_parser
+import inactive_members_indemnity_parser
+import active_members_indemnity_parser
+import active_serveres_indemnity_parser
+import inactive_serveres_indemnity_parser
 
 def read_data(path):
     if('ods' in path):
@@ -182,24 +186,22 @@ def parse(file_names, month, year):
             elif('Verbas Indenizatorias' in fn):
                 if(year == '2019'):
                     if(month in ['07', '08']):
-                        employees.update(active_members_parser.update_employee_indemnity_jul_aug(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_jul_aug(fn, employees))
                     elif(month in ['09', '10', '11', '12']):
-                        employees.update(active_members_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
-               
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
                 elif(year == '2020'):
                     if(month == '01'):
-                        employees.update(active_members_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
                     elif(month in ['02', '03']):
-                        employees.update(active_members_parser.update_employee_indemnity_feb_mar(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_feb_mar(fn, employees))
                     elif(month in ['04', '05', '06', '07']):
-                        employees.update(active_members_parser.update_employee_indemnity_apr_to_july(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_apr_to_july(fn, employees))
                     elif(month in ['08', '09']):
-                        employees.update(active_members_parser.update_employee_indemnity_aug_sept(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_aug_sept(fn, employees))
                     elif(month == '10'):
-                        employees.update(active_members_parser.update_employee_indemnity_oct(fn, employees))
-
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_oct(fn, employees))
                     elif(month == '11'):
-                        employees.update(active_members_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
+                        employees.update(active_members_indemnity_parser.update_employee_indemnity_sept_to_jan_nov(fn, employees))
 
         elif("Membros_inativos" in fn):
             if('Verbas Indenizatorias' not in fn):
@@ -217,11 +219,11 @@ def parse(file_names, month, year):
             elif('Verbas Indenizatorias' in fn):
                 if(year == '2020'):
                     if(month in ['08', '10']):
-                        employees.update(inactive_members_parser.update_employee_indemnity_aug_oct(fn, employees))
+                        employees.update(inactive_members_indemnity_parser.update_employee_indemnity_aug_oct(fn, employees))
                     elif(month == '09'):
-                        employees.update(inactive_members_parser.update_employee_indemnity_sept(fn, employees))
+                        employees.update(inactive_members_indemnity_parser.update_employee_indemnity_sept(fn, employees))
                     elif(month ==  '11'):
-                        employees.update(inactive_members_parser.update_employee_indemnity_nov(fn, employees))
+                        employees.update(inactive_members_indemnity_parser.update_employee_indemnity_nov(fn, employees))
 
                         
         elif("Servidores_ativos" in fn):
@@ -234,23 +236,23 @@ def parse(file_names, month, year):
                     employees.update(parse_employees(fn))
             elif('Verbas Indenizatorias'  in fn):
                 if(month in ['07', '08'] and year == '2019'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_jul_aug(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_jul_aug(fn, employees))
                 elif(month == '10' and year == '2019'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_sept_oct_feb(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_sept_oct_feb(fn, employees))
                 elif(month in ['11', '12'] and year == '2019'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_nov_to_jan(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_nov_to_jan(fn, employees))
                 elif(month == '02' and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_sept_oct_feb(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_sept_oct_feb(fn, employees))
                 elif(month == '01' and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_nov_to_jan(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_nov_to_jan(fn, employees))
                 elif(month == '03' and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_mar_2020(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_mar_2020(fn, employees))
                 elif(month in ['04', '05', '06', '07'] and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_apr_to_jul_2020(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_apr_to_jul_2020(fn, employees))
                 elif(month in ['08', '11'] and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_aug_nov_2020(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_aug_nov_2020(fn, employees))
                 elif(month == '10' and year == '2020'):
-                    employees.update(active_serveres_parser.update_employee_indemnity_oct_2020(fn, employees))
+                    employees.update(active_serveres_indemnity_parser.update_employee_indemnity_oct_2020(fn, employees))
         
         elif("Servidores_inativos" in fn):
             if('Verbas Indenizatorias' not in fn):
@@ -267,8 +269,8 @@ def parse(file_names, month, year):
             elif('Verbas Indenizatorias' in fn):
                 if(year == '2020'):
                     if(month in ['09', '10', '11']):
-                        employees.update(inactive_serveres_parser.update_employee_indemnity_sept_to_nov(fn, employees))
+                        employees.update(inactive_serveres_indemnity_parser.update_employee_indemnity_sept_to_nov(fn, employees))
                     elif(month == '08'):
-                        employees.update(inactive_serveres_parser.update_employee_indemnity_aug(fn, employees))
+                        employees.update(inactive_serveres_indemnity_parser.update_employee_indemnity_aug(fn, employees))
 
     return list(employees.values())
