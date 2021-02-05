@@ -97,15 +97,19 @@ func summary(employees []coletores.Employee) storage.Summaries {
 	servantActive := storage.Summary{}
 	servantInactive := storage.Summary{}
 	for _, emp := range employees {
+		// checking if the employee instance has the required data to build the summary
+		if emp.Income == nil || emp.Income.Wage == nil {
+			panic(fmt.Sprintf("Employee %+v is invalid. It does not have 'income' or 'income.wage' fields.", emp))
+		}
 		updateSummary(&general, emp)
 		switch {
-		case emp.Type == "membro" && emp.Active:
+		case *emp.Type == "membro" && emp.Active:
 			updateSummary(&memberActive, emp)
-		case emp.Type == "membro" && !emp.Active:
+		case *emp.Type == "membro" && !emp.Active:
 			updateSummary(&memberInactive, emp)
-		case emp.Type == "servidor" && emp.Active:
+		case *emp.Type == "servidor" && emp.Active:
 			updateSummary(&servantActive, emp)
-		case emp.Type == "servidor" && !emp.Active:
+		case *emp.Type == "servidor" && !emp.Active:
 			updateSummary(&servantInactive, emp)
 		}
 	}
@@ -113,11 +117,9 @@ func summary(employees []coletores.Employee) storage.Summaries {
 		return storage.Summaries{}
 	}
 	return storage.Summaries{
-		General:         general,
-		MemberActive:    memberActive,
-		MemberInactive:  memberInactive,
-		ServantActive:   servantActive,
-		ServantInactive: servantInactive,
+		General:       general,
+		MemberActive:  memberActive,
+		ServantActive: servantActive,
 	}
 }
 
@@ -136,6 +138,11 @@ func updateSummary(s *storage.Summary, emp coletores.Employee) {
 		d.Average = d.Total / float64(count)
 	}
 	updateData(&s.Wage, *emp.Income.Wage, s.Count)
-	updateData(&s.Perks, emp.Income.Perks.Total, s.Count)
-	updateData(&s.Others, emp.Income.Other.Total, s.Count)
+	// There are employees with no perks.
+	if emp.Income.Perks != nil {
+		updateData(&s.Perks, emp.Income.Perks.Total, s.Count)
+	}
+	if emp.Income.Other != nil {
+		updateData(&s.Others, emp.Income.Other.Total, s.Count)
+	}
 }
