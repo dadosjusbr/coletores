@@ -138,7 +138,7 @@ func updateSummary(s *storage.Summary, emp coletores.Employee) {
 		d.Average = d.Total / float64(count)
 	}
 	updateData(&s.Wage, *emp.Income.Wage, s.Count)
-	// There are employee with no perks.
+	// There are employees with no perks.
 	if emp.Income.Perks != nil {
 		updateData(&s.Perks, emp.Income.Perks.Total, s.Count)
 	}
