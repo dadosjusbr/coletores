@@ -219,6 +219,7 @@ def parse_colab(file_name):
             curr_row += 1
             continue
 
+        wage = float(row[2]) #Valor bruto recebido pelo colaborador
         #O identificador de colaboradores é o nome
         employees[row[1]] = {
             'name': row[1],
@@ -229,7 +230,8 @@ def parse_colab(file_name):
             'active': activeE,
             "income":
             {
-                'total': float(row[2]),
+                'total': wage,
+                'wage': wage,
             },
             'discounts':
             {
