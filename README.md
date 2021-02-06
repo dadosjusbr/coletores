@@ -18,6 +18,7 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 - [MPPB](https://github.com/dadosjusbr/coletores/tree/master/mppb)
 - [MPM](https://github.com/dadosjusbr/coletores/tree/master/mpm)
+- [MP-RJ](https://github.com/dadosjusbr/coletores/tree/master/mprj)
 - [TJPB](https://github.com/dadosjusbr/coletores/tree/master/tjpb)
 - [TRT13](https://github.com/dadosjusbr/coletores/tree/master/trt13)
 - [TREPB](https://github.com/dadosjusbr/coletores/tree/master/trepb)
@@ -29,6 +30,8 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 | [TJ-BA](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
 | [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         X        |
 | [MP-BA](https://github.com/dadosjusbr/coletores/tree/master/mpba)           | X             |         X        |
+| [MP-SP](https://github.com/dadosjusbr/coletores/tree/master/mpsp)           | X             |         X        |
+| [MP-RS](https://github.com/dadosjusbr/coletores/tree/master/mprs)           | X             |                  |
 
 ## Transparência do Sistema de Justiça na Mídia
 
