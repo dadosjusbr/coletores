@@ -85,6 +85,32 @@ Os campos com `-` não foram encontrados (em uma ou outra estrutura).
 | - | `Others` | - | |
 
 
+## Como usar
+
+Execute os comandos dentro da pasta do coletor `tjba/`.
+
+### Executando com Docker
+
+Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/).
+
+Para construir a imagem, execute:
+
+```sh
+docker build --build-arg GIT_COMMIT=$(git rev-list -1 HEAD) -t tjba .
+```
+
+Antes de rodar o comando, caso ainda não tenha, crie um volume do `dadosjus`:
+
+```sh
+docker volume create dadosjus
+```
+
+Rode o comando passando mês, ano e a pasta para escrita dos arquivos como argumentos:
+
+```sh
+docker run --mount source=dadosjus,target=/dadojus_crawling_output/ tjba --mes=${MONTH} --ano=${YEAR}
+```
+
 ## Arquivos
   
 ### Remunerações
