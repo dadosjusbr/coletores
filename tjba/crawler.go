@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"time"
 )
@@ -31,7 +32,18 @@ func crawl(filePath string, month, year int) error {
 
 // download makes a req to reqURL and saves response body to an io.Writer
 func download(reqURL string, w io.Writer) error {
-	resp, err := netClient.Get(reqURL)
+    req, err := http.NewRequest(http.MethodGet, reqURL, nil)
+    if err != nil {
+        return fmt.Errorf("error while creating a GET request to (%s): %q", reqURL, err)
+    }
+    requestDump, err := httputil.DumpRequestOut(req, true)
+    if err != nil {
+		return fmt.Errorf("error while dumping the request: GET (%s) - Error: %q", reqURL, err)
+	}
+	fmt.Printf("%q", requestDump)
+
+    resp, err := netClient.Do(req)
+
 	if err != nil {
 		return fmt.Errorf("error while making GET request to (%s): %q", reqURL, err)
 	}
@@ -40,6 +52,12 @@ func download(reqURL string, w io.Writer) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("unexpected status code. Request: GET (%s) - Response: (%d): %s", reqURL, resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
+
+	responseDump, err := httputil.DumpResponse(resp, true)
+	if err != nil {
+		return fmt.Errorf("error while dumping the response: GET (%s) - Error: %q", reqURL, err)
+	}
+	fmt.Printf("%q", responseDump)
 
 	if _, err := io.Copy(w, resp.Body); err != nil {
 		return fmt.Errorf("error copying response content:%q", err)
