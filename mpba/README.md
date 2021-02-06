@@ -31,10 +31,10 @@ Antes de rodar o comando, caso ainda não tenha, crie um volume do `dadosjus`:
 docker volume create dadosjus
 ```
 
-Rode o comando passando o mês e o ano como argumentos:
+Rode o comando passando mês, ano e a pasta para escrita dos arquivos como argumentos:
 
 ```sh
-docker run --mount source=dadosjus,target=/dadojus_crawling_output/ mpba mpba --mes=${MES} --ano=${ANO}
+docker run --mount source=dadosjus,target=/dadojus_crawling_output/ mpba mpba --mes=${MONTH} --ano=${YEAR} --saida=${OUTPUT_FOLDER}
 ```
 
 ### Executando sem uso do docker:

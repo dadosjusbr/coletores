@@ -2,18 +2,18 @@ from datetime import datetime
 import os
 
 
-def build_crawler_result(month, year, employees):
+def build_crawler_result(month, year, employees, files):
     return {
-        "agencyID": "MP-BA",
+        "agencyID": "mpba",
         "month": month,
         "year": year,
         "crawler": {
             "crawlerID": "mpba",
             "crawlerVersion": os.getenv("GIT_COMMIT"),
         },
-        "files": [],
+        "files": files,
         "employees": employees,
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "timestamp": datetime.now().astimezone().replace(microsecond=0).isoformat(),
         "procInfo": None,
     }
 

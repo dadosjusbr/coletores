@@ -107,26 +107,28 @@ def test_crawler_result(monkeypatch):
     expected_git_commit = "a1b2c3"
     monkeypatch.setenv("GIT_COMMIT", expected_git_commit)
     employees = parse(payload)
+    filepath = ["output/mpba-5-2020.json"]
     expected_crawler_result = {
-        "agencyID": "MP-BA",
+        "agencyID": "mpba",
         "month": 1,
         "year": 2020,
         "crawler": {
             "crawlerID": "mpba",
             "crawlerVersion": expected_git_commit,
         },
-        "files": [],
+        "files": filepath,
         "employees": employees,
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "timestamp": datetime.now().astimezone().replace(microsecond=0).isoformat(),
         "procInfo": None,
     }
 
-    crawler_result = build_crawler_result(1, 2020, employees)
+    crawler_result = build_crawler_result(1, 2020, employees, filepath)
     assert crawler_result.keys() == expected_crawler_result.keys()
     assert crawler_result["agencyID"] == expected_crawler_result["agencyID"]
     assert crawler_result["month"] == expected_crawler_result["month"]
     assert crawler_result["year"] == expected_crawler_result["year"]
     assert crawler_result["employees"] == expected_crawler_result["employees"]
+    assert crawler_result["timestamp"] == expected_crawler_result["timestamp"]
     assert (
         crawler_result["crawler"]["crawlerID"]
         == expected_crawler_result["crawler"]["crawlerID"]
