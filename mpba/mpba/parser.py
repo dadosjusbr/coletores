@@ -18,6 +18,14 @@ def build_crawler_result(month, year, employees, files):
     }
 
 
+def sum_up_from(values):
+    return sum([
+        value
+        for key, value in values.items()
+        if key != "total" and value is not None
+    ])
+
+
 def parse(payload):
     employees = []
     for item in payload:
@@ -38,7 +46,6 @@ def parse(payload):
             "premium_license_pecuniary": None,
         }
         funds = {
-            "total": item["vlRendTotalLiquido"],
             "personal_benefits": item["vlRendAbonoPerman"],
             "eventual_benefits": item["vlIdenizacoes"],
             "trust_position": item["vlRendCargoComissao"],
@@ -48,12 +55,14 @@ def parse(payload):
             "others_total": item["vlRendVerbas"],
             "others": item["vlOutrasRemun"],
         }
+        funds["total"] = sum_up_from(funds)
         income = {
-            "total": None,
             "wage": item["vlRendCargoEfetivo"],
             "perks": perks,
             "other": funds,
         }
+        income["total"] = income["wage"] + income["perks"]["total"] + income["other"]["total"]
+
         discounts = {
             "total": item["vlDescTotalBruto"],
             "prev_contribution": item["vlDescPrevidencia"],

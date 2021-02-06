@@ -133,3 +133,4 @@ O acesso pode ser feito a partir de uma API:
 ## Dificuldades para libertação dos dados
 
 * Falta detalhamento com relação a remunerações e gratificações.
+* Alguns valores são líquidos e outros brutos. Em algumas remunerações não é possível inferir.

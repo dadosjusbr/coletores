@@ -47,7 +47,7 @@ def test_parse_payload_to_employee():
         "premium_license_pecuniary": None,
     }
     expected_funds = {
-        "total": 10863.18,
+        "total": 24094.75,
         "personal_benefits": 0.0,
         "eventual_benefits": 1300.0,
         "trust_position": 7093.93,
@@ -66,7 +66,7 @@ def test_parse_payload_to_employee():
         "other": None,
     }
     expected_income = {
-        "total": None,
+        "total": 31787.14,
         "wage": 6392.39,
         "perks": expected_perks,
         "other": expected_funds,
