@@ -27,6 +27,7 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
+RUN cp /build/roles.csv .
 
 # Build a small image
 FROM alpine:3.7

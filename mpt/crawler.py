@@ -17,8 +17,10 @@ BASE_URL = "https://mpt.mp.br/MPTransparencia/pages/portal/"
 YEARS = "j_idt140"
 ## Identification of the element "Pesquisar", to be used when the search by link text doesn't works
 SEARCH_NAME = "j_idt143"
-## Identification of the extension type to be used in the download. In this case, .ods
-EXTENSION_CODE = ":j_idt157"
+## Identification of the extension type to be used in the download.
+EXTENSION_CODE = ":j_idt162"
+## Expected download extension, in this case .xls
+EXTENSION  =  '.xls'
 TYPES = {
         0 : "remuneracaoMembrosAtivos",
         1 : "proventosMembrosInativos",
@@ -110,8 +112,8 @@ def rename_file(key, output_path, month, year):
     prev_types = ["RemuneracaoMembrosAtivos", "ProventosMembrosInativos",
                  "RemuneracaoServidoresAtivos", "RemuneracaoServidoresInativos",
                  "RemuneracaoPensionistas", "RemuneracaoColaboradores"]
-    prev_file_name = prev_types[key] + '-' + MONTHS[month] + "-" + year + '.ods'
-    prev_file_path = ("." + output_path + "/" + prev_file_name)
+    prev_file_name = prev_types[key] + '-' + MONTHS[month] + "-" + year + EXTENSION
+    prev_file_path = ("./" + output_path + "//" + prev_file_name)
     
     time_to_wait = 10
     time_counter = 0
@@ -122,7 +124,7 @@ def rename_file(key, output_path, month, year):
             sys.stderr.write("Tempo esgotado para localização do arquivo {}: SystemError.".format(prev_file_name))
             os._exit(2)
     
-    new_file_name = TYPES[key] + '-' + month + "-" + year + '.ods'
-    new_file_path = ("." + output_path + "/" + new_file_name)
+    new_file_name = TYPES[key] + '-' + month + "-" + year + EXTENSION
+    new_file_path = ("./" + output_path + "//" + new_file_name)
     os.rename(prev_file_path, new_file_path)
     return new_file_path

@@ -1,0 +1,42 @@
+role,n,type
+Analista Judiciário A1,120,servidor
+Analista Judiciário A2,110,servidor
+Analista Judiciário A3,133,servidor
+Analista Judiciário A4,72,servidor
+Analista Judiciário A5,19,servidor
+Analista Judiciário B10,129,servidor
+Analista Judiciário B7,24,servidor
+Analista Judiciário B8,86,servidor
+Analista Judiciário B9,129,servidor
+Analista Judiciário C11,123,servidor
+Analista Judiciário C12,151,servidor
+Analista Judiciário C13,3954,servidor
+Estagiário,637,estagiario
+Inativo,1508,pensionista
+Juiz Convocado,18,membro
+Juiz Eleitoral,2461,membro
+Juiz Eleitoral Substituto,4,membro
+Lotacao Provisoria,167,servidor
+Membro,288,membro
+Membro Efetivo,10,membro
+Oficial De Justiça,1311,servidor
+Pensão Civil,1343,pensionista
+Procurador,5,membro
+Promotor Eleitoral,2330,membro
+Removido,1036,servidor
+Requisitado,3029,servidor
+Sem Vinculo,32,servidor
+Técnico Judiciário A1,139,servidor
+Técnico Judiciário A2,242,servidor
+Técnico Judiciário A3,365,servidor
+Técnico Judiciário A4,239,servidor
+Técnico Judiciário A5,78,servidor
+Técnico Judiciário B10,104,servidor
+Técnico Judiciário B6,11,servidor
+Técnico Judiciário B7,41,servidor
+Técnico Judiciário B8,90,servidor
+Técnico Judiciário B9,103,servidor
+Técnico Judiciário C11,352,servidor
+Técnico Judiciário C12,528,servidor
+Técnico Judiciário C13,5437,servidor
+NA,2,servidor

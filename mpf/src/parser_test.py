@@ -82,10 +82,10 @@ class ParserTest(unittest.TestCase):
         }
 
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[0],[verbas_inde[0]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[0], [verbas_inde[0]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
-        self.assertEqual(1,len(result_employees))
+        self.assertEqual(1, len(result_employees))
         self.assertDictEqual(result_employees[0], expected_active_member)
     
     def test_inactive_member(self):
@@ -144,10 +144,10 @@ class ParserTest(unittest.TestCase):
                 }      
         }
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[1],[verbas_inde[1]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[1], [verbas_inde[1]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
-        self.assertEqual(1,len(result_employees))
+        self.assertEqual(1, len(result_employees))
         self.assertDictEqual(result_employees[0], expected_inactive_member)
     
     def test_active_server(self):
@@ -206,10 +206,10 @@ class ParserTest(unittest.TestCase):
             }      
         }
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[2],[verbas_inde[2]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[2], [verbas_inde[2]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
-        self.assertEqual(1,len(result_employees))
+        self.assertEqual(1, len(result_employees))
         self.assertDictEqual(result_employees[0], expected_active_server)
     
     def test_inactive_server(self):
@@ -269,8 +269,8 @@ class ParserTest(unittest.TestCase):
                 }      
         }
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[3],[verbas_inde[3]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[3], [verbas_inde[3]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
         self.assertEqual(1,len(result_employees))
         self.assertDictEqual(result_employees[0], expected_inactive_server)
@@ -332,10 +332,10 @@ class ParserTest(unittest.TestCase):
                 }        
         }
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[4],[verbas_inde[4]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[4], [verbas_inde[4]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
-        self.assertEqual(1,len(result_employees))
+        self.assertEqual(1, len(result_employees))
         self.assertDictEqual(result_employees[0], expected_pensioner)
 
     def test_colaborator(self):
@@ -395,11 +395,11 @@ class ParserTest(unittest.TestCase):
                 }  
         }
         #Pegando resultado do Parser
-        test_file = [simple_remuneration[5],[verbas_inde[5]]]
-        result_employees = parser.crawler_result(year,month,file_path,test_file)['employees']
+        test_file = [simple_remuneration[5], [verbas_inde[5]]]
+        result_employees = parser.crawler_result(year, month, file_path, 'unspecified', test_file)['employees']
 
-        self.assertEqual(1,len(result_employees))
+        self.assertEqual(1, len(result_employees))
         self.assertDictEqual(result_employees[0], expected_colaborator)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()     
