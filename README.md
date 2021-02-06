@@ -27,7 +27,8 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 | Nome do Coletor | Coleta | Tradução  |
 |:--------------- |:-------------:|:----------------:|
 | [TJ-BA](https://github.com/dadosjusbr/coletores/tree/master/tjba)           |               |         X        |
-| [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         x        |
+| [MP-PE](https://github.com/dadosjusbr/coletores/tree/master/mppe)           | X             |         X        |
+| [MP-BA](https://github.com/dadosjusbr/coletores/tree/master/mpba)           | X             |         X        |
 
 ## Transparência do Sistema de Justiça na Mídia
 
