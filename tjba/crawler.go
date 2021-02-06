@@ -32,17 +32,17 @@ func crawl(filePath string, month, year int) error {
 
 // download makes a req to reqURL and saves response body to an io.Writer
 func download(reqURL string, w io.Writer) error {
-    req, err := http.NewRequest(http.MethodGet, reqURL, nil)
-    if err != nil {
-        return fmt.Errorf("error while creating a GET request to (%s): %q", reqURL, err)
-    }
-    requestDump, err := httputil.DumpRequestOut(req, true)
-    if err != nil {
+	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
+	if err != nil {
+		return fmt.Errorf("error while creating a GET request to (%s): %q", reqURL, err)
+	}
+	requestDump, err := httputil.DumpRequestOut(req, true)
+	if err != nil {
 		return fmt.Errorf("error while dumping the request: GET (%s) - Error: %q", reqURL, err)
 	}
 	fmt.Printf("%q", requestDump)
 
-    resp, err := netClient.Do(req)
+	resp, err := netClient.Do(req)
 
 	if err != nil {
 		return fmt.Errorf("error while making GET request to (%s): %q", reqURL, err)
