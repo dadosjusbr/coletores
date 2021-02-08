@@ -389,7 +389,63 @@ class TestParser(unittest.TestCase):
 
         #Verificações
         self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected
+
+    def teste_membros_ativos_jan_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '00002186',
+            'name': 'ADIEL DA SILVA FRANÇA',
+            'role': 'PROMOTOR DE JUSTICA',
+            'workplace':'2ª PROMOTORIA DE JUSTIÇA DE EXECUÇÃO DE MEDIDAS SÓCIO-EDUCATIVAS DA CAPITAL',
+            'type': 'membro',
+            'active': True,
+            'income':
+                {
+                    'total': 50557.48,
+                    'wage': 33689.10,
+                    'perks':{
+                        'total': 3852.62,
+                        'food': 1230.00,
+                        'transportation': 1010.00,
+                        'health': 1612.62,
+                    },
+                    'other':
+                    {
+                        'total': 13015.76,
+                        'trust_position': 0.00,
+                        'gratification': 3368.91,
+                        'others_total': 9646.85,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 699.00,
+                            'CONVERSÃO DE LICENÇA ESPECIAL': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': 5614.85,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 3333.00 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 12741.03,
+                    'prev_contribution': 4716.47,
+                    'ceil_retention':0.00,
+                    'income_tax': 8024.56,
+                }
+        }
+        files = [('./output_test/2020_01_MATIV.ods'),('./output_test/2020_01_Verbas Indenizatórias-MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -537,7 +537,10 @@ def update_employee_indemnity(file_name, employees):
     rows = rows.to_numpy()
 
     if 'MATIV' in file_name:
-        update_mativ_indemnity(rows, employees)
+        if '2020_01' in file_name:
+
+        else:
+            update_mativ_indemnity(rows, employees)
     elif 'MINAT' in file_name:
         update_minat_indemnity(rows, employees)
     elif 'SATIV' in file_name:
