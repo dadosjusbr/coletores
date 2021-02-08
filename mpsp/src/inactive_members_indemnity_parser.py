@@ -88,7 +88,7 @@ def update_employee_indemnity_sept(file_name, employees):
 
 
 # November 2020
-def update_employee_indemnity_nov(file_name, employees):
+def update_employee_indemnity_nov_dec(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)

@@ -68,7 +68,17 @@ def links_remuneration(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-
+                elif month == "12":
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%201%20Membros%20Ativos%20ref%20"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
             elif beneficiary_types[key] == "Membros_inativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07"]:
                     link = (
@@ -113,7 +123,17 @@ def links_remuneration(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-
+                elif month == "12":
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%201%20Membros%20Inativos%20ref%20"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
             elif beneficiary_types[key] == "Servidores_ativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07"]:
                     link = (
@@ -158,7 +178,17 @@ def links_remuneration(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-
+                elif month == "12":
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%201%20Servidores%20Ativos%20ref%20"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
             elif beneficiary_types[key] == "Servidores_inativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07"]:
                     link = (
@@ -193,6 +223,16 @@ def links_remuneration(month, year):
                     link = (
                         baseURL
                         + "servidores_inativos/Servidores%20Inativos%20Tabela%201%20ref%20"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
+                elif month == "12":
+                    link = (
+                        baseURL
+                        + "servidores_inativos/Tabela%201%20Servidores%20Inativos%20ref%20"
                         + month
                         + "-"
                         + year
@@ -884,7 +924,7 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-                elif month in ["08", "09"]:
+                elif month in ["08", "09", "12"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20"
@@ -914,8 +954,9 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
+
             elif beneficiary_types[key] == "Membros_inativos":
-                if month in ["08", "09"]:
+                if month in ["08", "09", "12"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_mem/verb_ind_mem_inativos/Tabela%203%20Membros%20Inativos%20ref%20"
@@ -945,7 +986,6 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-
             # Não possue link para o mês 09 porque a tabela de remunerações mensais não está disponibilizada. O link encaminha para tabela de verbas indenizatórias
             elif beneficiary_types[key] == "Servidores_ativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07"]:
@@ -956,8 +996,8 @@ def links_other_funds(month, year):
                         + year
                         + ".ods"
                     )
-                    links_type[beneficiary_types[key]] = link
-                elif month in ["08"]:
+                    links_type[beneficiary_types[key]] = link   
+                elif month in ["08", "12"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_serv/verb_ind_serv_ativos/Tabela%203%20Servidores%20Ativos%20ref%20"
@@ -987,9 +1027,8 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-
-            elif beneficiary_types[key] == "Servidores_inativos":
-                if month in ["08", "09"]:
+            elif beneficiary_types[key] == "Servidores_inativos": 
+                if month in ["08", "09", "12"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_serv/verb_ind_serv_inativos/Tabela%203%20Servidores%20Inativos%20ref%20"
@@ -1021,7 +1060,6 @@ def links_other_funds(month, year):
                     links_type[beneficiary_types[key]] = link
     return links_type
 
-
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
     with open(file_path, "wb") as file:
@@ -1033,7 +1071,6 @@ def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
     files = []
-
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + "-" + year + ".ods"

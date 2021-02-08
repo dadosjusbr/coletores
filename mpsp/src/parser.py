@@ -262,6 +262,12 @@ def parse(file_names, month, year):
                                 fn, employees
                             )
                         )
+                    elif month == "12":
+                        employees.update(
+                            active_members_indemnity_parser.update_employee_indemnity_dec(
+                                fn, employees
+                            )
+                        )
 
         elif "Membros_inativos" in fn:
             if "Verbas Indenizatorias" not in fn:
@@ -292,9 +298,9 @@ def parse(file_names, month, year):
                                 fn, employees
                             )
                         )
-                    elif month == "11":
+                    elif month in ["11", "12"]:
                         employees.update(
-                            inactive_members_indemnity_parser.update_employee_indemnity_nov(
+                            inactive_members_indemnity_parser.update_employee_indemnity_nov_dec(
                                 fn, employees
                             )
                         )
@@ -362,6 +368,12 @@ def parse(file_names, month, year):
                             fn, employees
                         )
                     )
+                elif month == "12" and year == "2020":
+                    employees.update(
+                        active_servants_indemnity_parser.update_employee_indemnity_dec_2020(
+                            fn, employees
+                        )
+                    )
 
         elif "Servidores_inativos" in fn:
             if "Verbas Indenizatorias" not in fn:
@@ -386,6 +398,12 @@ def parse(file_names, month, year):
                     elif month == "08":
                         employees.update(
                             inactive_servants_indemnity_parser.update_employee_indemnity_aug(
+                                fn, employees
+                            )
+                        )
+                    elif month == "12":
+                        employees.update(
+                            inactive_servants_indemnity_parser.update_employee_indemnity_dec(
                                 fn, employees
                             )
                         )
