@@ -501,5 +501,59 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_servidores_ativos_marco_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg':'00005625',
+            'name': 'ACYR QUARESMA JUNIOR',
+            'role': 'TÉCNICO DO MP - ÁREA: ADMINISTRATIVA',
+            'type': 'servidor',
+            'workplace': 'SECRETARIA DO NÚCLEO DE INVESTIGAÇÃO DAS PROMOTORIAS DE JUSTIÇA DE INVESTIGAÇÃO PENAL DE NOVA IGUAÇU',
+            'active': True,
+            'income':
+                {
+                    'total': 11052.30,
+                    'wage': 8382.82,
+                    'perks':{
+                        'total': 2669.48,
+                        'food':1230.00,
+                        'transportation': 376.20,
+                        'health': 1063.28,
+                    },
+                    'other':
+                    {
+                        'total': 0.00,
+                        'trust_position': 0.00,
+                        'gratification': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 2286.76,
+                    'prev_contribution': 1173.59,
+                    'ceil_retention': 0.00,
+                    'income_tax': 1113.17,
+                }
+        }
+        files = [('./output_test/2020_03_SATIV.ods'),('./output_test/2020_03_Verbas Indenizatórias-SATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+
 if __name__ == '__main__':
     unittest.main()
