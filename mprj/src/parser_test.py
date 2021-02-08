@@ -389,7 +389,7 @@ class TestParser(unittest.TestCase):
 
         #Verificações
         self.assertEqual(1, len(employees))
-        self.assertDictEqual(employees[0], expected
+        self.assertDictEqual(employees[0], expected)
 
     def teste_membros_ativos_jan_2020(self):
         self.maxDiff = None
