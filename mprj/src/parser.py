@@ -9,6 +9,7 @@ from pyexcel_ods import get_data
 import sativ_indemnity_parser_out_2020
 import sinat_indemnity_parser_out_2020
 import mativ_indemnity_parser_jan_2020
+import mativ_indemnity_parser_fev_2020
 
 #Transforma uma tupla em um objeto dataframe do pandas . Este método é necessário
 #devido á inabilidade do pandas de converter certas planilhas em um dataframe
@@ -22,7 +23,7 @@ def mount_df(sheet):
         keys.append(key)
 
     #Tratando colunas com nomes iguais
-    equal_columns = ['AUXÍLIO-ALIMENTAÇÃO','AUXÍLIO-EDUCAÇÃO','AUXÍLIO-SAÚDE','AUXÍLIO-LOCOMOÇÃO']
+    equal_columns = ['AUXÍLIO-ALIMENTAÇÃO','AUXÍLIO-EDUCAÇÃO','AUXÍLIO-SAÚDE','AUXÍLIO-LOCOMOÇÃO','AUXÍLIO-MORADIA','INDENIZAÇÃO DE TRANSPORTE']
     indexes = []
     for col in keys:
         if col in equal_columns:
@@ -540,6 +541,8 @@ def update_employee_indemnity(file_name, employees):
     if 'MATIV' in file_name:
         if '2020_01' in file_name:
             mativ_indemnity_parser_jan_2020.parse(rows, employees)
+        elif '2020_02' in file_name:
+            mativ_indemnity_parser_fev_2020.parse(rows, employees)
         else:
             update_mativ_indemnity(rows, employees)
     elif 'MINAT' in file_name:

@@ -446,6 +446,60 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_membros_ativos_fev_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '01002838',
+            'name': 'ADOLFO BORGES FILHO',
+            'role': 'PROCURADOR DE JUSTICA',
+            'workplace':'1ª PROCURADORIA DE JUSTIÇA JUNTO À 17ª CÂMARA CÍVEL DO TRIBUNAL DE JUSTIÇA DO ESTADO DO RIO DE JANEIRO',
+            'type': 'membro',
+            'active': True,
+            'income':
+                {
+                    'total': 57465.53,
+                    'wage': 39293.32,
+                    'perks':{
+                        'total': 6436.31,
+                        'food': 1230.00,
+                        'transportation': 336.67,
+                        'health': 4869.64 ,
+                        'housing_aid': 00.0,
+                    },
+                    'other':
+                    {
+                        'total': 11735.9,
+                        'trust_position': 0.00,
+                        'gratification': 0.00,
+                        'others_total': 11735.9,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 5501.06,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': 0.00,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 6234.84,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 13872.44,
+                    'prev_contribution': 5501.06,
+                    'ceil_retention':0.00,
+                    'income_tax': 8371.38,
+                }
+        }
+        files = [('./output_test/2020_02_MATIV.ods'),('./output_test/2020_02_Verbas Indenizatórias-MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
