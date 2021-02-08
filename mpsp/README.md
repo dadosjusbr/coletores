@@ -10,6 +10,15 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
     Tipo III - Verbas Indenizatórias e outras remunerações temporárias.
 
+# Coletando com Docker
+
+Por exemplo, para coletar o mês de novembro de 2020, basta executar o seguinte comando:
+
+```sh
+$ sudo docker build -t mpsp .
+sudo docker run -e MONTH=11 -e YEAR=2020 -e GIT_COMMIT=$(git rev-parse HEAD) mpsp
+```
+
 ## Dicionário de Dados
 
 As planilhas com a remuneração de membros e servidores possuem as seguintes colunas:   
@@ -79,7 +88,9 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
     09     | 2019  | Servidores Ativos | Remuneração Mensal | No lugar está disponibilizada a planilha referente a Verbas indenizatórias desse mesmo mês.
 
 
+- Existem pessoas que estão nas planilhas de verbas indenizatórias e remuneração temporárias. Mas não estão nas planilhas de remuneração mensal. Não ficou claro o porquê disso ter ocorrido.
 
+- Em algumas planilhas o Adic. Insalubridade está declarado como verbas indenizatórias e em outras como remunerações temporárias. Também não ficou claro o porquê disso ter ocorrido.
 
 
 
