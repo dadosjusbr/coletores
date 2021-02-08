@@ -47,6 +47,7 @@ if __name__ == '__main__':
         'aid': 'mprs',
         'month': int(month),
         'year': int(year),
+        'files': file_names,
         'crawler': {
             'id': 'mprs',
             'version': crawler_version,
