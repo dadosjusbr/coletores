@@ -15,14 +15,6 @@ def read_data(path):
                          path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
-# Verifica se a chave existe no dicionário
-def validates(row, column):
-    try:
-        test = row[column]
-    except Exception:
-        return ""
-    return test
-
 # Define o tipo do empregado, a partir do nome do arquivo
 def type_employee(fn):
     if 'M-' in fn or 'MI-' in fn:
@@ -40,18 +32,26 @@ def parse_employees(file_name):
     employees = {}
     
     for row in rows["response"]["docs"]:
-        insert_employee(row, employees, file_name)
+        reg = row["numfunc_s"]
+        employee = generates_employee(row, file_name)
+        employees[reg] = employee
 
     return employees
 
-def insert_employee(row, employees, file_name):
+def generates_employee(row, file_name):
     type_e = type_employee(file_name)
     active_e = 'I-' not in file_name and "P-" not in file_name
 
     reg = row["numfunc_s"]
     name = row["nome_s"] 
-    role = validates(row, "cargo_s")
-    workplace = validates(row, "lotacao_s")
+    if "cargo_s" in row:
+        role = row["cargo_s"]
+    else:
+        role = ""
+    if "lotacao_s" in row:
+        workplace = row["lotacao_s"]
+    else:
+        workplace = ""
     income_total = float(row["total_creditos_tf"])
     wage = float(row["outras_verbas_tf"]) + float(row["vencimentos_tf"])
     # Indemnities
@@ -69,7 +69,7 @@ def insert_employee(row, employees, file_name):
     discounts_ceil_retention = abs(float(row["estorno_de_teto_tf"]))
     discounts_income_tax = abs(float(row["ir_tf"]))
     
-    employees[reg] = {
+    employee = {
         'reg': reg,
         'name': name,
         'role': role,
@@ -102,7 +102,7 @@ def insert_employee(row, employees, file_name):
         }
     }
 
-    return employees
+    return employee
 
 def update_employees(file_name, employees):
     rows = read_data(file_name)
@@ -129,7 +129,9 @@ def update_employees(file_name, employees):
         try:
             emp = employees[reg]
         except Exception:
-            insert_employee(row, employees, file_name)
+            employee = generates_employee(row, file_name)
+            employees[reg] = employee
+            print(employee)
             continue
 
         emp['income'].update({
