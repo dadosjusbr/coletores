@@ -90,7 +90,7 @@ class TestParser(unittest.TestCase):
         self.assertDictEqual(employees[0], expected)
 
     # Membros ativos com folha complementar e 13º
-    def test_membros_ativos_complementar(self):
+    def test_membros_ativos_decimo(self):
         self.maxDiff = None
 
         expected = {
