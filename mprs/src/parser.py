@@ -57,12 +57,13 @@ def generates_employee(row, file_name):
     # Indemnities
     perks_total = float(row["indenizacoes_tf"])
     # Gratifications 
-    gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"])
+    gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
     trust_position = float(row["fg_cc_tf"])
-    others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"])
+    others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
     others_christmas_bonus = float(row["gratificacao_natalina_tf"])
     others_vacation = float(row["ferias_tf"])
-    other_allowance_of_permanence = float(row["abono_permanencia_tf"])
+    others_allowance_of_permanence = float(row["abono_permanencia_tf"])
+    others_temporary_remuneration = float(row["pagamentos_retroativos_tf"])
     # Discounts
     discounts_total = abs(float(row["total_descontos_tf"]))
     discounts_prev_contribution = abs(float(row["previdencia_tf"]))
@@ -90,7 +91,8 @@ def generates_employee(row, file_name):
                 'others': {
                     'Gratificação Natalina': others_christmas_bonus,
                     'Férias (1/3 constitucional)': others_vacation,
-                    'Abono de Permanência': other_allowance_of_permanence,
+                    'Abono de Permanência': others_allowance_of_permanence,
+                    'Outras remunerações temporárias': others_temporary_remuneration
                 }
             },
         },
@@ -114,12 +116,13 @@ def update_employees(file_name, employees):
         # Indemnities
         perks_total = float(row["indenizacoes_tf"])
         # Gratifications 
-        gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"])
+        gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
         trust_position = float(row["fg_cc_tf"])
-        others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"])
+        others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
         others_christmas_bonus = float(row["gratificacao_natalina_tf"])
         others_vacation = float(row["ferias_tf"])
-        other_allowance_of_permanence = float(row["abono_permanencia_tf"])
+        others_allowance_of_permanence = float(row["abono_permanencia_tf"])
+        others_temporary_remuneration = float(row["pagamentos_retroativos_tf"])
         # Discounts
         discounts_total = abs(float(row["total_descontos_tf"]))
         discounts_prev_contribution = abs(float(row["previdencia_tf"]))
@@ -131,7 +134,6 @@ def update_employees(file_name, employees):
         except Exception:
             employee = generates_employee(row, file_name)
             employees[reg] = employee
-            print(employee)
             continue
 
         emp['income'].update({
@@ -149,7 +151,8 @@ def update_employees(file_name, employees):
         emp['income']['other']['others'].update({
             'Gratificação Natalina': emp['income']['other']['others']['Gratificação Natalina'] + others_christmas_bonus,
             'Férias (1/3 constitucional)': emp['income']['other']['others']['Férias (1/3 constitucional)'] + others_vacation,
-            'Abono de Permanência': emp['income']['other']['others']['Abono de Permanência'] + other_allowance_of_permanence
+            'Abono de Permanência': emp['income']['other']['others']['Abono de Permanência'] + others_allowance_of_permanence,
+            'Outras remunerações temporárias': emp['income']['other']['others']['Outras remunerações temporárias'] + others_temporary_remuneration
         })
         emp['discounts'].update({
             'total': emp['discounts']['total'] + discounts_total,
