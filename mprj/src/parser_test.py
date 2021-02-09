@@ -554,7 +554,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def teste_membros_ativos_abr_2020(self):
+    def teste_membros_ativos_abr_jul_2020(self):
         self.maxDiff = None
         expected = {
             'reg': '00001954',
@@ -606,7 +606,57 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_servidores_ativos_abr_2020(self):
+        self.maxDiff = None
 
+        expected = {
+            'reg': '00002438',
+            'name': 'ADAILDO MOREIRA DA SILVA',
+            'role': 'TÉCNICO DO MP - ÁREA: INFORMÁTICA',
+            'type': 'servidor',
+            'workplace': 'COORDENADORIA DE ANÁLISES, DIAGNÓSTICOS E GEOPROCESSAMENTO',
+            'active': True,
+            'income':
+                {
+                    'total': 12631.81,
+                    'wage': 10561.91,
+                    'perks':{
+                        'total': 2069.9,
+                        'food':1230.00,
+                        'health': 839.90,
+                    },
+                    'other':
+                    {
+                        'total': 0.00,
+                        'trust_position': 0.00,
+                        'gratification': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 3107.19,
+                    'prev_contribution': 1478.66,
+                    'ceil_retention': 0.00,
+                    'income_tax': 1628.53,
+                }
+        }
+        files = [('./output_test/2020_04_SATIV.ods'),('./output_test/2020_04_Verbas Indenizatórias-SATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
