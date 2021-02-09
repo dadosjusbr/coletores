@@ -20,13 +20,14 @@ class TestParser(unittest.TestCase):
                     'total': 620.51
                 },
                 'other': {
-                    'total': 0.0,
+                    'total': -2300.28,
                     'trust_position': 0.0,
-                    'others_total': 0.0,
+                    'others_total': -2300.28,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0
+                        'Gratificação Natalina': 0.0,
+                        'Outras remunerações temporárias': -2300.28
                     }
                 }
             },
@@ -58,7 +59,8 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0
+                        'Abono de Permanência': 0.0,
+                        'Outras remunerações temporárias': 0.0
                     }
                 }
             }, 
@@ -96,13 +98,14 @@ class TestParser(unittest.TestCase):
                     'total': 26472.469999999998
                 },
                 'other': {
-                    'total': 0.0,
+                    'total': -2300.28,
                     'trust_position': 0.0,
-                    'others_total': 0.0,
+                    'others_total': -2300.28,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0
+                        'Gratificação Natalina': 0.0,
+                        'Outras remunerações temporárias': -2300.28
                     }
                 }
             },
@@ -134,7 +137,8 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0
+                        'Abono de Permanência': 0.0,
+                        'Outras remunerações temporárias': 0.0
                     }
                 }
             }, 
@@ -173,13 +177,14 @@ class TestParser(unittest.TestCase):
                     'total': 26472.469999999998
                 },
                 'other': {
-                    'total': 0.0,
+                    'total': -2300.28,
                     'trust_position': 0.0,
-                    'others_total': 0.0,
+                    'others_total': -2300.28,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0
+                        'Gratificação Natalina': 0.0,
+                        'Outras remunerações temporárias': -2300.28
                     }
                 }
             },
@@ -211,7 +216,8 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0
+                        'Abono de Permanência': 0.0,
+                        'Outras remunerações temporárias': 0.0
                     }
                 }
             }, 
