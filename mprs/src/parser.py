@@ -135,7 +135,10 @@ def update_employees(file_name, employees):
             employee = generates_employee(row, file_name)
             employees[reg] = employee
             continue
-
+        
+        # Faz-se necessário somar novos valores aos valores atuais dos campos, dada a disposição
+        # dos valores remuneratórios ao longo de três folhas de pagamento (normal, complementar
+        # e 13º salário).
         emp['income'].update({
             'total': emp['income']['total'] + income_total,
             'wage': emp['income']['wage'] + wage
