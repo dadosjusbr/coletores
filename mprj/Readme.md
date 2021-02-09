@@ -58,7 +58,7 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
     - http://transparencia.mprj.mp.br/contrachequeverbas-indenizatorias-e-outras-remuneracoes-temporarias-de-servidores-ativos&mes=11&ano=2020&tipoFunc1=11&tipoFunc2=21&tipoFunc3=23
 
 - Não há logica aparente na distribuição os parâmetros mencionados acima.
-- A matrícula ou registro do funcionário fornecido pelo orgão não segue uma padronização sucinta no que diz respeito á caracteres. Existem funcionarios cuja identificação varia entre as planilhas. Abaixo seguem alguns exemplos ilustrativos com matrículas fictícias que demonstram algumas situações reais de formatação.
+- A matrícula ou registro do funcionário fornecido pelo orgão não segue uma padronização sucinta no que diz respeito á caracteres. Existem funcionários cuja identificação varia entre as planilhas. Abaixo seguem alguns exemplos ilustrativos com matrículas fictícias que demonstram algumas situações reais de formatação.
     - Exemplo:
         - O funcionário X pode ser identificado pela matrícula : 123123 e pela matrícula: 123123.0
         - O funcionário Y é identificado pela matrícula 123123-1
@@ -68,3 +68,13 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
 - **Dificulta o parsing**: Existe variação entre meses na quantidade de disposição de colunas em planilhas referentes á verbas indenizatórias de um mesmo tipo de funcionário. Exemplo:
     - Há 13 colunas na planilha de verbas Indenizatórias referentes á servidores inativos do mês de novembro de 2020.
     - Há 11 colunas na planilha de verbas indenizatórias referentes á servidores inativos do mẽs de outubro de 2020.
+    - Existe uma situação de intensa variação nas planilhas referentes á verbas indenizatórias para diversos meses de 2020. A variação toma dois parâmetros, citados abaixo e contempla servidores e membros, ativos e inativos:
+      - Quantidade de colunas.
+      - Ordem que as colunas aparecem nas planilhas.
+    - Em termos de código isso representa a criação de uma nova distribuição de colunas e de variáveis no cálculo de total. Desse modo, estão reportadas abaixo algumas dessas variações que acabaram por gerar esta necessidade.
+      - Há 2 colunas especificando indenizações de transporte/locomoção na planilha de verbas indenizatórias referentes á membros ativos no mês de janeiro de 2020.
+      - Há 2 colunas especificando indenizações referentes á licenças na planilha de verbas indenizatórias referentes á membros ativos do mês de janeiro de 2020.
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de janeiro de 2020.
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de fevereiro de 2020.
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á servidores ativos do mês de março de 2020.
+      
