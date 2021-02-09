@@ -24,6 +24,7 @@ def parse(rows, employees):
 
         emp = employees[reg]
         emp['income']['perks'].update({
+            'total': round( aux_ali + aux_ali_remu + aux_saude + aux_saude_remu , 2),
             'food':  aux_ali + aux_ali_remu ,
             'health': aux_saude + aux_saude_remu,
         })
@@ -43,9 +44,6 @@ def parse(rows, employees):
             'others_total': round(emp['income']['other']['others_total'] + aux_adocao +
             aux_edu + aux_edu_remu + indemnity_vacation + diff_aux +
             parcelas_atraso , 2),
-        })
-        emp['income']['perks'].update({
-            'total': round( aux_ali + aux_ali_remu + aux_saude + aux_saude_remu , 2)
         })
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
