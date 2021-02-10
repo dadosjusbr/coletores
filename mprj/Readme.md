@@ -72,7 +72,7 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
       - Quantidade de colunas.
       - Ordem que as colunas aparecem nas planilhas.
     - Em termos de código isso representa a criação de uma nova distribuição de colunas e de variáveis no cálculo de total. Desse modo, estão reportadas abaixo algumas dessas variações que acabaram por gerar esta necessidade.
-      - Há 2 colunas especificando indenizações de transporte/locomoção na planilha de verbas indenizatórias referentes á membros ativos no mês de janeiro de 2020.
-      - Há 2 colunas especificando indenizações referentes á licenças na planilha de verbas indenizatórias referentes á membros ativos do mês de janeiro de 2020.
+      - Há 2 colunas especificando indenizações de transporte/locomoção na planilha de verbas indenizatórias referentes á membros ativos no mês de janeiro de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
+      - Há 2 colunas especificando indenizações referentes á licenças na planilha de verbas indenizatórias referentes á membros ativos do mês de janeiro de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
       - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de janeiro de 2020.
-      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos dos meses de fevereira e março de 2020.
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos dos meses de fevereiro e março de 2020.
