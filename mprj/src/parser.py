@@ -105,7 +105,7 @@ def type_employee(fn):
 
 def clean_currency_val(value):
     if isinstance(value, str):
-        return value.replace('R$', '').replace('.', '').replace(',', '.').replace(' ', '')
+        return value.replace('R$', '').replace('.', '').replace(',', '.').replace(' ', '').replace('"','').replace("'",'')
     return value
 
 def clean_currency(data, beg_col, end_col):
