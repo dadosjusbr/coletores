@@ -18,7 +18,7 @@ def format_value(element):
 
 
 # August and October 2020
-def update_employee_indemnity_aug_oct(file_name, employees):
+def update_employee_indemnity_aug_oct_2020(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
@@ -52,7 +52,7 @@ def update_employee_indemnity_aug_oct(file_name, employees):
 
 
 # September 2020
-def update_employee_indemnity_sept(file_name, employees):
+def update_employee_indemnity_sept_2020(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
@@ -88,7 +88,7 @@ def update_employee_indemnity_sept(file_name, employees):
 
 
 # November 2020
-def update_employee_indemnity_nov_dec(file_name, employees):
+def update_employee_indemnity_nov_dec_2020(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
