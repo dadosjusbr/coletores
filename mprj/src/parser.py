@@ -14,6 +14,9 @@ import sativ_indemnity_parser_mar_2020
 import mativ_indemnity_parser_abr_2020
 import sativ_indemnity_parser_abr_2020
 import mativ_indemnity_parser_maio_jul_2020
+import minat_indemnity_parser_jul_jun_2020
+import sativ_indemnity_parser_jun_2020
+import sinat_indemnity_parser_jun_2020
 
 #Transforma uma tupla em um objeto dataframe do pandas . Este método é necessário
 #devido á inabilidade do pandas de converter certas planilhas em um dataframe
@@ -558,7 +561,12 @@ def update_employee_indemnity(file_name, employees):
         else:
             update_mativ_indemnity(rows, employees)
     elif 'MINAT' in file_name:
-        update_minat_indemnity(rows, employees)
+        if '2020_06' in file_name:
+            minat_indemnity_parser_jul_jun_2020.parse(rows, employees)
+        elif '2020_07' in file_name:
+            minat_indemnity_parser_jul_jun_2020.parse(rows, employees)
+        else:
+            update_minat_indemnity(rows, employees)
     elif 'SATIV' in file_name:
         if '2020_10'in file_name:
             sativ_indemnity_parser_out_2020.parse(rows, employees)
@@ -566,11 +574,15 @@ def update_employee_indemnity(file_name, employees):
             sativ_indemnity_parser_mar_2020.parse(rows, employees)
         elif '2020_04' in file_name:
             sativ_indemnity_parser_abr_2020.parse(rows, employees)
+        elif '2020_06' in file_name:
+            sativ_indemnity_parser_jun_2020.parse(rows, employees)
         else:
             update_sativ_indemnity(rows, employees)
     elif 'SINAT' in file_name:
         if '2020_10' in file_name:
             sinat_indemnity_parser_out_2020.parse(rows, employees)
+        elif '2020_06' in file_name:
+            sinat_indemnity_parser_jun_2020.parse(rows, employees)
         else:
             update_sinat_indemnity(rows, employees)
     elif 'PENSI' in file_name:
