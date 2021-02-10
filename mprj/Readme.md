@@ -68,13 +68,11 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
 - **Dificulta o parsing**: Existe variação entre meses na quantidade de disposição de colunas em planilhas referentes á verbas indenizatórias de um mesmo tipo de funcionário. Exemplo:
     - Há 13 colunas na planilha de verbas Indenizatórias referentes á servidores inativos do mês de novembro de 2020.
     - Há 11 colunas na planilha de verbas indenizatórias referentes á servidores inativos do mẽs de outubro de 2020.
-    - Existe uma situação de intensa variação nas planilhas referentes á verbas indenizatórias para diversos meses de 2020. A variação toma dois parâmetros, citados abaixo e contempla servidores e membros, ativos e inativos:
+    - Existe uma situação de intensa variação nas planilhas referentes a verbas indenizatórias para diversos meses de 2020. A variação toma dois parâmetros e contempla servidores e membros, ativos e inativos:
       - Quantidade de colunas.
       - Ordem que as colunas aparecem nas planilhas.
     - Em termos de código isso representa a criação de uma nova distribuição de colunas e de variáveis no cálculo de total. Desse modo, estão reportadas abaixo algumas dessas variações que acabaram por gerar esta necessidade.
       - Há 2 colunas especificando indenizações de transporte/locomoção na planilha de verbas indenizatórias referentes á membros ativos no mês de janeiro de 2020.
       - Há 2 colunas especificando indenizações referentes á licenças na planilha de verbas indenizatórias referentes á membros ativos do mês de janeiro de 2020.
       - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de janeiro de 2020.
-      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de fevereiro de 2020.
-      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á servidores ativos do mês de março de 2020.
-      
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos dos meses de fevereira e março de 2020.
