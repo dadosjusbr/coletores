@@ -554,7 +554,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def teste_membros_ativos_abr_jul_2020(self):
+    def teste_membros_ativos_abr_2020(self):
         self.maxDiff = None
         expected = {
             'reg': '00001954',
@@ -657,6 +657,57 @@ class TestParser(unittest.TestCase):
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+    def teste_membros_ativos_maio_jul_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '00002846',
+            'name': 'ADRIANA SILVEIRA MANDARINO',
+            'role': 'PROMOTOR DE JUSTICA',
+            'workplace':'PROMOTORIA DE JUSTIÇA JUNTO À 3ª VARA CRIMINAL DE DUQUE DE CAXIAS',
+            'type': 'membro',
+            'active': True,
+            'income':
+                {
+                    'total': 54473.59,
+                    'wage': 33689.10,
+                    'perks':{
+                        'total': 5302.88,
+                        'food': 1285.91,
+                        'health': 4016.97 ,
+                    },
+                    'other':
+                    {
+                        'total': 15481.61,
+                        'trust_position': 0.00,
+                        'gratification': 1684.45 ,
+                        'others_total': 13797.16,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 2567.46,
+                            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': 11229.70,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 12121.39,
+                    'prev_contribution': 4716.47,
+                    'ceil_retention':0.00,
+                    'income_tax': 7404.92,
+                }
+        }
+        files = [('./output_test/2020_05_MATIV.ods'),('./output_test/2020_05_Verbas Indenizatórias-MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == '__main__':
     unittest.main()
