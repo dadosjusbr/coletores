@@ -857,5 +857,34 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    # Verifica se na planilha de colaboradores as linhas vazias sao ignoradas com sucesso
+    def teste_colaboradores_linha_vazia(self):
+        self.maxDiff = None
+        # Espera-se que as demais linhas sejam ignoradas e tenhamos o retorno de um único colaborador
+        expected = {
+            'name': 'VICTÓRIA DE FREITAS OUTRA',
+            'role': 'Bolsa auxílio ao estagiário forense. 20.22.0001.0007994.2020-12',
+            'type': 'colaborador',
+            'workplace': 'SECRETARIA DA 1ª PROMOTORIA DE JUSTIÇA CRIMINAL DE CABO FRIO',
+            'active': True,
+            'income':
+            {
+                'total': 870.00,
+                'wage': 870.00,
+            },
+            'discounts':
+            {
+                'total': 0.00,
+                'income_tax': 0.00,
+            }
+        }
+
+        files = [('./output_test/2020_05_COLAB.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 if __name__ == '__main__':
     unittest.main()

@@ -228,26 +228,30 @@ def parse_colab(file_name):
             curr_row += 1
             continue
 
-        wage = float(row[2]) #Valor bruto recebido pelo colaborador
-        #O identificador de colaboradores é o nome
-        employees[row[1]] = {
-            'name': row[1],
-            #Descrição do serviço prestado e número do processo de pagamento ao servidor
-            'role': str(row[9]) + ' ' + str(row[8]),
-            'type': typeE,
-            'workplace': row[0],
-            'active': activeE,
-            "income":
-            {
-                'total': wage,
-                'wage': wage,
-            },
-            'discounts':
-            {
-                'total': float(row[4]),
-                'income_tax': float(row[3])
+        name = row[1]
+
+        #Existem situações de pula de linha encontradas na planilha de colaboradores gerando identificadores nulos
+        if (not pd.isnull(name)):
+            #O identificador de colaboradores é o nome
+            wage = float(row[2]) #Valor bruto recebido pelo colaborador
+            employees[name] = {
+                'name': name,
+                #Descrição do serviço prestado e número do processo de pagamento ao servidor
+                'role': str(row[9]) + ' ' + str(row[8]),
+                'type': typeE,
+                'workplace': row[0],
+                'active': activeE,
+                "income":
+                {
+                    'total': wage,
+                    'wage': wage,
+                },
+                'discounts':
+                {
+                    'total': float(row[4]),
+                    'income_tax': float(row[3])
+                }
             }
-        }
 
         curr_row += 1
         if curr_row >= end_row:
