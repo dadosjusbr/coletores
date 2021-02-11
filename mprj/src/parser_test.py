@@ -708,6 +708,154 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_membros_inativos_jun_jul_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '00179516',
+            'name': 'ADELÂNGELA CARVALHO SAGGIORO',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'active': False,
+            'income':
+                {
+                    'total': 38141.80,
+                    'wage': 35462.22,
+                    'perks':{
+                        'total': 2679.58,
+                        'health': 2679.58,
+                    },
+                    'other':
+                    {
+                        'total': 0.00,
+                        'trust_position': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 11339.32,
+                    'prev_contribution': 4110.57,
+                    'ceil_retention':0.00,
+                    'income_tax': 7228.75,
+                }
+        }
+        files = [('./output_test/2020_06_MINAT.ods'),('./output_test/2020_06_Verbas Indenizatórias-MINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def teste_servidores_ativos_jun_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '00004443',
+            'name': 'ADALGIZA PINHO DE SIMAS LEAL',
+            'role': 'ASSESSORAMENTO A PROMOTORIA - CCA',
+            'workplace': 'SECRETARIA DA 7ª PROMOTORIA DE JUSTIÇA DA INFÂNCIA E DA JUVENTUDE DA CAPITAL',
+            'type': 'servidor',
+            'active': True,
+            'income':
+                {
+                    'total': 6529.85,
+                    'wage': 0.00,
+                    'perks':{
+                        'total': 2531.93,
+                        'food': 1397.73,
+                        'transportation': 34.20,
+                        'health': 1100.0,
+                    },
+                    'other':
+                    {
+                        'total': 3997.92,
+                        'trust_position': 3569.58,
+                        'gratification': 428.34,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO':0.00,
+                            'SUBSTITUIÇÃO DE CARGO EM COMISSÃO / FUNÇÃO GRATIFICADA': 0.00
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 549.77,
+                    'prev_contribution': 358.69,
+                    'ceil_retention':0.00,
+                    'income_tax': 191.08,
+                }
+        }
+        files = [('./output_test/2020_06_SATIV.ods'),('./output_test/2020_06_Verbas Indenizatórias-SATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def teste_servidores_inativos_jun_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '00198219',
+            'name': 'ANA CHRISTINA ARAGÃO COSTA',
+            'role': 'ANALISTA DO MP - ÁREA: ADMINISTRATIVA',
+            'type': 'servidor',
+            'active': False,
+            'income':
+                {
+                    'total': 39321.04,
+                    'wage': 28245.21,
+                    'perks':{
+                        'total': 1100.0,
+                        'health': 1100.0,
+                    },
+                    'other':
+                    {
+                        'total': 9975.83 ,
+                        'trust_position': 0.00,
+                        'others_total': 9975.83,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 9975.83 ,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 8989.29,
+                    'prev_contribution': 3100.18,
+                    'ceil_retention': 0.00,
+                    'income_tax': 5889.11,
+                }
+        }
+        files = [('./output_test/2020_06_SINAT.ods'),('./output_test/2020_06_Verbas Indenizatórias-SINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
