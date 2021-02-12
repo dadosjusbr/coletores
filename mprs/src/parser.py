@@ -52,23 +52,23 @@ def generates_employee(row, file_name):
         workplace = row["lotacao_s"]
     else:
         workplace = ""
-    income_total = float(row["total_creditos_tf"])
-    wage = float(row["outras_verbas_tf"]) + float(row["vencimentos_tf"])
+    wage = round(float(row["outras_verbas_tf"]) + float(row["vencimentos_tf"]), 2)
     # Indemnities
-    perks_total = float(row["indenizacoes_tf"])
+    perks_total = round(float(row["indenizacoes_tf"]), 2)
     # Gratifications 
-    gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
-    trust_position = float(row["fg_cc_tf"])
-    others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
-    others_christmas_bonus = float(row["gratificacao_natalina_tf"])
-    others_vacation = float(row["ferias_tf"])
-    others_allowance_of_permanence = float(row["abono_permanencia_tf"])
-    others_temporary_remuneration = float(row["pagamentos_retroativos_tf"])
+    trust_position = round(float(row["fg_cc_tf"]), 2)
+    others_christmas_bonus = round(float(row["gratificacao_natalina_tf"]), 2)
+    others_vacation = round(float(row["ferias_tf"]), 2)
+    others_allowance_of_permanence = round(float(row["abono_permanencia_tf"]), 2)
+    others_total = others_christmas_bonus + others_vacation + others_allowance_of_permanence
+    gratifications_total = round(trust_position + others_christmas_bonus + others_vacation + others_allowance_of_permanence, 2)
     # Discounts
-    discounts_total = abs(float(row["total_descontos_tf"]))
-    discounts_prev_contribution = abs(float(row["previdencia_tf"]))
-    discounts_ceil_retention = abs(float(row["estorno_de_teto_tf"]))
-    discounts_income_tax = abs(float(row["ir_tf"]))
+    discounts_prev_contribution = round(abs(float(row["previdencia_tf"])), 2)
+    discounts_ceil_retention = round(abs(float(row["estorno_de_teto_tf"])), 2)
+    discounts_income_tax = round(abs(float(row["ir_tf"])), 2)
+    discounts_total = round(discounts_prev_contribution + discounts_ceil_retention + discounts_income_tax, 2)
+    # Total
+    income_total = round(wage + perks_total + gratifications_total, 2)
     
     employee = {
         'reg': reg,
@@ -92,7 +92,6 @@ def generates_employee(row, file_name):
                     'Gratificação Natalina': others_christmas_bonus,
                     'Férias (1/3 constitucional)': others_vacation,
                     'Abono de Permanência': others_allowance_of_permanence,
-                    'Outras remunerações temporárias': others_temporary_remuneration
                 }
             },
         },
@@ -111,24 +110,24 @@ def update_employees(file_name, employees):
 
     for row in rows["response"]["docs"]:
         reg = row["numfunc_s"]
-        income_total = float(row["total_creditos_tf"])
-        wage = float(row["outras_verbas_tf"]) + float(row["vencimentos_tf"])
+        wage = round(float(row["outras_verbas_tf"]) + float(row["vencimentos_tf"]), 2)
         # Indemnities
-        perks_total = float(row["indenizacoes_tf"])
+        perks_total = round(float(row["indenizacoes_tf"]), 2)
         # Gratifications 
-        gratifications_total = float(row["fg_cc_tf"]) + float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
-        trust_position = float(row["fg_cc_tf"])
-        others_total = float(row["gratificacao_natalina_tf"]) + float(row["ferias_tf"]) + float(row["abono_permanencia_tf"]) + float(row["pagamentos_retroativos_tf"])
-        others_christmas_bonus = float(row["gratificacao_natalina_tf"])
-        others_vacation = float(row["ferias_tf"])
-        others_allowance_of_permanence = float(row["abono_permanencia_tf"])
-        others_temporary_remuneration = float(row["pagamentos_retroativos_tf"])
+        trust_position = round(float(row["fg_cc_tf"]), 2)
+        others_christmas_bonus = round(float(row["gratificacao_natalina_tf"]), 2)
+        others_vacation = round(float(row["ferias_tf"]), 2)
+        others_allowance_of_permanence = round(float(row["abono_permanencia_tf"]), 2)
+        others_total = others_christmas_bonus + others_vacation + others_allowance_of_permanence
+        gratifications_total = round(trust_position + others_christmas_bonus + others_vacation + others_allowance_of_permanence, 2)
         # Discounts
-        discounts_total = abs(float(row["total_descontos_tf"]))
-        discounts_prev_contribution = abs(float(row["previdencia_tf"]))
-        discounts_ceil_retention = abs(float(row["estorno_de_teto_tf"]))
-        discounts_income_tax = abs(float(row["ir_tf"]))
-        
+        discounts_prev_contribution = round(abs(float(row["previdencia_tf"])), 2)
+        discounts_ceil_retention = round(abs(float(row["estorno_de_teto_tf"])), 2)
+        discounts_income_tax = round(abs(float(row["ir_tf"])), 2)
+        discounts_total = round(discounts_prev_contribution + discounts_ceil_retention + discounts_income_tax, 2)
+        # Total
+        income_total = round(wage + perks_total + gratifications_total, 2)
+
         try:
             emp = employees[reg]
         except Exception:
@@ -141,27 +140,26 @@ def update_employees(file_name, employees):
         # e 13º salário).
         emp['income'].update({
             'total': emp['income']['total'] + income_total,
-            'wage': emp['income']['wage'] + wage
+            'wage': round(emp['income']['wage'] + wage, 2)
         })
         emp['income']['perks'].update({
-            'total': emp['income']['perks']['total'] + perks_total
+            'total': round(emp['income']['perks']['total'] + perks_total, 2)
         })
         emp['income']['other'].update({
-            'total': emp['income']['other']['total'] + gratifications_total,
-            'trust_position': emp['income']['other']['trust_position'] + trust_position,
-            'others_total': emp['income']['other']['others_total'] + others_total
+            'total': round(emp['income']['other']['total'] + gratifications_total, 2),
+            'trust_position': round(emp['income']['other']['trust_position'] + trust_position, 2),
+            'others_total': round(emp['income']['other']['others_total'] + others_total, 2)
         })
         emp['income']['other']['others'].update({
-            'Gratificação Natalina': emp['income']['other']['others']['Gratificação Natalina'] + others_christmas_bonus,
-            'Férias (1/3 constitucional)': emp['income']['other']['others']['Férias (1/3 constitucional)'] + others_vacation,
-            'Abono de Permanência': emp['income']['other']['others']['Abono de Permanência'] + others_allowance_of_permanence,
-            'Outras remunerações temporárias': emp['income']['other']['others']['Outras remunerações temporárias'] + others_temporary_remuneration
+            'Gratificação Natalina': round(emp['income']['other']['others']['Gratificação Natalina'] + others_christmas_bonus, 2),
+            'Férias (1/3 constitucional)': round(emp['income']['other']['others']['Férias (1/3 constitucional)'] + others_vacation, 2),
+            'Abono de Permanência': round(emp['income']['other']['others']['Abono de Permanência'] + others_allowance_of_permanence, 2)
         })
         emp['discounts'].update({
-            'total': emp['discounts']['total'] + discounts_total,
-            'prev_contribution': emp['discounts']['prev_contribution'] + discounts_prev_contribution,
-            'ceil_retention': emp['discounts']['ceil_retention'] + discounts_ceil_retention,
-            'income_tax': emp['discounts']['income_tax'] + discounts_income_tax
+            'total': round(emp['discounts']['total'] + discounts_total, 2),
+            'prev_contribution': round(emp['discounts']['prev_contribution'] + discounts_prev_contribution, 2),
+            'ceil_retention': round(emp['discounts']['ceil_retention'] + discounts_ceil_retention, 2),
+            'income_tax': round(emp['discounts']['income_tax'] + discounts_income_tax, 2)
         })
         employees[reg] = emp
 
