@@ -657,6 +657,7 @@ class TestParser(unittest.TestCase):
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+
     def teste_membros_ativos_maio_jul_2020(self):
         self.maxDiff = None
         expected = {
@@ -934,6 +935,157 @@ class TestParser(unittest.TestCase):
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+
+    def teste_membros_ativos_ago_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '00001577',
+            'name': 'ADRIANA MIRANDA PALMA SCHENKEL',
+            'role': 'PROMOTOR DE JUSTICA',
+            'workplace':'PROMOTORIA DE JUSTIÇA DE PROTEÇÃO AO IDOSO E À PESSOA COM DEFICIÊNCIA DO NÚCLEO NITERÓI',
+            'type': 'membro',
+            'active': True,
+            'income':
+                {
+                    'total': 45795.75,
+                    'wage': 33689.10,
+                    'perks':{
+                        'total': 5385.68,
+                        'food': 1230.00,
+                        'health': 4155.68,
+                    },
+                    'other':
+                    {
+                        'total': 6720.97,
+                        'trust_position': 6720.97,
+                        'gratification': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': 0.00,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 14472.49,
+                    'prev_contribution': 4716.47,
+                    'ceil_retention': 1116.75,
+                    'income_tax': 8639.27,
+                }
+        }
+        files = [('./output_test/2020_08_MATIV.ods'),('./output_test/2020_08_Verbas Indenizatórias-MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def teste_membros_inativos_ago_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '02002858',
+            'name': 'AFFONSO ALIPIO PERNET DE AGUIAR',
+            'role': 'PROMOTOR DE JUSTICA',
+            'type': 'membro',
+            'active': False,
+            'income':
+                {
+                    'total': 48962.48,
+                    'wage':  37397.58,
+                    'perks':{
+                        'total': 5330.06 ,
+                        'health': 5330.06 ,
+                    },
+                    'other':
+                    {
+                        'total': 6234.84 ,
+                        'trust_position': 0.00,
+                        'others_total': 6234.84 ,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 6234.84 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 3527.37,
+                    'prev_contribution': 3527.37,
+                    'ceil_retention':0.00,
+                    'income_tax': 0.00,
+                }
+        }
+        files = [('./output_test/2020_08_MINAT.ods'),('./output_test/2020_08_Verbas Indenizatórias-MINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def teste_servidores_inativos_ago_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '00003128',
+            'name': 'ADENE CATUNDA TIMBO MUNIZ',
+            'role': 'TÉCNICO DO MP - ÁREA: PROCESSUAL',
+            'type': 'servidor',
+            'active': False,
+            'income':
+                {
+                    'total': 12697.38,
+                    'wage': 11704.97,
+                    'perks':{
+                        'total': 992.41,
+                        'food':0.00,
+                        'health': 992.41 ,
+                    },
+                    'other':
+                    {
+                        'total': 0.00,
+                        'trust_position': 0.00,
+                        'others_total': 0.00,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 2918.30,
+                    'prev_contribution': 784.55,
+                    'ceil_retention': 0.00,
+                    'income_tax': 2133.75,
+                }
+        }
+        files = [('./output_test/2020_08_SINAT.ods'), ('./output_test/2020_08_Verbas Indenizatórias-SINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 
 if __name__ == '__main__':
