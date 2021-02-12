@@ -55,7 +55,12 @@ def crawl(year, month, output_path):
 
     for key, value in urls_remunerations.items():
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = key + "-" + month + '-' + year + '.json'
+
+        if "verbas_indenizatorias_temporarias/" in key or "estagiarios/" in key:
+            file_name = key + "-" + month + '-' + year + '.html'
+        else:
+            file_name = key + "-" + month + '-' + year + '.json'
+
         file_path = output_path + "/" + file_name.replace("/", "")
         download(value, file_path)
         files.append(file_path)
