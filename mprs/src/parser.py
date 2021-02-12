@@ -6,14 +6,26 @@ import json
 
 # Lê os dados baixados pelo crawler
 def read_data(path):
-    try:
-        with open((pathlib.Path(path)), 'r') as arq:
-            data = json.load(arq)
-            return data
-    except Exception as excep:
-        sys.stderr.write("'Não foi possível ler o arquivo: " +
-                         path + '. O seguinte erro foi gerado: ' + excep)
-        os._exit(1)
+    if 'verbas' not in path and 'estagiarios' not in path:
+        try:
+            with open((pathlib.Path(path)), 'r') as arq:
+                data = json.load(arq)
+                return data
+        except Exception as excep:
+            sys.stderr.write("'Não foi possível ler o arquivo: " +
+                            path + '. O seguinte erro foi gerado: ' + excep)
+            os._exit(1)
+    elif 'verbas' in path:
+        try:
+            with open((pathlib.Path(path)), 'r') as arq:
+                data = pd.read_html(arq, decimal=',', thousands='.')
+                df = data[0]
+                df.columns = ['Matrícula', 'Nome', 'Cargo', 'Lotação', 'Abono Família', 'Vale Alimentação', 'Auxílio Transporte', 'Auxílio Creche', 'Conversões em Pecúnia', 'Comissão Especial', 'Gratificação Setor', 'Adicional Insal / Periculosidae', 'Difícil Provimento', 'Honorário Concurso', 'Substituição', 'Diretor Promotoria', 'Hora Extra', 'Acúmulo funções']
+                return df
+        except Exception as excep:
+            sys.stderr.write("'Não foi possível ler o arquivo: " +
+                            path + '. O seguinte erro foi gerado: ' + excep)
+            os._exit(1)
 
 # Define o tipo do empregado, a partir do nome do arquivo
 def type_employee(fn):
