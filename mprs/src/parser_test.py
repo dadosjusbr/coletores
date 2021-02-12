@@ -14,20 +14,19 @@ class TestParser(unittest.TestCase):
             'workplace': 'PROMOTORIA DE JUSTIÇA DE PINHEIRO MACHADO',
             'active': True,
             'income': {
-                'total': 24172.19,
+                'total': 26472.47,
                 'wage': 25851.96,
                 'perks': {
                     'total': 620.51
                 },
                 'other': {
-                    'total': -2300.28,
+                    'total': 0.0,
                     'trust_position': 0.0,
-                    'others_total': -2300.28,
+                    'others_total': 0.0,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0,
-                        'Outras remunerações temporárias': -2300.28
+                        'Gratificação Natalina': 0.0
                     }
                 }
             },
@@ -59,8 +58,7 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0,
-                        'Outras remunerações temporárias': 0.0
+                        'Abono de Permanência': 0.0
                     }
                 }
             }, 
@@ -92,20 +90,19 @@ class TestParser(unittest.TestCase):
             'workplace': 'PROMOTORIA DE JUSTIÇA DE PINHEIRO MACHADO',
             'active': True,
             'income': {
-                'total': 50024.149999999994,
+                'total': 52324.43,
                 'wage': 25851.96,
                 'perks': {
-                    'total': 26472.469999999998
+                    'total': 26472.47
                 },
                 'other': {
-                    'total': -2300.28,
+                    'total': 0.0,
                     'trust_position': 0.0,
-                    'others_total': -2300.28,
+                    'others_total': 0.0,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0,
-                        'Outras remunerações temporárias': -2300.28
+                        'Gratificação Natalina': 0.0
                     }
                 }
             },
@@ -137,8 +134,7 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0,
-                        'Outras remunerações temporárias': 0.0
+                        'Abono de Permanência': 0.0
                     }
                 }
             }, 
@@ -171,31 +167,30 @@ class TestParser(unittest.TestCase):
             'workplace': 'PROMOTORIA DE JUSTIÇA DE PINHEIRO MACHADO',
             'active': True,
             'income': {
-                'total': 75876.10999999999,
+                'total': 78176.39,
                 'wage': 51703.92,
                 'perks': {
-                    'total': 26472.469999999998
+                    'total': 26472.47
                 },
                 'other': {
-                    'total': -2300.28,
+                    'total': 0.0,
                     'trust_position': 0.0,
-                    'others_total': -2300.28,
+                    'others_total': 0.0,
                     'others': {
                         'Abono de Permanência': 0.0,
                         'Férias (1/3 constitucional)': 0.0,
-                        'Gratificação Natalina': 0.0,
-                        'Outras remunerações temporárias': -2300.28
+                        'Gratificação Natalina': 0.0
                     }
                 }
             },
             'discounts': {
-                'total': 17348.239999999998,
+                'total': 17348.24,
                 'prev_contribution': 8017.9,
                 'ceil_retention': 0.0,
                 'income_tax': 9330.34
             }
         }
-
+        
         second_expected = {
             'reg': '3427811',
             'name': 'BRUNO HERINGER JUNIOR', 
@@ -216,8 +211,7 @@ class TestParser(unittest.TestCase):
                     'others': {
                         'Gratificação Natalina': 0.0, 
                         'Férias (1/3 constitucional)': 3546.22, 
-                        'Abono de Permanência': 0.0,
-                        'Outras remunerações temporárias': 0.0
+                        'Abono de Permanência': 0.0
                     }
                 }
             }, 
