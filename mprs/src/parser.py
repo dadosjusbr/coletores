@@ -177,6 +177,65 @@ def update_employees(file_name, employees):
 
     return employees
 
+def update_employee_indemnity(file_name, employees):
+    rows = read_data(file_name)
+    rows = rows.to_numpy()
+    
+    for row in rows:
+        reg = str(row[0])
+        # Indenizações
+        abono_familia = round(row[4], 2)
+        vale_alimentacao = round(row[5], 2)
+        auxilio_transporte = round(row[6], 2)
+        auxilio_creche = round(row[7], 2)
+        conversoes_pecunia = round(row[8], 2)
+        # Outras Remunerações (Gratificações)
+        comissao_especial = round(row[9], 2)
+        gratificacao_setor = round(row[10], 2)
+        adicional_insal_peric = round(row[11], 2)
+        dificil_provimento = round(row[12], 2)
+        honorario_concurso = round(row[13], 2)
+        substituicao = round(row[14], 2)
+        diretor_promotoria = round(row[15], 2)
+        hora_extra = round(row[16], 2)
+        acumulo_funcoes = round(row[17], 2)
+        # Total
+        perks_total = round(abono_familia + vale_alimentacao + auxilio_transporte + auxilio_creche + conversoes_pecunia, 2)
+        gratifications_total = round(comissao_especial + gratificacao_setor + adicional_insal_peric + dificil_provimento + honorario_concurso + substituicao + diretor_promotoria + hora_extra + acumulo_funcoes, 2)
+        
+        # Atualização das indenizações
+        if reg in employees.keys():
+            emp = employees[reg]
+
+            emp['income'].update({
+                'total': round(emp['income']['wage'] + perks_total + emp['income']['other']['total'] + gratifications_total, 2)
+            })
+            emp['income']['perks'].update({
+                'total': perks_total,
+                'Subsistence': abono_familia,
+                'Food': vale_alimentacao,
+                'Transportation': auxilio_transporte,
+                'PreSchool': auxilio_creche,
+                'Conversões em Pecúnia': conversoes_pecunia
+            })
+            emp['income']['other'].update({
+                'total': round(emp['income']['other']['total'] + gratifications_total, 2)            
+            })
+            emp['income']['other']['others'].update({
+                'Comissão Especial': comissao_especial,
+                'Gratificação Setor': gratificacao_setor,
+                'Adicional Insal / Periculosidade': adicional_insal_peric,
+                'Difícil Provimento': dificil_provimento,
+                'Honorário Concurso': honorario_concurso,
+                'Substituição': substituicao,
+                'Diretor Promotoria': diretor_promotoria,
+                'Hora Extra': hora_extra,
+                'Acúmulo funções': acumulo_funcoes
+            })
+            employees[reg] = emp
+
+    return employees
+
 def parse(file_names):
     employees = {}
     # As tabelas de "Colaboradores" e de "Verbas Indenizatórias e Outras 
@@ -188,4 +247,9 @@ def parse(file_names):
     for fn in file_names:
         if ('COMPLEMENTAR' in fn) | ('13' in fn):
             update_employees(fn, employees)
+    # Atualização dos employees com a planilha de "Verbas Indenizatórias e Outras 
+    # Remunerações Temporárias"
+    for fn in file_names:
+        if 'verbas' in fn:
+            update_employee_indemnity(fn, employees)
     return list(employees.values())
