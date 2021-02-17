@@ -1188,6 +1188,53 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_servidores_inativos_dez_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '01002164',
+            'name': 'ANA JULIA MOTTA MADUREIRA',
+            'role': 'ANALISTA DO MP - ÁREA: ADMINISTRATIVA',
+            'type': 'servidor',
+            'active': False,
+            'income':
+                {
+                    'total': 44430.18,
+                    'wage': 28886.79,
+                    'perks':{
+                        'total': 1100.0,
+                        'health': 1100.0,
+                    },
+                    'other':
+                    {
+                        'total': 14443.39,
+                        'trust_position': 0.00,
+                        'others_total': 14443.39,
+                        'others':{
+                            'Gratificação natalina': 14443.39,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-ADOÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00 ,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 17727.34,
+                    'prev_contribution': 6380.02,
+                    'ceil_retention': 0.00,
+                    'income_tax': 11347.32,
+                }
+        }
+        files = [('./output_test/2020_12_SINAT.ods'), ('./output_test/2020_12_Verbas Indenizatórias-SINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
