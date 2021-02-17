@@ -31,7 +31,7 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 - **Gratificação natalina (Number)**: Parcelas da Gratificação Natalina (13º) pagas no mês corrente, ou no caso de vacância ou exoneração do servidor
 - **Férias - ⅓ Constitucional (Number)**: Adicional correspondente a 1/3 (um terço) da remuneração, pago ao servidor por ocasião das férias
 - **Abono de permanência (Number)**: Valor equivalente ao da contribuição previdenciária, devido ao funcionário público que esteja em condição de aposentar-se, mas que optou por continuar em atividade (instituído pela Emenda Constitucional nº 41, de 16 de dezembro de 2003)
-- **Indenizações (Number)**: Auxílio-alimentação, Auxílio-educação, Auxílio-saúde, Conversão de licença especial, Devolução IR-RRA, Indenização de férias nao usufruídas, Indenização por licença não gozada. Soma de todas essas remunerações
+- **Indenizações (Number)**: Auxílio-alimentação, Auxílio-educação, Auxílio-saúde, Conversão de licença especial, Devolução IR-RRA, Indenização de férias não usufruídas, Indenização por licença não gozada. Soma de todas essas remunerações
 - **Outras remunerações retroativas/temporárias**: Valores pagos a título de Auxílio-alimentação, Auxílio-educação, Auxílio-Saúde, Devolução fundo de reserva, Diferenças de auxílios, Gratificações eventuais, Indenização de transporte, Parcelas pagas em atraso. Soma desses valores
 
 # Esclarecimentos sobre verbas referentes á exercícios anteriores
@@ -58,7 +58,7 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
     - http://transparencia.mprj.mp.br/contrachequeverbas-indenizatorias-e-outras-remuneracoes-temporarias-de-servidores-ativos&mes=11&ano=2020&tipoFunc1=11&tipoFunc2=21&tipoFunc3=23
 
 - Não há logica aparente na distribuição os parâmetros mencionados acima.
-- A matrícula ou registro do funcionário fornecido pelo orgão não segue uma padronização sucinta no que diz respeito á caracteres. Existem funcionários cuja identificação varia entre as planilhas. Abaixo seguem alguns exemplos ilustrativos com matrículas fictícias que demonstram algumas situações reais de formatação.
+- A matrícula ou registro do funcionário fornecido pelo órgão não segue uma padronização sucinta no que diz respeito á caracteres. Existem funcionários cuja identificação varia entre as planilhas. Abaixo seguem alguns exemplos ilustrativos com matrículas fictícias que demonstram algumas situações reais de formatação.
     - Exemplo:
         - O funcionário X pode ser identificado pela matrícula : 123123 e pela matrícula: 123123.0
         - O funcionário Y é identificado pela matrícula 123123-1
@@ -74,5 +74,14 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
     - Em termos de código isso representa a criação de uma nova distribuição de colunas e de variáveis no cálculo de total. Desse modo, estão reportadas abaixo algumas dessas variações que acabaram por gerar esta necessidade.
       - Há 2 colunas especificando indenizações de transporte/locomoção na planilha de verbas indenizatórias referentes á membros ativos no mês de janeiro de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
       - Há 2 colunas especificando indenizações referentes á licenças na planilha de verbas indenizatórias referentes á membros ativos do mês de janeiro de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
-      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos do mẽs de janeiro de 2020.
+      - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos nos meses de janeiro, maio, julho ,junho e agosto de 2020.
       - Não há coluna referente á substituição de cargo em comissão / função gratificada na planilha de verbas indenizatórias referente á membros ativos dos meses de fevereiro e março de 2020.
+      - Não há coluna referente á parcelas pagas em atraso na planilha de verbas indenizatórias referente á servidores ativos do mês de abril de 2020.
+      - Não há coluna referente á conversão de licença especial na planilha de verbas indenizatórias referente á membros ativos dos mêses de abril, maio, julho, junho, agosto de 2020.
+      - Não há coluna referente á devolução de fundos na planilha de verbas indenizatórias referente á membros ativos do meses de abril, maio e julho de 2020.
+      - Há uma coluna especificando auxílio moradia na planilha de verbas indenizatórias referente á membros ativos de abril de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
+      - Não há coluna referente ao campo devolução IRRRA na planilha de verbas indenizatórias referente á membros inativos dos meses de julho e junho de 2020.
+      - Há uma coluna especificando indenizações de transporte / locomoção na planilha de verbas indenizatórias referentes á servidores ativos dos meses de junho, agosto e dezembro de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
+      - Não há coluna especificando indenizações de transporte na planilha de verbas indenizatórias referentes á servidores inativos do mês de junho, julho e agosto de 2020.
+      - Há uma coluna especificando auxílio alimentação na planilha de verbas indenizatórias referentes á servidores inativos do mês de agosto de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
+      - Há uma coluna especificando auxílio educação na planilha de verbas indenizatórias referentes á servidores inativos do mês de julho de 2020.
