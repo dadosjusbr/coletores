@@ -70,7 +70,7 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json",)
+        files = ["./output_test/M-NORMAL-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -146,8 +146,8 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
-                 "./output_test/M-COMPLEMENTAR-12-2020.json")
+        files = ["./output_test/M-NORMAL-12-2020.json", 
+                 "./output_test/M-COMPLEMENTAR-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -223,9 +223,9 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
+        files = ["./output_test/M-NORMAL-12-2020.json", 
                  "./output_test/M-COMPLEMENTAR-12-2020.json",
-                 "./output_test/M-13-12-2020.json")
+                 "./output_test/M-13-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -329,10 +329,10 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
+        files = ["./output_test/M-NORMAL-12-2020.json", 
                  "./output_test/M-COMPLEMENTAR-12-2020.json",
                  "./output_test/M-13-12-2020.json",
-                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html")
+                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html"]
         employees = parser.parse(files)
 
         # Verificações
