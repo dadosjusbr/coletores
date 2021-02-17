@@ -711,5 +711,183 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    # Servidores inativos sem folha complementar e de 13º
+    def test_servidores_inativos(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3426602',
+            'name': 'SANDRA MARIA PEIXOTO MEIRELLES',
+            'role': 'SECRETARIO DE DILIGENCIAS - O',
+            'type': 'servidor',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 27797.61,
+                'wage': 21607.32,
+                'perks': {
+                    'total': 6190.29
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 8007.44,
+                'prev_contribution': 3793.92,
+                'ceil_retention': 0.0,
+                'income_tax': 4213.52
+            }  
+        }
+
+        files = ["./output_test/SI-NORMAL-12-2020.json"]
+        employees = parser.parse(files)
+        
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores inativos com folha complementar
+    def test_servidores_inativos_complementar(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3426602',
+            'name': 'SANDRA MARIA PEIXOTO MEIRELLES',
+            'role': 'SECRETARIO DE DILIGENCIAS - O',
+            'type': 'servidor',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 51379.65,
+                'wage': 21607.32,
+                'perks': {
+                    'total': 29772.33
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 8007.44,
+                'prev_contribution': 3793.92,
+                'ceil_retention': 0.0,
+                'income_tax': 4213.52
+            }  
+        }
+
+        files = ["./output_test/SI-NORMAL-12-2020.json", 
+                 "./output_test/SI-COMPLEMENTAR-12-2020.json"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores inativos com folha complementar e 13º
+    def test_servidores_inativos_decimo(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3426602',
+            'name': 'SANDRA MARIA PEIXOTO MEIRELLES',
+            'role': 'SECRETARIO DE DILIGENCIAS - O',
+            'type': 'servidor',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 72986.97,
+                'wage': 43214.64,
+                'perks': {
+                    'total': 29772.33
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 15345.06,
+                'prev_contribution': 6918.02,
+                'ceil_retention': 0.0,
+                'income_tax': 8427.04
+            }  
+        }
+
+        files = ["./output_test/SI-NORMAL-12-2020.json", 
+                 "./output_test/SI-COMPLEMENTAR-12-2020.json",
+                 "./output_test/SI-13-12-2020.json"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores inativos com folha complementar, 13º e verbas indenizatórias
+    def test_servidores_inativos_verbas(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3426602',
+            'name': 'SANDRA MARIA PEIXOTO MEIRELLES',
+            'role': 'SECRETARIO DE DILIGENCIAS - O',
+            'type': 'servidor',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 72986.97,
+                'wage': 43214.64,
+                'perks': {
+                    'total': 29772.33
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 15345.06,
+                'prev_contribution': 6918.02,
+                'ceil_retention': 0.0,
+                'income_tax': 8427.04
+            }  
+        }
+
+        files = ["./output_test/SI-NORMAL-12-2020.json",
+                 "./output_test/SI-COMPLEMENTAR-12-2020.json",
+                 "./output_test/SI-13-12-2020.json",
+                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 if __name__ == '__main__':
     unittest.main()
