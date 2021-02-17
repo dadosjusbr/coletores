@@ -1086,6 +1086,107 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def teste_membros_ativos_set_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '00001885',
+            'name': 'ADRIANA ALEMANY DE ARAUJO',
+            'role': 'PROMOTOR DE JUSTICA',
+            'workplace':'1ª PROMOTORIA DE JUSTIÇA DE INVESTIGAÇÃO PENAL DE VIOLÊNCIA DOMÉSTICA DA ÁREA CENTRO DO NÚCLEO RIO DE JANEIRO',
+            'type': 'membro',
+            'active': True,
+            'income':
+                {
+                    'total': 47037.36,
+                    'wage': 33689.10,
+                    'perks':{
+                        'total': 3724.24,
+                        'food': 1230.00,
+                        'health': 2494.24,
+                    },
+                    'other':
+                    {
+                        'total': 9624.02,
+                        'trust_position': 0.00,
+                        'gratification': 0.00,
+                        'others_total': 9624.02,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 1283.73 ,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO POR LICENÇA NÃO GOZADA': 0.00,
+                            'DEVOLUÇÃO IR RRA': 8340.29,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                            'DIFERENÇAS DE AUXÍLIOS': 0.00,
+                            'PARCELAS PAGAS EM ATRASO': 0.00 ,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 11814.58,
+                    'prev_contribution': 4716.47,
+                    'ceil_retention': 0.00,
+                    'income_tax': 7098.11,
+                }
+        }
+        files = [('./output_test/2020_09_MATIV.ods'),('./output_test/2020_09_Verbas Indenizatórias-MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def teste_membros_inativos_set_2020(self):
+        self.maxDiff = None
+        expected = {
+            'reg': '00179517',
+            'name': 'ADILSE DE OLIVEIRA RAMOS',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'active': False,
+            'income':
+                {
+                    'total': 47371.25,
+                    'wage':  39293.32,
+                    'perks':{
+                        'total': 2679.58,
+                        'health': 2679.58,
+                    },
+                    'other':
+                    {
+                        'total': 5398.35,
+                        'trust_position': 0.00,
+                        'others_total': 5398.35,
+                        'others':{
+                            'Gratificação natalina': 0.00,
+                            'Férias (1/3 constitucional)': 0.00,
+                            'Abono de permanência': 0.00,
+                            'AUXÍLIO-EDUCAÇÃO': 0.00,
+                            'INDENIZAÇÃO DE FÉRIAS NÃO USUFRUÍDAS': 0.00,
+                            'INDENIZAÇÃO DE LICENÇA ESPECIAL/PRÊMIO NÃO USUFRUÍDA': 0.00,
+                            'DEVOLUÇÃO IR RRA': 5398.35 ,
+                            'DEVOLUÇÃO FUNDO DE RESERVA': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 12781.73,
+                    'prev_contribution': 4646.92,
+                    'ceil_retention':0.00,
+                    'income_tax': 8134.81,
+                }
+        }
+        files = [('./output_test/2020_09_MINAT.ods'),('./output_test/2020_09_Verbas Indenizatórias-MINAT.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 
 if __name__ == '__main__':
