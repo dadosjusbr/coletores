@@ -427,5 +427,50 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    # Membros inativos com folha complementar e 13º
+    def test_membros_inativos_decimo(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3425568',
+            'name': 'ANTÔNIO CEZAR LIMA DA FONSECA',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 113341.31,
+                'wage': 70924.43,
+                'perks': {
+                    'total': 40359.38
+                },
+                'other': {
+                    'total': 2057.5,
+                    'trust_position': 0.0,
+                    'others_total': 2057.5,
+                    'others': {
+                        'Abono de Permanência': 2057.5,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 24525.37,
+                'prev_contribution': 10768.37,
+                'ceil_retention': 0.0,
+                'income_tax': 13757.0
+            }            
+        }
+
+        files = ["./output_test/MI-NORMAL-12-2020.json", 
+                 "./output_test/MI-COMPLEMENTAR-12-2020.json",
+                 "./output_test/MI-13-12-2020.json"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 if __name__ == '__main__':
     unittest.main()
