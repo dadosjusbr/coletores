@@ -47,12 +47,13 @@ def main():
     file_names = crawler.crawl(year, month, output_path)
     employees = parser.parse(file_names, month, year)
     cr = {
-        "aid": "mpsp",
-        "month": int(month),
-        "year": int(year),
-        "crawler": {
-            "id": "mpsp",
-            "version": crawler_version,
+        'aid': 'mpsp',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpsp',
+            'version': crawler_version,
         },
         "employees": employees,
         # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
