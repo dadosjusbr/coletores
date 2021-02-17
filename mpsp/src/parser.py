@@ -334,13 +334,12 @@ def parse(file_names, month, year):
                     )
                 elif month == "02" and year == "2020":
                     employees.update(
-                        active_servants_indemnity_parser.update_employee_indemnity_sept_oct_feb(
-                            fn, employees
+                        active_servants_indemnity_parser.update_employee_indemnity_sept_oct_2019_feb_2020(fn, employees
                         )
                     )
                 elif month == "01" and year == "2020":
                     employees.update(
-                        active_servants_indemnity_parser.update_employee_indemnity_nov_to_jan(
+                        active_servants_indemnity_parser.update_employee_indemnity_nov_2019_to_jan_2020(
                             fn, employees
                         )
                     )
