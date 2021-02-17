@@ -70,7 +70,7 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json",)
+        files = ["./output_test/M-NORMAL-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -146,8 +146,8 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
-                 "./output_test/M-COMPLEMENTAR-12-2020.json")
+        files = ["./output_test/M-NORMAL-12-2020.json", 
+                 "./output_test/M-COMPLEMENTAR-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -223,9 +223,9 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
+        files = ["./output_test/M-NORMAL-12-2020.json", 
                  "./output_test/M-COMPLEMENTAR-12-2020.json",
-                 "./output_test/M-13-12-2020.json")
+                 "./output_test/M-13-12-2020.json"]
         employees = parser.parse(files)
 
         # Verificações
@@ -329,16 +329,195 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ("./output_test/M-NORMAL-12-2020.json", 
+        files = ["./output_test/M-NORMAL-12-2020.json", 
                  "./output_test/M-COMPLEMENTAR-12-2020.json",
                  "./output_test/M-13-12-2020.json",
-                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html")
+                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html"]
         employees = parser.parse(files)
 
         # Verificações
         self.assertEqual(2, len(employees))
         self.assertDictEqual(employees[0], expected)
         self.assertDictEqual(employees[1], second_expected)
+
+    # Membros inativos sem folha complementar e de 13º
+    def test_membros_inativos(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3425568',
+            'name': 'ANTÔNIO CEZAR LIMA DA FONSECA',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 40359.38,
+                'wage': 35462.22,
+                'perks': {
+                    'total': 4897.16
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 12532.64,
+                'prev_contribution': 5756.53,
+                'ceil_retention': 0.0,
+                'income_tax': 6776.11
+            }  
+        }
+
+        files = ["./output_test/MI-NORMAL-12-2020.json"]
+        employees = parser.parse(files)
+        
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Membros inativos com folha complementar
+    def test_membros_inativos_complementar(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3425568',
+            'name': 'ANTÔNIO CEZAR LIMA DA FONSECA',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 75821.6,
+                'wage': 35462.22,
+                'perks': {
+                    'total': 40359.38
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 12532.64,
+                'prev_contribution': 5756.53,
+                'ceil_retention': 0.0,
+                'income_tax': 6776.11
+            }  
+        }
+
+        files = ["./output_test/MI-NORMAL-12-2020.json", 
+                 "./output_test/MI-COMPLEMENTAR-12-2020.json"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Membros inativos com folha complementar e 13º
+    def test_membros_inativos_decimo(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3425568',
+            'name': 'ANTÔNIO CEZAR LIMA DA FONSECA',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 113341.31,
+                'wage': 70924.43,
+                'perks': {
+                    'total': 40359.38
+                },
+                'other': {
+                    'total': 2057.5,
+                    'trust_position': 0.0,
+                    'others_total': 2057.5,
+                    'others': {
+                        'Abono de Permanência': 2057.5,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 24525.37,
+                'prev_contribution': 10768.37,
+                'ceil_retention': 0.0,
+                'income_tax': 13757.0
+            }            
+        }
+
+        files = ["./output_test/MI-NORMAL-12-2020.json", 
+                 "./output_test/MI-COMPLEMENTAR-12-2020.json",
+                 "./output_test/MI-13-12-2020.json"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Membros inativos com folha complementar, 13º e verbas indenizatórias
+    # (Membros inativos não estão presentes na folha de verbas indenizatórias)
+    def test_membros_inativos_verbas(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3425568',
+            'name': 'ANTÔNIO CEZAR LIMA DA FONSECA',
+            'role': 'PROCURADOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'INATIVOS',
+            'active': False,
+            'income': {
+                'total': 113341.31,
+                'wage': 70924.43,
+                'perks': {
+                    'total': 40359.38
+                },
+                'other': {
+                    'total': 2057.5,
+                    'trust_position': 0.0,
+                    'others_total': 2057.5,
+                    'others': {
+                        'Abono de Permanência': 2057.5,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 24525.37,
+                'prev_contribution': 10768.37,
+                'ceil_retention': 0.0,
+                'income_tax': 13757.0
+            }            
+        }
+
+        files = ["./output_test/MI-NORMAL-12-2020.json",
+                 "./output_test/MI-COMPLEMENTAR-12-2020.json",
+                 "./output_test/MI-13-12-2020.json",
+                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
