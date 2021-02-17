@@ -2,6 +2,8 @@ import sys
 import os
 import datetime
 import crawler
+import parser
+import json
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -40,4 +42,18 @@ if(int(year) > current_year):
 # Main execution
 if __name__ == '__main__':
     file_names = crawler.crawl(year, month, output_path)
-    print(file_names)
+    employees = parser.parse(file_names)
+    cr = {
+        'aid': 'mprs',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mprs',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
