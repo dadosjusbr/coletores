@@ -18,7 +18,7 @@ def format_value(element):
 
 
 # July and August 2019
-def update_employee_indemnity_jul_aug(file_name, employees):
+def update_employee_indemnity_jul_aug_2019(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -45,6 +45,20 @@ def update_employee_indemnity_jul_aug(file_name, employees):
             matricula in employees.keys()
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + insalubridade
+                        + subs_função
+                        + viatura
+                        + qualificacao,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + insalubridade
+                        + subs_função
+                        + viatura
+                        + qualificacao,
+                        2)
             emp["income"].update(
                 {
                     "total": round(
@@ -69,22 +83,8 @@ def update_employee_indemnity_jul_aug(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + insalubridade
-                        + subs_função
-                        + viatura
-                        + qualificacao,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + insalubridade
-                        + subs_função
-                        + viatura
-                        + qualificacao,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -107,7 +107,7 @@ def update_employee_indemnity_jul_aug(file_name, employees):
 
 
 # September 2019 / October 2019 / February 2020
-def update_employee_indemnity_sept_oct_feb(file_name, employees):
+def update_employee_indemnity_sept_oct_2019_feb_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -134,6 +134,17 @@ def update_employee_indemnity_sept_oct_feb(file_name, employees):
             matricula in employees.keys()
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + total_outras_gratificacoes,
+                        2)
             emp["income"].update(
                 {
                     "total": round(
@@ -161,22 +172,8 @@ def update_employee_indemnity_sept_oct_feb(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes ,
                 }
             )
 
@@ -199,7 +196,7 @@ def update_employee_indemnity_sept_oct_feb(file_name, employees):
 
 
 # November 2019 to January 2020
-def update_employee_indemnity_nov_to_jan(file_name, employees):
+def update_employee_indemnity_nov_2019_to_jan_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -227,6 +224,17 @@ def update_employee_indemnity_nov_to_jan(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outas_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + total_outas_gratificacoes,
+                        2)
             emp["income"].update(
                 {
                     "total": round(
@@ -254,22 +262,8 @@ def update_employee_indemnity_nov_to_jan(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outas_gratificacoes,
                 }
             )
 
@@ -320,6 +314,20 @@ def update_employee_indemnity_mar_2020(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
             emp["income"].update(
                 {
                     "total": round(
@@ -345,22 +353,8 @@ def update_employee_indemnity_mar_2020(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes ,
                 }
             )
 
@@ -410,6 +404,21 @@ def update_employee_indemnity_apr_to_jul_2020(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + subst_eventual
+                        + ato_normativo
+                        + qualificacao
+                        + insalubridade,
+                        2)
+
             emp["income"].update(
                 {
                     "total": round(
@@ -434,22 +443,8 @@ def update_employee_indemnity_apr_to_jul_2020(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_eventual
-                        + ato_normativo
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -500,6 +495,22 @@ def update_employee_indemnity_aug_nov_2020(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_funcao
+                        + viatura
+                        + qualificacao
+                        + insalubridade,
+                        2,
+                    )
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + subst_funcao
+                        + viatura
+                        + qualificacao
+                        + insalubridade,
+                        2,
+                    )
             emp["income"].update(
                 {
                     "total": round(
@@ -525,22 +536,8 @@ def update_employee_indemnity_aug_nov_2020(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_funcao
-                        + viatura
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_funcao
-                        + viatura
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -590,6 +587,22 @@ def update_employee_indemnity_oct_2020(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_funcao
+                        + viatura
+                        + qualificacao
+                        + insalubridade,
+                        2
+                    )
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + subst_funcao
+                        + viatura
+                        + qualificacao
+                        + insalubridade,
+                        2
+                    )
             emp["income"].update(
                 {
                     "total": round(
@@ -614,22 +627,8 @@ def update_employee_indemnity_oct_2020(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + subst_funcao
-                        + viatura
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + subst_funcao
-                        + viatura
-                        + qualificacao
-                        + insalubridade,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -638,6 +637,92 @@ def update_employee_indemnity_oct_2020(file_name, employees):
                     "Adic. Insalubridade": insalubridade,
                     "Substituição de Função": subst_funcao,
                     "Viatura": viatura,
+                    "Gratificação Qualificação": qualificacao,
+                }
+            )
+
+            employees[matricula] = emp
+
+        curr_row += 1
+        if curr_row >= end_row:
+            break
+
+    return employees
+
+# December 2020
+def update_employee_indemnity_dec_2020(file_name, employees):
+    rows = parser.read_data(file_name).to_numpy()
+    begin_row = parser.get_begin_row(rows)
+    end_row = parser.get_end_row(rows, begin_row, file_name)
+
+    curr_row = 0
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        matricula = str(int(row[0]))  # convert to string by removing the '.0'
+        alimentacao = format_value(row[4])
+        transporte = format_value(row[5])
+        creche = format_value(row[6])
+        ferias_pc = format_value(row[7])
+        licensa_pc = format_value(row[8])
+        insalubridade = format_value(row[9])  # Adic. Insalubridade
+        subst_funcao = format_value(row[10])
+        qualificacao = format_value(row[11])
+
+        if (
+            matricula in employees.keys()
+        ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
+
+            emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + subst_funcao
+                        + qualificacao
+                        + insalubridade,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + subst_funcao
+                        + qualificacao
+                        + insalubridade,
+                        2)
+
+            emp["income"].update(
+                {
+                    "total": round(
+                        emp["income"]["total"]
+                        + subst_funcao
+                        + qualificacao
+                        + insalubridade,
+                        2,
+                    )  
+                }
+            )
+
+            emp["income"]["perks"].update(
+                {
+                    "transportation": transporte,
+                    "food": alimentacao,
+                    "pre_school": creche,
+                    "vacation_pecuniary": ferias_pc,
+                    "premium_license_pecuniary": licensa_pc,
+                }
+            )
+
+            emp["income"]["other"].update(
+                {
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
+                }
+            )
+
+            emp["income"]["other"]["others"].update(
+                {
+                    "Adic. Insalubridade": insalubridade,
+                    "Substituição de Função": subst_funcao,
                     "Gratificação Qualificação": qualificacao,
                 }
             )

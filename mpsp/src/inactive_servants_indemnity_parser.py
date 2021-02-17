@@ -18,7 +18,7 @@ def format_value(element):
 
 
 # August 2020
-def update_employee_indemnity_aug(file_name, employees):
+def update_employee_indemnity_aug_2020(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
@@ -93,7 +93,7 @@ def update_employee_indemnity_aug(file_name, employees):
 
 
 # September to November 2020
-def update_employee_indemnity_sept_to_nov(file_name, employees):
+def update_employee_indemnity_sept_to_nov_2020(file_name, employees):
 
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
@@ -151,6 +151,66 @@ def update_employee_indemnity_sept_to_nov(file_name, employees):
             {
                 "INSALUBRIDADE": insalubridade,
                 "QUALIFICACAO": grat_qualificacao,
+            }
+        )
+
+        employees[matricula] = emp
+
+        curr_row += 1
+        if curr_row >= end_row:
+            break
+
+    return employees
+
+# December
+def update_employee_indemnity_dec_2020(file_name, employees):
+
+    rows = parser.read_data(file_name).to_numpy()
+    begin_row = parser.get_begin_row(rows)
+    end_row = parser.get_end_row(rows, begin_row, file_name)
+
+    curr_row = 0
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        matricula = str(int(row[0]))  # convert to string by removing the '.0'
+        alimentacao = format_value(row[4])
+        transporte = format_value(row[5])  # Auxilio Transporte
+        ferias_pc = format_value(row[6]) # Férias em pecunia
+        licensa_pc = format_value(row[7]) # Licença Prêmio em Pecúnia
+        insalubridade = format_value(row[8])  # Adicional de Insalubridade
+
+        emp = employees[matricula]
+       
+        emp["income"]["perks"].update(
+            {
+                "total": alimentacao + transporte,
+                "food": alimentacao,
+                "transportation": transporte,
+                "vacation_pecuniary": ferias_pc,
+                "premium_license_pecuniary": licensa_pc
+            }
+        )
+        emp["income"]["other"].update(
+            {
+                "total": round(
+                    emp["income"]["other"]["total"] + insalubridade,
+                    2,
+                ),
+                "others_total": round(
+                    emp["income"]["other"]["others_total"]
+                    + insalubridade,
+                    2,
+                ),
+            }
+        )
+
+        emp["income"]["other"]["others"].update(
+            {
+                "INSALUBRIDADE": insalubridade,
             }
         )
 

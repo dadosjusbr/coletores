@@ -1603,6 +1603,156 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_active_memberes_dez_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "2250",
+            "name": "ADELMO PINHO",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DE ARACATUBA",
+            "active": True,
+            "income": {
+                "total": 87007.52,
+                "wage": 33689.1,
+                "perks": {
+                    "total": 30905.86,
+                    "food": 960.0,
+                    "vacation_pecuniary": 29945.86,
+                },
+                "other": {
+                    "total": 22412.56,
+                    "trust_position": 0.0,
+                    "others_total": 22412.56,
+                    "others": {
+                        "Gratificação Natalina": 20728.12,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "GRAT. CUMULATIVA": 0.0,
+                        "GRAT. NATUREZA ESPECIAL": 1684.44,
+                        "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 23737.92,
+                "prev_contribution": 8461.43,
+                "ceil_retention": 0.0,
+                "income_tax": 15276.49,
+            },
+        }
+        files = (
+            "./output_test/Membros_ativos-12-2020.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-12-2020.ods",
+        )
+        employees = parser.parse(files, "12", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_active_servants_dez_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "10322",
+            "name": "ADAMO VINICIUS PINHEIRO CAROL",
+            "role": "ANALISTA JURIDICO DO MP",
+            "type": "servidor",
+            "workplace": "AREA REGIONAL DA CAPITAL",
+            "active": True,
+            "income": {
+                "total": 25645.96,
+                "wage": 8145.02,
+                "perks": {
+                    "total": 12512.12,
+                    "transportation": -122.4,
+                    "food": 960.0,
+                    "pre_school": 0.0,
+                    "vacation_pecuniary": 11674.52,
+                    "premium_license_pecuniary": 0.0,
+                },
+                "other": {
+                    "total": 4988.82,
+                    "trust_position": 0.0,
+                    "others_total": 4988.82,
+                    "others": {
+                        "Gratificação Natalina": 4377.95,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "Adic. Insalubridade": 0.0,
+                        "Substituição de Função": 0.0,
+                        "Gratificação Qualificação": 610.87,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 3636.88,
+                "prev_contribution": 978.0,
+                "ceil_retention": 0.0,
+                "income_tax": 2658.88,
+            },
+        }
+        files = (
+            "./output_test/Servidores_ativos-12-2020.ods",
+            "./output_test/Servidores_ativos-Verbas Indenizatorias-12-2020.ods",
+        )
+        employees = parser.parse(files, "12", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_inactive_servants_dez_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "1210",
+            "name": "ANTONIO AUGUSTO TAVARES",
+            "role": "OFICIAL DE PROMOTORIA I",
+            "type": "servidor",
+            "workplace": "SERVICO TECNICO-ADMINISTRATIVO DE CAMPINAS",
+            "active": False,
+            "income": {
+                "total": 15203.92,
+                "wage": 11468.15,
+                "perks": {
+                    "total": -1266.0,
+                    "food": -960.0,
+                    "transportation": -306.0,
+                    "vacation_pecuniary": 0.0,
+                    "premium_license_pecuniary": 0.0,
+                },
+                "other": {
+                    "total": 5001.77,
+                    "trust_position": 0.0,
+                    "others_total": 5001.77,
+                    "others": {
+                        "Gratificação Natalina": 5734.08,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": -732.31,
+                        "INSALUBRIDADE": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 4349.13,
+                "prev_contribution": 1709.24,
+                "ceil_retention": 0.0,
+                "income_tax": 2639.89,
+            },
+        }
+        files = (
+            "./output_test/Servidores_inativos-12-2020.ods",
+            "./output_test/Servidores_inativos-Verbas Indenizatorias-12-2020.ods",
+        )
+        employees = parser.parse(files, "12", "2020")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()

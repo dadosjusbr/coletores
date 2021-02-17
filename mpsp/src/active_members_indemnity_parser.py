@@ -18,7 +18,7 @@ def format_value(element):
 
 
 # July and August 2019
-def update_employee_indemnity_jul_aug(file_name, employees):
+def update_employee_indemnity_jul_aug_2019(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -41,6 +41,17 @@ def update_employee_indemnity_jul_aug(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"] + + cumulativa
+                        + grat_natureza,
+                        2
+                    )
+
             emp["income"].update(
                 {"total": round(emp["income"]["total"] + cumulativa + grat_natureza, 2)}
             )
@@ -55,15 +66,8 @@ def update_employee_indemnity_jul_aug(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"] + cumulativa + grat_natureza, 2
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
-                        + grat_natureza,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -84,7 +88,7 @@ def update_employee_indemnity_jul_aug(file_name, employees):
 
 
 # September to December 2019 / January and November 2020
-def update_employee_indemnity_sept_to_jan_nov(file_name, employees):
+def update_employee_indemnity_sept_2019_to_jan_and_nov_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -111,6 +115,19 @@ def update_employee_indemnity_sept_to_jan_nov(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2
+                    )
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
             emp["income"].update(
                 {"total": round(emp["income"]["total"] + cumulativa + grat_natureza, 2)}
             )
@@ -126,20 +143,8 @@ def update_employee_indemnity_sept_to_jan_nov(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -161,7 +166,7 @@ def update_employee_indemnity_sept_to_jan_nov(file_name, employees):
 
 
 # February and March 2020
-def update_employee_indemnity_feb_mar(file_name, employees):
+def update_employee_indemnity_feb_mar_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -191,6 +196,19 @@ def update_employee_indemnity_feb_mar(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2,
+                    )
             emp["income"].update(
                 {
                     "total": round(
@@ -215,20 +233,8 @@ def update_employee_indemnity_feb_mar(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -250,7 +256,7 @@ def update_employee_indemnity_feb_mar(file_name, employees):
 
 
 # April to July 2020
-def update_employee_indemnity_apr_to_july(file_name, employees):
+def update_employee_indemnity_apr_to_july_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -278,6 +284,20 @@ def update_employee_indemnity_apr_to_july(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2
+                    )
+
             emp["income"].update(
                 {
                     "total": round(
@@ -301,20 +321,8 @@ def update_employee_indemnity_apr_to_july(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial,
-                        2,
-                    ),
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -336,7 +344,7 @@ def update_employee_indemnity_apr_to_july(file_name, employees):
 
 
 # August and September 2020
-def update_employee_indemnity_aug_sept(file_name, employees):
+def update_employee_indemnity_aug_sept_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -372,6 +380,29 @@ def update_employee_indemnity_aug_sept(file_name, employees):
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial
+                        + grat_qualificacao
+                        + viatura
+                        + insalubridade
+                        + subs_funcao,
+                        2,
+                    )
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial
+                        + grat_qualificacao
+                        + viatura
+                        + insalubridade
+                        + subs_funcao,
+                        2,
+                    )
+
             emp["income"].update(
                 {
                     "total": round(
@@ -410,28 +441,8 @@ def update_employee_indemnity_aug_sept(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
-                        emp["income"]["other"]["total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial
-                        + grat_qualificacao
-                        + viatura
-                        + insalubridade
-                        + subs_funcao,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
-                        + grat_natureza
-                        + atuacao_especial
-                        + grat_qualificacao
-                        + viatura
-                        + insalubridade
-                        + subs_funcao,
-                        2,
-                    ),
+                    "total": total_gratificacoes ,
+                    "others_total": total_outras_gratificacoes,
                 }
             )
 
@@ -457,7 +468,7 @@ def update_employee_indemnity_aug_sept(file_name, employees):
 
 
 # October 2020
-def update_employee_indemnity_oct(file_name, employees):
+def update_employee_indemnity_oct_2020(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
@@ -474,14 +485,26 @@ def update_employee_indemnity_oct(file_name, employees):
         cumulativa = format_value(row[5])  # Gratificação Cumulativa
         grat_natureza = format_value(row[6])  # Gratificação de Natureza Especial
         atuacao_especial = format_value(
-            row[7]
-        )  # Gratificação de Grupo de Atuação Especial
-
+            row[7])  # Gratificação de Grupo de Atuação Especial
+        
         if (
             matricula in employees.keys()
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
 
             emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                        emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
+            total_gratificacoes = round(
+                        emp["income"]["other"]["total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
+
             emp["income"].update(
                 {
                     "total": round(
@@ -502,20 +525,88 @@ def update_employee_indemnity_oct(file_name, employees):
 
             emp["income"]["other"].update(
                 {
-                    "total": round(
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
+                }
+            )
+
+            emp["income"]["other"]["others"].update(
+                {
+                    "GRAT. CUMULATIVA": cumulativa,
+                    "GRAT. NATUREZA ESPECIAL": grat_natureza,
+                    "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": atuacao_especial,
+                }
+            )
+
+            employees[matricula] = emp
+
+        curr_row += 1
+        if curr_row >= end_row:
+            break
+
+    return employees
+
+# December 2020
+def update_employee_indemnity_dec_2020(file_name, employees):
+    rows = parser.read_data(file_name).to_numpy()
+    begin_row = parser.get_begin_row(rows)
+    end_row = parser.get_end_row(rows, begin_row, file_name)
+
+    curr_row = 0
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        matricula = str(int(row[0]))  # convert to string by removing the '.0'
+        alimentação = format_value(row[4])
+        ferias_pc = format_value(row[5])
+        cumulativa = format_value(row[6])  # Gratificação Cumulativa
+        grat_natureza = format_value(row[7])  # Gratificação de Natureza Especial
+        atuacao_especial = format_value(row[8])  # Gratificação de Grupo de Atuação Especial
+        
+        if (
+            matricula in employees.keys()
+        ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
+
+            emp = employees[matricula]
+            total_outras_gratificacoes = round(emp["income"]["other"]["others_total"]
+                        + cumulativa
+                        + grat_natureza
+                        + atuacao_especial,
+                        2)
+
+            total_gratificacoes = round(
                         emp["income"]["other"]["total"]
                         + cumulativa
                         + grat_natureza
                         + atuacao_especial,
-                        2,
-                    ),
-                    "others_total": round(
-                        emp["income"]["other"]["others_total"]
-                        + cumulativa
+                        2)
+
+            total_bruto = round(emp["income"]["total"] + cumulativa
                         + grat_natureza
-                        + atuacao_especial,
+                        + atuacao_especial, 2 )
+            
+            emp["income"].update(
+                {
+                    "total": round(
+                        total_bruto,
                         2,
-                    ),
+                    )
+                }
+            )
+
+            emp["income"]["perks"].update(
+                {
+                    "food": alimentação,
+                    "vacation_pecuniary": ferias_pc,
+                }
+            )
+            emp["income"]["other"].update(
+                {
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes
                 }
             )
 
