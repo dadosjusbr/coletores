@@ -519,5 +519,197 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    # Servidores ativos sem folha complementar e de 13º
+    def test_servidores_ativos(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3407373',
+            'name': 'SHANNA CANTO BERNARDI DE FARIAS',
+            'role': 'ASSESSOR BACHAREL EM CIENCIAS JURIDICAS E SOCIAIS - R',
+            'type': 'servidor',
+            'workplace': 'PROMOTORIA DE JUSTIÇA ESPECIALIZADA DE NOVO HAMBURGO',
+            'active': True,
+            'income': {
+                'total': 21501.55,
+                'wage': 12878.23,
+                'perks': {
+                    'total': 8623.32
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 3545.42,
+                'prev_contribution': 1611.58,
+                'ceil_retention': 0.0,
+                'income_tax': 1933.84
+            }
+        }
+
+        files = ("./output_test/S-NORMAL-12-2020.json",)
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores ativos com folha complementar
+    def test_servidores_ativos_complementar(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3407373',
+            'name': 'SHANNA CANTO BERNARDI DE FARIAS',
+            'role': 'ASSESSOR BACHAREL EM CIENCIAS JURIDICAS E SOCIAIS - R',
+            'type': 'servidor',
+            'workplace': 'PROMOTORIA DE JUSTIÇA ESPECIALIZADA DE NOVO HAMBURGO',
+            'active': True,
+            'income': {
+                'total': 25526.0,
+                'wage': 12878.23,
+                'perks': {
+                    'total': 12647.77
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 3545.42,
+                'prev_contribution': 1611.58,
+                'ceil_retention': 0.0,
+                'income_tax': 1933.84
+            }
+        }
+
+        files = ("./output_test/S-NORMAL-12-2020.json", 
+                 "./output_test/S-COMPLEMENTAR-12-2020.json")
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores ativos com folha complementar e 13º
+    def test_servidores_ativos_decimo(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3407373',
+            'name': 'SHANNA CANTO BERNARDI DE FARIAS',
+            'role': 'ASSESSOR BACHAREL EM CIENCIAS JURIDICAS E SOCIAIS - R',
+            'type': 'servidor',
+            'workplace': 'PROMOTORIA DE JUSTIÇA ESPECIALIZADA DE NOVO HAMBURGO',
+            'active': True,
+            'income': {
+                'total': 37599.35,
+                'wage': 24951.58,
+                'perks': {
+                    'total': 12647.77
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 7164.62,
+                'prev_contribution': 3223.16,
+                'ceil_retention': 0.0,
+                'income_tax': 3941.46
+            }
+        }
+
+        files = ("./output_test/S-NORMAL-12-2020.json", 
+                 "./output_test/S-COMPLEMENTAR-12-2020.json",
+                 "./output_test/S-13-12-2020.json")
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    # Servidores ativos com folha complementar, 13º e verbas indenizatórias
+    def test_servidores_ativos_verbas(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '3407373',
+            'name': 'SHANNA CANTO BERNARDI DE FARIAS',
+            'role': 'ASSESSOR BACHAREL EM CIENCIAS JURIDICAS E SOCIAIS - R',
+            'type': 'servidor',
+            'workplace': 'PROMOTORIA DE JUSTIÇA ESPECIALIZADA DE NOVO HAMBURGO',
+            'active': True,
+            'income': {
+                'total': 37599.35,
+                'wage': 24951.58,
+                'perks': {
+                    'total': 12647.77,
+                    'Subsistence': 0.0,
+                    'Food': 574.42,
+                    'Transportation': 0.0,
+                    'PreSchool': 0.0,
+                    'Conversões em Pecúnia': 12073.35
+                },
+                'other': {
+                    'total': 0.0,
+                    'trust_position': 0.0,
+                    'others_total': 0.0,
+                    'others': {
+                        'Abono de Permanência': 0.0,
+                        'Férias (1/3 constitucional)': 0.0,
+                        'Gratificação Natalina': 0.0,
+                        'Comissão Especial': 0.0,
+                        'Gratificação Setor': 0.0,
+                        'Adicional Insal / Periculosidade': 0.0,
+                        'Difícil Provimento': 0.0,
+                        'Honorário Concurso': 0.0,
+                        'Substituição': 0.0,
+                        'Diretor Promotoria': 0.0,
+                        'Hora Extra': 0.0,
+                        'Acúmulo funções': 0.0
+                    }
+                }
+            },
+            'discounts': {
+                'total': 7164.62,
+                'prev_contribution': 3223.16,
+                'ceil_retention': 0.0,
+                'income_tax': 3941.46
+            }
+        }
+
+        files = ["./output_test/S-NORMAL-12-2020.json",
+                 "./output_test/S-COMPLEMENTAR-12-2020.json",
+                 "./output_test/S-13-12-2020.json",
+                 "./output_test/verbas_indenizatorias_temporarias-12-2020.html"]
+        employees = parser.parse(files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 if __name__ == '__main__':
     unittest.main()
