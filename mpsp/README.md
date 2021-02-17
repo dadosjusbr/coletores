@@ -10,6 +10,48 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
     Tipo III - Verbas Indenizatórias e outras remunerações temporárias.
 
+## Como usar
+
+ ### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+  ```sh
+    $ cd coletores/mpsp
+    $ sudo docker build -t mpsp .
+  ```
+ - Execução:
+ 
+  ```sh
+    $ sudo docker run -e MONTH=02 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpsp 
+  ```
+
+ ### Executando sem Docker
+
+ - É necessário ter instalado o [Python](https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ 
+No Linux, distribuições Ubuntu/Mint:
+
+```
+sudo apt install python3 python3-pip
+```
+
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      $ cd coletores/mpsp
+      $ pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
+   ```sh
+      $ cd src
+      $ MONTH=01 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```
+
 ## Dicionário de Dados
 
 As planilhas com a remuneração de membros e servidores possuem as seguintes colunas:   
@@ -66,11 +108,9 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
 ## Planilhas
 
-- Lista de planilhas: [http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque)
+- Para obter as planilhas que não estão presentes em nosso coletor, é necessário consultar o [site](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque)  e verificar de acordo com o tipos de pagamento, mês e ano desejados; 
 
-- Para obter as planilhas que não estão presentes em nosso coletor, é necessário consultar o site, listado anteriormente, e verificar o link de acordo com o tipos de pagamento, mês e ano desejado. Uma vez que os links não são formados seguindo um padrão (É possível entender mais sobre isso lendo o tópico Dificuldades para libertação dos dados).
-
-- Nos anos analisados (2018, 2019 e 2020) não houve declaração de pagamentos de remunerações, proventos, indenizações ou outros valores pagos a qualquer título, a Colaboradores
+- Nos anos analisados (2018, 2019 e 2020) não houve declaração de pagamentos de remunerações, proventos, indenizações ou outros valores pagos a qualquer título, a Colaboradores;
 
 - Planilhas que não conseguimos obter:
 
@@ -78,12 +118,9 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
     :------:|:------:|:-------------:|:-------------:|:--------------:
     09     | 2019  | Servidores Ativos | Remuneração Mensal | No lugar está disponibilizada a planilha referente a Verbas indenizatórias desse mesmo mês.
 
+- Analisamos as planilhas de dois tipos: Remunerações Mensais e Indenizações/Outras verbas temporárias:
 
-
-
-
-
-### Tipo 1 - Remunerações ###
+### Tipo 1 - Remunerações Mensais ###
 
     As planilhas são referentes a:
         - Membros Ativos;
@@ -107,31 +144,45 @@ As planilhas com os valores das verbas idenizatórias e outras remunerações te
 
     - Obs: Indenizações disponíveis apenas para alguns meses dos anos de 2018, 2019 e 2020.
 
-## Dificuldades para libertação dos dados
+## Dificuldades no entendimento dos dados
+
+
+- Existem funcionários que estão nas planilhas de verbas indenizatórias e remuneração temporárias, porém não estão nas planilhas de remuneração mensal. Não ficou claro o porquê disso ter ocorrido;
+
+- Em algumas planilhas o valor correspondente ao Adicional Insalubridade está declarado como verbas indenizatórias e em outras como remunerações temporárias. Também não ficou claro o porquê disso ter ocorrido;
+
+- A planilha referente a pensionistas não apresenta explicações sobre o significado das variáveis. Houve dúvidas no entendimento da Dat_Publ, uma vez que foi indentificado que essa data não é referente a publicação da portaria que estabelece o recebimento do beneficio, já que tem outro atributo que é referente a data do inicio do recebimento. E em alguns casos, o inicio do beneficio começou antes dessa dat_publ;
+
+
+- Existem alguns valores negativos relacionados indenizações, como é o caso do funcionario que possuí matrícula 2720, na [tabela](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_inativos/Tabela%20I%20membros%20inativos%20ref0519.ods) referente a servidores inativos do mês de maio de 2019. A dúvida é: esses valores realmente deveriam ser negativos?
+
+- Existem pensionistas com valores líquido maiores que os valores bruto. Houve dificuldade para entender o porquê disso ocorrer. Pode ser visto um exemplo na planilha referente a pensionistas membros do mês de maio de 2019. No beneficiário correspondente ao código 60601181. [Link](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Pensionistas/Pensionistas_membros/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20052019.ods)
+
+
+## Dificuldades para trabalhar com os dados
 
 - Problema para automatizar a coleta dos dados devido a URL para baixar as planilhas variarem bastante de acordo com o grupo, mês e anos. Sendo necessário testar todos os links.
 
     Abaixo, temos alguns exemplos das urls para downloads das planilhas referentes aos meses outubro, novembro e dezembro, respectivamente. No mês outubro o campo que seria referente ao mês se encontra com o dígito 09, além de também conter  "_1" que não está presente nos demais links.
-        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb092019_1.ods
-        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb112019A.ods
-        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb122019.ods
+        
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb092019_1.ods
+    
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb112019A.ods
+
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20memb122019.ods
 
     Essa variação na formação do link está presente em diversos meses, em todos os anos analisados (2018, 2019 e 2020)
 
     Alguns links com diferenças entre letras minúsculas e maiúsculas também dificultam a coleta, visto quê por ser uma pequena diferença é necessário testar todos os links.
 
-        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20membros%20ativos%20ref0519.ods
-        - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20Membros%20Ativos%20ref0619.ods
-
-- A planilha referente a pensionistas não apresenta explicações sobre o significado das variáveis. Houve dúvidas no entendimento da Dat_Publ, uma vez que foi induzido que essa data era referente a publicação da portaria que estabelece o recebimento do beneficio, mas tem outro atributo que é referente a data do inicio do recebimento. E o inicio do beneficio começou antes dessa dat_publ.
-
-- Problemas para automatizar o parser das planilhas de Remuneraões Mensais por possuirem formatos diferentes, algunas incluem algumas verbas indenizatórias outras não, além disso algumas informações estão presentes em algumas planilhas e em outras não. Como exemplo, as planilhas dos Servidores Inativos dos meses de abril, maio, junho e julho de 2019, respectivamente, existem diferenças na quantidade de valores que são informados bem como na ordem de alguns valores apresentados:
-    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0419.ods
-    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0519.ods
-    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20Servidores%20Inativos%20ref0619.ods
-    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Servidores%20Inativos%20-%20Tabela%20I%20ref%20072019.ods
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20membros%20ativos%20ref0519.ods
+    
+    - http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_ativos/Tabela%20I%20Membros%20Ativos%20ref0619.ods
 
 
-- Existem alguns valores negativos relacionados indenizações, como é o caso do funcionario que possuí matrícula 2720, na tabela referente a servidores inativos do mês de maio de 2019. (http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Membros_inativos/Tabela%20I%20membros%20inativos%20ref0519.ods)
 
-- Existem pensionistas com valores líquido maiores que os valores bruto. Houve dificuldade para entender o porquê disso ocorrer. Pode ser visto um exemplo na planilha referente a pensionistas membros do mês de maio de 2019. No beneficiário correspondente ao código 60601181. (Link)[http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/Pensionistas/Pensionistas_membros/Benefici%C3%A1rios%20Membros%20do%20Minist%C3%A9rio%20P%C3%BAblico%20052019.ods]
+- Problemas para automatizar o parser das planilhas de Remuneraões Mensais por possuirem formatos diferentes, algunas incluem algumas verbas indenizatórias outras não, além disso algumas informações estão presentes em algumas planilhas e em outras não. Como exemplo, as planilhas dos Servidores Inativos dos meses de [abril](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0419.ods), [maio](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20servidores%20inativos%20ref0519.ods), [junho](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Tabela%20I%20Servidores%20Inativos%20ref0619.ods) e [julho](http://www.mpsp.mp.br/portal/page/portal/Portal_da_Transparencia/Contracheque/servidores_inativos/Servidores%20Inativos%20-%20Tabela%20I%20ref%20072019.ods) de 2019,  existem diferenças em quais valores são informados e nem sempre aparecem na mesma ordem em todas as tabelas.
+    
+
+
+

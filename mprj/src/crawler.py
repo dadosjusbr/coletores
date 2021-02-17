@@ -11,31 +11,39 @@ func_types =  {1:'MATIV',
                2:'MINAT',
                3:'SATIV',
                4:'SINAT',
-               5:'PENSI',
-               6:'COLAB' 
+               # Reservado para quando corrigir um erro de leitura da planilha de
+               # verbas indenizatórias de pensionistas.
+               # 5:'PENSI',
+               6:'COLAB'
             }
 
 fund_types = { 1: 1,
                2: 2,
                3: {'tipo1':11, 'tipo2':21, 'tipo3':23},
                4: 12,
-               5: 4
+               # Reservado para quando corrigir um erro de leitura da planilha de
+               # verbas indenizatórias de pensionistas.
+               # 5: 4
             }
 
 url_complements = {1: 'remuneracao-de-todos-os-membros-ativos',
                    2: 'proventos-de-todos-os-membros-inativos',
                    3: 'remuneracao-de-todos-os-servidores-ativos',
                    4: 'proventos-de-todos-os-servidores-inativos',
-                   5: 'valores-percebidos-por-todos-os-pensionistas'
+                   # Reservado para quando corrigir um erro de leitura da planilha de
+                   # verbas indenizatórias de pensionistas.
+                   # 5: 'valores-percebidos-por-todos-os-pensionistas'
                    }
 
 url_funds_complements = {1: 'membros-ativos',
                          2: 'membros-inativos',
                          3: 'servidores-ativos',
                          4: 'servidores-inativos',
-                         5: 'pensionistas'
+                         # Reservado para quando corrigir um erro de leitura da planilha de
+                         # verbas indenizatórias de pensionistas.
+                         # 5: 'pensionistas'
                          }
-                         
+
 # Adquire o conjunto de links para envio de requisições post.
 def content_links():
     content_links = {}
@@ -46,7 +54,7 @@ def content_links():
         if resp.status_code != 200:
             sys.stderr.write('Http status code return: {} for download of the page{}'.format(resp.status_code, content_URL))
             os._exit(1)
-        
+
         matches = re.compile(expression).findall(resp.content.decode('utf-8'))
         if len(matches) != 1:
             sys.stderr.write('Line format has changed: Use to be {}'.format(expression))
@@ -67,14 +75,14 @@ def others_funds_links():
         if resp.status_code != 200:
             sys.stderr.write('Http status code return: {} for download of the page {}'.format(resp.status_code, content_URL))
             os._exit(1)
-        
+
         matches = re.compile(expression).findall(resp.content.decode('utf-8'))
         if len(matches) != 1:
             sys.stderr.write('Line format has changed: Use to be {}'.format(expression))
             os._exit(1)
-        
+
         other_contents[key] = matches[0]
-    
+
     return other_contents
 
 # Gera a url de acesso ás informações referentes as remunerações do mês e ano de um tipo de funcionário
@@ -82,7 +90,7 @@ def generate_remuneration_url(year, month):
     remuneration_links = content_links()
     links = {}
     for key in func_types:
-        # Informações de funcionários do tipo COLAB são adquiridas por meio de um get request no endpoint 
+        # Informações de funcionários do tipo COLAB são adquiridas por meio de um get request no endpoint
         if func_types[key] == 'COLAB':
             url =  "http://transparencia.mprj.mp.br//documents/8378943/57833637/{}_{}_colaboradores.ods".format(year, month)
         else:
@@ -100,14 +108,14 @@ def generate_other_funds_url(year, month):
     for key in fund_types:
         #Informações refentes a verbas indenizátoris de servidores ativos tem url em formato distinto
         if key == 3:
-            url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc1={}&tipoFunc2={}&tipoFunc3={}'.format(month, 
+            url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc1={}&tipoFunc2={}&tipoFunc3={}'.format(month,
             year, fund_types[key]['tipo1'], fund_types[key]['tipo2'], fund_types[key]['tipo3'])
         else:
             url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc={}'.format(month, year, fund_types[key])
         other_content_links[func_types[key]] = url
 
     return other_content_links
-    
+
 def download(url, file_path, method):
     try:
         if method == 'GET':
@@ -133,15 +141,15 @@ def crawl(year, month, output_path):
             method = 'GET'
 
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = year +'_' + month + '_' +  key
+        file_name = year +'_' + month + '_' +  key + '.ods'
         file_path = output_path + "/" + file_name
-        
+
         download(urls_remunerations[key], file_path, method)
         files.append(file_path)
-    
+
     for key in urls_other_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = year + '_' + month + '_' + 'verbas indenizatórias-' + key
+        file_name = year + '_' + month + '_' + 'Verbas Indenizatórias-' + key + '.ods'
         file_path =  output_path + '/' + file_name
         method = 'POST'
 
