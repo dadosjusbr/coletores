@@ -1235,6 +1235,51 @@ class TestParser(unittest.TestCase):
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+    
+    def teste_membros_ativos_2019(self):
+        self.maxDiff = None
+        
+        expected = {
+            'reg': '00002291' ,
+            'name': 'ZILDA JANUZZI VELOSO BECK',
+            'role': 'PROMOTOR DE JUSTICA',
+            'type': 'membro',
+            'workplace':'1ª PROMOTORIA DE JUSTIÇA DE TUTELA COLETIVA DO NÚCLEO PETRÓPOLIS',
+            'active': True,
+            'income':
+                {
+                    'total': 58519.28,
+                    'wage': 33689.10,
+                    'perks':{
+                        'total': 7329.87,
+                    },
+                    'other':
+                    {
+                        'total': 26472.39,
+                        'trust_position': 0.00,
+                        'others_total': 24830.18,
+                        'others':{
+                            'Gratificação natalina': 19215.33,
+                            'Férias (1/3 constitucional)': 5614.85,
+                            'Abono de permanência': 0.00,
+                        },
+                    },
+                },
+                'discounts':
+                {
+                    'total': 22709.98,
+                    'prev_contribution': 9521.45,
+                    'ceil_retention':0.00,
+                    'income_tax': 13188.53,
+                }
+        }
 
+        files = [('./output_test/2018_12_MATIV.ods')]
+        employees = parser.parse(files)
+
+        #Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+        
 if __name__ == '__main__':
     unittest.main()
