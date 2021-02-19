@@ -85,3 +85,5 @@ Planilhas deste tipo, não serão coletadas pois se tratam de um tratamento espe
       - Não há coluna especificando indenizações de transporte na planilha de verbas indenizatórias referentes á servidores inativos do mês de junho, julho e agosto de 2020.
       - Há uma coluna especificando auxílio alimentação na planilha de verbas indenizatórias referentes á servidores inativos do mês de agosto de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
       - Há uma coluna especificando auxílio educação na planilha de verbas indenizatórias referentes á servidores inativos do mês de julho de 2020.
+      - Há 2 colunas especificando auxílio saúde na planilha de verbas indenizatórias referentes á membros inativos do mês de agosto de 2020. Isto entra em detrimento com outros meses, gerando alteração na ordem e quantidade de colunas.
+      - Há 2 colunas especificando auxílio alimentação na planilha de verbas indenizatórias referentes á membros ativos do mẽs de setembro de 2020. Isto entre em detrimento com outros meses gerando alteração na ordem e quantidade de colunas.
