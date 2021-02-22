@@ -13,5 +13,14 @@ RUN pip install -r requirements.txt
 # copy the content of the local src directory to the working directory
 COPY src/ .
 
+# configure http certificates
+FROM alpine:3.7
+
+RUN apk update && \
+    apk add ca-certificates && \
+    rm -rf /var/cache/apk/*
+
+COPY --from=builder /dist/ /
+
 # command to run on container start
 CMD [ "python", "./main.py"]
