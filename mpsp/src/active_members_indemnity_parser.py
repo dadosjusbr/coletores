@@ -22,7 +22,7 @@ def update_employee_indemnity_jul_aug_2019(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
-
+  
     curr_row = 0
 
     for row in rows:
@@ -39,29 +39,43 @@ def update_employee_indemnity_jul_aug_2019(file_name, employees):
         if (
             matricula in employees.keys()
         ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
-
+          
             emp = employees[matricula]
+          
+            if("perks" in (emp["income"].keys())):
+                emp["income"]["perks"].update(
+                    {
+                        "total": round(ferias_pc + alimentacao, 2),
+                        "food": alimentacao,
+                        "vacation_pecuniary": ferias_pc,
+                    }
+                )
+         
+            if("perks" not in (emp["income"].keys())):
+                 emp["income"].update(
+                    { "perks":
+                 {
+                         "total": round(ferias_pc + alimentacao, 2),
+                         "food": alimentacao,
+                         "vacation_pecuniary": ferias_pc,
+                     }
+                    }
+                 )
+
+
             total_outras_gratificacoes = round(
                         emp["income"]["other"]["others_total"]
                         + cumulativa
                         + grat_natureza,
                         2)
             total_gratificacoes = round(
-                        emp["income"]["other"]["total"] + + cumulativa
+                        emp["income"]["other"]["total"]  + cumulativa
                         + grat_natureza,
                         2
                     )
 
             emp["income"].update(
                 {"total": round(emp["income"]["total"] + cumulativa + grat_natureza, 2)}
-            )
-
-            emp["income"]["perks"].update(
-                {
-                    "total": round(ferias_pc + alimentacao, 2),
-                    "food": alimentacao,
-                    "vacation_pecuniary": ferias_pc,
-                }
             )
 
             emp["income"]["other"].update(
