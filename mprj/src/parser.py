@@ -156,8 +156,8 @@ def parse_employees(file_name):
         christmas_bonus = float(row[7]) #Gratificação natalina
         abono_permanencia = float(row[9]) #Abono Permanência
         terco_ferias = float(row[8]) # Férias (1/3 constitucional)
-        idemnity = float(row[10]) #Indenizações
-        temp_remu = float(row[11]) # Outras remunerações retroativas/temporárias
+        idemnity = float(row[16]) #Indenizações
+        temp_remu = float(row[17]) # Outras remunerações retroativas/temporárias
 
         prev_contrib = float(row[13]) #Contribuição previdenciária
         ceil_ret = float(row[15]) #Retenção por teto constitucional
@@ -166,40 +166,83 @@ def parse_employees(file_name):
         #Importante devido  a natureza das formas de registro o orgão já reportadas o registro ou matrícula
         #para fins de comparação e de chave deve ser visto como um number(Float). entretanto para fins de armazenamento
         #deve-se considera-lo como uma string, de modo a manter a coerência com nosso pipeline.
-        employees[reg] = {
-            'reg': str(row[0]),
-            'name': row[1],
-            'type': typeE,
-            'active': activeE,
-            "income":
-            {
-                'total': remuneration + other_verbs,
-                'wage': remuneration + other_verbs,
-                'perks':{
-                },
-                'other':
-                { #Gratificações
-                        #Posição de confiança + Gratificação natalina + Férias (1/3 constitucional) + Abono de permanência
-                    'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia,
-                    'trust_position': trust_pos,
-                        # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
-                    'others_total': christmas_bonus + terco_ferias + abono_permanencia,
-                    'others': {
-                        'Gratificação natalina': christmas_bonus,
-                        'Férias (1/3 constitucional)': terco_ferias,
-                        'Abono de permanência': abono_permanencia,
-                    }
-                },
+        if '2020' in file_name:
+            employees[reg] = {
+                'reg': str(row[0]),
+                'name': row[1],
+                'type': typeE,
+                'active': activeE,
+                "income":
+                {
+                    'total': remuneration + other_verbs,
+                    'wage': remuneration + other_verbs,
+                    'perks':{
+                    },
+                    'other':
+                    { #Gratificações
+                            #Posição de confiança + Gratificação natalina + Férias (1/3 constitucional) + Abono de permanência
+                        'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia,
+                        'trust_position': trust_pos,
+                            # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
+                        'others_total': christmas_bonus + terco_ferias + abono_permanencia,
+                        'others': {
+                            'Gratificação natalina': christmas_bonus,
+                            'Férias (1/3 constitucional)': terco_ferias,
+                            'Abono de permanência': abono_permanencia,
+                        }
+                    },
 
-            },
-            'discounts':
-            {
-                'total': round(prev_contrib + ceil_ret + income_tax, 2),
-                'prev_contribution': prev_contrib,
-                'ceil_retention': ceil_ret,
-                'income_tax': income_tax
+                },
+                'discounts':
+                {
+                    'total': round(prev_contrib + ceil_ret + income_tax, 2),
+                    'prev_contribution': prev_contrib,
+                    'ceil_retention': ceil_ret,
+                    'income_tax': income_tax
+                }
             }
-        }
+        else:
+            prev_contrib = float(row[11])
+            income_tax = float(row[12])
+            ceil_ret = float(row[13])
+            
+            # Na ausência de detalhes acerca de indenizações, devemos atualizar os totais aqui mesmo
+            employees[reg] = {
+                'reg': str(row[0]),
+                'name': row[1],
+                'type': typeE,
+                'active': activeE,
+                "income":
+                {
+                    'total': remuneration + other_verbs + trust_pos + christmas_bonus + terco_ferias + abono_permanencia,
+                    'wage': remuneration + other_verbs,
+                    'perks':{
+                        'total': idemnity,
+                    },
+                    'other':
+                    { #Gratificações
+                     #Posição de confiança + Gratificação natalina + Férias (1/3 constitucional) + Abono de permanência
+                        'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia + temp_remu,
+                        'trust_position': trust_pos,
+                            # Gratificação natalina + Férias (1/3 constitucional) + Abono Permanencia
+                        'others_total': christmas_bonus + terco_ferias + abono_permanencia,
+                        'others': {
+                            'Gratificação natalina': christmas_bonus,
+                            'Férias (1/3 constitucional)': terco_ferias,
+                            'Abono de permanência': abono_permanencia,
+                        }
+                    },
+
+                },
+                'discounts':
+                {
+                    'total': round(prev_contrib + ceil_ret + income_tax, 2),
+                    'prev_contribution': prev_contrib,
+                    'ceil_retention': ceil_ret,
+                    'income_tax': income_tax
+                }
+            }
+        
         # Esta condição é necesssária pois a coluna de local de trabalho e role
         # podem não ser preenchidas. Por exemplo, servidores e membros inativos.
         # Quando a coluna é vazia, o tipo que vem é float e o conteúdo nan
@@ -208,7 +251,6 @@ def parse_employees(file_name):
             employees[reg]['workplace'] = workplace
         if type(role) == str:
             employees[reg]['role'] = role
-
 
         curr_row += 1
         if curr_row >= end_row:
