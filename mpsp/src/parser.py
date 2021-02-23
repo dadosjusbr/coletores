@@ -206,9 +206,9 @@ def parse(file_names, month, year):
                     employees.update(parse_employees(fn))
                 elif month == "01" and year == "2019":
                     employees.update(active_members_parser.parse_jan_19(fn))
-                elif month in ["02", "03", "04", "05"]:
+                elif month in ["02", "03", "04", "05"] and year == "2019":
                     employees.update(active_members_parser.parse_feb_to_may_19(fn))
-                elif month == "06":
+                elif month == "06" and year == "2019":
                     employees.update(active_members_parser.parse_jun_19(fn))
 
             elif "Verbas Indenizatorias" in fn:
