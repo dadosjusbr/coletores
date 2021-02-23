@@ -57,6 +57,50 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_membros_ativos_aug_2019(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "2602",
+            "name": "CLEVER RODOLFO C VASCONCELOS",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA  MILITAR",
+            "active": True,
+            "income": {
+                "total": 40213.32,
+                "wage": 33689.1,
+                "perks": {"total": 920.0, "food": 920.0, "vacation_pecuniary": 0.0},
+                "other": {
+                    "total": 5604.22,
+                    "trust_position": 0.0,
+                    "others_total": 5604.22,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "GRAT. CUMULATIVA": 5604.22,
+                        "GRAT. NATUREZA ESPECIAL": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 12518.73,
+                "prev_contribution": 3705.8,
+                "ceil_retention": 0.0,
+                "income_tax": 8812.93,
+            },
+        }
+        files = (
+            "./output_test/Membros_ativos-08-2019.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-08-2019.ods",
+        )
+        employees = parser.parse(files, "08", "2019")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
     def test_membros_ativos_dez_2019(self):
         self.maxDiff = None
 
