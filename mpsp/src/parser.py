@@ -195,7 +195,7 @@ def parse_employees(file_name):
     return employees
 
 
-def parse(file_names, month, year):
+def parse_active_members(file_names, month, year):
     employees = {}
     for fn in file_names:
         if "Membros_ativos" in fn:
@@ -268,8 +268,13 @@ def parse(file_names, month, year):
                                 fn, employees
                             )
                         )
+    return list(employees.values())
 
-        elif "Membros_inativos" in fn:
+# O parser para os membros inativos e servidores ativos e inativos está implementado. No entanto, não está sendo utilizado no momento
+def unused_parse_inactive_members(file_names, month, year):
+    employees = {}
+    for fn in file_names:
+        if "Membros_inativos" in fn:
             if "Verbas Indenizatorias" not in fn:
                 if year == "2020":
                     employees.update(parse_employees(fn))
@@ -304,8 +309,12 @@ def parse(file_names, month, year):
                                 fn, employees
                             )
                         )
+    return list(employees.values())
 
-        elif "Servidores_ativos" in fn:
+def unused_parse_active_servants(file_names, month, year):
+    employees = {}
+    for fn in file_names:
+        if "Servidores_ativos" in fn:
             if "Verbas Indenizatorias" not in fn:
                 if year == "2020":
                     employees.update(parse_employees(fn))
@@ -373,8 +382,12 @@ def parse(file_names, month, year):
                             fn, employees
                         )
                     )
+    return list(employees.values())
 
-        elif "Servidores_inativos" in fn:
+def unused_parse_inactive_servants(file_names, month, year):
+    employees = {}
+    for fn in file_names:
+        if "Servidores_inativos" in fn:
             if "Verbas Indenizatorias" not in fn:
                 if year == "2020":
                     employees.update(parse_employees(fn))
