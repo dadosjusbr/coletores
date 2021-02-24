@@ -42,25 +42,15 @@ def update_employee_indemnity_jul_aug_2019(file_name, employees):
 
             emp = employees[matricula]
 
-            if "perks" in (emp["income"].keys()):
-                emp["income"]["perks"].update(
-                    {
+            emp["income"].update(
+                {
+                    "perks": {
                         "total": round(ferias_pc + alimentacao, 2),
                         "food": alimentacao,
                         "vacation_pecuniary": ferias_pc,
                     }
-                )
-
-            else:
-                emp["income"].update(
-                    {
-                        "perks": {
-                            "total": round(ferias_pc + alimentacao, 2),
-                            "food": alimentacao,
-                            "vacation_pecuniary": ferias_pc,
-                        }
-                    }
-                )
+                }
+            )
 
             total_outras_gratificacoes = round(
                 emp["income"]["other"]["others_total"] + cumulativa + grat_natureza, 2

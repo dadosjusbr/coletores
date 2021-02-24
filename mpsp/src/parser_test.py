@@ -6,7 +6,7 @@ import unittest
 class TestParser(unittest.TestCase):
 
     # Tests for parsers for the months from July 2019 to November 2020
-    def test_membros_ativos_jan_2020(self):
+    def test_active_members_jan_2020(self):
         self.maxDiff = None
 
         expected = {
@@ -51,13 +51,13 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-01-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-01-2020.ods",
         )
-        employees = parser.parse(files, "01", "2020")
+        employees = parser.parse_active_members(files, "01", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_membros_ativos_aug_2019(self):
+    def test_active_members_aug_2019(self):
         self.maxDiff = None
 
         expected = {
@@ -95,13 +95,13 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-08-2019.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-08-2019.ods",
         )
-        employees = parser.parse(files, "08", "2019")
+        employees = parser.parse_active_members(files, "08", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_membros_ativos_dez_2019(self):
+    def test_active_members_dez_2019(self):
         self.maxDiff = None
 
         expected = {
@@ -135,13 +135,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_ativos-12-2019.ods",)
-        employees = parser.parse(files, "12", "2019")
+        employees = parser.parse_active_members(files, "12", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_membros_inativos_jan_2020(self):
+    def test_inactive_members_jan_2020(self):
         self.maxDiff = None
 
         expected = {
@@ -175,13 +175,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_inativos-01-2020.ods",)
-        employees = parser.parse(files, "01", "2020")
+        employees = parser.unused_parse_inactive_members(files, "01", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_membros_inativos_dez_2019(self):
+    def test_inactive_members_dez_2019(self):
         self.maxDiff = None
 
         expected = {
@@ -215,13 +215,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_inativos-12-2019.ods",)
-        employees = parser.parse(files, "12", "2019")
+        employees = parser.unused_parse_inactive_members(files, "12", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_servidores_inativos_jan_2020(self):
+    def test_inactive_servants_jan_2020(self):
         self.maxDiff = None
 
         expected = {
@@ -255,13 +255,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_inativos-01-2020.ods",)
-        employees = parser.parse(files, "01", "2020")
+        employees = parser.unused_parse_inactive_servants(files, "01", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_servidores_inativos_dez_2019(self):
+    def test_inactive_servants_dez_2019(self):
         self.maxDiff = None
 
         expected = {
@@ -295,13 +295,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_inativos-12-2019.ods",)
-        employees = parser.parse(files, "12", "2019")
+        employees = parser.unused_parse_inactive_servants(files, "12", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_servidores_ativos_jan_2020(self):
+    def test_active_servants_jan_2020(self):
         self.maxDiff = None
 
         expected = {
@@ -335,13 +335,13 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_ativos-01-2020.ods",)
-        employees = parser.parse(files, "01", "2020")
+        employees = parser.unused_parse_active_servants(files, "01", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
-    def test_servidores_ativos_dez_2019(self):
+    def test_active_servants_dez_2019(self):
         self.maxDiff = None
 
         expected = {
@@ -375,7 +375,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_ativos-12-2019.ods",)
-        employees = parser.parse(files, "12", "2019")
+        employees = parser.unused_parse_active_servants(files, "12", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -418,7 +418,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_ativos-01-2019.ods",)
-        employees = parser.parse(files, "01", "2019")
+        employees = parser.parse_active_members(files, "01", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -459,7 +459,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_ativos-03-2019.ods",)
-        employees = parser.parse(files, "03", "2019")
+        employees = parser.parse_active_members(files, "03", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -504,7 +504,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_ativos-06-2019.ods",)
-        employees = parser.parse(files, "06", "2019")
+        employees = parser.parse_active_members(files, "06", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -540,7 +540,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_inativos-01-2019.ods",)
-        employees = parser.parse(files, "01", "2019")
+        employees = parser.unused_parse_inactive_members(files, "01", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -580,7 +580,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_inativos-05-2019.ods",)
-        employees = parser.parse(files, "05", "2019")
+        employees = parser.unused_parse_inactive_members(files, "05", "2019")
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
@@ -617,7 +617,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Membros_inativos-06-2019.ods",)
-        employees = parser.parse(files, "06", "2019")
+        employees = parser.unused_parse_inactive_members(files, "06", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -665,7 +665,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_ativos-01-2019.ods",)
-        employees = parser.parse(files, "01", "2019")
+        employees = parser.unused_parse_active_servants(files, "01", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -699,7 +699,7 @@ class TestParser(unittest.TestCase):
             },
         }
         files = ("./output_test/Servidores_inativos-01-2019.ods",)
-        employees = parser.parse(files, "01", "2019")
+        employees = parser.unused_parse_inactive_servants(files, "01", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -742,7 +742,7 @@ class TestParser(unittest.TestCase):
             },
         }
         files = ("./output_test/Servidores_inativos-05-2019.ods",)
-        employees = parser.parse(files, "05", "2019")
+        employees = parser.unused_parse_inactive_servants(files, "05", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -781,7 +781,7 @@ class TestParser(unittest.TestCase):
         }
 
         files = ("./output_test/Servidores_inativos-06-2019.ods",)
-        employees = parser.parse(files, "06", "2019")
+        employees = parser.unused_parse_inactive_servants(files, "06", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -826,7 +826,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_inativos-08-2020.ods",
             "./output_test/Membros_inativos-Verbas Indenizatorias-08-2020.ods",
         )
-        employees = parser.parse(files, "08", "2020")
+        employees = parser.unused_parse_inactive_members(files, "08", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -873,7 +873,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_inativos-09-2020.ods",
             "./output_test/Membros_inativos-Verbas Indenizatorias-09-2020.ods",
         )
-        employees = parser.parse(files, "09", "2020")
+        employees = parser.unused_parse_inactive_members(files, "09", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -920,7 +920,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_inativos-11-2020.ods",
             "./output_test/Membros_inativos-Verbas Indenizatorias-11-2020.ods",
         )
-        employees = parser.parse(files, "11", "2020")
+        employees = parser.unused_parse_inactive_members(files, "11", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -965,7 +965,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_inativos-09-2020.ods",
             "./output_test/Servidores_inativos-Verbas Indenizatorias-09-2020.ods",
         )
-        employees = parser.parse(files, "09", "2020")
+        employees = parser.unused_parse_inactive_servants(files, "09", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1015,7 +1015,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_inativos-08-2020.ods",
             "./output_test/Servidores_inativos-Verbas Indenizatorias-08-2020.ods",
         )
-        employees = parser.parse(files, "08", "2020")
+        employees = parser.unused_parse_inactive_servants(files, "08", "2020")
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
@@ -1059,7 +1059,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-07-2019.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-07-2019.ods",
         )
-        employees = parser.parse(files, "07", "2019")
+        employees = parser.parse_active_members(files, "07", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1111,7 +1111,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-03-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-03-2020.ods",
         )
-        employees = parser.parse(files, "03", "2020")
+        employees = parser.parse_active_members(files, "03", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1162,7 +1162,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-04-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-04-2020.ods",
         )
-        employees = parser.parse(files, "04", "2020")
+        employees = parser.parse_active_members(files, "04", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1220,7 +1220,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-08-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-08-2020.ods",
         )
-        employees = parser.parse(files, "08", "2020")
+        employees = parser.parse_active_members(files, "08", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1266,7 +1266,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-10-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-10-2020.ods",
         )
-        employees = parser.parse(files, "10", "2020")
+        employees = parser.parse_active_members(files, "10", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1319,7 +1319,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-07-2019.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-07-2019.ods",
         )
-        employees = parser.parse(files, "07", "2019")
+        employees = parser.unused_parse_active_servants(files, "07", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1373,7 +1373,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-10-2019.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-10-2019.ods",
         )
-        employees = parser.parse(files, "10", "2019")
+        employees = parser.unused_parse_active_servants(files, "10", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1427,7 +1427,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-11-2019.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-11-2019.ods",
         )
-        employees = parser.parse(files, "11", "2019")
+        employees = parser.unused_parse_active_servants(files, "11", "2019")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1481,7 +1481,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-03-2020.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-03-2020.ods",
         )
-        employees = parser.parse(files, "03", "2020")
+        employees = parser.unused_parse_active_servants(files, "03", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1534,7 +1534,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-04-2020.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-04-2020.ods",
         )
-        employees = parser.parse(files, "04", "2020")
+        employees = parser.unused_parse_active_servants(files, "04", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1588,7 +1588,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-08-2020.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-08-2020.ods",
         )
-        employees = parser.parse(files, "08", "2020")
+        employees = parser.unused_parse_active_servants(files, "08", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1641,7 +1641,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-10-2020.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-10-2020.ods",
         )
-        employees = parser.parse(files, "10", "2020")
+        employees = parser.unused_parse_active_servants(files, "10", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1690,7 +1690,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros_ativos-12-2020.ods",
             "./output_test/Membros_ativos-Verbas Indenizatorias-12-2020.ods",
         )
-        employees = parser.parse(files, "12", "2020")
+        employees = parser.parse_active_members(files, "12", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1742,7 +1742,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_ativos-12-2020.ods",
             "./output_test/Servidores_ativos-Verbas Indenizatorias-12-2020.ods",
         )
-        employees = parser.parse(files, "12", "2020")
+        employees = parser.unused_parse_active_servants(files, "12", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
@@ -1791,7 +1791,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Servidores_inativos-12-2020.ods",
             "./output_test/Servidores_inativos-Verbas Indenizatorias-12-2020.ods",
         )
-        employees = parser.parse(files, "12", "2020")
+        employees = parser.unused_parse_inactive_servants(files, "12", "2020")
 
         # Verificações
         self.assertEqual(1, len(employees))
