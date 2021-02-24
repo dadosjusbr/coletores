@@ -75,7 +75,7 @@ def test_parse_payload_to_employee():
         "reg": 904023,
         "name": "IGOR ANDREYSON MENDES LOPES",
         "role": "DIGITADOR",
-        "type": None,
+        "type": "servidor",
         "workplace": "PJR DE PAULO AFONSO - APOIO TECNICO E ADMINISTRATIVO",
         "active": True,
         "income": expected_income,

@@ -12,5 +12,6 @@ RUN pip install -r requirements.txt
 COPY mpba mpba
 COPY setup.py .
 COPY README.md .
+COPY roles.csv .
 
 RUN python setup.py install
