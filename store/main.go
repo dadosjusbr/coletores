@@ -113,7 +113,7 @@ func summary(employees []coletores.Employee) storage.Summaries {
 		updateSummary(&general, emp)
 		// NOTE: Keeping this condition because we are not updating all colletors to consider only members.
 		// We will do the latter on demmand.
-		if *emp.Type == "member" && emp.Active {
+		if *emp.Type == "membro" && emp.Active {
 			updateSummary(&memberActive, emp)
 		}
 	}
