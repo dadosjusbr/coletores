@@ -45,10 +45,18 @@ func main() {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error reading execution result: %v", err)))
 	}
 
-	summary := summary(er.Cr.Employees)
+	// Package.
+	if er.Pr.Package == "" {
+		status.ExitFromError(status.NewError(status.InvalidInput, fmt.Errorf("there is no package to store. PackageResult:%+v", er.Pr)))
+	}
 	packBackup, err := client.Cloud.UploadFile(er.Pr.Package, er.Cr.AgencyID)
 	if err != nil {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("error trying to get Backup package files: %v, error: %v", er.Pr.Package, err)))
+	}
+
+	// Backup.
+	if len(er.Cr.Files) == 0 {
+		status.ExitFromError(status.NewError(2, fmt.Errorf("no backup files found: CrawlingResult:%+v", er.Cr)))
 	}
 	backup, err := client.Cloud.Backup(er.Cr.Files, er.Cr.AgencyID)
 	if err != nil {
@@ -59,8 +67,7 @@ func main() {
 		Month:             er.Cr.Month,
 		Year:              er.Cr.Year,
 		Crawler:           er.Cr.Crawler,
-		Employee:          er.Cr.Employees,
-		Summary:           summary,
+		Summary:           summary(er.Cr.Employees),
 		Backups:           backup,
 		CrawlingTimestamp: er.Cr.Timestamp,
 		Package:           packBackup,
@@ -93,33 +100,29 @@ func newClient(conf config) (*storage.Client, error) {
 func summary(employees []coletores.Employee) storage.Summaries {
 	general := storage.Summary{}
 	memberActive := storage.Summary{}
-	memberInactive := storage.Summary{}
-	servantActive := storage.Summary{}
-	servantInactive := storage.Summary{}
 	for _, emp := range employees {
 		// checking if the employee instance has the required data to build the summary
-		if emp.Income == nil || emp.Income.Wage == nil {
-			panic(fmt.Sprintf("Employee %+v is invalid. It does not have 'income' or 'income.wage' fields.", emp))
+		switch {
+		case emp.Income == nil:
+			status.ExitFromError(status.NewError(status.InvalidInput, fmt.Errorf("employee %+v is invalid. It does not have 'income' field", emp)))
+		case emp.Income.Wage == nil:
+			status.ExitFromError(status.NewError(status.InvalidInput, fmt.Errorf("employee %+v is invalid. It does not have 'income.wage' field", emp)))
+		case emp.Type == nil:
+			status.ExitFromError(status.NewError(status.InvalidInput, fmt.Errorf("employee %+v is invalid. It does not have 'type' field", emp)))
 		}
 		updateSummary(&general, emp)
-		switch {
-		case *emp.Type == "membro" && emp.Active:
+		// NOTE: Keeping this condition because we are not updating all colletors to consider only members.
+		// We will do the latter on demmand.
+		if *emp.Type == "member" && emp.Active {
 			updateSummary(&memberActive, emp)
-		case *emp.Type == "membro" && !emp.Active:
-			updateSummary(&memberInactive, emp)
-		case *emp.Type == "servidor" && emp.Active:
-			updateSummary(&servantActive, emp)
-		case *emp.Type == "servidor" && !emp.Active:
-			updateSummary(&servantInactive, emp)
 		}
 	}
 	if general.Count == 0 {
 		return storage.Summaries{}
 	}
 	return storage.Summaries{
-		General:       general,
-		MemberActive:  memberActive,
-		ServantActive: servantActive,
+		General:      general,
+		MemberActive: memberActive,
 	}
 }
 
