@@ -98,8 +98,12 @@ func newClient(conf config) (*storage.Client, error) {
 
 // summary aux func to make all necessary calculations to DataSummary Struct
 func summary(employees []coletores.Employee) storage.Summaries {
-	general := storage.Summary{}
-	memberActive := storage.Summary{}
+	general := storage.Summary{
+		IncomeHistogram: map[int]int{10000: 0, 20000: 0, 30000: 0, 40000: 0, 50000: 0, -1: 0},
+	}
+	memberActive := storage.Summary{
+		IncomeHistogram: map[int]int{10000: 0, 20000: 0, 30000: 0, 40000: 0, 50000: 0, -1: 0},
+	}
 	for _, emp := range employees {
 		// checking if the employee instance has the required data to build the summary
 		switch {
