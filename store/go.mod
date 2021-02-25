@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/aws/aws-sdk-go v1.37.18 // indirect
 	github.com/dadosjusbr/coletores v0.0.0-20210225015923-ae6754b8c166
-	github.com/dadosjusbr/storage v0.0.0-20210225162243-a906a05d59c4
+	github.com/dadosjusbr/storage v0.0.0-20210225163554-5d1f42f9a8bf
 	github.com/gocarina/gocsv v0.0.0-20201208093247-67c824bc04d4 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
