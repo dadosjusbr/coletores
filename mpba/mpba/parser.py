@@ -4,17 +4,16 @@ import csv
 
 def build_crawler_result(month, year, employees, files):
     return {
-        "agencyID": "mpba",
-        "month": month,
-        "year": year,
+        "aid": "mpba",
+        "month": int(month),
+        "year": int(year),
         "crawler": {
-            "crawlerID": "mpba",
-            "crawlerVersion": os.getenv("GIT_COMMIT"),
+            "id": "mpba",
+            "version": os.getenv("GIT_COMMIT"),
         },
         "files": files,
         "employees": employees,
         "timestamp": datetime.now().astimezone().replace(microsecond=0).isoformat(),
-        "procInfo": None,
     }
 
 

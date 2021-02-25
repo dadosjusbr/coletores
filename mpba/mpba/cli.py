@@ -1,7 +1,7 @@
 import argparse
 import os
 from pprint import pprint
-
+import json
 from mpba.crawler import crawl, save
 from mpba.parser import build_crawler_result, parse
 
@@ -19,7 +19,7 @@ def main():
 
     employees = parse(payload)
     crawler_result = build_crawler_result(args.month, args.year, employees, [filepath])
-    pprint(crawler_result)
+    print(json.dumps({'cr': crawler_result}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
