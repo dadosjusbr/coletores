@@ -109,31 +109,30 @@ def test_crawler_result(monkeypatch):
     employees = parse(payload)
     filepath = ["output/mpba-5-2020.json"]
     expected_crawler_result = {
-        "agencyID": "mpba",
+        "aid": "mpba",
         "month": 1,
         "year": 2020,
         "crawler": {
-            "crawlerID": "mpba",
-            "crawlerVersion": expected_git_commit,
+            "id": "mpba",
+            "version": expected_git_commit,
         },
         "files": filepath,
         "employees": employees,
         "timestamp": datetime.now().astimezone().replace(microsecond=0).isoformat(),
-        "procInfo": None,
     }
 
     crawler_result = build_crawler_result(1, 2020, employees, filepath)
     assert crawler_result.keys() == expected_crawler_result.keys()
-    assert crawler_result["agencyID"] == expected_crawler_result["agencyID"]
+    assert crawler_result["aid"] == expected_crawler_result["aid"]
     assert crawler_result["month"] == expected_crawler_result["month"]
     assert crawler_result["year"] == expected_crawler_result["year"]
     assert crawler_result["employees"] == expected_crawler_result["employees"]
     assert crawler_result["timestamp"] == expected_crawler_result["timestamp"]
     assert (
-        crawler_result["crawler"]["crawlerID"]
-        == expected_crawler_result["crawler"]["crawlerID"]
+        crawler_result["crawler"]["id"]
+        == expected_crawler_result["crawler"]["id"]
     )
     assert (
-        crawler_result["crawler"]["crawlerVersion"]
-        == expected_crawler_result["crawler"]["crawlerVersion"]
+        crawler_result["crawler"]["version"]
+        == expected_crawler_result["crawler"]["version"]
     )
