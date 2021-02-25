@@ -7,6 +7,7 @@ def build_crawler_result(month, year, employees, files):
         "aid": "mpba",
         "month": int(month),
         "year": int(year),
+        "files": files,
         "crawler": {
             "id": "mpba",
             "version": os.getenv("GIT_COMMIT"),
@@ -38,25 +39,12 @@ def parse(payload):
     for item in payload:
         perks = {
             "total": item["vlIdenizacoes"],
-            "food": None,
             "vacation": item["vlRendFerias"],
-            "transportation": None,
-            "pre_school": None,
-            "health": None,
-            "birth_aid": None,
-            "housing_aid": None,
-            "subsistence": None,
-            "compensatory_leave": None,
-            "pecuniary": None,
-            "vacation_pecuniary": None,
-            "furniture_transport": None,
-            "premium_license_pecuniary": None,
         }
         funds = {
             "personal_benefits": item["vlRendAbonoPerman"],
             "eventual_benefits": item["vlIdenizacoes"],
             "trust_position": item["vlRendCargoComissao"],
-            "daily": None,
             "gratification": item["vlRendGratNatalina"],
             "origin_pos": item["vlRendTotalBruto"],
             "others_total": item["vlRendVerbas"],
@@ -75,8 +63,6 @@ def parse(payload):
             "prev_contribution": item["vlDescPrevidencia"],
             "ceil_retention": item["vlDescTeto"],
             "income_tax": item["vlDescIR"],
-            "others_total": None,
-            "other": None,
         }
         employee = {
             "reg": item["nuMatricula"],
