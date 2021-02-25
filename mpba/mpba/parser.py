@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-
+import csv
 
 def build_crawler_result(month, year, employees, files):
     return {
@@ -25,9 +25,18 @@ def sum_up_from(values):
         if key != "total" and value is not None
     ])
 
-
+# Retorna uma copia do csv em memória.
+def read_roles():
+    types = {}
+    with open('./roles.csv') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            types[row['role']] = row['type']
+    return types
+            
 def parse(payload):
     employees = []
+    types = read_roles()
     for item in payload:
         perks = {
             "total": item["vlIdenizacoes"],
@@ -75,7 +84,7 @@ def parse(payload):
             "reg": item["nuMatricula"],
             "name": item["nmServidor"],
             "role": item["dsCargo"],
-            "type": None,
+            "type": types[item['dsCargo']],
             "workplace": item["dsLotacao"],
             "active": _status(item["dsLotacao"]),
             "income": income,
