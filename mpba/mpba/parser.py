@@ -11,7 +11,6 @@ def build_crawler_result(month, year, employees, files):
             "id": "mpba",
             "version": os.getenv("GIT_COMMIT"),
         },
-        "files": files,
         "employees": employees,
         "timestamp": datetime.now().astimezone().replace(microsecond=0).isoformat(),
     }
