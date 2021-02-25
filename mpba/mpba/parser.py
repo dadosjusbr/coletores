@@ -25,16 +25,18 @@ def sum_up_from(values):
         if key != "total" and value is not None
     ])
 
-#Infere o tipo de funcionário a partir do seu cargo.
-def get_func_type(cargo):
+# Retorna uma copia do csv em memória.
+def read_roles():
+    types = {}
     with open('./roles.csv') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            if row['role'] == cargo :
-                return row['type']
+            types[row['role']] = row['type']
+    return types
             
 def parse(payload):
     employees = []
+    types = read_roles()
     for item in payload:
         perks = {
             "total": item["vlIdenizacoes"],
@@ -78,12 +80,11 @@ def parse(payload):
             "others_total": None,
             "other": None,
         }
-        employee_type = get_func_type(item["dsCargo"])
         employee = {
             "reg": item["nuMatricula"],
             "name": item["nmServidor"],
             "role": item["dsCargo"],
-            "type": employee_type,
+            "type": types[item['dsCargo']],
             "workplace": item["dsLotacao"],
             "active": _status(item["dsLotacao"]),
             "income": income,
