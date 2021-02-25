@@ -8,40 +8,15 @@ base_URL = 'http://transparencia.mprj.mp.br/contracheque/'
 expression = "var myResourceURL = '(.*)';"
 
 func_types =  {1:'MATIV',
-               2:'MINAT',
-               3:'SATIV',
-               4:'SINAT',
-               # Reservado para quando corrigir um erro de leitura da planilha de
-               # verbas indenizatórias de pensionistas.
-               # 5:'PENSI',
-               6:'COLAB'
             }
 
 fund_types = { 1: 1,
-               2: 2,
-               3: {'tipo1':11, 'tipo2':21, 'tipo3':23},
-               4: 12,
-               # Reservado para quando corrigir um erro de leitura da planilha de
-               # verbas indenizatórias de pensionistas.
-               # 5: 4
             }
 
 url_complements = {1: 'remuneracao-de-todos-os-membros-ativos',
-                   2: 'proventos-de-todos-os-membros-inativos',
-                   3: 'remuneracao-de-todos-os-servidores-ativos',
-                   4: 'proventos-de-todos-os-servidores-inativos',
-                   # Reservado para quando corrigir um erro de leitura da planilha de
-                   # verbas indenizatórias de pensionistas.
-                   # 5: 'valores-percebidos-por-todos-os-pensionistas'
                    }
 
 url_funds_complements = {1: 'membros-ativos',
-                         2: 'membros-inativos',
-                         3: 'servidores-ativos',
-                         4: 'servidores-inativos',
-                         # Reservado para quando corrigir um erro de leitura da planilha de
-                         # verbas indenizatórias de pensionistas.
-                         # 5: 'pensionistas'
                          }
 
 # Adquire o conjunto de links para envio de requisições post.
@@ -106,12 +81,7 @@ def generate_other_funds_url(year, month):
 
     # Não há informações adicionais sobre verbas indenizatórias destinadas á colaboradores
     for key in fund_types:
-        #Informações refentes a verbas indenizátoris de servidores ativos tem url em formato distinto
-        if key == 3:
-            url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc1={}&tipoFunc2={}&tipoFunc3={}'.format(month,
-            year, fund_types[key]['tipo1'], fund_types[key]['tipo2'], fund_types[key]['tipo3'])
-        else:
-            url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc={}'.format(month, year, fund_types[key])
+        url = other_funds_links[key] + '&mes={}&ano={}&tipoFunc={}'.format(month, year, fund_types[key])
         other_content_links[func_types[key]] = url
 
     return other_content_links
