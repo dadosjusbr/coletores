@@ -134,15 +134,17 @@ def crawl(year, month, output_path):
     urls_other_funds = generate_other_funds_url(year,month)
 
     files = []
-    # O download de todas as verbas é de interesse apenas do ano de 2020.
-    if year == 2020:
+
+    pathlib.Path(output_path).mkdir(exist_ok=True)
+
+    # O download de todas as verbas é de interesse apenas do ano de 2020.    
+    if year == "2020":
         for key in urls_remunerations:
             if key != 'COLAB':
                 method = 'POST'
             else:
                 method = 'GET'
 
-            pathlib.Path(output_path).mkdir(exist_ok=True)
             file_name = year +'_' + month + '_' +  key + '.ods'
             file_path = output_path + "/" + file_name
 
@@ -150,7 +152,6 @@ def crawl(year, month, output_path):
             files.append(file_path)
 
         for key in urls_other_funds:
-            pathlib.Path(output_path).mkdir(exist_ok=True)
             file_name = year + '_' + month + '_' + 'Verbas Indenizatórias-' + key + '.ods'
             file_path =  output_path + '/' + file_name
             method = 'POST'
@@ -162,7 +163,6 @@ def crawl(year, month, output_path):
         method = 'POST'
         
         #Download de remunerações simples refentes á membros ativos.
-        pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = year +'_' + month + '_' +  key + '.ods'
         file_path = output_path + "/" + file_name
 
