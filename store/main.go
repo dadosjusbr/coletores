@@ -128,7 +128,6 @@ func summary(employees []coletores.Employee) storage.Summaries {
 
 //updateSummary auxiliary function that updates the summary data at each employee value
 func updateSummary(s *storage.Summary, emp coletores.Employee) {
-	s.Count++
 	updateData := func(d *storage.DataSummary, value float64, count int) {
 		if count == 1 {
 			d.Min = value
@@ -140,6 +139,26 @@ func updateSummary(s *storage.Summary, emp coletores.Employee) {
 		d.Total += value
 		d.Average = d.Total / float64(count)
 	}
+
+	// Income histogram.
+	s.Count++
+	salary := emp.Income.Total
+	var salaryRange int
+	if salary <= 10000 {
+		salaryRange = 10000
+	} else if salary <= 20000 {
+		salaryRange = 20000
+	} else if salary <= 30000 {
+		salaryRange = 30000
+	} else if salary <= 40000 {
+		salaryRange = 40000
+	} else if salary <= 50000 {
+		salaryRange = 50000
+	} else {
+		salaryRange = -1 // -1 is maker when the salary is over 50000
+	}
+	s.IncomeHistogram[salaryRange]++
+
 	updateData(&s.Wage, *emp.Income.Wage, s.Count)
 	// There are employees with no perks.
 	if emp.Income.Perks != nil {
