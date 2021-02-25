@@ -164,11 +164,14 @@ func updateSummary(s *storage.Summary, emp coletores.Employee) {
 	s.IncomeHistogram[salaryRange]++
 
 	updateData(&s.Wage, *emp.Income.Wage, s.Count)
-	// There are employees with no perks.
-	if emp.Income.Perks != nil {
-		updateData(&s.Perks, emp.Income.Perks.Total, s.Count)
+	totalOthers, totalPerks := 0., 0.
+	if emp.Income.Perks != nil { // There are employees with no perks and others
+		totalPerks = emp.Income.Perks.Total
 	}
 	if emp.Income.Other != nil {
-		updateData(&s.Others, emp.Income.Other.Total, s.Count)
+		totalOthers = emp.Income.Other.Total
 	}
+	updateData(&s.Perks, totalPerks, s.Count)
+	updateData(&s.Others, totalOthers, s.Count)
+	updateData(&s.Benefits, totalOthers+totalPerks, s.Count)
 }
