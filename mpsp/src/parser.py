@@ -210,6 +210,10 @@ def parse_active_members(file_names, month, year):
                     employees.update(active_members_parser.parse_feb_to_may_19(fn))
                 elif month == "06" and year == "2019":
                     employees.update(active_members_parser.parse_jun_19(fn))
+                elif month in ["01", "02", "03", "04", "05"] and year == "2018":
+                    employees.update(active_members_parser.parse_jan_to_may_18(fn))
+                elif month in ["06", "07", "08", "09", "10", "11", "12"] and year == "2018":
+                    employees.update(active_members_parser.parse_june_to_dec_18(fn))
 
             elif "Verbas Indenizatorias" in fn:
                 if year == "2019":
