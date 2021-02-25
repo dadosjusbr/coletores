@@ -22,7 +22,30 @@ baseURL = (
 def links_remuneration(month, year):
     links_type = {}
     link = ""
-    if year == "2020":
+    # Por enquanto, para o ano 2018 só será feito o download dos membros ativos
+    if year == "2018":
+        for key in beneficiary_types:
+            if beneficiary_types[key] == "Membros_ativos":
+                if month in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"]:
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%20I%20membros%20ativos%20ref"
+                        + month
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
+                elif month == "12":
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%20I%20membros%20ativos%20ref"
+                        + month
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
+    elif year == "2020":
         for key in beneficiary_types:
             if beneficiary_types[key] == "Membros_ativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07"]:
@@ -996,7 +1019,7 @@ def links_other_funds(month, year):
                         + year
                         + ".ods"
                     )
-                    links_type[beneficiary_types[key]] = link   
+                    links_type[beneficiary_types[key]] = link
                 elif month in ["08", "12"]:
                     link = (
                         baseURL
@@ -1027,7 +1050,7 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-            elif beneficiary_types[key] == "Servidores_inativos": 
+            elif beneficiary_types[key] == "Servidores_inativos":
                 if month in ["08", "09", "12"]:
                     link = (
                         baseURL
@@ -1059,6 +1082,7 @@ def links_other_funds(month, year):
                     )
                     links_type[beneficiary_types[key]] = link
     return links_type
+
 
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
