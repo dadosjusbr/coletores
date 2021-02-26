@@ -32,26 +32,13 @@ payload = [
 def test_parse_payload_to_employee():
     expected_perks = {
         "total": 1300.0,
-        "food": None,
         "vacation": 0.0,
-        "transportation": None,
-        "pre_school": None,
-        "health": None,
-        "birth_aid": None,
-        "housing_aid": None,
-        "subsistence": None,
-        "compensatory_leave": None,
-        "pecuniary": None,
-        "vacation_pecuniary": None,
-        "furniture_transport": None,
-        "premium_license_pecuniary": None,
     }
     expected_funds = {
         "total": 24094.75,
         "personal_benefits": 0.0,
         "eventual_benefits": 1300.0,
         "trust_position": 7093.93,
-        "daily": None,
         "gratification": 0.0,
         "origin_pos": 15243.57,
         "others_total": 457.25,
@@ -62,8 +49,6 @@ def test_parse_payload_to_employee():
         "prev_contribution": 1952.1,
         "ceil_retention": 0.0,
         "income_tax": 2428.29,
-        "others_total": None,
-        "other": None,
     }
     expected_income = {
         "total": 31787.14,
