@@ -46,7 +46,7 @@ def parse(rows, employees):
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1
