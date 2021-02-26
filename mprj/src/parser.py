@@ -60,7 +60,7 @@ def read_data(path):
     try:
         data = pd.read_excel(pathlib.Path(path), engine= 'odf')
         #Se o pandas tiver problemas ao ler os heathers seu retorno é um df Null
-        if data.isnull().all().all():
+        if data.isnull().all().all().all():
             sheet = get_data(path)['Sheet1']
             data = mount_df(sheet)
         return data
@@ -369,7 +369,7 @@ def update_mativ_indemnity(rows, employees):
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
 
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1
@@ -419,7 +419,7 @@ def update_minat_indemnity(rows, employees):
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1
@@ -484,7 +484,7 @@ def update_sativ_indemnity(rows, employees):
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1
@@ -538,7 +538,7 @@ def update_sinat_indemnity(rows, employees):
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1
@@ -585,7 +585,7 @@ def update_pensi_indemnity(rows, employees):
         emp['income'].update({
             'total': round(emp['income']['total']  + emp['income']['perks']['total'] + emp['income']['other']['total'], 2)
         })
-        employees[row[0]] = emp
+        
         if (rows[curr_row] == rows[-1]).all():
             break
         curr_row += 1

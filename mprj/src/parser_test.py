@@ -1280,6 +1280,26 @@ class TestParser(unittest.TestCase):
         #Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+    
+    #Verifica se o dataframe possui o numero esperado de linhas(rows) para remunerações simples
+    def teste_membros_repetidos(self):
+        self.maxDiff = None
+        
+        employee_df =  parser.read_data('./output_test/2020_01_MATIV_ALL.ods')
+        df_size = employee_df.shape[0]
+        
+        #Verificações
+        self.assertEqual(929, df_size)
+    
+    #Verifica a presença de membros repetidos dentro do parser_result
+    def teste_membros_repetidos_no_parser(self):
+        self.maxDiff = None
+        
+        files = [('./output_test/2020_01_MATIV_ALL.ods'),('./output_test/2020_01_Verbas Indenizatórias-MATIV.ods')] 
+        employees = parser.parse(files)
+        
+        #Verificações - Não deve haver membro duplicado mesmo com a adição de VI.
+        self.assertEqual(926, len(employees))
         
 if __name__ == '__main__':
     unittest.main()
