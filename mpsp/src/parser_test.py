@@ -1890,6 +1890,236 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_active_members_fev_2019(self):
+        self.maxDiff = None
+
+        expected = [
+            {
+                "reg": "3818",
+                "name": "YURI GIUSEPPE CASTIGLIONE",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA DA REGIONAL DA LAPA",
+                "active": True,
+                "income": {
+                    "total": 35944.25,
+                    "wage": 33689.1,
+                    "perks": {"total": 920.0, "food": 920.0, "ferias em pecunia": 0.0},
+                    "other": {
+                        "total": 1335.15,
+                        "trust_position": 1335.15,
+                        "others_total": 0.0,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "Outras remunerações temporárias": 0.0,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 11864.3,
+                    "prev_contribution": 3852.66,
+                    "ceil_retention": 0.0,
+                    "income_tax": 8011.64,
+                },
+            },
+            {
+                "reg": "594674",
+                "name": "YVES ATAHUALPA PINTO",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA DE CATANDUVA",
+                "active": True,
+                "income": {
+                    "total": 39424.55,
+                    "wage": 33689.1,
+                    "perks": {"total": 920.0, "food": 920.0, "ferias em pecunia": 0.0},
+                    "other": {
+                        "total": 4815.45,
+                        "trust_position": 0.0,
+                        "others_total": 4815.45,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "Outras remunerações temporárias": 4815.45,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 12486.15,
+                    "prev_contribution": 3746.79,
+                    "ceil_retention": 0.0,
+                    "income_tax": 8739.36,
+                },
+            },
+            {
+                "reg": "2245",
+                "name": "ZENON LOTUFO TERTIUS",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA DE GUARULHOS",
+                "active": True,
+                "income": {
+                    "total": 35944.25,
+                    "wage": 33689.1,
+                    "perks": {"total": 920.0, "food": 920.0, "ferias em pecunia": 0.0},
+                    "other": {
+                        "total": 1335.15,
+                        "trust_position": 1335.15,
+                        "others_total": 0.0,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "Outras remunerações temporárias": 0.0,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 12614.14,
+                    "prev_contribution": 3893.66,
+                    "ceil_retention": 0.0,
+                    "income_tax": 8720.48,
+                },
+            },
+        ]
+
+        files = ("./output_test/Membros_ativos-02-2019.ods",)
+        employees = parser.parse_active_members(files, "02", "2019")
+
+        # Verificações
+        self.assertEqual(3, len(employees))
+        self.assertEqual(employees, expected)
+
+    def test_active_members_nov_2020(self):
+        self.maxDiff = None
+
+        expected = [
+            {
+                "reg": "3818",
+                "name": "YURI GIUSEPPE CASTIGLIONE",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA REGIONAL DA LAPA",
+                "active": True,
+                "income": {
+                    "total": 49622.03,
+                    "wage": 33689.1,
+                    "perks": {
+                        "total": 15932.93,
+                        "food": 960.0,
+                        "vacation_pecuniary": 14972.93,
+                        "premium_license_pecuniary": 0.0,
+                    },
+                    "other": {
+                        "total": 0.0,
+                        "trust_position": 0.0,
+                        "others_total": 0.0,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "GRAT. CUMULATIVA": 0.0,
+                            "GRAT. NATUREZA ESPECIAL": 0.0,
+                            "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 13043.27,
+                    "prev_contribution": 5557.77,
+                    "ceil_retention": 0.0,
+                    "income_tax": 7485.5,
+                },
+            },
+            {
+                "reg": "594674",
+                "name": "YVES ATAHUALPA PINTO",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA DE CATANDUVA",
+                "active": True,
+                "income": {
+                    "total": 49622.03,
+                    "wage": 33689.1,
+                    "perks": {
+                        "total": 15932.93,
+                        "food": 960.0,
+                        "vacation_pecuniary": 14972.93,
+                        "premium_license_pecuniary": 0.0,
+                    },
+                    "other": {
+                        "total": 0.0,
+                        "trust_position": 0.0,
+                        "others_total": 0.0,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "GRAT. CUMULATIVA": 0.0,
+                            "GRAT. NATUREZA ESPECIAL": 0.0,
+                            "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 9054.1,
+                    "prev_contribution": 5197.77,
+                    "ceil_retention": 0.0,
+                    "income_tax": 3856.33,
+                },
+            },
+            {
+                "reg": "2245",
+                "name": "ZENON LOTUFO TERTIUS",
+                "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+                "type": "membro",
+                "workplace": "PROMOTORIA DE JUSTICA DO PATRIMONIO PUBLICO E SOCIAL",
+                "active": True,
+                "income": {
+                    "total": 51550.58,
+                    "wage": 34601.97,
+                    "perks": {
+                        "total": 16526.33,
+                        "food": 960.0,
+                        "vacation_pecuniary": 15566.33,
+                        "premium_license_pecuniary": 0.0,
+                    },
+                    "other": {
+                        "total": 422.28,
+                        "trust_position": 422.28,
+                        "others_total": 0.0,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Férias (1/3 constitucional)": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "GRAT. CUMULATIVA": 0.0,
+                            "GRAT. NATUREZA ESPECIAL": 0.0,
+                            "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                        },
+                    },
+                },
+                "discounts": {
+                    "total": 12685.57,
+                    "prev_contribution": 5411.4,
+                    "ceil_retention": 0.0,
+                    "income_tax": 7274.17,
+                },
+            },
+        ]
+
+        files = (
+            "./output_test/Membros_ativos-11-2020.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-11-2020.ods",
+        )
+        employees = parser.parse_active_members(files, "11", "2020")
+
+        # Verificações
+        self.assertEqual(3, len(employees))
+        self.assertEqual(employees, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

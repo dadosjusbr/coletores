@@ -75,7 +75,7 @@ def parse_jan_to_april_19(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
     return employees
 
@@ -157,7 +157,7 @@ def parse_may_19(file_name):
             },
         }
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -234,7 +234,7 @@ def parse_june_19(file_name):
             },
         }
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees

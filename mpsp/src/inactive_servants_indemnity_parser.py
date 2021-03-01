@@ -86,7 +86,7 @@ def update_employee_indemnity_aug_2020(file_name, employees):
         employees[matricula] = emp
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -157,7 +157,7 @@ def update_employee_indemnity_sept_to_nov_2020(file_name, employees):
         employees[matricula] = emp
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -217,7 +217,7 @@ def update_employee_indemnity_dec_2020(file_name, employees):
         employees[matricula] = emp
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
