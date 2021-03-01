@@ -38,7 +38,7 @@ def parse(payload):
     types = read_roles()
     for item in payload:
         perks = {
-            "total": item["vlIdenizacoes"],
+            "total": round(item["vlIdenizacoes"], 2),
             "vacation": item["vlRendFerias"],
         }
         funds = {
@@ -50,16 +50,16 @@ def parse(payload):
             "others_total": item["vlRendVerbas"],
             "others": item["vlOutrasRemun"],
         }
-        funds["total"] = sum_up_from(funds)
+        funds["total"] = round(sum_up_from(funds), 2)
         income = {
             "wage": item["vlRendCargoEfetivo"],
             "perks": perks,
             "other": funds,
         }
-        income["total"] = income["wage"] + income["perks"]["total"] + income["other"]["total"]
+        income["total"] = round(income["wage"] + income["perks"]["total"] + income["other"]["total"], 2)
 
         discounts = {
-            "total": item["vlDescTotalBruto"],
+            "total": round(item["vlDescTotalBruto"], 2),
             "prev_contribution": item["vlDescPrevidencia"],
             "ceil_retention": item["vlDescTeto"],
             "income_tax": item["vlDescIR"],
@@ -75,7 +75,7 @@ def parse(payload):
             "discounts": discounts,
         }
         employees.append(employee)
-    return employees
+    return list(employees)
 
 
 def _status(workplace):
