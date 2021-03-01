@@ -1797,6 +1797,99 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_active_members_jan_2018(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "1632",
+            "name": "ADALBERTO DENSER DE SA JUNIOR",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DA CAPITAL",
+            "active": True,
+            "income": {
+                "total": 40321.3,
+                "wage": 28947.55,
+                "perks": {
+                    "total": 5277.73,
+                    "food": 900.0,
+                    "housing_aid": 4377.73,
+                    "vacation_pecuniary": 0.0,
+                    "premium_license_pecuniary": 0.0,
+                },
+                "other": {
+                    "total": 6096.02,
+                    "trust_position": 0.0,
+                    "others_total": 6096.02,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "Outras remunerações temporárias": 6096.02,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 10357.72,
+                "prev_contribution": 3184.23,
+                "ceil_retention": 0.0,
+                "income_tax": 7173.49,
+            },
+        }
+
+        files = ("./output_test/Membros_ativos-01-2018.ods",)
+        employees = parser.parse_active_members(files, "01", "2018")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_active_members_jan_2018(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "3339",
+            "name": "ADONAI GABRIEL",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DE BRAGANCA PAULISTA",
+            "active": True,
+            "income": {
+                "total": 76325.45,
+                "wage": 28947.55,
+                "perks": {
+                    "total": 43894.46,
+                    "food": 920.0,
+                    "housing_aid": 4377.73,
+                    "vacation_pecuniary": 38596.73,
+                },
+                "other": {
+                    "total": 3483.44,
+                    "trust_position": 0.0,
+                    "others_total": 3483.44,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "Outras remunerações temporárias": 3483.44,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 10253.45,
+                "prev_contribution": 3184.23,
+                "ceil_retention": 0.0,
+                "income_tax": 7069.22,
+            },
+        }
+
+        files = ("./output_test/Membros_ativos-10-2018.ods",)
+        employees = parser.parse_active_members(files, "10", "2018")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()
