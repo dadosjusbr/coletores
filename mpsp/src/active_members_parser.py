@@ -103,7 +103,7 @@ def parse_jan_19(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -192,7 +192,7 @@ def parse_feb_to_may_19(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -281,7 +281,7 @@ def parse_jun_19(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -375,7 +375,7 @@ def parse_jan_to_may_18(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
@@ -467,7 +467,7 @@ def parse_june_to_dec_18(file_name):
         }
 
         curr_row += 1
-        if curr_row >= end_row:
+        if curr_row > end_row:
             break
 
     return employees
