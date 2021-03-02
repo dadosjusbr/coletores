@@ -51,7 +51,7 @@ def get_end_row(rows, begin_row):
         if isNaN(row[0]):
             break
         end_row += 1
-
+    
     return end_row
 
 
@@ -83,13 +83,18 @@ def parse_employees(file_name):
         if curr_row < begin_row:
             curr_row += 1
             continue
-
+        workplace = row[3]
+        role = row[2]
+        if 'Pensionistas' in file_name and isNaN(row[3]):
+            workplace = "PENSÃO ESPECIAL"
+        if isNaN(role):
+            role = "Não informado"
         employees[row[0]] = {
             'reg': row[0],
             'name': row[1],
-            'role': row[2],
+            'role': role,
             'type': typeE,
-            'workplace': row[3],
+            'workplace': workplace,
             'active': activeE,
             "income":
             {
