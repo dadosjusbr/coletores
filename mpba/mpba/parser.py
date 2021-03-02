@@ -48,9 +48,11 @@ def parse(payload):
             "gratification": item["vlRendGratNatalina"],
             "origin_pos": item["vlRendTotalBruto"],
             "others_total": item["vlRendVerbas"],
-            "others": item["vlOutrasRemun"],
         }
         funds["total"] = round(sum_up_from(funds), 2)
+        another_remu = { "vlOutrasRemun": item["vlOutrasRemun"]}
+        funds["others"] = another_remu
+        
         income = {
             "wage": item["vlRendCargoEfetivo"],
             "perks": perks,

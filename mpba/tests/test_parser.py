@@ -42,7 +42,9 @@ def test_parse_payload_to_employee():
         "gratification": 0.0,
         "origin_pos": 15243.57,
         "others_total": 457.25,
-        "others": 0.0,
+        "others":{
+            "vlOutrasRemun": 0.0,
+        } 
     }
     expected_discounts = {
         "total": 4380.39,
