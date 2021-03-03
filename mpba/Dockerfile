@@ -1,17 +1,19 @@
 FROM python:3.8
 
-ARG GIT_COMMIT=unspecified
-ENV GIT_COMMIT=${GIT_COMMIT}
-
+# set the working directory in the container
 WORKDIR /code
 
+# copy the dependencies file to the working directory
 COPY requirements.txt .
 
+# install dependencies
 RUN pip install -r requirements.txt
 
-COPY mpba mpba
-COPY setup.py .
-COPY README.md .
+# copy the content of the local mpba directory to the working directory
+COPY mpba/ .
+
+# copy the content of the local roles.csv file to the working directory 
 COPY roles.csv .
 
-RUN python setup.py install
+# command to run on container start
+CMD ["python", "./main.py"]

@@ -7,7 +7,7 @@ BASE_URL = "https://lai-app.sistemas.mpba.mp.br/api/quadroremuneratoriogeral/con
 
 
 def crawl(month, year):
-    response = requests.get(BASE_URL.format(month, year))
+    response = requests.get(BASE_URL.format(month, year), verify=False)
     response.raise_for_status()
     return response.json()
 
