@@ -84,12 +84,20 @@ def parse_employees(file_name):
             curr_row += 1
             continue
 
+        role = row[2]
+        workplace = row[3]
+
+        if 'Pensionistas' in file_name and isNaN(workplace):
+            workplace = "PENSÃO ESPECIAL"
+        if isNaN(role):
+            role = "Não informado"
+
         employees[row[0]] = {
             'reg': row[0],
             'name': row[1],
-            'role': row[2],
+            'role': role,
             'type': typeE,
-            'workplace': row[3],
+            'workplace': workplace,
             'active': activeE,
             "income":
             {
