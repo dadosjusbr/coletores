@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import csv
+import json
 
 def build_crawler_result(month, year, employees, files):
     return {
@@ -32,10 +33,17 @@ def read_roles():
         for row in reader:
             types[row['role']] = row['type']
     return types
+
+def read_file(filepath):
+    with open(filepath ,'r') as file:
+        content = json.loads(file.read())
+        return content
             
-def parse(payload):
+def parse(payload_path):
     employees = []
     types = read_roles()
+    payload = read_file(payload_path)
+
     for item in payload:
         perks = {
             "total": round(item["vlIdenizacoes"], 2),

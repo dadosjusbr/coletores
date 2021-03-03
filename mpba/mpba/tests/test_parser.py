@@ -2,33 +2,6 @@ from datetime import datetime
 from mpba.parser import build_crawler_result, parse, _status
 import pytest
 
-
-payload = [
-    {
-        "dsCargo": "DIGITADOR",
-        "dsLotacao": "PJR DE PAULO AFONSO - APOIO TECNICO E ADMINISTRATIVO",
-        "nmServidor": "IGOR ANDREYSON MENDES LOPES",
-        "nuAnoReferencia": 2020,
-        "nuMatricula": 904023,
-        "nuMesReferencia": 1,
-        "vlDescIR": 2428.29,
-        "vlDescPrevidencia": 1952.1,
-        "vlDescTeto": 0.0,
-        "vlDescTotalBruto": 4380.39,
-        "vlIdenizacoes": 1300.0,
-        "vlOutrasRemun": 0.0,
-        "vlRendAbonoPerman": 0.0,
-        "vlRendCargoComissao": 7093.93,
-        "vlRendCargoEfetivo": 6392.39,
-        "vlRendFerias": 0.0,
-        "vlRendGratNatalina": 0.0,
-        "vlRendTotalBruto": 15243.57,
-        "vlRendTotalLiquido": 10863.18,
-        "vlRendVerbas": 457.25,
-    }
-]
-
-
 def test_parse_payload_to_employee():
     expected_perks = {
         "total": 1300.0,
@@ -69,7 +42,8 @@ def test_parse_payload_to_employee():
         "discounts": expected_discounts,
     }
 
-    assert parse(payload) == [expected_employee]
+    payload_path = './output_test/test_file.json'
+    assert parse(payload_path) == [expected_employee]
 
 
 def test_raise_exception_when_payload_is_invalid():
@@ -93,7 +67,7 @@ def test_get_status(workplace, expected_status):
 def test_crawler_result(monkeypatch):
     expected_git_commit = "a1b2c3"
     monkeypatch.setenv("GIT_COMMIT", expected_git_commit)
-    employees = parse(payload)
+    employees = parse('./output_test/test_file.json')
     filepath = ["output/mpba-5-2020.json"]
     expected_crawler_result = {
         "aid": "mpba",

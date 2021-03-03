@@ -1,0 +1,24 @@
+[
+    {
+        "nuMatricula": 904023,
+        "nuMesReferencia": 1,
+        "nuAnoReferencia": 2020,
+        "nmServidor": "IGOR ANDREYSON MENDES LOPES",
+        "dsCargo": "DIGITADOR",
+        "dsLotacao": "PJR DE PAULO AFONSO - APOIO TECNICO E ADMINISTRATIVO",
+        "vlRendCargoEfetivo": 6392.39,
+        "vlRendVerbas": 457.25,
+        "vlRendCargoComissao": 7093.93,
+        "vlRendGratNatalina": 0.0,
+        "vlRendFerias": 0.0,
+        "vlRendAbonoPerman": 0.0,
+        "vlRendTotalBruto": 15243.57,
+        "vlDescPrevidencia": 1952.1,
+        "vlDescIR": 2428.29,
+        "vlDescTeto": 0.0,
+        "vlDescTotalBruto": 4380.39,
+        "vlRendTotalLiquido": 10863.18,
+        "vlIdenizacoes": 1300.0,
+        "vlOutrasRemun": 0.0
+    }
+]
