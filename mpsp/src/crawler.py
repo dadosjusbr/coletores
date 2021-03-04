@@ -1122,8 +1122,7 @@ def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
     files = []
-    print(urls_remuneration)
-    print(urls_other_funds)
+
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + "-" + year + ".ods"
