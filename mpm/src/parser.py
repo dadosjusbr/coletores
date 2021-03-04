@@ -51,7 +51,7 @@ def get_end_row(rows, begin_row):
         if isNaN(row[0]):
             break
         end_row += 1
-
+    
     return end_row
 
 
