@@ -2120,6 +2120,52 @@ class TestParser(unittest.TestCase):
         self.assertEqual(3, len(employees))
         self.assertEqual(employees, expected)
 
+    def test_active_members_jan_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "2250",
+            "name": "ADELMO PINHO",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DE ARACATUBA",
+            "active": True,
+            "income": {
+                "total": 56546.97,
+                "wage": 33689.1,
+                "perks": {"total": 960.0, "food": 960.0},
+                "other": {
+                    "total": 21897.87,
+                    "trust_position": 0.0,
+                    "others_total": 21897.87,
+                    "others": {
+                        "Gratificação Natalina": 16844.55,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "GRAT. CUMULATIVA": 0.0,
+                        "GRAT. NATUREZA ESPECIAL": 5053.32,
+                        "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 14637.3,
+                "prev_contribution": 7679.57,
+                "ceil_retention": 0.0,
+                "income_tax": 6957.73,
+            },
+        }
+
+        files = (
+            "./output_test/Membros_ativos-01-2021.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-01-2021.ods",
+        )
+        employees = parser.parse_active_members(files, "01", "2021")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()

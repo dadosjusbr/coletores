@@ -107,7 +107,7 @@ def format_value(element):
     return element
 
 
-# Parser for the months from July 2019 to November 2020
+# Parser for the months from July 2019 to January 2021
 def parse_employees(file_name):
     rows = read_data(file_name).to_numpy()
     begin_row = get_begin_row(rows)
@@ -214,6 +214,9 @@ def parse_active_members(file_names, month, year):
                     employees.update(active_members_parser.parse_jan_to_may_18(fn))
                 elif month in ["06", "07", "08", "09", "10", "11", "12"] and year == "2018":
                     employees.update(active_members_parser.parse_june_to_dec_18(fn))
+                elif year == "2021":
+                    if month == "01":
+                        employees.update(parse_employees(fn))
 
             elif "Verbas Indenizatorias" in fn:
                 if year == "2019":
@@ -269,6 +272,13 @@ def parse_active_members(file_names, month, year):
                     elif month == "12":
                         employees.update(
                             active_members_indemnity_parser.update_employee_indemnity_dec_2020(
+                                fn, employees
+                            )
+                        )
+                elif year == "2021":
+                    if month == "01":
+                        employees.update(
+                            active_members_indemnity_parser.update_employee_indemnity_jan_2021(
                                 fn, employees
                             )
                         )
