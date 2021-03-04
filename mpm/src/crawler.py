@@ -17,6 +17,14 @@ beneficiary_types = {1: 'Membros ativos',
 def links_remuneration(month, year):
     links_type = {}
     link = ""
+    #A partir de 2021 vamos realizar a coleta apenas dos Membros Ativos
+    if year == "2021":
+        link = baseURL + 'RelatorioRemuneracaoMensal.php?grupo=1' + \
+            '&mes=' + str(month) + \
+            '&ano=' + str(year) + '&tipo=xlsx'
+        links_type["Membros ativos"] = link
+        return links_type
+
     for key in beneficiary_types:
         link = baseURL + 'RelatorioRemuneracaoMensal.php?grupo=' + \
             str(key) + '&mes=' + str(month) + \
@@ -28,6 +36,14 @@ def links_remuneration(month, year):
 def links_other_funds(month, year):
     links_type = {}
     link = ""
+
+    if year == "2021":
+        link = baseURL + 'RelatorioRemuneracaoMensalVerbasIndenizatorias.php?grupo=1' + \
+            '&mes=' + str(month) + \
+            '&ano=' + str(year) + '&tipo=xlsx'
+        links_type["Membros ativos"] = link
+        return links_type
+
     for key in beneficiary_types:
         link = baseURL + 'RelatorioRemuneracaoMensalVerbasIndenizatorias.php?grupo=' + \
             str(key) + '&mes=' + str(month) + \
