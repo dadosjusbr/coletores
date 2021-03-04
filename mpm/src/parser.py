@@ -194,7 +194,6 @@ def parse(file_names):
                 update_employee_indemnity(fn, employees)
     except KeyError as e:
         sys.stderr.write('Registro inválido ao processar verbas indenizatórias: {}'.format(e))
-        #sys.stderr.write('Mapa de funcionários: {}'.format(employees))
         os._exit(1)
 
     return list(employees.values())
