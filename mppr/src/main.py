@@ -10,12 +10,12 @@ import json
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
 else:
-    sys.stderr.write("Invalid arguments, missing parameter: 'MONTH'.\n")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'MONTH'.\n")
     os._exit(1)
 if('YEAR' in os.environ):
     year = os.environ['YEAR']
 else:
-    sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'YEAR'.\n")
     os._exit(1)
 if('OUTPUT_FOLDER' in os.environ):
     output_path = os.environ['OUTPUT_FOLDER']
@@ -24,7 +24,7 @@ else:
 if('GIT_COMMIT' in os.environ):
     crawler_version = os.environ['GIT_COMMIT']
 else:
-    sys.stderr.write("crawler_version cannot be empty")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'GIT_COMMIT'.\n")
     os._exit(1)
 
 now = datetime.datetime.now()
@@ -35,10 +35,10 @@ if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
     os._exit(1)
 if((int(year) == current_year) & (int(month) > current_month)):
-    sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
+    sys.stderr.write("As master Yoda would say: 'one must not crawl/parse the future {}/{}'.\n".format(month, year))
     os._exit(1)
 if(int(year) > current_year):
-    sys.stderr.write("Invalid year {}: InvalidParameters.\n".format(year))
+    sys.stderr.write("As master Yoda would say: 'one must not crawl/parse the future {}/{}'.\n".format(month, year))
     os._exit(1)
 
 # Main execution

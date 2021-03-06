@@ -3,7 +3,7 @@ import sys
 import os 
 import pathlib
 
-urls = { "remu": 'http://apps.mppr.mp.br/planilhas_transparencia/mptransp{}{}mafp.ods',
+url_formats = { "remu": 'http://apps.mppr.mp.br/planilhas_transparencia/mptransp{}{}mafp.ods',
         'vi': 'http://apps.mppr.mp.br/planilhas_transparencia/mptransp201802mavio.ods'
         }
     
@@ -21,12 +21,12 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     files = []
     
-    for key in urls:
+    for key in url_formats:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         filename = year + '_' + month +'_' + key 
         file_path = output_path + '/' + filename + '.ods'
-        url = urls[key].format(year, month)
-        download(url, file_path)
+        url = url_formats[key].format(year, month)
+        download(url_formats, file_path)
         
         files.append(file_path)
         
