@@ -2,7 +2,7 @@
 
 Este crawler tem como objetivo a recuperação de informações sobre folhas de pagamentos dos membros ativos do Ministério Público de Minas Gerais, a partir de 2018. O site com as informações pode ser acessado [aqui](https://transparencia.mpmg.mp.br/nav/contracheque).
 
-O crawler está estruturado como uma CLI. É necessário passar os argumentos mês e ano. E então, serão baixadas as planilhas, no formato xlsx, referentes ao mês e ano que foram passados como argurmentos, as mesmas são correpondentes a remuneração mensal e verbas indenizatórias dos Membros Ativos.
+O crawler está estruturado como uma CLI. É necessário passar os argumentos mês e ano via variáveis de ambiente (`MONTH`e `YEAR`). E então, serão baixadas as planilhas, no formato xlsx. As mesmas são correpondentes a remuneração mensal e verbas indenizatórias dos Membros Ativos.
 
 De 2018 até abril de 2020 as planilhas seguem o formato Resolução [CNMP 89/2012](https://www.cnmp.mp.br/portal/images/Resolucoes/Resolu%C3%A7%C3%A3o-0891.pdf). A partir de maio de 2020 seguem o Pós Resolução CNMP 200/2019, que altera o Anexo I da Resolução nº 89/2012 para incluir nessa norma informações sobre remunerações temporárias e verbas indenizatórias, de modo que o total de rendimentos brutos passe a contabilizar os valores efetivamente recebidos pelos membros do Ministério Público.
 
