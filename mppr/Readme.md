@@ -37,3 +37,6 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 
 ## Dificuldades de coleta 
 - A pagina do ministério oferece as planilhas referentes á verbas indenizatórias e remunerações simples em seções diferentes, sendo necessário selecionar o periodo de tempo referente a cada uma delas para esclarecimento e compreensão dos dados.
+
+## Dificuldades de Parsing 
+- Não há coluna referente ao total de indenizações mensais recebidas por um determinado membro para o ano de 2019. Gerando diferenças no numero de colunas e exigindo uma nova logica para calculo de totais 
