@@ -55,6 +55,53 @@ class TestParser(unittest.TestCase):
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
+    
+    def test_membros_jan_2019(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': 'ADAUTO SALVADOR REIS FACCO',
+            'name': 'ADAUTO SALVADOR REIS FACCO',
+            'role': 'PROMOTOR DE JUSTICA',
+            'type': 'membro',
+            'workplace': 'CURITIBA - 1a. VARA CIVEL',
+            'active': True,
+            'income': {
+                'total': 37394.91,
+                'wage': 33689.11,
+                'perks': {
+                    'total': 2044.99,
+                    'food': 967.34 ,
+                    'health': 1077.65,
+                    'pre_school': 0.00,
+                    'housing_aid': 0.00,
+                },
+                'other': {
+                    'total': 7720.42,
+                    'trust_position': 0.00,
+                    'others_total': 3705.8,
+                    'eventual_benefits': 3705.8,
+                    'others': {
+                        '13o. Salário': 0.00,
+                        'Adicional de Férias': 0.00,
+                        'Abono de permanência': 3705.8,
+                        'Adicional Noturno': 0.00,
+                        'Cursos': 0.00,
+                        'Serviço Extraor': 0.00,
+                        'Substituição de Função': 0.00,
+                        'Cumulações': 0.00
+                    },
+            },
+        },
+            'discounts': {
+                'total': 12048.8,
+                'prev_contribution': 3705.8,
+                'ceil_retention': 0.00,
+                'income_tax': 8343.00,
+            }
+    }
+
+
 
 if __name__ == '__main__':
     unittest.main()
