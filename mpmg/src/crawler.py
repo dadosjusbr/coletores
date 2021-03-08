@@ -42,8 +42,6 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
-    print(urls_remuneration)
-    print(urls_other_funds)
     files = []
 
     for element in urls_remuneration:
