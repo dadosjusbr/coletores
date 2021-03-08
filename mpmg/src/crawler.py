@@ -2,18 +2,17 @@ import requests
 import pathlib
 import sys
 import os
-baseURL = 'https://transparencia.mpmg.mp.br/db_form/contracheque/'
+
+base_url = 'https://transparencia.mpmg.mp.br/db_form/contracheque/'
 
 # Generate endpoints able to download
-
-
 def links_remuneration(month, year):
     links_type = {}
     link = ""
     if year == "2018" or year == "2019" or (month in ["01", "02", "03", "04"] and year == "2020"):
-        link = baseURL + "remuneracao_auxilios_membros_ativos?year=" + year + "&month=" + month + "&format=xlsx&position=membro&status=ativo"
+        link = base_url + "remuneracao_auxilios_membros_ativos?year=" + year + "&month=" + month + "&format=xlsx&position=membro&status=ativo"
     else:
-        link = baseURL + "res2002019/remuneracao_auxilios_membros_ativos?year=" + year + "&month=" + month + "&format=xlsx&position=membro&status=ativo"
+        link = base_url + "res2002019/remuneracao_auxilios_membros_ativos?year=" + year + "&month=" + month + "&format=xlsx&position=membro&status=ativo"
 
     links_type["Membros ativos"] = link
     return links_type
@@ -22,9 +21,9 @@ def links_other_funds(month, year):
     links_type = {}
     link = ""
     if year == "2018" or year == "2019" or (month in ["01", "02", "03", "04"] and year == "2020"):
-        link = baseURL + "auxilios?year=" + year + "&month=" + month + "&format=xlsx&status=ativo"
+        link = base_url + "auxilios?year=" + year + "&month=" + month + "&format=xlsx&status=ativo"
     else:
-        link = baseURL + "res2002019/auxilios?year=" + year + "&month=" + month + "&format=xlsx&status=ativo"
+        link = base_url + "res2002019/auxilios?year=" + year + "&month=" + month + "&format=xlsx&status=ativo"
     links_type["Membros ativos"] = link
     return links_type
 
@@ -40,8 +39,6 @@ def download(url, file_path):
         os._exit(1)
 
 # Crawl retrieves payment files from MPM.
-
-
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
