@@ -213,7 +213,7 @@ def parse(files):
     
     for file_name in files:
         if 'vi' not in file_name:
-            if '2019' in file_name:
+            if ('2019' in file_name) or ('2018' in file_name):
                 employees.update(employee_parser_2019(file_name))
             else:
                 employees.update(employees_parser(file_name))
