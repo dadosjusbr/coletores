@@ -77,10 +77,10 @@ class TestParser(unittest.TestCase):
                     'housing_aid': 0.00,
                 },
                 'other': {
-                    'total': 7720.42,
+                    'total': 3705.8,
                     'trust_position': 0.00,
                     'others_total': 3705.8,
-                    'eventual_benefits': 3705.8,
+                    'eventual_benefits': 0.00,
                     'others': {
                         '13o. Salário': 0.00,
                         'Adicional de Férias': 0.00,
@@ -100,7 +100,14 @@ class TestParser(unittest.TestCase):
                 'income_tax': 8343.00,
             }
     }
+        files = ('./output_test/2019_01_remu.ods',
+                 './output_test/2019_01_vi.ods')
+        employees = parser.parse(files)
 
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+    
 
 
 if __name__ == '__main__':
