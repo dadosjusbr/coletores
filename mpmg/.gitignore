@@ -1,5 +1,5 @@
 mpmg
-output/
+src/output
 venv
 src/result.json
 result.json

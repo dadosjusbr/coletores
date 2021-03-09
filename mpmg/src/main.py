@@ -20,7 +20,7 @@ else:
 if('OUTPUT_FOLDER' in os.environ):
     output_path = os.environ['OUTPUT_FOLDER']
 else:
-    output_path = "/output"
+    output_path = "./output"
 if('GIT_COMMIT' in os.environ):
     crawler_version = os.environ['GIT_COMMIT']
 else:
@@ -44,21 +44,21 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    # employees = parser.parse(file_names)
-    # cr = {
-    #     'aid': 'mpmg',
-    #     'month': int(month),
-    #     'year': int(year),
-    #     'files': file_names,
-    #     'crawler': {
-    #         'id': 'mpmg',
-    #         'version': crawler_version,
-    #     },
-    #     'employees': employees,
-    #     # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-    #     'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    # }
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    employees = parser.parse(month, year, file_names)
+    cr = {
+        'aid': 'mpmg',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpmg',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 
 if __name__ == '__main__':
