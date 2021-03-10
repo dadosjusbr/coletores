@@ -66,7 +66,7 @@ def parse(payload):
             "income_tax": item["vlDescIR"],
         }
         employee = {
-            "reg": item["nuMatricula"],
+            "reg": str(item["nuMatricula"]),
             "name": item["nmServidor"],
             "role": item["dsCargo"],
             "type": types[item['dsCargo']],
