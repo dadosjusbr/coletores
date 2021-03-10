@@ -59,7 +59,7 @@ def test_parse_payload_to_employee():
         "other": expected_funds,
     }
     expected_employee = {
-        "reg": 904023,
+        "reg": "904023",
         "name": "IGOR ANDREYSON MENDES LOPES",
         "role": "DIGITADOR",
         "type": "servidor",
