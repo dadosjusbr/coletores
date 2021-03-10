@@ -1,15 +1,15 @@
-import pandas as pd
-from datetime import datetime
-from openpyxl import Workbook, load_workbook
-import xlrd
-import parser_april20_backward
-import parser_may20_forward
-import numpy as np
-
+import os
 import math
 import pathlib
 import sys
-import os
+import xlrd
+import numpy as np
+import pandas as pd
+from datetime import datetime
+from openpyxl import Workbook, load_workbook
+import parser_april20_backward
+import parser_may20_forward
+
 
 
 def read_data(path):
@@ -17,9 +17,7 @@ def read_data(path):
         data = pd.read_excel(path, engine="xlrd")
         return data
     except Exception as excep:
-        sys.stderr.write("'Não foi possível ler o arquivo: " +
-                         path + '. O seguinte erro foi gerado: ' + excep)
-        os._exit(1)
+        print(excep)
 
 
 # Strange way to check nan. Only I managed to make work

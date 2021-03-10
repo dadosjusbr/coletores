@@ -90,7 +90,7 @@ def parse_employees(file_name):
         curr_row += 1
         if curr_row > end_row:
             break
-
+    
     return employees
 
 
