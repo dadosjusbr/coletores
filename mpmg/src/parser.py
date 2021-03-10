@@ -17,7 +17,8 @@ def read_data(path):
         data = pd.read_excel(path, engine="xlrd")
         return data
     except Exception as excep:
-        print(excep)
+        sys.stderr.write("'Não foi possível ler o arquivo: " +
+                         path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
 
