@@ -65,13 +65,8 @@ def parse(month, year, file_names):
     for fn in file_names:
         if "Verbas Indenizatorias" not in fn:
             # Puts all parsed employees in the big map
-            if (
-                year == "2018"
-                or year == "2019"
-                or (month in ["01", "02", "03", "04"] and year == "2020")
-            ):
+            if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
                 employees.update(parser_april20_backward.parse_employees(fn))
-
     try:
         for fn in file_names:
             if "Verbas Indenizatorias" in fn:

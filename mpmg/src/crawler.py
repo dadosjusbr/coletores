@@ -9,11 +9,7 @@ base_url = "https://transparencia.mpmg.mp.br/db_form/contracheque/"
 def links_remuneration(month, year):
     links_type = {}
     link = ""
-    if (
-        year == "2018"
-        or year == "2019"
-        or (month in ["01", "02", "03", "04"] and year == "2020")
-    ):
+    if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
         link = (
             base_url
             + "remuneracao_auxilios_membros_ativos?year="
@@ -39,11 +35,8 @@ def links_remuneration(month, year):
 def links_other_funds(month, year):
     links_type = {}
     link = ""
-    if (
-        year == "2018"
-        or year == "2019"
-        or (month in ["01", "02", "03", "04"] and year == "2020")
-    ):
+    if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
+    
         link = (
             base_url
             + "auxilios?year="
@@ -85,6 +78,8 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
+    print(urls_other_funds)
+    print(urls_remuneration)
     files = []
 
     for element in urls_remuneration:

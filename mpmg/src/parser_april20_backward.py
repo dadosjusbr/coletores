@@ -3,8 +3,8 @@ import parser
 
 def format_value(element):
     # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
-    element = element.replace(".", "").replace(",", ".")
-
+    if type(element) == str:
+        element = element.replace(".", "").replace(",", ".")
     return float(element)
 
 
