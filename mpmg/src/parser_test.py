@@ -54,6 +54,21 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_membros_ativos(self):
+        self.maxDiff = None
+
+        expected = {
+        }
+        files = (
+            "./output_test/Membros ativos-05-2020.xlsx",
+            "./output_test/Membros ativos-Verbas Indenizatorias-05-2020.xlsx",
+        )
+        employees = parser.parse("05", "2020", files)
+        print(employees)
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()

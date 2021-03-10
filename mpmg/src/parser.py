@@ -3,6 +3,7 @@ from datetime import datetime
 from openpyxl import Workbook, load_workbook
 import xlrd
 import parser_april20_backward
+import parser_may20_forward
 import numpy as np
 
 import math
@@ -16,12 +17,8 @@ def read_data(path):
         data = pd.read_excel(path, engine="xlrd")
         return data
     except Exception as excep:
-        sys.stderr.write(
-            "'Não foi possível ler o arquivo: "
-            + path
-            + ". O seguinte erro foi gerado: "
-            + excep
-        )
+        sys.stderr.write("'Não foi possível ler o arquivo: " +
+                         path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
 
@@ -67,15 +64,16 @@ def parse(month, year, file_names):
             # Puts all parsed employees in the big map
             if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
                 employees.update(parser_april20_backward.parse_employees(fn))
+            else:
+                employees.update(parser_may20_forward.parse_employees(fn))
     try:
         for fn in file_names:
             if "Verbas Indenizatorias" in fn:
-                if (
-                    year == "2018"
-                    or year == "2019"
-                    or (month in ["01", "02", "03", "04"] and year == "2020")
-                ):
+                if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
                     parser_april20_backward.update_employee_indemnity(fn, employees)
+                else:
+                    parser_may20_forward.update_employee_indemnity(fn, employees)
+
     except KeyError as e:
         sys.stderr.write(
             "Registro inválido ao processar verbas indenizatórias: {}".format(e)
