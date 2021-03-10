@@ -1,0 +1,3 @@
+
+def parse(filenames):
+    return []
