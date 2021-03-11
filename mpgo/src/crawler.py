@@ -17,11 +17,14 @@ url_formats = { "remu": "https://www.mpgo.mp.br/transparencia/contracheque/detal
 def download(url, file_path):
     try:
       response = requests.get(url, allow_redirects=True)
+    except Exception as excep:
+        sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path + ' . A requisição foi enviada para a url: ' + url + ' . E o foi retornado status code:' + response.status_code)
+    try:    
       with open(file_path, "wb") as file:
           file.write(response.content)
       file.close()
     except Exception as excep:
-        sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path + '. O seguinte erro foi gerado: ' + excep )
+        sys.stderr.write("Não foi possível fazer a escrita do arquivo: " + file_path + ' em disco. O seguinte erro foi gerado: ' + excep )
         os._exit(1)
 
 def crawl(year, month, output_path):
