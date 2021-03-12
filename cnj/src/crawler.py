@@ -20,13 +20,14 @@ payroll_types = {1: ['QvFrame Document_TX3522', '13', 'Contracheque'],
 def crawl(court, driver_path, output_path):
     files = []
     pathlib.Path(output_path).mkdir(exist_ok=True)
+    driver = setup_driver(driver_path, output_path)
     for payroll in payroll_types.values():
-        file_path = download(court, payroll, driver_path, output_path)
+        file_path = download(court, payroll, output_path, driver)
         files.append(file_path)
+    driver.quit()
     return files
 
-def download(court, payroll, driver_path, output_path):
-    driver = setup_driver(driver_path, output_path)
+def download(court, payroll, output_path, driver):
     driver.get(base_URL)
     
     ## Opening the search bar
@@ -60,12 +61,11 @@ def download(court, payroll, driver_path, output_path):
     time.sleep(5)
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
-    time.sleep(20)
+    time.sleep(30)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
     file_name = format_filename('.' + output_path, payroll[2], court)
-    driver.quit()
 
     return file_name
 
