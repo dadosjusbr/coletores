@@ -39,7 +39,7 @@ def employees_parser(file_path):
         ceil_ret = row[17] #Retenção por Teto Constitucional
 
         employees[reg] = {
-        'reg': reg,
+        'reg': str(reg),
         'name': name,
         'role': role,
         'type': 'membro',
@@ -113,7 +113,8 @@ def employees_indemnity(file_path, employees):
             })
             emp['income']['other']['others'].update({
                 'Verbas Rescisórias': verba_reci,
-                'Licença-Prêmio': abono_pecu,
+                'Licença-Prêmio': licensa,
+                'Abono Pecuniário': abono_pecu,
                 'Outras Verbas Indenizatórias': other_verbs,
                 'Adicional de Insalubridade/Periculosidade': add_insa,
                 'Gratificação Exercício Cumulativo': gratification,
@@ -122,8 +123,8 @@ def employees_indemnity(file_path, employees):
                 'Outras Remunerações Temporárias': other_remu,
             })
             emp['income']['other'].update({
-                'others_total': round(emp['income']['other']['others_total'] + verba_reci + abono_pecu + other_verbs
-                + add_insa + gratification + esp_grati + sub + other_remu)
+                'others_total': round(emp['income']['other']['others_total'] + verba_reci + licensa + abono_pecu + other_verbs
+                + add_insa + gratification + esp_grati + sub + other_remu , 2)
             })
     
     return employees
