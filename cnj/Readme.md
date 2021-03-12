@@ -18,7 +18,7 @@ Estas planilhas contém as informações de pagamento de todos os meses disponí
     ```sh
     COURT=TJRJ DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
     ```
-- Para que a execução do script possa ser corretamente executada é necessário que todos os requirements sejam devidamente instalados. Para isso, executar o [PIP](https://pypi.org/project/pip/) passando o arquivo requiments.txt, por meio do seguinte comando:
+- Para que a execução do script possa ser corretamente executada é necessário que todos os requirements sejam devidamente instalados. Para isso, executar o [PIP](https://pip.pypa.io/en/stable/installing/) passando o arquivo requiments.txt, por meio do seguinte comando:
    
    ```sh
       pip install -r requirements.txt
