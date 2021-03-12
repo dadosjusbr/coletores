@@ -8,10 +8,9 @@ url_formats = { "remu": "https://www.mpgo.mp.br/transparencia/contracheque/detal
                 &contracheque_tb_detalhamento_folha%5Bano%5D={}&contracheque_tb_detalhamento_folha\
                 %5Bmes%5D={}&contracheque_tb_detalhamento_folha%5Bcdg_ordem%5D=&contracheque_tb_detalhamento_\
                 folha%5Bnm_pessoa%5D=&commit=CSV",
-                "vi": "https://www.mpgo.mp.br/transparencia/contracheque/tb_verbas_indeniz_remun?\
-                utf8=%E2%9C%93&contracheque_tb_verbas_indeniz_remun%5Bano%5D={}&contracheque_tb_ver\
-                bas_indeniz_remun%5Bmes%5D={}&contracheque_tb_verbas_indeniz_remun%5Bnm_pessoa%5D=&\
-                commit=XLS"
+                "vi": "https://www.mpgo.mp.br/transparencia/contracheque/tb_verbas_indeniz_remun?utf8=%E2%9C%93\
+                &contracheque_tb_verbas_indeniz_remun%5Bano%5D={}&contracheque_tb_verbas_indeniz_remun%5Bmes%5D={}\
+                &contracheque_tb_verbas_indeniz_remun%5Bnm_pessoa%5D=&commit=CSV"
  }
 
 def download(url, file_path):
@@ -33,7 +32,7 @@ def crawl(year, month, output_path):
     for key in url_formats:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         filename = year + '_' + month +'_' + key 
-        file_path = output_path + '/' + filename + '.xls'
+        file_path = output_path + '/' + filename + '.csv'
         url = url_formats[key].format(year, month)
         download(url, file_path)
         
