@@ -88,7 +88,7 @@ def employees_indemnity(file_path, employees):
         aux_ali = row[4] #Auxílio alimentação
         pre_school = row[5] #Auxílio creche
         verba_reci =  row[6] #Verbas Rescisórias
-        licensa = row[7] #Licença-Prêmio
+        licenca = row[7] #Licença-Prêmio
         abono_pecu = row[8] #Abono Pecuniário
         other_verbs = row[9] #Outras Verbas Indenizatórias
         add_insa = row[10] #Adicional de Insalubridade/Periculosidade
@@ -113,7 +113,7 @@ def employees_indemnity(file_path, employees):
             })
             emp['income']['other']['others'].update({
                 'Verbas Rescisórias': verba_reci,
-                'Licença-Prêmio': licensa,
+                'Licença-Prêmio': licenca,
                 'Abono Pecuniário': abono_pecu,
                 'Outras Verbas Indenizatórias': other_verbs,
                 'Adicional de Insalubridade/Periculosidade': add_insa,
@@ -123,7 +123,7 @@ def employees_indemnity(file_path, employees):
                 'Outras Remunerações Temporárias': other_remu,
             })
             emp['income']['other'].update({
-                'others_total': round(emp['income']['other']['others_total'] + verba_reci + licensa + abono_pecu + other_verbs
+                'others_total': round(emp['income']['other']['others_total'] + verba_reci + licenca + abono_pecu + other_verbs
                 + add_insa + gratification + esp_grati + sub + other_remu , 2)
             })
     
