@@ -1,17 +1,38 @@
 import pandas as pd
 import sys
 import os
+import datetime
+import json
 
-def parse(file_names, parsing_date):
+def parse(court, file_names, output_path, crawler_version):
+    now = datetime.datetime.now()
+    current_month = now.month
+    current_year = now.year
+    months = list(range(1, 13))
+    years = list(range(2018, current_year + 1))
+
+    for year in years:
+        for month in months:
+            if year == current_year and month >= current_month:
+                break
+            if month < 10:
+                parsing_date = "0" + str(month) + "/" + str(year)
+            else:
+                parsing_date = str(month) + "/" + str(year)
+            employees = {}
+            print(parsing_date)
+            employees.update(parse_by_file(court, file_names, parsing_date))
+            print(list(employees.values()))
+            save_file(court, parsing_date, file_names, output_path, crawler_version, employees)
+
+def parse_by_file(court, file_names, parsing_date):
     employees = {}
-
     # As outras tabelas precisam de um parser distinto
     for fn in file_names:
         data = filter_by_date(fn, parsing_date)
-        if ('Contracheque' in fn):
+        if (court + "-contracheque" in fn):
             employees.update(parse_employees(data))
-
-    return list(employees.values())
+    return employees
 
 # Retorna o dataframe contendo apenas os dados do mes/ano especificado
 def filter_by_date(fn, parsing_date):
@@ -84,5 +105,26 @@ def parse_employees(data):
                 "Sescontos Diversos": abs(descontos_diversos)
             },
         }
-        
+
     return employees
+
+def save_file(court, parsing_date, file_names, output_path, crawler_version, employees):
+    month, year = parsing_date.split("/")
+    now = datetime.datetime.now()
+    cr = {
+        'aid': court,
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mprs',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    final_file_name = court + "-" + parsing_date.replace("/", "-") + ".json"
+    with open("." + output_path + "/" + final_file_name, "w") as file:
+        file.write(json.dumps({'cr': cr}, ensure_ascii=False))
+
