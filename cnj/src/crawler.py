@@ -30,34 +30,37 @@ def download(court, payroll, driver_path, output_path):
     driver.get(base_URL)
     
     ## Opening the search bar
+    # Other approaches, such as waiting for the elements to be visible, did not work. 
+    # So, as it is necessary to wait for the page to load, time.sleep was used here
+    # and below. (https://stackoverflow.com/questions/45347675/make-selenium-wait-10-seconds)
     time.sleep(10)
     courts = driver.find_element(By.XPATH, "//*[@title='Tribunal']")
     search_icon = courts.find_element(By.XPATH, "//*[@title='Pesquisar']")
     search_icon.click()
 
     ## Selecting the input text in the search bar
-    time.sleep(10)
+    time.sleep(5)
     search_bar = driver.find_element_by_class_name("PopupSearch")
     input_text = search_bar.find_element(By.XPATH, "//input[@type='text']")
 
     ## Searching by court name
-    time.sleep(10)
+    time.sleep(5)
     input_text.send_keys(court)
     input_text.send_keys(Keys.ENTER)
     sys.stderr.write("Court selected.\n")
 
     # Selecting the payroll
-    time.sleep(10)
+    time.sleep(5)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
     current_payroll = driver.find_element(By.XPATH, x_path)
     current_payroll.click()
     sys.stderr.write("Payroll selected: {}.\n".format(payroll[2]))
 
     # Donwloading the file
-    time.sleep(10)
+    time.sleep(5)
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
-    time.sleep(30)
+    time.sleep(20)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
