@@ -64,7 +64,7 @@ def download(court, payroll, driver_path, output_path):
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
-    file_name = format_filename('.' + output_path, payroll[2])
+    file_name = format_filename('.' + output_path, payroll[2], court)
     driver.quit()
 
     return file_name
@@ -81,12 +81,12 @@ def setup_driver(driver_path, output_path):
     chrome_options.add_experimental_option("prefs", prefs)
     return webdriver.Chrome(executable_path = path_chrome, chrome_options = chrome_options)
 
-def format_filename(output_path, payroll_name):
+def format_filename(output_path, payroll_name, court):
     # Identifying the name of the last downloaded file
     filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)], key=os.path.getctime)
 
     # renaming the file properly, according to the payroll
-    new_filename = payroll_name + ".xlsx"
+    new_filename = court + "-" + payroll_name.lower().replace(" ","-") + ".xlsx"
     shutil.move(filename,os.path.join(output_path,r"{}".format(new_filename)))
     new_output_path = output_path + "/" + new_filename
 
