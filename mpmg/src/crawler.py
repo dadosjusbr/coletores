@@ -35,7 +35,10 @@ def links_remuneration(month, year):
 def links_other_funds(month, year):
     links_type = {}
     link = ""
-    if (int(year) < 2020) or (int(month) <= 4 and year == "2020"):
+    if year == "2018" or (month == "02" and year == "2019"):
+        link = base_url + "auxilios?year=" + year + "&month=" + month + "&format=html&status=ativo&name=undefined&numInitial=undefined&interval="
+                                          
+    elif (month != "02" and year == "2019" or (int(month) <= 4 and year == "2020")):
     
         link = (
             base_url
@@ -78,8 +81,6 @@ def download(url, file_path):
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
-    print(urls_other_funds)
-    print(urls_remuneration)
     files = []
 
     for element in urls_remuneration:
@@ -91,7 +92,12 @@ def crawl(year, month, output_path):
 
     for element in urls_other_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name_indemnity = (
+        if(year == "2018" or (month == "02" and year == "2019")):
+            file_name_indemnity = (
+            element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".html"
+        )
+        else:
+            file_name_indemnity = (
             element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".xlsx"
         )
         file_path_indemnity = output_path + "/" + file_name_indemnity
