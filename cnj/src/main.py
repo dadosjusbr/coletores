@@ -26,4 +26,5 @@ else:
 # Main execution
 if __name__ == '__main__':
     file_names = crawler.crawl(court, driver_path, output_path)
-    parser.parse(court, file_names, output_path, crawler_version)
+    files = parser.parse(court, file_names, output_path, crawler_version)
+    print(files)
