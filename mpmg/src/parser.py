@@ -2,7 +2,7 @@ import os
 import math
 import pathlib
 import sys
-import xlrd
+import xlrd2
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -13,24 +13,15 @@ import parser_may20_forward
 
 
 def read_data(path):
-    if("xlsx" in path):
-        try:
-            data = pd.read_excel(path, engine="xlrd")
-            return data
-        except Exception as excep:
-            sys.stderr.write("'Não foi possível ler o arquivo: " +
-                         path + '. O seguinte erro foi gerado: ' + excep)
-            os._exit(1)
 
-    elif("html" in path):
-        try:
-            data = pd.read_html(path, decimal=',', thousands='.')
-            return data[0]
-        except Exception as excep:
-            sys.stderr.write("'Não foi possível ler o arquivo: " +
-                         path + '. O seguinte erro foi gerado: ' + excep)
-            os._exit(1)
-       
+    try:
+        data = pd.read_html(path, decimal=',', thousands='.')
+        return data[0]
+    except Exception as excep:
+        sys.stderr.write("'Não foi possível ler o arquivo: " +
+                        path + '. O seguinte erro foi gerado: ' + excep)
+        os._exit(1)
+    
 
 
 # Strange way to check nan. Only I managed to make work
