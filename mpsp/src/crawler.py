@@ -23,7 +23,21 @@ def links_remuneration(month, year):
     links_type = {}
     link = ""
     # Por enquanto, para o ano 2018 só será feito o download dos membros ativos
-    if year == "2018":
+    if year == "2021":
+        for key in beneficiary_types:
+            if beneficiary_types[key] == "Membros_ativos":
+                if month in ["01"]:
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/Tabela%201%20Membros%20Ativos%20ref%20"
+                        + month
+                        + "-" 
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
+    elif year == "2018":
         for key in beneficiary_types:
             if beneficiary_types[key] == "Membros_ativos":
                 if month in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"]:
@@ -1081,6 +1095,19 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
+    elif year == "2021":
+        for key in beneficiary_types:
+            if beneficiary_types[key] == "Membros_ativos":
+                if month in ["01"]:
+                    link = (
+                        baseURL
+                        + "verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
     return links_type
 
 
@@ -1095,6 +1122,7 @@ def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
     files = []
+
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + "-" + year + ".ods"

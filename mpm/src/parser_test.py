@@ -303,8 +303,8 @@ class TestParser(unittest.TestCase):
             }
         }
 
-        files = ('/output_test/Colaboradores-1-2020.xlsx',
-                 '/output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx')
+        files = ('./output_test/Colaboradores-1-2020.xlsx',
+                 './output_test/Colaboradores-Verbas Indenizatorias-1-2020.xlsx')
         employees = parser.parse(files)
 
         # Verificações

@@ -21,7 +21,7 @@ def sum_up_from(values):
     return sum([
         value
         for key, value in values.items()
-        if key != "total" and value is not None
+        if key != "total" and key!= "others" and value is not None
     ])
 
 # Retorna uma copia do csv em memória.
@@ -41,6 +41,7 @@ def parse(payload):
             "total": round(item["vlIdenizacoes"], 2),
             "vacation": item["vlRendFerias"],
         }
+        another_remu = { "vlOutrasRemun": item["vlOutrasRemun"]}
         funds = {
             "personal_benefits": item["vlRendAbonoPerman"],
             "eventual_benefits": item["vlIdenizacoes"],
@@ -48,7 +49,7 @@ def parse(payload):
             "gratification": item["vlRendGratNatalina"],
             "origin_pos": item["vlRendTotalBruto"],
             "others_total": item["vlRendVerbas"],
-            "others": item["vlOutrasRemun"],
+            "others": another_remu
         }
         funds["total"] = round(sum_up_from(funds), 2)
         income = {
@@ -65,7 +66,7 @@ def parse(payload):
             "income_tax": item["vlDescIR"],
         }
         employee = {
-            "reg": item["nuMatricula"],
+            "reg": str(item["nuMatricula"]),
             "name": item["nmServidor"],
             "role": item["dsCargo"],
             "type": types[item['dsCargo']],
