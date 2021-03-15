@@ -4,7 +4,11 @@ import parser
 def format_value(element):
     # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
     if type(element) == str:
-        element = element.replace(".", "").replace(",", ".")
+        if("." in element and "," in element):
+            element = element.replace(".", "").replace(",", ".")
+        elif("," in element):
+            element = element.replace(",", ".")
+
     return float(element)
 
 
@@ -16,14 +20,15 @@ def parse_employees(file_name):
     end_row = parser.get_end_row(rows, begin_row, end_string)
 
     employees = {}
-    # If the spreadsheet does not contain employees
     curr_row = 0
     for row in rows:
         if curr_row < begin_row:
             curr_row += 1
             continue
-
+        
         matricula = row[1]
+        if(type(matricula) != str):
+            matricula = str(matricula)
         nome = row[2]
         cargo_efetivo = row[3]
         unidade_administrativa = row[5]
@@ -96,7 +101,6 @@ def parse_employees(file_name):
 
 def update_employee_indemnity(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
-
     begin_string = "Matrícula"  # word before starting data
     end_string = "TOTAL"
     begin_row = parser.get_begin_row(rows, begin_string)
@@ -107,8 +111,10 @@ def update_employee_indemnity(file_name, employees):
         if curr_row < begin_row:
             curr_row += 1
             continue
-
         matricula = row[1]
+
+        if(type(matricula) != str):
+            matricula = str(matricula)
         if matricula in employees.keys():
             vale_alimentacao = format_value(row[5])
             auxilio_alimentacao = format_value(row[6])
@@ -145,7 +151,7 @@ def update_employee_indemnity(file_name, employees):
                 }
             )
 
-            employees[row[1]] = emp
+            employees[matricula] = emp
 
             curr_row += 1
             if curr_row > end_row:
