@@ -38,6 +38,7 @@ Na nomenclatura do DadosJusBR, um coletor (crawler) de remunerações é respons
 
 ## Transparência do Sistema de Justiça na Mídia
 
+* 15/03/2021 - [Benefícios a procuradores e juízes avançam e somam R$ 543 milhões na pandemia](https://www1.folha.uol.com.br/poder/2021/03/beneficios-a-procuradores-e-juizes-avancam-e-somam-r-543-milhoes-na-pandemia.shtml)
 * 08/03/2021 - [Índice de acesso à justiça (publicado pelo CNJ)](https://www.cnj.jus.br/wp-content/uploads/2021/02/Relatorio_Indice-de-Acesso-a-Justica_LIODS_22-2-2021.pdf)
 * 07/09/2020 - [Os privilégios da toga](https://piaui.folha.uol.com.br/os-privilegios-da-toga/)
 * 24/08/2020 -[Tribunal de Justiça do Ceará lidera ranking da transparência no País, aponta estudo](https://www.focus.jor.br/tribunal-de-justica-do-ceara-lidera-ranking-da-transparencia-no-pais-aponta-estudo/)
