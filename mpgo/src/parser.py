@@ -37,44 +37,47 @@ def employees_parser(file_path):
         prev_contrib = row[15] #Contribuição Previdenciária
         imposto_renda = row[16] #Imposto de Renda
         ceil_ret = row[17] #Retenção por Teto Constitucional
+        
+        #Evitando adição de colaboradores na planilha de membros
+        if role != 'COLABORADOR':
 
-        employees[reg] = {
-        'reg': str(reg),
-        'name': name,
-        'role': role,
-        'type': 'membro',
-        'workplace': workplace,
-        'active': True,
-        "income":
-        {
-            'total': total,
-            'wage': remuneration + other_verbs,
-            'perks':{
-                'total': idemnity,
-            },
-            'other':
-            { 
-                'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia + temp_remu,
-                'trust_position': trust_pos,
-                'eventual_benefits': temp_remu,
-                'others_total': christmas_bonus + terco_ferias + abono_permanencia,
-                'others': {
-                    'Gratificação Natalina': christmas_bonus,
-                    'Férias (1/3 constitucional)': terco_ferias,
-                    'Abono de permanência': abono_permanencia,
-                }
-            },
+            employees[reg] = {
+            'reg': str(reg),
+            'name': name,
+            'role': role,
+            'type': 'membro',
+            'workplace': workplace,
+            'active': True,
+            "income":
+            {
+                'total': total,
+                'wage': remuneration + other_verbs,
+                'perks':{
+                    'total': idemnity,
+                },
+                'other':
+                { 
+                    'total': trust_pos + christmas_bonus + terco_ferias + abono_permanencia + temp_remu,
+                    'trust_position': trust_pos,
+                    'eventual_benefits': temp_remu,
+                    'others_total': christmas_bonus + terco_ferias + abono_permanencia,
+                    'others': {
+                        'Gratificação Natalina': christmas_bonus,
+                        'Férias (1/3 constitucional)': terco_ferias,
+                        'Abono de permanência': abono_permanencia,
+                    }
+                },
 
-        },
-        'discounts':
-        {
-            'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
-            'prev_contribution': prev_contrib,
-            'ceil_retention': ceil_ret,
-            'income_tax': imposto_renda
+            },
+            'discounts':
+            {
+                'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
+                'prev_contribution': prev_contrib,
+                'ceil_retention': ceil_ret,
+                'income_tax': imposto_renda
+            }
         }
-    }
-    
+        
     return employees
 
 def employees_indemnity(file_path, employees):
