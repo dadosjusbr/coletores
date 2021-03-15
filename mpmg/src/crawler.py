@@ -36,10 +36,17 @@ def links_other_funds(month, year):
     links_type = {}
     link = ""
     if year == "2018" or (month == "02" and year == "2019"):
-        link = base_url + "auxilios?year=" + year + "&month=" + month + "&format=html&status=ativo&name=undefined&numInitial=undefined&interval="
-                                          
-    elif (month != "02" and year == "2019" or (int(month) <= 4 and year == "2020")):
-    
+        link = (
+            base_url
+            + "auxilios?year="
+            + year
+            + "&month="
+            + month
+            + "&format=html&status=ativo&name=undefined&numInitial=undefined&interval="
+        )
+
+    elif month != "02" and year == "2019" or (int(month) <= 4 and year == "2020"):
+
         link = (
             base_url
             + "auxilios?year="
@@ -92,14 +99,10 @@ def crawl(year, month, output_path):
 
     for element in urls_other_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        if(year == "2018" or (month == "02" and year == "2019")):
-            file_name_indemnity = (
+        file_name_indemnity = (
             element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".html"
         )
-        else:
-            file_name_indemnity = (
-            element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".html"
-        )
+
         file_path_indemnity = output_path + "/" + file_name_indemnity
         download(urls_other_funds[element], file_path_indemnity)
         files.append(file_path_indemnity)
