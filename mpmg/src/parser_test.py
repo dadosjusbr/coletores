@@ -103,7 +103,7 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros ativos-Verbas Indenizatorias-05-2020.html",
         )
         employees = parser.parse("05", "2020", files)
-      
+
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
@@ -153,6 +153,56 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros ativos-Verbas Indenizatorias-02-2018.html",
         )
         employees = parser.parse("02", "2018", files)
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_membros_ativos_backward_jan19(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "100600",
+            "name": "DEL VECCHIO LIMA DOS SANTOS",
+            "role": "PROMOTOR 2A ENTRANCIA",
+            "type": "membro",
+            "workplace": "DISPONIBILIDADE COMPULSORIA-COMARCA; DISPONIBILIDADE COMPULSORIA - UNIDADE",
+            "active": True,
+            "income": {
+                "total": 36116.98,
+                "wage": 21725.58,
+                "other": {
+                    "total": 14391.4,
+                    "trust_position": 0.0,
+                    "others_total": 14391.4,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "Outras Remunerações Temporárias": 14391.4,
+                    },
+                },
+                "perks": {
+                    "total": 0.0,
+                    "food": 0.0,
+                    "pre_school": 0.0,
+                    "transportation": 0.0,
+                    "housing_aid": 0.0,
+                    "health": 0.0,
+                },
+            },
+            "discounts": {
+                "total": 2785.81,
+                "prev_contribution": 2389.81,
+                "ceil_retention": 0.0,
+                "income_tax": 396.0,
+            },
+        }
+        files = (
+            "./output_test/Membros ativos-01-2019.html",
+            "./output_test/Membros ativos-Verbas Indenizatorias-01-2019.html",
+        )
+        employees = parser.parse("01", "2019", files)
 
         # Verificações
         self.assertEqual(1, len(employees))
