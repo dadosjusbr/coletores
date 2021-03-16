@@ -2,6 +2,8 @@ import parser
 
 
 def format_value(element):
+    if(parser.isNaN(element)):
+        return 0.0
     if type(element) == str:
         if("." in element and "," in element):
             element = element.replace(".", "").replace(",", ".")

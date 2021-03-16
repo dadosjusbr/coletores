@@ -3,6 +3,8 @@ import parser
 
 def format_value(element):
     # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
+    if(parser.isNaN(element)):
+        return 0.0
     if type(element) == str:
         if("." in element and "," in element):
             element = element.replace(".", "").replace(",", ".")
@@ -141,7 +143,7 @@ def update_employee_indemnity(file_name, employees):
             emp["income"].update(
                 {
                     "perks": {
-                        "total": total_indenizacoes,
+                        "total": round(total_indenizacoes,2),
                         "food": vale_alimentacao + auxilio_alimentacao,
                         "pre_school": auxilio_creche,
                         "transportation": transporte,
