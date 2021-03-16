@@ -16,7 +16,7 @@ def links_remuneration(month, year):
             + year
             + "&month="
             + month
-            + "&format=xlsx&position=membro&status=ativo"
+            + "&format=html&position=membro&status=ativo"
         )
     else:
         link = (
@@ -25,7 +25,7 @@ def links_remuneration(month, year):
             + year
             + "&month="
             + month
-            + "&format=xlsx&position=membro&status=ativo"
+            + "&format=html&position=membro&status=ativo"
         )
 
     links_type["Membros ativos"] = link
@@ -36,17 +36,24 @@ def links_other_funds(month, year):
     links_type = {}
     link = ""
     if year == "2018" or (month == "02" and year == "2019"):
-        link = base_url + "auxilios?year=" + year + "&month=" + month + "&format=html&status=ativo&name=undefined&numInitial=undefined&interval="
-                                          
-    elif (month != "02" and year == "2019" or (int(month) <= 4 and year == "2020")):
-    
         link = (
             base_url
             + "auxilios?year="
             + year
             + "&month="
             + month
-            + "&format=xlsx&status=ativo"
+            + "&format=html&status=ativo&name=undefined&numInitial=undefined&interval="
+        )
+
+    elif month != "02" and year == "2019" or (int(month) <= 4 and year == "2020"):
+
+        link = (
+            base_url
+            + "auxilios?year="
+            + year
+            + "&month="
+            + month
+            + "&format=html&status=ativo"
         )
     else:
         link = (
@@ -55,7 +62,7 @@ def links_other_funds(month, year):
             + year
             + "&month="
             + month
-            + "&format=xlsx&status=ativo"
+            + "&format=html&status=ativo"
         )
     links_type["Membros ativos"] = link
     return links_type
@@ -85,21 +92,17 @@ def crawl(year, month, output_path):
 
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        file_name = element + "-" + month + "-" + year + ".xlsx"
+        file_name = element + "-" + month + "-" + year + ".html"
         file_path = output_path + "/" + file_name
         download(urls_remuneration[element], file_path)
         files.append(file_path)
 
     for element in urls_other_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
-        if(year == "2018" or (month == "02" and year == "2019")):
-            file_name_indemnity = (
+        file_name_indemnity = (
             element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".html"
         )
-        else:
-            file_name_indemnity = (
-            element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".xlsx"
-        )
+
         file_path_indemnity = output_path + "/" + file_name_indemnity
         download(urls_other_funds[element], file_path_indemnity)
         files.append(file_path_indemnity)

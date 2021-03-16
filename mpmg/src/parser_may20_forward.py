@@ -2,9 +2,12 @@ import parser
 
 
 def format_value(element):
-    # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
     if type(element) == str:
-        element = element.replace(".", "").replace(",", ".")
+        if("." in element and "," in element):
+            element = element.replace(".", "").replace(",", ".")
+        elif("," in element):
+            element = element.replace(",", ".")
+
     return float(element)
 
 
@@ -24,6 +27,8 @@ def parse_employees(file_name):
             continue
 
         matricula = row[1]
+        if(type(matricula) != str):
+            matricula = str(matricula)
         nome = row[2]
         cargo_efetivo = row[3]
         lotacao = row[4]
@@ -111,6 +116,8 @@ def update_employee_indemnity(file_name, employees):
             continue
 
         matricula = row[1]
+        if(type(matricula) != str):
+            matricula = str(matricula)
         if matricula in employees.keys():
             auxilio_alimentacao = format_value(row[5])
             auxilio_creche = format_value(row[6])

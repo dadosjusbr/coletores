@@ -45,8 +45,8 @@ class TestParser(unittest.TestCase):
             },
         }
         files = (
-            "./output_test/Membros ativos-01-2020.xlsx",
-            "./output_test/Membros ativos-Verbas Indenizatorias-01-2020.xlsx",
+            "./output_test/Membros ativos-01-2020.html",
+            "./output_test/Membros ativos-Verbas Indenizatorias-01-2020.html",
         )
         employees = parser.parse("01", "2020", files)
 
@@ -58,7 +58,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            "reg": 152600,
+            "reg": "152600",
             "name": "JULIANA MARIA RIBEIRO DA FONSECA SALOMAO",
             "role": "PROMOT.ENTRANC.ESPECIAL",
             "type": "membro",
@@ -99,10 +99,11 @@ class TestParser(unittest.TestCase):
             },
         }
         files = (
-            "./output_test/Membros ativos-05-2020.xlsx",
-            "./output_test/Membros ativos-Verbas Indenizatorias-05-2020.xlsx",
+            "./output_test/Membros ativos-05-2020.html",
+            "./output_test/Membros ativos-Verbas Indenizatorias-05-2020.html",
         )
         employees = parser.parse("05", "2020", files)
+      
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
@@ -148,7 +149,7 @@ class TestParser(unittest.TestCase):
             },
         }
         files = (
-            "./output_test/Membros ativos-02-2018.xlsx",
+            "./output_test/Membros ativos-02-2018.html",
             "./output_test/Membros ativos-Verbas Indenizatorias-02-2018.html",
         )
         employees = parser.parse("02", "2018", files)
