@@ -2,7 +2,6 @@ import os
 import math
 import pathlib
 import sys
-import xlrd2
 import numpy as np
 import pandas as pd
 from datetime import datetime

@@ -43,3 +43,46 @@ A partir da Resolução CNMP 200/2019 é acrescido as seguintes colunas às tabe
 -	**Periculosidade e Insalubridade (Number)**
 - **Gratificações (Number)**
 - **Outras Remunerações (Number)**
+
+
+## Como usar
+
+ ### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+  ```sh
+    $ cd coletores/mpmg
+    $ sudo docker build -t mpmg .
+  ```
+ - Execução:
+ 
+  ```sh
+    $ sudo docker run -e MONTH=02 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpmg 
+  ```
+
+ ### Executando sem Docker
+
+ - É necessário ter instalado o [Python](https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ 
+No Linux, distribuições Ubuntu/Mint:
+
+```
+sudo apt install python3 python3-pip
+```
+
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      $ cd coletores/mpsp
+      $ pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
+   ```sh
+      $ cd src
+      $ MONTH=01 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```
