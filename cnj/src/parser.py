@@ -25,11 +25,16 @@ def parse(court, file_names, output_path, crawler_version):
 
 def parse_files(court, file_names, month, year):
     employees = {}
-    # As outras tabelas precisam de um parser distinto
     for fn in file_names:
-        data = filter_by_date(fn, month, year)
-        if (court + "-contracheque" in fn):
+        if court + "-contracheque" in fn:
+            data = filter_by_date(fn, month, year)
             employees.update(parse_employees(data))
+    for fn in file_names:
+        if court + "-contracheque" not in fn:
+            data = filter_by_date(fn, month, year)
+        if court + "-indenizações" in fn:
+            update_employees_indemnities(data, employees)
+
     return employees
 
 # Retorna o dataframe contendo apenas os dados do mes/ano especificado
@@ -104,9 +109,59 @@ def parse_employees(data):
                 "prev_contribution": abs(previdencia),
                 "ceil_retention": abs(retencao_teto),
                 "income_tax": abs(imposto_renda),
-                "Sescontos Diversos": abs(descontos_diversos)
+                "Descontos Diversos": abs(descontos_diversos)
             },
         }
+
+    return employees
+
+def update_employees_indemnities(data, employees):
+    rows = rows = data.to_numpy()
+
+    for row in rows:
+        name = row[1]
+        # Indenizações
+        auxilio_alimentacao = round(row[3], 2)
+        auxilio_pre_escolar = round(row[4], 2)
+        auxilio_saude = round(row[5], 2)
+        auxilio_natalidade = round(row[6], 2)
+        auxilio_moradia = round(row[7], 2)
+        ajuda_de_custo = round(row[8], 2)
+        # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
+        # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
+        outra_1 = round(row[9], 2)
+        detalhe_outra_1 = row[10]
+        outra_2 = round(row[11], 2)
+        detalhe_outra_2	= row[12]
+        outra_3 = round(row[13], 2)
+        detalhe_outra_3 = row[14]
+        
+        # Atualização das indenizações
+        if name in employees.keys():
+            emp = employees[name]
+
+            emp['income']['perks'].update({
+                'Food': auxilio_alimentacao,
+                'PreSchool': auxilio_pre_escolar,
+                'Health': auxilio_saude,
+                'BirthAid': auxilio_natalidade,
+                'HousingAid': auxilio_moradia,
+                'Ajuda de Custo': ajuda_de_custo
+            })
+            # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
+            if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
+                emp['income']['perks'].update({
+                    detalhe_outra_1: outra_1            
+                })
+            if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
+                emp['income']['perks'].update({
+                    detalhe_outra_2: outra_2            
+                })
+            if detalhe_outra_3 != '0' and detalhe_outra_3 != '-':
+                emp['income']['perks'].update({
+                    detalhe_outra_3: outra_3            
+                })
+            employees[name] = emp
 
     return employees
 
