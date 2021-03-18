@@ -1,0 +1,7 @@
+mpdft
+output/
+venv
+src/result.json
+result.json
+src/__pycache__
+.vscode
