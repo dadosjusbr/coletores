@@ -17,7 +17,7 @@ def links_remuneration(month, year):
     links_type["Membros ativos"] = link
     return links_type
 
-def links_peeks(month, year):
+def links_perks(month, year):
     links_type = {}
     link = ""
     link = (
@@ -57,7 +57,7 @@ def download(url, file_path):
 # Crawl retrieves payment files from MPDFT.
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
-    urls_peeks = links_peeks(month, year)
+    urls_perks = links_perks(month, year)
     urls_temporary_funds= links_temporary_funds(month, year)
     files = []
 
@@ -68,14 +68,14 @@ def crawl(year, month, output_path):
         download(urls_remuneration[element], file_path)
         files.append(file_path)
 
-    for element in urls_peeks:
+    for element in urls_perks:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name_indemnity = (
             element + "-" + "Verbas Indenizatorias" + "-" + month + "-" + year + ".ods"
         )
 
         file_path_indemnity = output_path + "/" + file_name_indemnity
-        download(urls_peeks[element], file_path_indemnity)
+        download(urls_perks[element], file_path_indemnity)
         files.append(file_path_indemnity)
 
     for element in urls_temporary_funds:
