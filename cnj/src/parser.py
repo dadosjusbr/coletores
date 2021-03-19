@@ -98,18 +98,20 @@ def parse_employees(data):
                 },
                 "other": {  # Gratificações
                     "total": round(total_gratificacoes, 2),
-                    "others_total": total_gratificacoes,
-                    'others': {
-                        'Daily': diarias
-                    }
+                    "daily": diarias,
+                    "others_total": round(total_gratificacoes, 2),
+                    "others": {}
                 },
             },
             "discounts": {
-                "total": abs(total_descontos),
+                "total": round(abs(total_descontos), 2),
                 "prev_contribution": abs(previdencia),
                 "ceil_retention": abs(retencao_teto),
                 "income_tax": abs(imposto_renda),
-                "Descontos Diversos": abs(descontos_diversos)
+                "others_total": abs(descontos_diversos),
+                "others": {
+                    "Descontos Diversos": abs(descontos_diversos)
+                }
             },
         }
 
@@ -127,6 +129,7 @@ def update_employees_indemnities(data, employees):
         auxilio_natalidade = round(row[6], 2)
         auxilio_moradia = round(row[7], 2)
         ajuda_de_custo = round(row[8], 2)
+        total = auxilio_alimentacao + auxilio_pre_escolar + auxilio_saude + auxilio_natalidade + auxilio_moradia + ajuda_de_custo
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
         # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
         outra_1 = round(row[9], 2)
@@ -141,25 +144,38 @@ def update_employees_indemnities(data, employees):
             emp = employees[name]
 
             emp['income']['perks'].update({
-                'Food': auxilio_alimentacao,
-                'PreSchool': auxilio_pre_escolar,
-                'Health': auxilio_saude,
-                'BirthAid': auxilio_natalidade,
-                'HousingAid': auxilio_moradia,
-                'Ajuda de Custo': ajuda_de_custo
+                'total': total,
+                'food': auxilio_alimentacao,
+                'pre_school': auxilio_pre_escolar,
+                'health': auxilio_saude,
+                'birth_aid': auxilio_natalidade,
+                'housing_aid': auxilio_moradia,
+                'subsistence': ajuda_de_custo
             })
             # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
             if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
-                emp['income']['perks'].update({
-                    detalhe_outra_1: outra_1            
+                emp['income']['other']['others'].update({
+                    detalhe_outra_1: outra_1
+                })
+                emp['income']['other'].update({
+                    'total': round(emp['income']['other']['total'] + outra_1, 2),
+                    'others_total': round(emp['income']['other']['others_total'] + outra_1, 2)       
                 })
             if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
-                emp['income']['perks'].update({
-                    detalhe_outra_2: outra_2            
+                emp['income']['other']['others'].update({
+                    detalhe_outra_2: outra_2
+                })
+                emp['income']['other'].update({
+                    'total': round(emp['income']['other']['total'] + outra_2, 2),
+                    'others_total': round(emp['income']['other']['others_total'] + outra_2, 2)      
                 })
             if detalhe_outra_3 != '0' and detalhe_outra_3 != '-':
-                emp['income']['perks'].update({
-                    detalhe_outra_3: outra_3            
+                emp['income']['other']['others'].update({
+                    detalhe_outra_3: outra_3
+                })
+                emp['income']['other'].update({
+                    'total': round(emp['income']['other']['total'] + outra_3, 2),
+                    'others_total': round(emp['income']['other']['others_total'] + outra_3, 2)         
                 })
             employees[name] = emp
 
