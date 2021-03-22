@@ -237,7 +237,7 @@ def update_employee_temporary_remuneration(file_name, employees):
         matricula = row[0]
         if type(matricula) != str:
             matricula = str(matricula)
-
+        # PSSS = Plano de Seguridade Social do Servidor Público 
         substituicao_membros = format_value(row[2])  # Substituição de Membros
         funcao_substituicao = format_value(row[3])  # Função de Substituição
         grat_encargo_curso = format_value(row[4])  # Gratificação por Encargo de Curso
@@ -246,10 +246,10 @@ def update_employee_temporary_remuneration(file_name, employees):
             row[6]
         )  # Gratificação por Encargo de Concurso
         periculosidade = format_value(row[7])  # Periculosidade
-        exercicio_cumulativo_sem_pass = format_value(
+        exercicio_cumulativo_sem_psss = format_value(
             row[8]
         )  # Gratificação de Exercício Cumulativo com Ofício Sem Psss
-        exercicio_cumulativo_com_pass = format_value(
+        exercicio_cumulativo_com_psss = format_value(
             row[9]
         )  # Gratificação Exercício Cumulativo com Ofício Com Psss
         membros_substituicao = format_value(row[10])  # Membros Substituição
@@ -265,8 +265,8 @@ def update_employee_temporary_remuneration(file_name, employees):
             + insalubridade
             + grat_encargo_concurso
             + periculosidade
-            + exercicio_cumulativo_sem_pass
-            + exercicio_cumulativo_com_pass
+            + exercicio_cumulativo_sem_psss
+            + exercicio_cumulativo_com_psss
             + membros_substituicao
             + hora_extra_sem_pass
             + adic_noturno_sem_pass
@@ -297,8 +297,8 @@ def update_employee_temporary_remuneration(file_name, employees):
                 "Adicional de Insalubridade": insalubridade,
                 "Gratificação por Encargo de Concurso": grat_encargo_concurso,
                 "Adicional de Periculosidade": periculosidade,
-                "Gratificação de Exercício Cumulativo com Ofício Sem Psss": exercicio_cumulativo_sem_pass,
-                "Gratificação Exercício Cumulativo com Ofício Com Psss": exercicio_cumulativo_com_pass,
+                "Gratificação de Exercício Cumulativo com Ofício Sem Psss": exercicio_cumulativo_sem_psss,
+                "Gratificação Exercício Cumulativo com Ofício Com Psss": exercicio_cumulativo_com_psss,
                 "Membros Substituição": membros_substituicao,
                 "Hora Extra Sem Psss": hora_extra_sem_pass,
                 "Adicional Noturno Sem Psss": adic_noturno_sem_pass,
