@@ -7,31 +7,28 @@ from urllib.request import urlopen
 
 base_url = 'http://wapp.mpce.mp.br/PortalTransparenciaConsultas/Visao/extratos.aspx{}'
 
-# Estrututa os dados necessários para o request que recupera informações acerca de remunerações basicas
-remu_request_data = {
-    'url': base_url.format(''),
-    'data':{
-        #Variáveis responsáveis por identificar a tabela
-        '__VIEWSTATE': '',
-        '__VIEWSTATEGENERATOR': '',
-        '__EVENTVALIDATION': '',        
-        #Variáveis responsáveis por armazenar o mês de ano referente á tabela de coleta.
-        'ddlMes': '00',
-        'ddlAno': '00',
-        #Garante que a busca seja por todos os membros e não apenas um especifico
-        'txtNome': '',
-        'btnPesquisar': 'Pesquisar'
-    }
-}
+#Armazena informações para o envio de requisições referente aos formatos 
+class request:
+    def __init__(self, url):
+        self.url = url
 
-request_formats = {
-        'remu': remu_request_data,
-        #'vi': vi_request_data 
-}
+    def make_payload(self, viewstate, viewstate_gen, event_validation, ddlmes, ddlano, txtNome):
+        self.payload = {
+            #Variáveis responsáveis por identificar a tabela
+            '__VIEWSTATE': str(viewstate),
+            '__VIEWSTATEGENERATOR': str(viewstate_gen),
+            '__EVENTVALIDATION': str(event_validation), 
+            #Variáveis responsáveis por armazenar o mês de ano referente á tabela de coleta.
+            'ddlMes': str(ddlmes),
+            'ddlAno': str(ddlano),
+            #Garante que a busca seja por todos os membros e não apenas um especifico
+            'txtNome': str(txtNome),
+            'btnPesquisar': 'Pesquisar' 
+        }
 
-def download(request_data, file_path):
+def download(request, file_path):
     try:
-      response = requests.post(request_data['url'], params= (('opt','1'),), data=request_data['data'], allow_redirects=True)
+      response = requests.post(request.url , params=(('opt','1'),), data=request.payload, allow_redirects=True)
     except Exception as excep:
         sys.stderr.write("Não foi possível fazer o download do arquivo: " + file_path + ' . A requisição foi enviada para a url: ' + request_data['url'] + ' . E o foi retornado status code:' + response.status_code)
     try:    
@@ -54,26 +51,23 @@ def init_request(year, month):
     view_state = soup.body.find('input',{'id': '__VIEWSTATE'}).get('value')
     event_validation = soup.body.find('input',{'id': '__EVENTVALIDATION'}).get('value')
 
-    #Setando valores necessários ao envio da requisição http
-    for key in request_formats:
-        request_formats[key]['data']['ddlMes'] = str(month)
-        request_formats[key]['data']['ddlAno'] = str(year)
-        request_formats[key]['data']['__VIEWSTATEGENERATOR'] = str(view_generator)
-        request_formats[key]['data']['__VIEWSTATE'] = str(view_state)
-        request_formats[key]['data']['__EVENTVALIDATION'] = str(event_validation)
+    #Cria objeto referente á requisição
+    request_obj = request(base_url.format(''))
+    request_obj.make_payload(view_state, view_generator, event_validation, month, year, '')
+
+    return request_obj
 
 def crawl(year, month, output_path):
-    files = [] 
+    files = []
+
+    # Realizando download da folha de remunerações simples 
+    request = init_request(year, month)        
+    pathlib.Path(output_path).mkdir(exist_ok=True)
+    filename = year + '_' + month + '_' + 'remu'
+    file_path =  output_path + '/' + filename + '.html'
+    download(request, file_path)
     
-    init_request(year, month)
-    for key in request_formats:
-            
-        pathlib.Path(output_path).mkdir(exist_ok=True)
-        filename = year + '_' + month + '_' + key
-        file_path =  output_path + '/' + filename + '.html'
-        download(request_formats[key],file_path)
-        
-        files.append(file_path)
-    
+    files.append(file_path)
+
     return files
 

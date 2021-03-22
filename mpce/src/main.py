@@ -41,8 +41,8 @@ if(int(year) > current_year):
     sys.stderr.write("As master Yoda would say: 'one must not crawl/parse the future {}/{}'.\n".format(month, year))
     os._exit(1)
 
-# Main execution
-def main():
+#Main execution
+if __name__ == '__main__':
     file_names = crawler.crawl(year, month, output_path)
     employees = parser.parse(file_names)
     cr = {
@@ -59,7 +59,3 @@ def main():
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
     print(json.dumps({'cr': cr}, ensure_ascii=False))
-
-
-if __name__ == '__main__':
-    main()
