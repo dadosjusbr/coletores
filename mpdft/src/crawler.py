@@ -81,7 +81,7 @@ def crawl(year, month, output_path):
     for element in urls_temporary_funds:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name_indemnity = (
-            element + "-" + "Verbas temporarias" + "-" + month + "-" + year + ".ods")
+            element + "-" + "Verbas Temporarias" + "-" + month + "-" + year + ".ods")
 
         file_path_indemnity = output_path + "/" + file_name_indemnity
         download(urls_temporary_funds[element], file_path_indemnity)
