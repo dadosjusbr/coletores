@@ -1,5 +1,5 @@
 ezodf==0.3.2
-lxml==4.6.2
+lxml==4.6.3
 numpy==1.19.4
 pandas==1.1.5
 pandas-ods-reader==0.0.7
