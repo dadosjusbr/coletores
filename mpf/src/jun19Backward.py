@@ -24,45 +24,58 @@ def read_data(path, year, month):
 def parse_employees(file_name, year, month):
     rows = read_data(file_name, year, month).to_numpy()
     emps_clean = utils.treat_rows(rows)
-    typeE = utils.type_employee(file_name)
-    activeE = 'inativos' not in file_name and 'pensionistas' not in file_name
     employees = {}
     curr_row = 0
     for row in emps_clean:
+        name = str(row[0])
+        cargo = str(row[1])
+        workplace = str(row[3])
+        remuneracao = row[4]+row[5]   # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
+        total_indenizacao = row[16]
+        cargo_confianca = row[6]
+        grat_natalina = row[7]
+        ferias = row[8]
+        abono_permanencia = row[9]
+        total_temporario = cargo_confianca + grat_natalina + ferias + abono_permanencia
+        previdencia = abs(row[11])
+        teto_constitucional = abs(row[13])
+        imposto_de_renda = abs(row[12])
+        total_descontos = previdencia + teto_constitucional + imposto_de_renda
+        total_bruto = total_indenizacao + total_temporario + remuneracao
         employees[row[0]] = {
-            'name': str(row[0]),
-            'role': str(row[1]),
-            'type': typeE,
-            'workplace': str(row[3]),
-            'active': activeE,
+            'name': name,
+            'role': cargo,
+            'type': "membro",
+            'workplace': workplace,
+            'active': True,
             "income":
             {
                 #Soma de todos os recebidos do funcionário
-                'total': float(row[4]+row[5]+row[6]+row[7]+row[8]+row[9]+row[16]),
+                'total': round(total_bruto, 2),
                 # REMUNERAÇÃO BÁSICA = Remuneração Cargo Efetivo + Outras Verbas Remuneratórias, Legais ou Judiciais
-                'wage': float(row[4]+row[5]),
+                'wage': remuneracao,
                 'perks': {
-                    'total': float(row[16]),
+                    'total': total_indenizacao,
                 },
                 'other':
                 {  # Gratificações e remuneraçoes temporárias
-                    'total': row[6] + row[7] + row[8]+row[9],
-                    'trust_position': row[6],
-                    'others_total': row[7]+row[8]+row[9],
+                    'total': round(total_temporario, 2),
+                    'trust_position': cargo_confianca,
+                    'others_total': round(grat_natalina + ferias + abono_permanencia,2),
                     'others': {
-                        'Gratificação Natalina': row[7],
-                        'Férias (1/3 constitucional)': row[8],
-                        'Abono de Permanência': row[9],
+                        'Gratificação Natalina': grat_natalina,
+                        'Férias (1/3 constitucional)': ferias,
+                        'Abono de Permanência': abono_permanencia,
                     }
                 },
             },
             'discounts':
             {  # Discounts Object. Using abs to garantee numbers are positivo (spreadsheet have negative discounts).
-                'total': abs(row[11]+ row[12] + row[13]),
-                'prev_contribution': abs(row[11]),
+                'total': round(total_descontos, 2),
+                'prev_contribution': previdencia,
                 # Retenção por teto constitucional
-                'ceil_retention': abs(row[13]),
-                'income_tax': abs(row[12]),
+                'ceil_retention': teto_constitucional,
+                'income_tax': imposto_de_renda,
             }
         }
     return employees

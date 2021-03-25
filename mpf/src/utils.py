@@ -47,16 +47,6 @@ def treat_rows(rows):
     emps_clean.append(emp_clean)
   return emps_clean[begin_row:end_row]
 
-def type_employee(fn):
-    if 'membros' in fn:
-        return 'membro'
-    if 'servidores' in fn:
-        return 'servidor'
-    if 'pensionistas' in fn:
-        return 'pensionista'
-    if 'colaboradores' in fn:
-        return 'colaborador'
-    raise ValueError('Tipo de inválido de funcionário público: ' + fn)
 
 #Metodo auxiliar responsável pela tradução do numero do mês em String
 def get_month_name(month):
