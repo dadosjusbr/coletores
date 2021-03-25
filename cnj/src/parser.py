@@ -36,6 +36,8 @@ def parse_files(court, file_names, month, year):
             update_employees_indemnities(data, employees)
         if court + "-direitos-eventuais" in fn:
             update_employees_eventual_gratifications(data, employees)
+        if court + "-direitos-pessoais" in fn:
+            update_employees_personal_gratifications(data, employees)
 
     return employees
 
@@ -193,7 +195,7 @@ def update_employees_eventual_gratifications(data, employees):
 
     for row in rows:
         name = row[1]
-        # Indenizações
+        # Gratificações
         abono_constitucional = round(row[3], 2)
         indenizacao_ferias = round(row[4], 2)
         antecipacao_ferias = round(row[5], 2)
@@ -224,7 +226,7 @@ def update_employees_eventual_gratifications(data, employees):
                 'others_total': round(emp['income']['other']['others_total'] + total, 2)
             })
             emp['income']['other']['others'].update({
-                'Abono constitucional de 1/3 de férias ': abono_constitucional,
+                'Abono constitucional de 1/3 de férias': abono_constitucional,
                 'Indenização de férias': indenizacao_ferias,
                 'Antecipação de férias': antecipacao_ferias,
                 'Gratificação natalina': gratificacao_natalina,
@@ -234,6 +236,62 @@ def update_employees_eventual_gratifications(data, employees):
                 'Gratificação por encargo Curso/Concurso': gratificacao_encargo,
                 'Pagamentos retroativos': pagamentos_retroativos,
                 'JETON': jeton
+            })
+            # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
+            if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
+                emp['income']['other']['others'].update({
+                    detalhe_outra_1: outra_1
+                })
+                emp['income']['other'].update({
+                    'total': round(emp['income']['other']['total'] + outra_1, 2),
+                    'others_total': round(emp['income']['other']['others_total'] + outra_1, 2)       
+                })
+                emp['income'].update({
+                    'total': round(emp['income']['total'] + outra_1, 2)
+                })
+            if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
+                emp['income']['other']['others'].update({
+                    detalhe_outra_2: outra_2
+                })
+                emp['income']['other'].update({
+                    'total': round(emp['income']['other']['total'] + outra_2, 2),
+                    'others_total': round(emp['income']['other']['others_total'] + outra_2, 2)      
+                })
+                emp['income'].update({
+                'total': round(emp['income']['total'] + outra_2, 2)
+                })
+            
+            employees[name] = emp
+
+    return employees
+
+def update_employees_personal_gratifications(data, employees):
+    rows = rows = data.to_numpy()
+
+    for row in rows:
+        name = row[1]
+        # Gratificações
+        abono_permanencia  = round(row[3], 2)
+        # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
+        # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
+        outra_1 = round(row[4], 2)
+        detalhe_outra_1 = row[5]
+        outra_2 = round(row[6], 2)
+        detalhe_outra_2	= row[7]
+        
+        # Atualização das gratificações
+        if name in employees.keys():
+            emp = employees[name]
+
+            emp['income'].update({
+                'total': round(emp['income']['total'] + abono_permanencia, 2)
+            })
+            emp['income']['other'].update({
+                'total':  round(emp['income']['other']['total'] + abono_permanencia, 2),
+                'others_total': round(emp['income']['other']['others_total'] + abono_permanencia, 2)
+            })
+            emp['income']['other']['others'].update({
+                'Abono de permanência' : abono_permanencia
             })
             # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
             if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
