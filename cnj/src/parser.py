@@ -153,7 +153,7 @@ def update_employees_indemnities(data, employees):
                 'subsistence': ajuda_de_custo
             })
             # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
-            if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
+            if str(detalhe_outra_1) != '0' and str(detalhe_outra_1) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_1: outra_1
                 })
@@ -164,7 +164,7 @@ def update_employees_indemnities(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_1, 2)
                 })
-            if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
+            if str(detalhe_outra_2) != '0' and str(detalhe_outra_2) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_2: outra_2
                 })
@@ -175,7 +175,7 @@ def update_employees_indemnities(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_2, 2)
                 })
-            if detalhe_outra_3 != '0' and detalhe_outra_3 != '-':
+            if str(detalhe_outra_3) != '0' and str(detalhe_outra_3) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_3: outra_3
                 })
@@ -200,7 +200,7 @@ def update_employees_eventual_gratifications(data, employees):
         indenizacao_ferias = round(row[4], 2)
         antecipacao_ferias = round(row[5], 2)
         gratificacao_natalina = round(row[6], 2)
-        antecipacao_grat_natal = round(float((row[7]).replace(",", ".")), 2)
+        antecipacao_grat_natal = round(float(str(row[7]).replace(",", ".")), 2)
         substituicao = round(row[8], 2)
         gratificacao_exercicio_cumulativo = round(row[9], 2)
         gratificacao_encargo = round(row[10], 2)
@@ -238,7 +238,7 @@ def update_employees_eventual_gratifications(data, employees):
                 'JETON': jeton
             })
             # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
-            if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
+            if str(detalhe_outra_1) != '0' and str(detalhe_outra_1) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_1: outra_1
                 })
@@ -249,7 +249,7 @@ def update_employees_eventual_gratifications(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_1, 2)
                 })
-            if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
+            if str(detalhe_outra_2) != '0' and str(detalhe_outra_2) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_2: outra_2
                 })
@@ -294,7 +294,7 @@ def update_employees_personal_gratifications(data, employees):
                 'Abono de permanência' : abono_permanencia
             })
             # Quando o valor em "Outra" é 0.0, o texto presente em "Detalhe" é sempre '0' ou '-'.
-            if detalhe_outra_1 != '0' and detalhe_outra_1 != '-':
+            if str(detalhe_outra_1) != '0' and str(detalhe_outra_1) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_1: outra_1
                 })
@@ -305,7 +305,7 @@ def update_employees_personal_gratifications(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_1, 2)
                 })
-            if detalhe_outra_2 != '0' and detalhe_outra_2 != '-':
+            if str(detalhe_outra_2) != '0' and str(detalhe_outra_2) != '-':
                 emp['income']['other']['others'].update({
                     detalhe_outra_2: outra_2
                 })
