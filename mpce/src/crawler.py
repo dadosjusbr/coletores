@@ -84,8 +84,7 @@ def crawl(year, month, output_path):
         filename = year + '_' + month + '_' + key
         file_path =  output_path + '/' + filename + '.html'
         download(requests[key], file_path)
-        
-    files.append(file_path)
+
+        files.append(file_path)
 
     return files
-
