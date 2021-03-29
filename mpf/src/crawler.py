@@ -30,7 +30,10 @@ def download(url, file_path):
 def links_other_funds(month, year):
     links_type = {}
     link = ""
-
+    
+    if month == "Março":
+        month = "Marco"
+    
     if (
         month in ["Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
         and year == "2019"
