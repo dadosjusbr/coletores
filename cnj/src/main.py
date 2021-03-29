@@ -25,7 +25,6 @@ else:
 
 # Main execution
 if __name__ == '__main__':
-    #file_names = crawler.crawl(court, driver_path, output_path)
-    file_names = ['./output/CNJ-contracheque.xlsx', './output/CNJ-direitos-pessoais.xlsx', './output/CNJ-indenizações.xlsx', './output/CNJ-direitos-eventuais.xlsx']
+    file_names = crawler.crawl(court, driver_path, output_path)
     files = parser.parse(court, file_names, output_path, crawler_version)
     print(files)

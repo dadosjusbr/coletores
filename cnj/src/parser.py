@@ -87,6 +87,8 @@ def parse_employees(data):
 
         employees[name] = {
             "name": name,
+            "type": "membro",
+            "active": True, 
             "income": {
                 "total": round(total_bruto, 2),
                 "wage": round(subsidio + remuneracao_orgao_origem, 2),
@@ -132,7 +134,7 @@ def update_employees_indemnities(data, employees):
         outra_1 = round(row[9], 2)
         detalhe_outra_1 = row[10]
         outra_2 = round(row[11], 2)
-        detalhe_outra_2	= row[12]
+        detalhe_outra_2 = row[12]
         outra_3 = round(row[13], 2)
         detalhe_outra_3 = row[14]
         
@@ -212,7 +214,7 @@ def update_employees_eventual_gratifications(data, employees):
         outra_1 = round(row[13], 2)
         detalhe_outra_1 = row[14]
         outra_2 = round(row[15], 2)
-        detalhe_outra_2	= row[16]
+        detalhe_outra_2 = row[16]
         
         # Atualização das gratificações
         if name in employees.keys():
@@ -258,7 +260,7 @@ def update_employees_eventual_gratifications(data, employees):
                     'others_total': round(emp['income']['other']['others_total'] + outra_2, 2)      
                 })
                 emp['income'].update({
-                'total': round(emp['income']['total'] + outra_2, 2)
+                    'total': round(emp['income']['total'] + outra_2, 2)
                 })
             
             employees[name] = emp
@@ -277,7 +279,7 @@ def update_employees_personal_gratifications(data, employees):
         outra_1 = round(row[4], 2)
         detalhe_outra_1 = row[5]
         outra_2 = round(row[6], 2)
-        detalhe_outra_2	= row[7]
+        detalhe_outra_2 = row[7]
         
         # Atualização das gratificações
         if name in employees.keys():
@@ -323,13 +325,14 @@ def update_employees_personal_gratifications(data, employees):
 
 def save_file(court, month, year, file_names, output_path, crawler_version, employees):
     now = datetime.datetime.now()
+    # Não será feito backup dos arquivos de origem, dessa forma 'files' não será preenchido
     cr = {
-        'aid': court,
+        'aid': court.lower(),
         'month': int(month),
         'year': int(year),
-        'files': file_names,
+        'files': [],
         'crawler': {
-            'id': 'mprs',
+            'id': court.lower(),
             'version': crawler_version,
         },
         'employees': employees,
@@ -342,4 +345,3 @@ def save_file(court, month, year, file_names, output_path, crawler_version, empl
         file.write(json.dumps({'cr': cr}, ensure_ascii=False))
 
     return file_path
-
