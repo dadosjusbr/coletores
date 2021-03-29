@@ -82,7 +82,6 @@ def employees_parser(file_path):
                 'income_tax': imposto_renda
             }
     }
-    print(employees)
     return employees
 
 def employees_indemnity(file_path, employees):
