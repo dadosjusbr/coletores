@@ -1,14 +1,15 @@
 # set base image
-FROM blang/busybox-bash
+FROM alpine:latest
 
 ARG COURT
 ARG YEAR
 ARG MONTH
+ENV FILE = ${COURT}-${MONTH}-${YEAR}.json
 
 # copy the file to the working directory
-ADD https://github.com/diegooalmeida/backup/raw/master/$COURT.zip /
+ADD https://github.com/diegooalmeida/backup/raw/master/${COURT}.zip .
 
 RUN unzip ${COURT}.zip
 RUN rm ${COURT}.zip
 
-RUN cat ${COURT}-${MONTH}-${YEAR}.json
+CMD ["sh", "-c", "cat ${FILE}"]
