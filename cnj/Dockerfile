@@ -4,7 +4,7 @@ FROM alpine:latest
 ARG COURT
 ARG YEAR
 ARG MONTH
-ENV FILE = ${COURT}-${MONTH}-${YEAR}.json
+ENV FILE=${COURT}-${MONTH}-${YEAR}.json
 
 # copy the file to the working directory
 ADD https://github.com/diegooalmeida/backup/raw/master/${COURT}.zip .
