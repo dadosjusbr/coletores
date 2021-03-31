@@ -9,7 +9,7 @@ import sys
 import os
 
 def read_data(path, year, month):
-    if year == "2019" and month == "6":
+    if year == "2019" and month == "06":
         eng = 'odf'
     else:
         eng = 'xlrd'
