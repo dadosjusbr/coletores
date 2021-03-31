@@ -104,8 +104,45 @@ class TestParser(unittest.TestCase):
             },
         }
         files = ("./test_files/Membros ativos-Janeiro-2018.xls",)
-        employees = jun19Backward.parse(files, "2018", "1")
+        employees = jun19Backward.parse(files, "2020", "1")
 
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_membros_ativos_jan18(self):
+        self.maxDiff = None
+
+        expected = {
+            "name": "ADAILTON RAMOS DO NASCIMENTO",
+            "role": "PROCURADOR DA REPUBLICA",
+            "type": "membro",
+            "workplace": "PR-MG",
+            "active": True,
+            "income": {
+                "total": 71197.82,
+                "wage": 28947.55,
+                "perks": {"total": 18127.31},
+                "other": {
+                    "total": 24122.96,
+                    "trust_position": 0,
+                    "others_total": 24122.96,
+                    "others": {
+                        "Gratificação Natalina": 14473.78,
+                        "Férias (1/3 constitucional)": 9649.18,
+                        "Abono de Permanência": 0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 8587.22,
+                "prev_contribution": 3184.23,
+                "ceil_retention": 0,
+                "income_tax": 5402.99,
+            },
+        }
+        files = ("./test_files/Membros ativos-1-Janeiro-2018.xls",)
+        employees = jun19Backward.parse(files, "2018", "1")
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
