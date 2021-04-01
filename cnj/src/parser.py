@@ -71,7 +71,6 @@ def parse_employees(data):
     employees = {}
 
     for row in rows:
-        reg = row[1]
         name = row[1]
         subsidio = row[3]
         indenizacoes = row[5]
@@ -82,12 +81,11 @@ def parse_employees(data):
         remuneracao_orgao_origem = row[14]
         diarias = row[15]
 
-        total_gratificacoes = diarias
         total_descontos = previdencia + imposto_renda + descontos_diversos + retencao_teto
-        total_bruto = (subsidio + remuneracao_orgao_origem)
+        total_bruto = (subsidio + remuneracao_orgao_origem + diarias)
 
-        employees[reg] = {
-            "reg": reg,
+        employees[name] = {
+            "reg": "",
             "name": name,
             "role": "",
             "type": "membro",
@@ -100,7 +98,7 @@ def parse_employees(data):
                     "total": indenizacoes,
                 },
                 "other": {  # Gratificações
-                    "total": round(total_gratificacoes, 2),
+                    "total": diarias,
                     "daily": diarias,
                     "others_total": 0.0,
                     "others": {}
@@ -124,7 +122,7 @@ def update_employees_indemnities(data, employees):
     rows = rows = data.to_numpy()
 
     for row in rows:
-        reg = row[1]
+        name = row[1]
         # Indenizações
         auxilio_alimentacao = round(row[3], 2)
         auxilio_pre_escolar = round(row[4], 2)
@@ -143,9 +141,8 @@ def update_employees_indemnities(data, employees):
         detalhe_outra_3 = row[14]
         
         # Atualização das indenizações
-        if reg in employees.keys():
-            emp = employees[reg]
-            
+        if name in employees.keys():
+            emp = employees[name]
             emp['income'].update({
                 'total': round(emp['income']['total'] + total, 2)
             })
@@ -192,7 +189,8 @@ def update_employees_indemnities(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_3, 2)
                 })
-            employees[reg] = emp
+
+            employees[name] = emp
 
     return employees
 
@@ -200,7 +198,7 @@ def update_employees_eventual_gratifications(data, employees):
     rows = rows = data.to_numpy()
 
     for row in rows:
-        reg = row[1]
+        name = row[1]
         # Gratificações
         abono_constitucional = round(row[3], 2)
         indenizacao_ferias = round(row[4], 2)
@@ -221,8 +219,8 @@ def update_employees_eventual_gratifications(data, employees):
         detalhe_outra_2 = row[16]
         
         # Atualização das gratificações
-        if reg in employees.keys():
-            emp = employees[reg]
+        if name in employees.keys():
+            emp = employees[name]
 
             emp['income'].update({
                 'total': round(emp['income']['total'] + total, 2)
@@ -266,8 +264,8 @@ def update_employees_eventual_gratifications(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_2, 2)
                 })
-            
-            employees[reg] = emp
+
+            employees[name] = emp
 
     return employees
 
@@ -275,7 +273,7 @@ def update_employees_personal_gratifications(data, employees):
     rows = rows = data.to_numpy()
 
     for row in rows:
-        reg = row[1]
+        name = row[1]
         # Gratificações
         abono_permanencia  = round(row[3], 2)
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
@@ -286,8 +284,8 @@ def update_employees_personal_gratifications(data, employees):
         detalhe_outra_2 = row[7]
         
         # Atualização das gratificações
-        if reg in employees.keys():
-            emp = employees[reg]
+        if name in employees.keys():
+            emp = employees[name]
 
             emp['income'].update({
                 'total': round(emp['income']['total'] + abono_permanencia, 2)
@@ -323,7 +321,7 @@ def update_employees_personal_gratifications(data, employees):
                 'total': round(emp['income']['total'] + outra_2, 2)
                 })
             
-            employees[reg] = emp
+            employees[name] = emp
 
     return employees
 
