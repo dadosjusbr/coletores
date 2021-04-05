@@ -18,7 +18,7 @@ def parse(court, file_names, output_path, crawler_version):
                 break
             employees = {}
             employees.update(parse_files(court, file_names, month, year))
-            file_path = save_file(court, month, year, file_names, output_path, crawler_version, employees)
+            file_path = save_file(court, month, year, output_path, crawler_version, employees)
             files.append(file_path)
     
     return files
@@ -81,13 +81,15 @@ def parse_employees(data):
         remuneracao_orgao_origem = row[14]
         diarias = row[15]
 
-        total_gratificacoes = diarias
         total_descontos = previdencia + imposto_renda + descontos_diversos + retencao_teto
-        total_bruto = (subsidio + remuneracao_orgao_origem)
+        total_bruto = (subsidio + remuneracao_orgao_origem + diarias)
 
         employees[name] = {
+            "reg": "",
             "name": name,
+            "role": "",
             "type": "membro",
+            "workplace": "",
             "active": True, 
             "income": {
                 "total": round(total_bruto, 2),
@@ -96,7 +98,7 @@ def parse_employees(data):
                     "total": indenizacoes,
                 },
                 "other": {  # Gratificações
-                    "total": round(total_gratificacoes, 2),
+                    "total": diarias,
                     "daily": diarias,
                     "others_total": 0.0,
                     "others": {}
@@ -141,7 +143,6 @@ def update_employees_indemnities(data, employees):
         # Atualização das indenizações
         if name in employees.keys():
             emp = employees[name]
-            
             emp['income'].update({
                 'total': round(emp['income']['total'] + total, 2)
             })
@@ -188,6 +189,7 @@ def update_employees_indemnities(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_3, 2)
                 })
+
             employees[name] = emp
 
     return employees
@@ -262,7 +264,7 @@ def update_employees_eventual_gratifications(data, employees):
                 emp['income'].update({
                     'total': round(emp['income']['total'] + outra_2, 2)
                 })
-            
+
             employees[name] = emp
 
     return employees
@@ -323,7 +325,7 @@ def update_employees_personal_gratifications(data, employees):
 
     return employees
 
-def save_file(court, month, year, file_names, output_path, crawler_version, employees):
+def save_file(court, month, year, output_path, crawler_version, employees):
     now = datetime.datetime.now()
     # Não será feito backup dos arquivos de origem, dessa forma 'files' não será preenchido
     cr = {
