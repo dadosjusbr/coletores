@@ -337,7 +337,7 @@ def save_file(court, month, year, output_path, crawler_version, employees):
             'id': court.lower(),
             'version': crawler_version,
         },
-        'employees': employees,
+        'employees': list(employees.values()),
         # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
