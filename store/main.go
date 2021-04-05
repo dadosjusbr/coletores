@@ -24,6 +24,8 @@ type config struct {
 	SwiftAuthURL   string `envconfig:"SWIFT_AUTHURL" required:"true"`
 	SwiftDomain    string `envconfig:"SWIFT_DOMAIN" required:"true"`
 	SwiftContainer string `envconfig:"SWIFT_CONTAINER" required:"true"`
+	// Backup conf
+	IgnoreBackups bool `envconfig:"IGNORE_BACKUPS" required:"false" default:"false"`
 }
 
 func main() {
@@ -55,7 +57,7 @@ func main() {
 	}
 
 	// Backup.
-	if len(er.Cr.Files) == 0 {
+	if !c.IgnoreBackups && len(er.Cr.Files) == 0 {
 		status.ExitFromError(status.NewError(2, fmt.Errorf("no backup files found: CrawlingResult:%+v", er.Cr)))
 	}
 	backup, err := client.Cloud.Backup(er.Cr.Files, er.Cr.AgencyID)
