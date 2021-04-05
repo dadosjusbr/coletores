@@ -33,3 +33,14 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 - **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
 - **Verbas Indenizatórias**: Auxílio Saúde, Auxílio Alimentação, Auxílio Moradia.
 - **Outras Remunerações Temporárias**: Substituição Cargo C. Função GAE, Adicional Periculosidade, Licença Compensatória.
+
+## Dificuldades 
+
+- URLs:
+
+    - A URL para download dos dados possui um código que é corresponde ao mês. No entanto, esse código não aparenta seguir padrão referenciando o mês correspondente. 
+ 
+    - A cada mês lançado no porta de transparência do MPRN é nessário verificar o link para download do mês desejado e acrescentar no crawler o código para acesso.
+
+    Exemplo: O link abaixo é refetente a novembro de 2020 e o código correspondente a esse mês é 45874.
+    http://transparencia.mprn.mp.br/Arquivos/C0007/2020/R0082/45874.ods
