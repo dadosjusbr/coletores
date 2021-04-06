@@ -40,7 +40,11 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
     - A URL para download dos dados possui um código que é corresponde ao mês. No entanto, esse código não aparenta seguir padrão referenciando o mês correspondente. 
  
-    - A cada mês lançado no porta de transparência do MPRN é nessário verificar o link para download do mês desejado e acrescentar no crawler o código para acesso.
+    - A cada mês lançado no porta de transparência do MPRN é necessário verificar o link para download do mês desejado (referente a remuneração mensal e a verbas indenizatórias) e acrescentar no crawler os códigos para acesso.
 
-    Exemplo: O link abaixo é refetente a novembro de 2020 e o código correspondente a esse mês é 45874.
+    Exemplo:
+     - O link abaixo é refetente a remuneração mensal (R0082) de novembro de 2020 e o código correspondente a esse mês é 45874.
     http://transparencia.mprn.mp.br/Arquivos/C0007/2020/R0082/45874.ods
+
+     - O mesmo ocorre nas planilhas de Verbas indenizatórias e Remunerações tempórarias (R2167). O link abaixo é do mês de novembro de 2020, o código 46826 corresponde ao mês 
+     http://transparencia.mprn.mp.br/Arquivos/C0007/2020/R2167/46826.ods?dt=05042021145100
