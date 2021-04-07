@@ -1,3 +1,11 @@
+et-xmlfile==1.0.1
+numpy==1.19.5
+openpyxl==3.0.7
+pandas==1.1.5
 pkg-resources==0.0.0
+python-dateutil==2.8.1
+pytz==2021.1
 selenium==3.141.0
-urllib3==1.26.3
+six==1.15.0
+urllib3==1.26.4
+xlrd==2.0.1
