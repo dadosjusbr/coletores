@@ -56,3 +56,44 @@ As planilhas referentes á remunerações temporárias possuem as seguintes colu
 -**Substituição Membros MS2013 (Number)**
 -**Adicional Penosidade (Number)**
 
+## Como usar
+
+ ### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+  ```sh
+    $ cd coletores/mpdft
+    $ sudo docker build -t mpdft .
+  ```
+ - Execução:
+ 
+  ```sh
+    $ sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpdft 
+  ```
+
+ ### Executando sem Docker
+
+ - É necessário ter instalado o [Python](https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ 
+No Linux, distribuições Ubuntu/Mint:
+
+```
+sudo apt install python3 python3-pip
+```
+
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      $ cd coletores/mpdft
+      $ pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
+   ```sh
+      $ cd src
+      $ MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```

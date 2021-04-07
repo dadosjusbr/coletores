@@ -4,27 +4,27 @@ import sys
 import os
 import datetime
 import crawler
-import parser
 import json
+import parser
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
 else:
-    sys.stderr.write("Invalid arguments, missing parameter: 'MONTH'.\n")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'MONTH'.\n")
     os._exit(1)
 if('YEAR' in os.environ):
     year = os.environ['YEAR']
 else:
-    sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'YEAR'.\n")
     os._exit(1)
 if('OUTPUT_FOLDER' in os.environ):
     output_path = os.environ['OUTPUT_FOLDER']
 else:
-    output_path = "./output"
+    output_path = "/output"
 if('GIT_COMMIT' in os.environ):
     crawler_version = os.environ['GIT_COMMIT']
 else:
-    sys.stderr.write("crawler_version cannot be empty")
+    sys.stderr.write("Invalid arguments, missing environment variable: 'GIT_COMMIT'.\n")
     os._exit(1)
 
 now = datetime.datetime.now()
@@ -35,23 +35,23 @@ if((int(month) < 1) | (int(month) > 12)):
     sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
     os._exit(1)
 if((int(year) == current_year) & (int(month) > current_month)):
-    sys.stderr.write("Invalid month {}: InvalidParameters.\n".format(month))
+    sys.stderr.write("As master Yoda would say: 'one must not crawl/parse the future {}/{}'.\n".format(month, year))
     os._exit(1)
 if(int(year) > current_year):
-    sys.stderr.write("Invalid year {}: InvalidParameters.\n".format(year))
+    sys.stderr.write("As master Yoda would say: 'one must not crawl/parse the future {}/{}'.\n".format(month, year))
     os._exit(1)
 
-# Main execution
-def main():
+#Main execution
+if __name__ == '__main__':
     file_names = crawler.crawl(year, month, output_path)
     employees = parser.parse(file_names)
     cr = {
-        'aid': 'mpdft',
+        'aid': 'mpce',
         'month': int(month),
         'year': int(year),
         'files': file_names,
         'crawler': {
-            'id': 'mpdft',
+            'id': 'mpce',
             'version': crawler_version,
         },
         'employees': employees,
@@ -59,7 +59,3 @@ def main():
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
     print(json.dumps({'cr': cr}, ensure_ascii=False))
-
-
-if __name__ == '__main__':
-    main()

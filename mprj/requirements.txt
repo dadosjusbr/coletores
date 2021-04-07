@@ -13,4 +13,4 @@ python-dotenv==0.15.0
 pytz==2020.5
 requests==2.25.1
 six==1.15.0
-urllib3==1.26.2
+urllib3==1.26.4

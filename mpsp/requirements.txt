@@ -4,7 +4,7 @@ et-xmlfile==1.0.1
 ezodf==0.3.2
 idna==2.10
 jdcal==1.4.1
-lxml==4.6.2
+lxml==4.6.3
 numpy==1.20.1
 openpyxl==3.0.6
 pandas==1.2.1
@@ -14,4 +14,4 @@ python-dotenv==0.15.0
 pytz==2021.1
 requests==2.25.1
 six==1.15.0
-urllib3==1.26.3
+urllib3==1.26.4
