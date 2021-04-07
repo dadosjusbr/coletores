@@ -56,7 +56,7 @@ def filter_by_date(fn, month, year):
 # Lê os dados baixados pelo crawler
 def read_data(path):
     try:
-        data = pd.read_excel(path)
+        data = pd.read_excel(path, engine='openpyxl')
     except Exception as excep:
         sys.stderr(
             "Não foi possível fazer a leitura do arquivo: " + path
