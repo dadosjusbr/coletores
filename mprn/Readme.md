@@ -64,7 +64,7 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
  - Execução:
  
   ```sh
-    $ sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mprn
+    $ sudo docker run -e MONTH=02 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mprn
   ```
 
  ### Executando sem Docker
@@ -88,5 +88,5 @@ sudo apt install python3 python3-pip
 
    ```sh
       $ cd src
-      $ MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+      $ MONTH=01 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
   ```

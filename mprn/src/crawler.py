@@ -70,29 +70,28 @@ def links_remuneration(month, year):
     }
     links_type = {}
     link = ""
-    # A partir de 2021 vamos realizar a coleta apenas dos Membros Ativos
     if year == "2018":
         for key in cod_2018:
-
-            if month == key:
+            
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2018[key] + '.ods'
                 links_type["Membros ativos"] = link
          
     elif year == "2019":
         for key in cod_2019:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2019[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2020":
         for key in cod_2020:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2020[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2021":
         for key in cod_2021:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2021[key] + '.ods'
                 links_type["Membros ativos"] = link
         
@@ -137,13 +136,13 @@ def links_other_funds(month, year):
 
     if year == "2020":
         for key in cod_2020:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R2167/' + cod_2020[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2021":
         for key in cod_2021:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL +  year + '/R2167/' + cod_2021[key] + '.ods'
                 links_type["Membros ativos"] = link
         
@@ -173,6 +172,7 @@ def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
     files = []
+    
 
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
