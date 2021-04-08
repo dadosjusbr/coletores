@@ -89,6 +89,8 @@ def parse_employees(file_name):
             matricula = str(matricula)
         nome = row[0]
         cargo_efetivo = row[2]
+        if isNaN(cargo_efetivo):
+            cargo_efetivo = "Não informado"
         lotacao = row[3]
         if isNaN(lotacao):
             lotacao = "Não informado"
