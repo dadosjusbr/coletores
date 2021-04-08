@@ -48,3 +48,45 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
      - O mesmo ocorre nas planilhas de Verbas indenizatórias e Remunerações tempórarias (R2167). O link abaixo é do mês de novembro de 2020, o código 46826 corresponde ao mês 
      http://transparencia.mprn.mp.br/Arquivos/C0007/2020/R2167/46826.ods?dt=05042021145100
+
+## Como usar
+
+ ### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+  ```sh
+    $ cd coletores/mprn
+    $ sudo docker build -t mprn .
+  ```
+ - Execução:
+ 
+  ```sh
+    $ sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mprn
+  ```
+
+ ### Executando sem Docker
+
+ - É necessário ter instalado o [Python](https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ 
+No Linux, distribuições Ubuntu/Mint:
+
+```
+sudo apt install python3 python3-pip
+```
+
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      $ cd coletores/mprn
+      $ pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
+   ```sh
+      $ cd src
+      $ MONTH=1 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```
