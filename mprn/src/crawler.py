@@ -10,60 +10,60 @@ baseURL = "http://transparencia.mprn.mp.br/Arquivos/C0007/"
 def links_remuneration(month, year):
     # A formação do link possui um código referente a cada mês
     cod_2018 = {
-        '01': "21203",
-        '02': "21323",
-        '03': "21398",
-        '04': "22561",
-        '05': "23763",
-        '06': "23897",
-        '07': "24080",
-        '08': "24198",
-        '09': "24344",
+        '1': "21203",
+        '2': "21323",
+        '3': "21398",
+        '4': "22561",
+        '5': "23763",
+        '6': "23897",
+        '7': "24080",
+        '8': "24198",
+        '9': "24344",
         '10': "25526",
         '11': "27659",
         '12': "29710",
     }
 
     cod_2019 = {
-        '01': "30860",
-        '02': "31960",
-        '03': "34312",
-        '04': "34491",
-        '05': "34618",
-        '06': "35780",
-        '07': "36832",
-        '08': "37994",
-        '09': "38166",
+        '1': "30860",
+        '2': "31960",
+        '3': "34312",
+        '4': "34491",
+        '5': "34618",
+        '6': "35780",
+        '7': "36832",
+        '8': "37994",
+        '9': "38166",
         '10': "39353",
         '11': "40516",
         '12': "41799",
     }
 
     cod_2020 = {
-        '01': "41800",
-        '02': "41849",
-        '03': "41918",
-        '04': "42095",
-        '05': "42174",
-        '06': "42299",
-        '07': "43434",
-        '08': "43558",
-        '09': "43645",
+        '1': "41800",
+        '2': "41849",
+        '3': "41918",
+        '4': "42095",
+        '5': "42174",
+        '6': "42299",
+        '7': "43434",
+        '8': "43558",
+        '9': "43645",
         '10': "44741",
         '11': "45874",
         '12': "47869",
     }
 
     cod_2021 = {
-        '01': "48049",
-        '02': "48235",
-        '03': "",
-        '04': "",
-        '05': "",
-        '06': "",
-        '07': "",
-        '08': "",
-        '09': "",
+        '1': "48049",
+        '2': "48235",
+        '3': "",
+        '4': "",
+        '5': "",
+        '6': "",
+        '7': "",
+        '8': "",
+        '9': "",
         '10': "",
         '11': "",
         '12': "",
@@ -73,25 +73,25 @@ def links_remuneration(month, year):
     if year == "2018":
         for key in cod_2018:
             
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2018[key] + '.ods'
                 links_type["Membros ativos"] = link
          
     elif year == "2019":
         for key in cod_2019:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2019[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2020":
         for key in cod_2020:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2020[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2021":
         for key in cod_2021:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R0082/' + cod_2021[key] + '.ods'
                 links_type["Membros ativos"] = link
         
@@ -136,13 +136,13 @@ def links_other_funds(month, year):
 
     if year == "2020":
         for key in cod_2020:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL + year + '/R2167/' + cod_2020[key] + '.ods'
                 links_type["Membros ativos"] = link
     
     elif year == "2021":
         for key in cod_2021:
-            if month == key:
+            if month.zfill(2) == key.zfill(2):
                 link = baseURL +  year + '/R2167/' + cod_2021[key] + '.ods'
                 links_type["Membros ativos"] = link
         
