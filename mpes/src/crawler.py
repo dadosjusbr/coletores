@@ -55,13 +55,16 @@ def crawl(year, month, output_path):
         file_path = output_path + '/' + file_name + '.xlsx'
         
         #A partir de 2019 não há letras maiúsculas no nome dos meses, e existe um sufixo associado á categoria de Membros
-        if (key == 'vi') and (int(year) >= 2019):
-            sufix = '%2Dvi'
-            url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)].lower())
+        if key == 'vi':
+            if int(year) >= 2019:
+                sufix = '%2Dvi'
+                url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)].lower())
+            else:
+                sufix = ''
+                url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)])
         else:
-            sufix = ''
-            url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)])
-        
+            url = url_formats[key].format(year, month, url_code[after_2018_ot], months[int(month)])
+    
         download(url, file_path)
         files.append(file_path)
     
