@@ -37,12 +37,12 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 
 ## Dificuldades de coleta:
 
-- Parâmetro do nome do mês na Url varia entre primeira letra maiúscula e todas as letras minúsculas, tornando necessário várias estratégias para o request. Exemplo: Janeiro para jan/2018 , janeiro para jan/2019. 
-- Url sofre variação de acordo com codificação do nome do arquivo. Caractheres especiais, com acentos ou pontuções recebem mapeamento para código. Exemplo: á é mapeado para %C3%A0.
-- Url de verbas indenizátorias precisa de um sufixo associado a membros ativos apenas em 2019. 
+- Parâmetro do nome do mês na Url varia entre primeira letra maiúscula e todas as letras minúsculas, tornando necessário várias estratégias para o request. Exemplo: Janeiro para jan/2018 , janeiro para jan/2019. Fevereiro para fev/2018, fevereiro para fev/2019. 
+- Url sofre variação de acordo com codificação do nome do arquivo. Caractheres especiais, com acentos ou pontuções recebem mapeamento para código. Exemplo: á é mapeado para %C3%A0, já o caracthere a, sem acento, não sofre necessidade de mapeamento.
+- Url de verbas indenizátorias precisa de um sufixo associado a membros ativos apenas em 2019. Exemplo: para o ano de 2018 não necessita desse sufixo, em 2019 precisamos que o sufixo "2Dvi" seja adicionado na url.
 
 ## Dificuldades de Parsing:
 
-- Antes de 2019 o conjunto de colunas para remunerações simples não conta com as colunas, 'Outras Remunerações Temporarárias' e Verbas Indenizatórias. 
+- Antes de 2019 o conjunto de colunas para remunerações simples não conta com as colunas, 'Outras Remunerações Temporarárias' e 'Verbas Indenizatórias', a partir de 2019 essas colunas são adicionadas á planilha de remunerações simples, necessitando de tratamento especial. 
 - Gratificação Natalina é nomeada como 13º VENCIMENTO antes de agosto de 2019. 
 - Colunas com nomes pouco significativos antes de agosto de 2019. Exemplo: Em jan/2019 as colunas da planilha de verbas indenizatórias são as seguintes: 'VERBAS INDENIZATÓRIAS 1','VERBAS INDENIZATÓRIAS 2', 'REMUNERAÇÃO TEMPORÁRIA 1', 'REMUNERAÇÃO TEMPORÁRIA 2'.
