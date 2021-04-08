@@ -33,15 +33,16 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 - **Outras Remunerações Temporárias (Number)**: Valores pagos a título de Auxílio-alimentação, Auxílio-cursos,Auxílio-Saúde, Auxílio-creche, Auxílio-moradia.
 - **Verbas Indenizatórias  (Number)**: Verbas referentes á indenizações recebidas pelo funcionario á titulo de Adicional noturno, Cumulações, Serviços extraordinários e substituição de função.
 
-##Obs: Meses anteriores á agosto de 2019 não possuem os campos referentes á Outras Remunerações Temporárias e Verbas Indenizatórias. 
-
 # Dificuldades na libertação de dados: 
 
-## Dificuldades de coleta 
-- A pagina do ministério oferece as planilhas referentes á verbas indenizatórias e remunerações simples em seções diferentes, sendo necessário selecionar o periodo de tempo referente a cada uma delas para esclarecimento e compreensão dos dados.
-- Existe uma dificuldade relativa ao envio de requisições, para realizar o download de planilhas de anos anteriores ou iguais á 2018, existe a necessidade do envio do parâmetro relativo ao nome do mês em questão com a primeira letra em maiúsculo e as demais letras em minusculo. Para meses posteriores é preciso que este parâmetro seja enviado com todas as letras em minúsculo.
-- A url é suscetível á variação de codificação, palavras que contém caractheres especiais no nome dos arquivos disponibilizados pelo site, são convertidas na url com códigos, por exemplo 'á' é codificado em %C3%A0, acredito que isto ocorra devido á alguma ferramenta que mapeia á planilha de um determinado diretório á um endpoint.  
+## Dificuldades de coleta:
 
-## Dificuldades de Parsing 
-- Existem dois formatos de planilha, um associado á meses posteriores á agosto de 2019 e outro associado a meses anteriores. Este fato acaba por exigir duas abordagens diferentes.
-- Ausência de detalhes sobre verbas indenizatórias para meses anteriores á agosto de 2019. Aqui temos a completa ausência de detalhamento acerca do que se trata a verba, vemos apenas quatro colunas associadas á valores, nomeadas VERBAS INDENIZATÓRIAS 1, VERBAS INDENIZATÓRIAS 2, REMUNERAÇÃO TEMPORÁRIA 1, REMUNERAÇÃO TEMPORÁRIA 2.  
+- Parâmetro do nome do mês na Url varia entre primeira letra maiúscula e todas as letras minúsculas, tornando necessário várias estratégias para o request. Exemplo: Janeiro para jan/2018 , janeiro para jan/2019. 
+- Url sofre variação de acordo com codificação do nome do arquivo. Caractheres especiais, com acentos ou pontuções recebem mapeamento para código. Exemplo: á é mapeado para %C3%A0.
+- Url de verbas indenizátorias precisa de um sufixo associado a membros ativos apenas em 2019. 
+
+## Dificuldades de Parsing:
+
+- Antes de 2019 o conjunto de colunas para remunerações simples não conta com as colunas, 'Outras Remunerações Temporarárias' e Verbas Indenizatórias. 
+- Gratificação Natalina é nomeada como 13º VENCIMENTO antes de agosto de 2019. 
+- Colunas com nomes pouco significativos antes de agosto de 2019. Exemplo: Em jan/2019 as colunas da planilha de verbas indenizatórias são as seguintes: 'VERBAS INDENIZATÓRIAS 1','VERBAS INDENIZATÓRIAS 2', 'REMUNERAÇÃO TEMPORÁRIA 1', 'REMUNERAÇÃO TEMPORÁRIA 2'.
