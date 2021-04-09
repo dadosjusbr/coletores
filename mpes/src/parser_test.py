@@ -99,6 +99,52 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    #Este teste é destinado a verificar se ocorre de acordo com o esperado para os meses de abril - jul de 2020
+    def test_membros_abr_2020(self):
+        self.maxDiff = None
+
+        expected = {
+            'reg': '1408',
+            'name': 'WAGNER EDUARDO VASCONCELLOS',
+            'role': 'PROMOTOR DE JUSTIÇA',
+            'type': 'membro',
+            'workplace': 'PJ CÍVEL DE CACHOEIRO DE ITAPEMIRIM',
+            'active': True,
+            'income': {
+                'total': 35485.87,
+                'wage': 33689.11,
+                'perks': {
+                    'total': 3390.42,
+                    'food': 2240.33,
+                    'health': 1150.09,
+                },
+                'other': {
+                    'total': 0.00,
+                    'trust_position': 0.00,
+                    'others_total': 0.00,
+                    'eventual_benefits': 0.00,
+                    'others': {
+                        'Gratificação Natalina': 0.00,
+                        'Férias (1/3 constitucional)': 0.00,
+                        'Abono de permanência': 0.00,
+                        'Plantão': 0.00,
+                    },
+            },
+        },
+            'discounts': {
+                'total': 12308.7,
+                'prev_contribution': 4716.48,
+                'ceil_retention': 0.0,
+                'income_tax': 7592.22,
+            }
+    }
+        files = ('./output_test/2020_04_remu.xlsx',
+                 './output_test/2020_04_vi.xlsx')
+        employees = parser.parse(files,'2020','04')
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
     
 
