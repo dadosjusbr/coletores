@@ -22,8 +22,7 @@ def employees_parser(file_path):
 
     #Ajustando dataframe para simplificar interação
     data = data[data['Unnamed: 0'].notna()]
-    data = data[:-1]
-    data = data[1:]
+    data = data.dropna()
     clean_currency(data,4,14)
 
     #Parsing data
@@ -139,8 +138,7 @@ def employees_parser_befago(file_path):
     
     #Ajustando dataframe 
     data = data[data['Unnamed: 0'].notna()]
-    data = data[:-1]
-    data = data[1:]
+    data = data.dropna()
     clean_currency(data,4,14)
 
     #Parsing data
