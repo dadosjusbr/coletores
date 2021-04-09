@@ -45,4 +45,5 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 
 - Antes de 2019 o conjunto de colunas para remunerações simples não conta com as colunas, 'Outras Remunerações Temporarárias' e 'Verbas Indenizatórias', a partir de 2019 essas colunas são adicionadas á planilha de remunerações simples, necessitando de tratamento especial. 
 - Gratificação Natalina é nomeada como 13º VENCIMENTO antes de agosto de 2019. 
-- Colunas com nomes pouco significativos antes de agosto de 2019. Exemplo: Em jan/2019 as colunas da planilha de verbas indenizatórias são as seguintes: 'VERBAS INDENIZATÓRIAS 1','VERBAS INDENIZATÓRIAS 2', 'REMUNERAÇÃO TEMPORÁRIA 1', 'REMUNERAÇÃO TEMPORÁRIA 2'.
+- Colunas com nomes pouco significativos antes de agosto de 2019. Exemplo: Em jan/2019 as colunas da planilha de verbas indenizatórias são as seguintes: 'VERBAS INDENIZATÓRIAS 1','VERBAS INDENIZATÓRIAS 2', 'REMUNERAÇÃO TEMPORÁRIA 1', 'REMUNERAÇÃO TEMPORÁRIA 2'. 
+- Variação na quantidade de colunas para os meses entre abril á junho de 2020, estando ausente a coluna nomeada 'ABONO  FÉR. IND. EX. ANT', nos demais meses esta coluna está presente, exigindo tratamento especial para os meses supracitados. 
