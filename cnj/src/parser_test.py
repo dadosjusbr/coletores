@@ -70,7 +70,7 @@ class TestParser(unittest.TestCase):
 
         # Verificações
         self.assertEqual(1, len(employees))
-        self.assertDictEqual(employees['ADRIANO CELSO GUIMARAES'], expected)
+        self.assertDictEqual(employees[0], expected)
 
     def test_jan_2019(self):
         self.maxDiff = None
@@ -138,7 +138,7 @@ class TestParser(unittest.TestCase):
 
         # Verificações
         self.assertEqual(1, len(employees))
-        self.assertDictEqual(employees['ADRIANO CELSO GUIMARAES'], expected)
+        self.assertDictEqual(employees[0], expected)
 
 if __name__ == '__main__':
     unittest.main()
