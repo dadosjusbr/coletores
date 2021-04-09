@@ -72,14 +72,14 @@ def parse_employees(data):
 
     for row in rows:
         name = row[1]
-        subsidio = row[3]
-        indenizacoes = row[5]
-        previdencia = row[8]
-        imposto_renda = row[9]
-        descontos_diversos = row[10]
-        retencao_teto = row[11]
-        remuneracao_orgao_origem = row[14]
-        diarias = row[15]
+        subsidio = float(row[3])
+        indenizacoes = float(row[5])
+        previdencia = float(row[8])
+        imposto_renda = float(row[9])
+        descontos_diversos = float(row[10])
+        retencao_teto = float(row[11])
+        remuneracao_orgao_origem = float(row[14])
+        diarias = float(row[15])
 
         total_descontos = previdencia + imposto_renda + descontos_diversos + retencao_teto
         total_bruto = (subsidio + remuneracao_orgao_origem + diarias)
@@ -124,20 +124,20 @@ def update_employees_indemnities(data, employees):
     for row in rows:
         name = row[1]
         # Indenizações
-        auxilio_alimentacao = round(row[3], 2)
-        auxilio_pre_escolar = round(row[4], 2)
-        auxilio_saude = round(row[5], 2)
-        auxilio_natalidade = round(row[6], 2)
-        auxilio_moradia = round(row[7], 2)
-        ajuda_de_custo = round(row[8], 2)
+        auxilio_alimentacao = round(float(row[3]), 2)
+        auxilio_pre_escolar = round(float(row[4]), 2)
+        auxilio_saude = round(float(row[5]), 2)
+        auxilio_natalidade = round(float(row[6]), 2)
+        auxilio_moradia = round(float(row[7]), 2)
+        ajuda_de_custo = round(float(row[8]), 2)
         total = round(auxilio_alimentacao + auxilio_pre_escolar + auxilio_saude + auxilio_natalidade + auxilio_moradia + ajuda_de_custo, 2)
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
         # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
-        outra_1 = round(row[9], 2)
+        outra_1 = round(float(row[9]), 2)
         detalhe_outra_1 = row[10]
-        outra_2 = round(row[11], 2)
+        outra_2 = round(float(row[11]), 2)
         detalhe_outra_2 = row[12]
-        outra_3 = round(row[13], 2)
+        outra_3 = round(float(row[13]), 2)
         detalhe_outra_3 = row[14]
         
         # Atualização das indenizações
@@ -200,22 +200,24 @@ def update_employees_eventual_gratifications(data, employees):
     for row in rows:
         name = row[1]
         # Gratificações
-        abono_constitucional = round(row[3], 2)
-        indenizacao_ferias = round(row[4], 2)
-        antecipacao_ferias = round(row[5], 2)
-        gratificacao_natalina = round(row[6], 2)
+        abono_constitucional = round(float(row[3]), 2)
+        indenizacao_ferias = round(float(row[4]), 2)
+        antecipacao_ferias = 0.0
+        if str(row[5]) != '-':
+            antecipacao_ferias = round(float(antecipacao_ferias), 2)
+        gratificacao_natalina = round(float(row[6]), 2)
         antecipacao_grat_natal = round(float(str(row[7]).replace(",", ".")), 2)
-        substituicao = round(row[8], 2)
-        gratificacao_exercicio_cumulativo = round(row[9], 2)
-        gratificacao_encargo = round(row[10], 2)
-        pagamentos_retroativos = round(row[11], 2)
-        jeton = round(row[12], 2)
+        substituicao = round(float(row[8]), 2)
+        gratificacao_exercicio_cumulativo = round(float(row[9]), 2)
+        gratificacao_encargo = round(float(row[10]), 2)
+        pagamentos_retroativos = round(float(row[11]), 2)
+        jeton = round(float(row[12]), 2)
         total = abono_constitucional + indenizacao_ferias + antecipacao_ferias + gratificacao_natalina + antecipacao_grat_natal + substituicao + gratificacao_exercicio_cumulativo + gratificacao_encargo + pagamentos_retroativos + jeton
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
         # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
-        outra_1 = round(row[13], 2)
+        outra_1 = round(float(row[13]), 2)
         detalhe_outra_1 = row[14]
-        outra_2 = round(row[15], 2)
+        outra_2 = round(float(row[15]), 2)
         detalhe_outra_2 = row[16]
         
         # Atualização das gratificações
@@ -275,12 +277,12 @@ def update_employees_personal_gratifications(data, employees):
     for row in rows:
         name = row[1]
         # Gratificações
-        abono_permanencia  = round(row[3], 2)
+        abono_permanencia  = round(float(row[3]), 2)
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
         # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
-        outra_1 = round(row[4], 2)
+        outra_1 = round(float(row[4]), 2)
         detalhe_outra_1 = row[5]
-        outra_2 = round(row[6], 2)
+        outra_2 = round(float(row[6]), 2)
         detalhe_outra_2 = row[7]
         
         # Atualização das gratificações
