@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import os
+import parser_abr_jul
 
 def read(path):
     try:
@@ -23,7 +24,7 @@ def employees_parser(file_path):
     #Ajustando dataframe para simplificar interação
     data = data[data['Unnamed: 0'].notna()]
     data = data.dropna()
-    clean_currency(data,4,14)
+    clean_currency(data,4,15)
 
     #Parsing data
     rows = data.to_numpy()
@@ -57,7 +58,7 @@ def employees_parser(file_path):
         "income":
         {
             'total': total,
-            'wage': remuneration + other_verbs,
+            'wage': remuneration ,
             'perks':{
                 'total': idemnity,
             },
@@ -267,7 +268,10 @@ def parse(file_names, year, month):
             if (int(year) == 2019 and int(month) >= 8):
                 employees.update(employees_idemnity(file_name, employees))
             elif int(year) > 2019:
-                employees.update(employees_idemnity(file_name, employees))
+                if int(month) >= 4 and int(month) <= 7:
+                    employees.update(parser_abr_jul.employees_idemnity(file_name, employees))
+                else:    
+                    employees.update(employees_idemnity(file_name, employees))
             else:
                 employees.update(employees_idemnity_befago(file_name, employees))
     
