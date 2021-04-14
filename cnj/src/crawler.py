@@ -61,7 +61,12 @@ def download(court, payroll, output_path, driver):
     time.sleep(5)
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
-    time.sleep(50)
+
+    # The court of SP is way bigger than the others 
+    if(court == "tjsp"):
+        time.sleep(180)
+    else: 
+        time.sleep(50)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
