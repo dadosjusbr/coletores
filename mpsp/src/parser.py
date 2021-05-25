@@ -215,9 +215,10 @@ def parse_active_members(file_names, month, year):
                 elif month in ["06", "07", "08", "09", "10", "11", "12"] and year == "2018":
                     employees.update(active_members_parser.parse_june_to_dec_18(fn))
                 elif year == "2021":
-                    if month == "01":
+                    if month in ["01", "02", "03", "04"]:
+                        
                         employees.update(parse_employees(fn))
-
+         
             elif "Verbas Indenizatorias" in fn:
                 if year == "2019":
                     if month in ["07", "08"]:
@@ -282,6 +283,20 @@ def parse_active_members(file_names, month, year):
                                 fn, employees
                             )
                         )
+                    elif month == "02":
+                        employees.update(
+                            active_members_indemnity_parser.update_employee_indemnity_feb_2021(
+                                fn, employees
+                            )
+                        )
+                    elif month in ["03", "04"]:
+                        employees.update(
+                            active_members_indemnity_parser.update_employee_indemnity_mar_apr_2021(
+                                fn, employees
+                            )
+                        )
+
+
     return list(employees.values())
 
 # O parser para os membros inativos e servidores ativos e inativos está implementado. No entanto, não está sendo utilizado no momento

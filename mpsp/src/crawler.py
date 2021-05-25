@@ -26,11 +26,22 @@ def links_remuneration(month, year):
     if year == "2021":
         for key in beneficiary_types:
             if beneficiary_types[key] == "Membros_ativos":
-                if month in ["01"]:
+                if month in ["01", "02"]:
                     link = (
                         baseURL
                         + beneficiary_types[key]
                         + "/Tabela%201%20Membros%20Ativos%20ref%20"
+                        + month
+                        + "-" 
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
+                elif month in ["03", "04"]:
+                    link = (
+                        baseURL
+                        + beneficiary_types[key]
+                        + "/membros-ativos-remuneracao-"
                         + month
                         + "-" 
                         + year
@@ -1098,7 +1109,7 @@ def links_other_funds(month, year):
     elif year == "2021":
         for key in beneficiary_types:
             if beneficiary_types[key] == "Membros_ativos":
-                if month in ["01"]:
+                if month in ["01", "02"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/Tabela%203%20Membros%20Ativos%20ref%20"
@@ -1108,8 +1119,17 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
+                elif month in ["03", "04"]:
+                    link = (
+                        baseURL
+                        + "verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/membros-ativos-verba-indenizatoria-"
+                        + month
+                        + "-"
+                        + year
+                        + ".ods"
+                    )
+                    links_type[beneficiary_types[key]] = link
     return links_type
-
 
 def download(url, file_path):
     response = requests.get(url, allow_redirects=True)
