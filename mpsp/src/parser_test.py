@@ -2166,6 +2166,103 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_active_members_fev_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "3182",
+            "name": "ADOLFO CESAR DE CASTRO E ASSIS",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DE SAO BERNARDO DO CAMPO",
+            "active": True,
+            "income": {
+                "total": 56659.29,
+                "wage": 33689.1,
+                "perks": {"total": 960.0, "food": 960.0, "vacation_pecuniary": 0.0},
+                "other": {
+                    "total": 22010.19,
+                    "trust_position": 0.0,
+                    "others_total": 22010.19,
+                    "others": {
+                        "Gratificação Natalina": 16844.55,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "GRAT. CUMULATIVA": 4042.68,
+                        "GRAT. NATUREZA ESPECIAL": 1122.96,
+                        "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 16068.74,
+                "prev_contribution": 7679.57,
+                "ceil_retention": 0.0,
+                "income_tax": 8389.17,
+            },
+        }
+
+        files = (
+            "./output_test/Membros_ativos-02-2021.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-02-2021.ods",
+        )
+        employees = parser.parse_active_members(files, "02", "2021")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_active_members_mar_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "3339",
+            "name": "ADONAI GABRIEL",
+            "role": "PROMOTOR DE JUSTICA (ENTRANCIA FINAL)",
+            "type": "membro",
+            "workplace": "PROMOTORIA DE JUSTICA DE BRAGANCA PAULISTA",
+            "active": True,
+            "income": {
+                "total": 49659.38,
+                "wage": 33689.1,
+                "perks": {
+                    "total": 10467.8,
+                    "food": 960.0,
+                    "vacation_pecuniary": 7486.46,
+                    "health": 2021.34,
+                },
+                "other": {
+                    "total": 5502.48,
+                    "trust_position": 0.0,
+                    "others_total": 5502.48,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de Permanência": 0.0,
+                        "GRAT. CUMULATIVA": 3818.04,
+                        "GRAT. NATUREZA ESPECIAL": 1684.44,
+                        "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 13564.87,
+                "prev_contribution": 5187.35,
+                "ceil_retention": 0.0,
+                "income_tax": 8377.52,
+            },
+        }
+
+        files = (
+            "./output_test/Membros_ativos-03-2021.ods",
+            "./output_test/Membros_ativos-Verbas Indenizatorias-03-2021.ods",
+        )
+        employees = parser.parse_active_members(files, "03", "2021")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()
