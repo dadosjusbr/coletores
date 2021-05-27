@@ -64,7 +64,6 @@ def crawl(year, month, output_path):
                 url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)])
         else:
             url = url_formats[key].format(year, month, url_code[after_2018_ot], months[int(month)])
-        print(url)
         download(url, file_path)
         files.append(file_path)
     
