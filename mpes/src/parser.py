@@ -5,6 +5,7 @@ import os
 import parser_jan18_to_jul19
 import parser_indenity_jun_to_aug_19
 import parser_indenity_nov_dez_2019
+import parser_indenity2020
 
 def read(path):
     try:
@@ -62,7 +63,7 @@ def employees_parser(file_path):
         'active': True,
         "income":
         {
-            'total': total,
+            'total': round(total,2),
             'wage': round(remuneration + other_verbs, 2),
             'perks':{
                 'total': idemnity,
@@ -72,7 +73,7 @@ def employees_parser(file_path):
                 'total': round(total_gratificacoes, 2),
                 'trust_position': trust_pos,
                 'eventual_benefits': temp_remu,
-                'others_total': christmas_grati + terco_ferias + abono_permanencia,
+                'others_total': round(christmas_grati + terco_ferias + abono_permanencia,2),
                 'others': {
                     'Gratificação Natalina': christmas_grati,
                     'Férias (1/3 constitucional)': terco_ferias,
@@ -288,5 +289,17 @@ def parse(file_names, year, month):
                     employees.update(parser_indenity_nov_dez_2019.employees_idemnity_nov19(file_name, employees))
                 elif month  == "12":
                     employees.update(parser_indenity_nov_dez_2019.employees_idemnity_dez19(file_name, employees))
-
+            elif year == "2020":
+                if month in ["01", "02", "03"]:
+                    employees.update(parser_indenity2020.employees_idemnity_jan_to_mar_20(file_name, employees))
+                elif month in ["04", "06", "07"]:
+                    employees.update(parser_indenity2020.employees_idemnity_abr_jun_jul20(file_name, employees))
+                elif month == "08":
+                    employees.update(parser_indenity2020.employees_idemnity_aug20(file_name, employees))
+                elif month == "10":
+                    employees.update(parser_indenity2020.employees_idemnity_oct_20(file_name, employees))
+                elif month in ["09", "11"]:
+                    employees.update(parser_indenity2020.employees_idemnity_sept_nov_20(file_name, employees))
+                elif month == "12":
+                    employees.update(parser_indenity2020.employees_idemnity_dec_20(file_name, employees))
     return list(employees.values())
