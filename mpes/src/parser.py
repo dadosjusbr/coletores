@@ -1,7 +1,6 @@
 import sys
 import pandas as pd
 import os
-#import parser_abr_jul
 import parser_jan18_to_jul19
 import parser_indenity_jun_to_aug_19
 import parser_indenity_nov_dez_2019
