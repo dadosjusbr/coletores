@@ -5,6 +5,7 @@ import parser_jan18_to_jul19
 import parser_indenity_jun_to_aug_19
 import parser_indenity_nov_dez_2019
 import parser_indenity2020
+import parser_indenity2021
 
 def read(path):
     try:
@@ -301,4 +302,12 @@ def parse(file_names, year, month):
                     employees.update(parser_indenity2020.employees_idemnity_sept_nov_20(file_name, employees))
                 elif month == "12":
                     employees.update(parser_indenity2020.employees_idemnity_dec_20(file_name, employees))
+            elif year == "2021":
+                if month in ["01", "03"]:
+                    employees.update(parser_indenity2021.employees_idemnity_jan_mar_21(file_name, employees))
+                elif month == "02":
+                    employees.update(parser_indenity2021.employees_idemnity_fev21(file_name, employees))
+                elif month == "04":
+                    employees.update(parser_indenity2021.employees_idemnity_apr20(file_name, employees))
+
     return list(employees.values())

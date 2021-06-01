@@ -56,8 +56,16 @@ def crawl(year, month, output_path):
         
         #A partir de 2019 não há letras maiúsculas no nome dos meses, e existe um sufixo associado á categoria de Membros
         if key == 'vi':
-            if int(year) >= 2019:
+            if year == "2021":
+                sufix = "+%2D+vi"
+                if month in ["01", "02", "03"]:
+                    url_formats[key] = 'https://www.mpes.mp.br/transparencia/informacoes/Contracheque/Verbas_Indenizatorias_e_Outras_Remuneracoes_Temporarias.asp?precommand=Download&folder={}%5CMembro+ativo{}%5C&file={}+%2D+Planilha+Lei+de+acesso+{}+informa%C3%A7%C3%A3o+%2D+{}%2Exlsx'
+                elif month in ["04"]:
+                    url_formats[key] = 'https://www.mpes.mp.br/transparencia/informacoes/Contracheque/Verbas_Indenizatorias_e_Outras_Remuneracoes_Temporarias.asp?precommand=Download&folder={}%5CMembro+ativo{}%5C&file={}+%2D+Planilha+Lei+de+acesso+{}+informa%C3%A7%C3%A3o+%2D{}%2Exlsx'
+            else:
                 sufix = '%2Dvi'
+            if int(year) >= 2019:
+                
                 url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)].lower())
             else:
                 sufix = ''

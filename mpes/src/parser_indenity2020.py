@@ -91,52 +91,6 @@ def employees_idemnity_abr_jun_jul20(file_path, employees):
 
     return employees
 
-def employees_idemnity_jan_to_mar_20(file_path, employees):
-    data = parser.read(file_path)
-
-    #Ajustando dataframe para simplificar interação
-    data = data[data['Unnamed: 4'].notna()]
-    data = data[data['Ministério Público do Estado do Espírito Santo'].notna()]
-    data = data[1:]
-    parser.clean_currency(data, 4,7)
-
-    #Parsing Data
-    rows = data.to_numpy()
-    for row in rows:
-        reg = str(row[0]) # Matrícula
-        ferias_indenizadas = row[4]
-        aux_ali = row[5] #CARTÃO ALIMENTAÇÃO
-        aux_saude = row[6] #AUXÍLIO SAÚDE
-        plantao = row[7] #Plantao
-        
-        #Há funcionários não listados na lista de remunerações mas listados na lista de indenizações
-        try:
-            emp = employees[reg]
-            exists = True
-        except:
-            exists = False
-
-        if exists :    
-
-            emp = employees[reg]
-
-            emp['income']['perks'].update({
-                'total': round( aux_ali + aux_saude + ferias_indenizadas, 2),
-                'vocation': ferias_indenizadas,
-                'food': aux_ali ,
-                'health': aux_saude,
-            })
-            emp['income']['other']['others'].update({
-                'Plantão': plantao,
-            })
-            emp['income']['other'].update({
-                'others_total': round( emp['income']['other']['others_total'] + plantao, 2),
-            })
-
-            employees[reg] = emp 
-
-    return employees
-
 def employees_idemnity_aug20(file_path, employees):
     data = parser.read(file_path)
 

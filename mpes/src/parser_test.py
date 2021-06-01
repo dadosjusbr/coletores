@@ -504,6 +504,139 @@ class TestParser(unittest.TestCase):
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
+    def test_membros_jan_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "1001",
+            "name": "ADELCION CALIMAN",
+            "role": "PROMOTOR DE JUSTIÇA",
+            "type": "membro",
+            "workplace": "PJ CRIMINAL DE VITÓRIA",
+            "active": True,
+            "income": {
+                "total": 60405.06,
+                "wage": 33689.11,
+                "perks": {"total": 5154.91, "food": 2240.33, "health": 2914.58},
+                "other": {
+                    "total": 21561.04,
+                    "trust_position": 0.0,
+                    "eventual_benefits": 0.0,
+                    "others_total": 21561.04,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 16844.56,
+                        "Abono de permanência": 4716.48,
+                        "Plantão": 0.0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 14065.18,
+                "prev_contribution": 4716.48,
+                "ceil_retention": 0,
+                "income_tax": 9348.7,
+            },
+        }
+        files = ("./output_test/2021_01_remu.xlsx", "./output_test/2021_01_vi.xlsx")
+        employees = parser.parse(files, "2021", "01")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_membros_fev_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "1001",
+            "name": "ADELCION CALIMAN",
+            "role": "PROMOTOR DE JUSTIÇA",
+            "type": "membro",
+            "workplace": "PJ CRIMINAL DE VITÓRIA",
+            "active": True,
+            "income": {
+                "total": 41160.5,
+                "wage": 33689.11,
+                "perks": {
+                    "total": 2754.91,
+                    "vacation": 0.0,
+                    "food": 2240.33,
+                    "health": 514.58,
+                },
+                "other": {
+                    "total": 4716.48,
+                    "trust_position": 0.0,
+                    "eventual_benefits": 0.0,
+                    "others_total": 4716.48,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de permanência": 4716.48,
+                        "Plantão": 0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 10895.44,
+                "prev_contribution": 4716.48,
+                "ceil_retention": 0,
+                "income_tax": 6178.96,
+            },
+        }
+        files = ("./output_test/2021_02_remu.xlsx", "./output_test/2021_02_vi.xlsx")
+        employees = parser.parse(files, "2021", "02")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+    def test_membros_april_2021(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "1001",
+            "name": "ADELCION CALIMAN",
+            "role": "PROMOTOR DE JUSTIÇA",
+            "type": "membro",
+            "workplace": "PJ CRIMINAL DE VITÓRIA",
+            "active": True,
+            "income": {
+                "total": 52502.5,
+                "wage": 33801.41,
+                "perks": {
+                    "total": 13984.61,
+                    "vacation": 11229.7,
+                    "food": 2240.33,
+                    "health": 514.58,
+                },
+                "other": {
+                    "total": 4716.48,
+                    "trust_position": 0.0,
+                    "eventual_benefits": 0.0,
+                    "others_total": 4716.48,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Férias (1/3 constitucional)": 0.0,
+                        "Abono de permanência": 4716.48,
+                        "Plantão": 0,
+                    },
+                },
+            },
+            "discounts": {
+                "total": 10923.73,
+                "prev_contribution": 4716.48,
+                "ceil_retention": 0,
+                "income_tax": 6207.25,
+            },
+        }
+        files = ("./output_test/2021_04_remu.xlsx", "./output_test/2021_04_vi.xlsx")
+        employees = parser.parse(files, "2021", "04")
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
 
 if __name__ == "__main__":
     unittest.main()
