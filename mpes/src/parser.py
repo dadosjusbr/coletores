@@ -6,6 +6,7 @@ import parser_indenity_jun_to_aug_19
 import parser_indenity_nov_dez_2019
 import parser_indenity2020
 import parser_indenity2021
+import parser_maio_2020
 
 def read(path):
     try:
@@ -14,6 +15,7 @@ def read(path):
     except Exception as excep:
         sys.stderr.write("'Não foi possível ler o arquivo: " + path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
+
 
 def clean_currency(data, beg_col, end_col):
     for col in data.columns[beg_col:end_col]:
@@ -90,7 +92,6 @@ def employees_parser(file_path):
             'income_tax': imposto_renda
         }
     }
-    
     return employees
 
 def employees_idemnity(file_path, employees):
@@ -275,7 +276,10 @@ def parse(file_names, year, month):
             elif(year == "2019" and  int(month) >= 8):
                 employees.update(employees_parser(file_name))
             elif int(year) > 2019:
-                employees.update(employees_parser(file_name))
+                if month == "05" and year == "2020":
+                    employees.update(parser_maio_2020.employees_parser(file_name))
+                else:
+                    employees.update(employees_parser(file_name))
 
         else:
             if year == "2018":

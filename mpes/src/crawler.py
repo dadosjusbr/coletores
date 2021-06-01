@@ -71,7 +71,14 @@ def crawl(year, month, output_path):
                 sufix = ''
                 url = url_formats[key].format(year, sufix, month, url_code[after_2018_ot], months[int(month)])
         else:
-            url = url_formats[key].format(year, month, url_code[after_2018_ot], months[int(month)])
+            if year == "2019" and month == "10":
+                url_formats['remu'] = 'https://www.mpes.mp.br/transparencia/informacoes/Contracheque/Remuneracao_de_Todos_os_Membros_Ativos.asp?precommand=Download&folder={}%5C&file={}%2D+Planilha+Lei+de+acesso+{}+informa%C3%A7%C3%A3o+%2D+{}%2E%2Exlsx'
+            
+            if month == "05" and year == "2020":
+                url = url_formats[key].format(year, month, url_code[after_2018_ot], months[int(month)].lower())
+
+            else:
+                url = url_formats[key].format(year, month, url_code[after_2018_ot], months[int(month)])
         download(url, file_path)
         files.append(file_path)
     

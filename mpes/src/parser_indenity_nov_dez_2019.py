@@ -1,5 +1,10 @@
 import parser
 
+# Strange way to check nan. Only I managed to make work
+# Source: https://stackoverflow.com/a/944712/5822594
+def isNaN(string):
+    return string != string
+
 def employees_idemnity_nov19(file_path, employees):
     data = parser.read(file_path)
 
@@ -73,6 +78,8 @@ def employees_idemnity_dez19(file_path, employees):
         ajuda_de_custo = row[8]
         aux_saude = row[9] #AUXÍLIO SAÚDE
         plantao = row[10] #Plantao
+        if isNaN(plantao):
+            plantao = 0.0
         
         #Há funcionários não listados na lista de remunerações mas listados na lista de indenizações
         try:
