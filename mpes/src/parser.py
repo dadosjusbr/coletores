@@ -1,7 +1,10 @@
 import sys
 import pandas as pd
 import os
-import parser_abr_jul
+import parser_jan18_to_jul19
+import parser_indenity_jun_to_aug_19
+import parser_indenity_nov_dez_2019
+import parser_indenity2020
 
 def read(path):
     try:
@@ -43,10 +46,12 @@ def employees_parser(file_path):
         abono_permanencia = row[9] #Abono de Permanência
         temp_remu = row[10] #Outras Remunerações Temporárias
         idemnity = row[11] #Verbas Indenizatórias
-        total = row[12] #Total de rendimentos brutos 
         prev_contrib = row[13] #Contribuição Previdenciária
         imposto_renda = row[14] #Imposto de Renda
         ceil_ret = row[15] #Retenção do Teto       
+        total_desconto = prev_contrib + imposto_renda + ceil_ret 
+        total_gratificacoes = trust_pos + christmas_grati + terco_ferias + abono_permanencia + temp_remu
+        total = total_gratificacoes + idemnity + remuneration + other_verbs
 
         employees[reg] = {
         'reg': reg,
@@ -57,17 +62,17 @@ def employees_parser(file_path):
         'active': True,
         "income":
         {
-            'total': total,
-            'wage': remuneration ,
+            'total': round(total,2),
+            'wage': round(remuneration + other_verbs, 2),
             'perks':{
                 'total': idemnity,
             },
             'other':
             { 
-                'total': trust_pos + christmas_grati + terco_ferias + abono_permanencia + temp_remu,
+                'total': round(total_gratificacoes, 2),
                 'trust_position': trust_pos,
                 'eventual_benefits': temp_remu,
-                'others_total': christmas_grati + terco_ferias + abono_permanencia,
+                'others_total': round(christmas_grati + terco_ferias + abono_permanencia,2),
                 'others': {
                     'Gratificação Natalina': christmas_grati,
                     'Férias (1/3 constitucional)': terco_ferias,
@@ -78,7 +83,7 @@ def employees_parser(file_path):
         },
         'discounts':
         {
-            'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
+            'total': round(total_desconto, 2),
             'prev_contribution': prev_contrib,
             'ceil_retention': ceil_ret,
             'income_tax': imposto_renda
@@ -100,10 +105,9 @@ def employees_idemnity(file_path, employees):
     rows = data.to_numpy()
     for row in rows:
         reg = str(row[0]) # Matrícula
-        vacation = row[4] #ABONO  FÉR. IND. EX. ANT.
-        aux_ali = row[5] #CARTÃO ALIMENTAÇÃO
-        aux_saude = row[6] #AUXÍLIO SAÚDE
-        plantao = row[7] #Plantao
+        aux_ali = row[4] #CARTÃO ALIMENTAÇÃO
+        aux_saude = row[5] #AUXÍLIO SAÚDE
+        plantao = row[6] #Plantao
         
         #Há funcionários não listados na lista de remunerações mas listados na lista de indenizações
         try:
@@ -115,6 +119,11 @@ def employees_idemnity(file_path, employees):
         if exists :    
 
             emp = employees[reg]
+            
+            emp['income'].update({
+                'total': round(emp['income']['total'] + plantao, 2),
+
+            })
 
             emp['income']['perks'].update({
                 'total': round( aux_ali + aux_saude, 2),
@@ -122,10 +131,10 @@ def employees_idemnity(file_path, employees):
                 'health': aux_saude,
             })
             emp['income']['other']['others'].update({
-                'ABONO  FÉR. IND. EX. ANT': vacation,
                 'Plantão': plantao,
             })
             emp['income']['other'].update({
+                'total': round( emp['income']['other']['total'] + plantao, 2),
                 'others_total': round( emp['income']['other']['others_total'] + plantao, 2),
             })
 
@@ -258,21 +267,38 @@ def parse(file_names, year, month):
 
     for file_name in file_names:
         if 'vi' not in file_name:
-            if(int(year) == 2019 and int(month) >= 8):
+            if year == '2018':
+                employees.update(parser_jan18_to_jul19.employees_parser(file_name))
+            elif(year == "2019" and int(month) < 8):
+                employees.update(parser_jan18_to_jul19.employees_parser(file_name))
+            elif(year == "2019" and  int(month) >= 8):
                 employees.update(employees_parser(file_name))
             elif int(year) > 2019:
                 employees.update(employees_parser(file_name))
-            else:
-                employees.update(employees_parser_befago(file_name))
+
         else:
-            if (int(year) == 2019 and int(month) >= 8):
-                employees.update(employees_idemnity(file_name, employees))
-            elif int(year) > 2019:
-                if int(month) >= 4 and int(month) <= 7:
-                    employees.update(parser_abr_jul.employees_idemnity(file_name, employees))
-                else:    
-                    employees.update(employees_idemnity(file_name, employees))
-            else:
-                employees.update(employees_idemnity_befago(file_name, employees))
-    
+            if year == "2018":
+                employees.update(parser_jan18_to_jul19.employees_idemnity(file_name, employees))
+            elif(year == "2019"):
+                if month in ["01", "02", "03", "04", "05", "06", "07"]:
+                    employees.update(parser_jan18_to_jul19.employees_idemnity(file_name, employees))
+                elif month in ["08", "09", "10"]:
+                    employees.update(parser_indenity_jun_to_aug_19.employees_idemnity(file_name, employees))
+                elif month  == "11":
+                    employees.update(parser_indenity_nov_dez_2019.employees_idemnity_nov19(file_name, employees))
+                elif month  == "12":
+                    employees.update(parser_indenity_nov_dez_2019.employees_idemnity_dez19(file_name, employees))
+            elif year == "2020":
+                if month in ["01", "02", "03"]:
+                    employees.update(parser_indenity2020.employees_idemnity_jan_to_mar_20(file_name, employees))
+                elif month in ["04", "06", "07"]:
+                    employees.update(parser_indenity2020.employees_idemnity_abr_jun_jul20(file_name, employees))
+                elif month == "08":
+                    employees.update(parser_indenity2020.employees_idemnity_aug20(file_name, employees))
+                elif month == "10":
+                    employees.update(parser_indenity2020.employees_idemnity_oct_20(file_name, employees))
+                elif month in ["09", "11"]:
+                    employees.update(parser_indenity2020.employees_idemnity_sept_nov_20(file_name, employees))
+                elif month == "12":
+                    employees.update(parser_indenity2020.employees_idemnity_dec_20(file_name, employees))
     return list(employees.values())

@@ -20,7 +20,7 @@ else:
 if('OUTPUT_FOLDER' in os.environ):
     output_path = os.environ['OUTPUT_FOLDER']
 else:
-    output_path = "/output"
+    output_path = "./output"
 if('GIT_COMMIT' in os.environ):
     crawler_version = os.environ['GIT_COMMIT']
 else:
