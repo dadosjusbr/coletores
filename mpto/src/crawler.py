@@ -4,11 +4,11 @@ import sys
 import os
 import datetime
 
+base_url = "https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/"
 
-baseURL = "https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/"
 
 def links_remuneration(month, year):
-
+    # A formação do link possui um código referente a cada mês
     cod_2018 = {
         '1': "51b99d5dba4ddb8f5e5708d4faac77bb",
         '2': "8052142001c197100ec8dad47aa15383",
@@ -75,52 +75,55 @@ def links_remuneration(month, year):
 
     links_type = {}
     link = ""
+    # Para cada mês e ano o link será criado com o respectivo código
+    # Exemplo de link para janeiro de 2018:
+    # https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/51b99d5dba4ddb8f5e5708d4faac77bb
     if year == "2018":
         for key in cod_2018:
-            
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2018[key]
+                link = base_url + cod_2018[key]
                 links_type["Membros ativos"] = link
 
+                # Ao selecionar dezembro, é gerado um link extra referente ao décimo terceiro
                 if month == 12:
-                    link_decimo_terceiro = baseURL + cod_2018[13]
+                    link_decimo_terceiro = base_url + cod_2018[13]
                     links_type["Membros ativos"] = link_decimo_terceiro
          
     elif year == "2019":
         for key in cod_2019:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2019[key]
+                link = base_url + cod_2019[key]
                 links_type["Membros ativos"] = link
 
                 if month == 12:
-                    link_decimo_terceiro = baseURL + cod_2019[13]
+                    link_decimo_terceiro = base_url + cod_2019[13]
                     links_type["Membros ativos"] = link_decimo_terceiro
     
     elif year == "2020":
         for key in cod_2020:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2020[key]
+                link = base_url + cod_2020[key]
                 links_type["Membros ativos"] = link
 
                 if month == 12:
-                    link_decimo_terceiro = baseURL + cod_2020[13]
+                    link_decimo_terceiro = base_url + cod_2020[13]
                     links_type["Membros ativos"] = link_decimo_terceiro
     
     elif year == "2021":
         for key in cod_2021:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2021[key]
+                link = base_url + cod_2021[key]
                 links_type["Membros ativos"] = link
 
                 if month == 12:
-                    link_decimo_terceiro = baseURL + cod_2021[13]
+                    link_decimo_terceiro = base_url + cod_2021[13]
                     links_type["Membros ativos"] = link_decimo_terceiro
         
     return links_type
 
 
 def links_other_funds(month, year):
-
+    # A formação do link possui um código referente a cada mês
     cod_2018 = {
         '1': "06b6cb0905114fc808636ac9a14c1772",
         '2': "4c2dcb383e890f04524fe0cdcff4efd4",
@@ -185,27 +188,26 @@ def links_other_funds(month, year):
     link = ""
     if year == "2018":
         for key in cod_2018:
-            
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2018[key]
+                link = base_url + cod_2018[key]
                 links_type["Membros ativos"] = link
          
     elif year == "2019":
         for key in cod_2019:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2019[key]
+                link = base_url + cod_2019[key]
                 links_type["Membros ativos"] = link
     
     elif year == "2020":
         for key in cod_2020:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2020[key]
+                link = base_url + cod_2020[key]
                 links_type["Membros ativos"] = link
     
     elif year == "2021":
         for key in cod_2021:
             if month.zfill(2) == key.zfill(2):
-                link = baseURL + cod_2021[key]
+                link = base_url + cod_2021[key]
                 links_type["Membros ativos"] = link
         
     return links_type
