@@ -4,7 +4,8 @@ import os
 import datetime
 import crawler
 import json
-#import parser
+import parser
+import parser_2018
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -43,21 +44,25 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    # employees = parser.parse(file_names)
-    # cr = {
-    #     'aid': 'mpto',
-    #     'month': int(month),
-    #     'year': int(year),
-    #     'files': file_names,
-    #     'crawler': {
-    #         'id': 'mpto',
-    #         'version': crawler_version,
-    #     },
-    #     'employees': employees,
-    #     # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-    #     'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    # }
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    esp_months = ['1', '2', '3']
+    if year == '2018' or (year == '2019' and month in esp_months):
+        employees = parser_2018.parse(file_names)
+    else:
+        employees = parser.parse(file_names, year, month)
+    cr = {
+        'aid': 'mpto',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpto',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 
 if __name__ == '__main__':
