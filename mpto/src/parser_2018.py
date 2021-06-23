@@ -64,10 +64,10 @@ def parse_employees(file_name):
                 ferias = format_value(row[8])
                 permanencia = format_value(row[9])  # Abono de Permanência
                 total_bruto = format_value(row[10])
-                previdencia = abs(format_value(row[12]))  # Contribuição Previdenciária
-                imp_renda = abs(format_value(row[13]))  # Imposto de Renda
-                teto_constitucional = abs(format_value(row[14]))  # Retenção por Teto Constitucional
-                total_desconto = abs(format_value(row[15]))
+                previdencia = abs(format_value(row[11]))  # Contribuição Previdenciária
+                imp_renda = abs(format_value(row[12]))  # Imposto de Renda
+                teto_constitucional = abs(format_value(row[13]))  # Retenção por Teto Constitucional
+                total_desconto = abs(format_value(row[14]))
                 total_gratificacoes = (
                     grat_natalina
                     + ferias

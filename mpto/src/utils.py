@@ -42,4 +42,4 @@ def treat_rows(rows):
         if emp_clean and (str(emp_clean[0]).isdigit() and len(str(emp_clean[0])) > 2):  # Delete placeholder fields | Ex: ['Página 5']
             emps_clean.append(emp_clean)
 
-    return emps_clean[begin_row:end_row]
+    return emps_clean
