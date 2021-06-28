@@ -34,3 +34,11 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 - **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
 - **Verbas Indenizatórias**: Auxílio-Alimentação, Auxílio-Moradia, Férias Indenizadas, Licença Prêmio Indenizada e outras dessa natureza.
 - **Outras Remunerações Temporárias**: Valores pagos a título de cumulações, complementos por entrância e outros dessa natureza.
+
+
+## Dificuldades 
+
+- Durante todo o período monitorado, 2018 até o momento, a maneira de disponibilazação dos dados foi alterada algumas vezes. Alterações na maneira que o arquivo é formatado e no conteúdo das colunas obrigaram a necessidade da criação de diferentes arquivos parser que se adéquem a cada um deles.
+
+Exemplo:
+    - Durante o ano de 2018, os dados são expostos com subdivisões por páginas, o que gera colunas excepcionais que não são previstas no parser padrão, por exemplo, numeração de páginas e duplicação de cabeçalhos.
