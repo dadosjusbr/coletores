@@ -9,6 +9,8 @@ base_url = "https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_f
 
 def links_remuneration(month, year):
     # A formação do link possui um código referente a cada mês
+    # Exemplo de link para Fevereiro de 2018:
+    # https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/8052142001c197100ec8dad47aa15383
     cod_2018 = {
         '1': "51b99d5dba4ddb8f5e5708d4faac77bb",
         '2': "8052142001c197100ec8dad47aa15383",
@@ -75,9 +77,6 @@ def links_remuneration(month, year):
 
     links_type = {}
     link = ""
-    # Para cada mês e ano o link será criado com o respectivo código
-    # Exemplo de link para janeiro de 2018:
-    # https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/51b99d5dba4ddb8f5e5708d4faac77bb
     if year == "2018":
         for key in cod_2018:
             if month.zfill(2) == key.zfill(2):
@@ -124,6 +123,8 @@ def links_remuneration(month, year):
 
 def links_other_funds(month, year):
     # A formação do link possui um código referente a cada mês
+    # Exemplo de link para Fevereiro de 2018:
+    # https://athenas.mpto.mp.br/athenas/FileUploadController/get_public_file/4c2dcb383e890f04524fe0cdcff4efd4
     cod_2018 = {
         '1': "06b6cb0905114fc808636ac9a14c1772",
         '2': "4c2dcb383e890f04524fe0cdcff4efd4",
