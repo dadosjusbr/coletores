@@ -1,73 +1,37 @@
-import pandas as pd
-from datetime import datetime
-import math
-import pathlib
 import sys
 import os
 import utils
-
-# Read data downloaded from the crawler
-
-def read_data(path):
-    try:
-        data = pd.read_excel(path, engine=None)
-        return data
-    except Exception as excep:
-        sys.stderr.write(
-            "'Não foi possível ler o arquivo: "
-            + path
-            + ". O seguinte erro foi gerado: "
-            + excep
-        )
-        os._exit(1)
-
-
-# Strange way to check nan. Only I managed to make work
-# Source: https://stackoverflow.com/a/944712/5822594
-
-def isNaN(string):
-    return string != string
-
-
-def format_value(element):
-    # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
-    if isNaN(element):
-        return 0.0
-    if type(element) == str:
-        if "." in element and "," in element:
-            element = element.replace(".", "").replace(",", ".")
-        elif "," in element:
-            element = element.replace(",", ".")
-
-    return float(element)
+import read
+import clean
+import table
 
 # Used when the employee is not on the indemnity list
 def parse_employees(file_name):
-    rows = read_data(file_name).to_numpy()
-    emps_clean = utils.treat_rows(rows)
+    rows = read.data(file_name).to_numpy()
+    emps_clean = table.treat_rows(rows)
     employees = {}
     for row in emps_clean:
         matricula = str(row[0])
-        if not isNaN(matricula) and matricula != "nan":
+        if not utils.is_nan(matricula) and matricula != "nan":
             if "Membros" not in str(matricula) and "Matrícula" not in matricula:
                 nome = row[1]
                 cargo_efetivo = row[2]
-                if isNaN(cargo_efetivo):
+                if utils.is_nan(cargo_efetivo):
                     cargo_efetivo = "Não informado"
                 lotacao = row[3]
-                if isNaN(lotacao):
+                if utils.is_nan(lotacao):
                     lotacao = "Não informado"
-                remuneracao_cargo_efetivo = format_value(row[4])
-                outras_verbas_remuneratorias = format_value(row[5])
-                confianca_comissao = format_value(row[6])  # Função de Confiança ou Cargo em Comissão
-                grat_natalina = abs(format_value(row[7]))  # Gratificação Natalina
-                ferias = format_value(row[8])
-                permanencia = format_value(row[9])  # Abono de Permanência
-                total_bruto = format_value(row[10])
-                previdencia = abs(format_value(row[11]))  # Contribuição Previdenciária
-                imp_renda = abs(format_value(row[12]))  # Imposto de Renda
-                teto_constitucional = abs(format_value(row[13]))  # Retenção por Teto Constitucional
-                total_desconto = abs(format_value(row[14]))
+                remuneracao_cargo_efetivo = clean.cell(row[4])
+                outras_verbas_remuneratorias = clean.cell(row[5])
+                confianca_comissao = clean.cell(row[6])  # Função de Confiança ou Cargo em Comissão
+                grat_natalina = abs(clean.cell(row[7]))  # Gratificação Natalina
+                ferias = clean.cell(row[8])
+                permanencia = clean.cell(row[9])  # Abono de Permanência
+                total_bruto = clean.cell(row[10])
+                previdencia = abs(clean.cell(row[11]))  # Contribuição Previdenciária
+                imp_renda = abs(clean.cell(row[12]))  # Imposto de Renda
+                teto_constitucional = abs(clean.cell(row[13]))  # Retenção por Teto Constitucional
+                total_desconto = abs(clean.cell(row[14]))
                 total_gratificacoes = (
                     grat_natalina
                     + ferias
@@ -109,21 +73,22 @@ def parse_employees(file_name):
 
     return employees
 
+
 def update_employee_indemnity(file_name, employees):
-    rows = read_data(file_name).to_numpy()
-    emps_clean = utils.treat_rows(rows)
+    rows = read.data(file_name).to_numpy()
+    emps_clean = table.treat_rows(rows)
 
     for row in emps_clean:
         matricula = row[0]
         if type(matricula) != str:
             matricula = str(matricula)
         if matricula in employees.keys():
-            alimentacao = format_value(row[2])
-            moradia = format_value(row[3])
-            ferias_indenizada = format_value(row[4])
-            licenca_premio_indenizada = format_value(row[5])
-            cumulacao = format_value(row[6])
-            complemento = format_value(row[7])
+            alimentacao = clean.cell(row[2])
+            moradia = clean.cell(row[3])
+            ferias_indenizada = clean.cell(row[4])
+            licenca_premio_indenizada = clean.cell(row[5])
+            cumulacao = clean.cell(row[6])
+            complemento = clean.cell(row[7])
             emp = employees[matricula]
 
             emp["income"].update(

@@ -218,7 +218,6 @@ def download(url, file_path):
         response = requests.get(url, allow_redirects=True)
         with open(file_path, "wb") as file:
             file.write(response.content)
-        file.close()
     except Exception as excep:
         sys.stderr.write(
             "Não foi possível fazer o download do arquivo: "
@@ -228,12 +227,12 @@ def download(url, file_path):
         )
         os._exit(1)
 
+
 def crawl(year, month, output_path):
     urls_remuneration = links_remuneration(month, year)
     urls_other_funds = links_other_funds(month, year)
     files = []
     
-
     for element in urls_remuneration:
         pathlib.Path(output_path).mkdir(exist_ok=True)
         file_name = element + "-" + month + "-" + year + ".ods"

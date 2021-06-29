@@ -38,7 +38,10 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 
 ## Dificuldades 
 
-- Durante todo o período monitorado, 2018 até o momento, a maneira de disponibilazação dos dados foi alterada algumas vezes. Alterações na maneira que o arquivo é formatado e no conteúdo das colunas obrigaram a necessidade da criação de diferentes arquivos parser que se adéquem a cada um deles.
+- Cada planilha de dados, liberada mensalmente, possui um ID único de acesso, dificultando assim uma automação mais eficiente da coleta.
 
-Exemplo:
-    - Durante o ano de 2018, os dados são expostos com subdivisões por páginas, o que gera colunas excepcionais que não são previstas no parser padrão, por exemplo, numeração de páginas e duplicação de cabeçalhos.
+- Durante todo o período monitorado, 2018 até o momento, a maneira de disponibilazação dos dados foi alterada três vezes. Alterações na maneira que o arquivo é formatado e no conteúdo das colunas obrigaram a necessidade da criação de diferentes arquivos parser que se adéquem a cada um deles.
+
+Exemplos:
+    - Durante o ano de 2018, os dados são expostos com subdivisões por páginas, o que gera linhas de dados excepcionais que não são previstas no parser padrão, por exemplo, numeração de páginas e duplicação de cabeçalhos.
+    - Durante todo o ano de 2018 e Junho, Julho e Agosto de 2019 ocorrem alterações em quais colunas temos disponíveis nas planilhas de verbas indenizatórias, com a saída do dado sobre verbas recisórias.

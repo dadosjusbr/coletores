@@ -44,8 +44,7 @@ if(int(year) > current_year):
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    esp_months = ['1', '2', '3']
-    if year == '2018' or (year == '2019' and month in esp_months):
+    if year == '2018' or (year == '2019' and month in ['1', '2', '3']): # 1 for January, 2 for February and 3 for March
         employees = parser_2018.parse(file_names)
     else:
         employees = parser.parse(file_names, year, month)
