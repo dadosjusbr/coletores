@@ -72,49 +72,50 @@ def parse_employees(data):
 
     for row in rows:
         name = row[1]
-        subsidio = float(row[3])
-        indenizacoes = float(row[5])
-        previdencia = float(row[8])
-        imposto_renda = float(row[9])
-        descontos_diversos = float(row[10])
-        retencao_teto = float(row[11])
-        remuneracao_orgao_origem = float(row[14])
-        diarias = float(row[15])
+        if name != "0":
+            subsidio = float(row[3])
+            indenizacoes = float(row[5])
+            previdencia = float(row[8])
+            imposto_renda = float(row[9])
+            descontos_diversos = float(row[10])
+            retencao_teto = float(row[11])
+            remuneracao_orgao_origem = float(row[14])
+            diarias = float(row[15])
 
-        total_descontos = previdencia + imposto_renda + descontos_diversos + retencao_teto
-        total_bruto = (subsidio + remuneracao_orgao_origem + diarias)
+            total_descontos = previdencia + imposto_renda + descontos_diversos + retencao_teto
+            total_bruto = (subsidio + remuneracao_orgao_origem + diarias)
 
-        employees[name] = {
-            "reg": "",
-            "name": name,
-            "role": "",
-            "type": "membro",
-            "workplace": "",
-            "active": True, 
-            "income": {
-                "total": round(total_bruto, 2),
-                "wage": round(subsidio + remuneracao_orgao_origem, 2),
-                "perks": {
-                    "total": indenizacoes,
+            employees[name] = {
+                "reg": "",
+                "name": name,
+                "role": "",
+                "type": "membro",
+                "workplace": "",
+                "active": True, 
+                "income": {
+                    "total": round(total_bruto, 2),
+                    "wage": round(subsidio + remuneracao_orgao_origem, 2),
+                    "perks": {
+                        "total": indenizacoes,
+                    },
+                    "other": {  # Gratificações
+                        "total": diarias,
+                        "daily": diarias,
+                        "others_total": 0.0,
+                        "others": {}
+                    },
                 },
-                "other": {  # Gratificações
-                    "total": diarias,
-                    "daily": diarias,
-                    "others_total": 0.0,
-                    "others": {}
+                "discounts": {
+                    "total": round(abs(total_descontos), 2),
+                    "prev_contribution": abs(previdencia),
+                    "ceil_retention": abs(retencao_teto),
+                    "income_tax": abs(imposto_renda),
+                    "others_total": abs(descontos_diversos),
+                    "others": {
+                        "Descontos Diversos": abs(descontos_diversos)
+                    }
                 },
-            },
-            "discounts": {
-                "total": round(abs(total_descontos), 2),
-                "prev_contribution": abs(previdencia),
-                "ceil_retention": abs(retencao_teto),
-                "income_tax": abs(imposto_renda),
-                "others_total": abs(descontos_diversos),
-                "others": {
-                    "Descontos Diversos": abs(descontos_diversos)
-                }
-            },
-        }
+            }
 
     return employees
 
