@@ -63,10 +63,10 @@ def download(court, payroll, output_path, driver):
     download.click()
 
     # The court of SP is way bigger than the others 
-    if(court in ["TJSP", "TJPR"]):
+    if(court in ["TJSP", "TJPR", "TJMG"]):
         time.sleep(180)
     else: 
-        time.sleep(50)
+        time.sleep(60)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
