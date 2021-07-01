@@ -3,13 +3,12 @@ import os
 import parser_jun_to_aug_2019
 import parser_apr_may_2019
 import read
-import utils
-import clean
+import check
 import table
 
 # Used when the employee is not on the indemnity list
 def parse_employees(file_name):
-    rows = read.data(file_name).to_numpy()
+    rows = read.xls(file_name).to_numpy()
     begin_row = table.begin_row(rows)
     end_row = table.end_row(rows, begin_row)
     employees = {}
@@ -24,24 +23,24 @@ def parse_employees(file_name):
             matricula = str(matricula)
         nome = row[1]
         cargo_efetivo = row[3]
-        if utils.is_nan(cargo_efetivo):
+        if check.is_nan(cargo_efetivo):
             cargo_efetivo = "Não informado"
         lotacao = row[5]
-        if utils.is_nan(lotacao):
+        if check.is_nan(lotacao):
             lotacao = "Não informado"
-        remuneracao_cargo_efetivo = clean.cell(row[6])
-        outras_verbas_remuneratorias = clean.cell(row[7])
-        confianca_comissao = clean.cell(row[8])  # Função de Confiança ou Cargo em Comissão
-        grat_natalina = abs(clean.cell(row[9]))  # Gratificação Natalina
-        ferias = clean.cell(row[10])
-        permanencia = clean.cell(row[11])  # Abono de Permanência
-        outras_remuneracoes_temporarias = abs(clean.cell(row[12]))
-        total_indenizacao = clean.cell(row[13])
-        total_bruto = clean.cell(row[14])
-        previdencia = abs(clean.cell(row[16]))  # Contribuição Previdenciária
-        imp_renda = abs(clean.cell(row[18]))  # Imposto de Renda
-        teto_constitucional = abs(clean.cell(row[20]))  # Retenção por Teto Constitucional
-        total_desconto = abs(clean.cell(row[22]))
+        remuneracao_cargo_efetivo = table.clean_cell(row[6])
+        outras_verbas_remuneratorias = table.clean_cell(row[7])
+        confianca_comissao = table.clean_cell(row[8])  # Função de Confiança ou Cargo em Comissão
+        grat_natalina = abs(table.clean_cell(row[9]))  # Gratificação Natalina
+        ferias = table.clean_cell(row[10])
+        permanencia = table.clean_cell(row[11])  # Abono de Permanência
+        outras_remuneracoes_temporarias = abs(table.clean_cell(row[12]))
+        total_indenizacao = table.clean_cell(row[13])
+        total_bruto = table.clean_cell(row[14])
+        previdencia = abs(table.clean_cell(row[16]))  # Contribuição Previdenciária
+        imp_renda = abs(table.clean_cell(row[18]))  # Imposto de Renda
+        teto_constitucional = abs(table.clean_cell(row[20]))  # Retenção por Teto Constitucional
+        total_desconto = abs(table.clean_cell(row[22]))
         total_gratificacoes = (
             grat_natalina
             + ferias
@@ -94,7 +93,7 @@ def parse_employees(file_name):
 
 
 def update_employee_indemnity(file_name, employees):
-    rows = read.data(file_name).to_numpy()
+    rows = read.xls(file_name).to_numpy()
     begin_row = table.begin_row(rows)
     end_row = table.end_row(rows, begin_row)
     curr_row = 0
@@ -109,14 +108,14 @@ def update_employee_indemnity(file_name, employees):
             matricula = str(matricula)
         if matricula in employees.keys():
             lotacao = row[4]
-            alimentacao = clean.cell(row[5])
-            moradia = clean.cell(row[6])
-            ferias_indenizada = clean.cell(row[7])
-            licenca_premio_indenizada = clean.cell(row[8])
-            aposentadoria_incentivada = clean.cell(row[9])
-            verbas_rescisorias = clean.cell(row[10])
-            cumulacao = clean.cell(row[11])
-            complemento = clean.cell(row[12])
+            alimentacao = table.clean_cell(row[5])
+            moradia = table.clean_cell(row[6])
+            ferias_indenizada = table.clean_cell(row[7])
+            licenca_premio_indenizada = table.clean_cell(row[8])
+            aposentadoria_incentivada = table.clean_cell(row[9])
+            verbas_rescisorias = table.clean_cell(row[10])
+            cumulacao = table.clean_cell(row[11])
+            complemento = table.clean_cell(row[12])
             emp = employees[matricula]
 
             emp["income"].update(

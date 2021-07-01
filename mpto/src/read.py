@@ -3,7 +3,7 @@ import sys
 import os
 
 # Read data downloaded from the crawler
-def data(path):
+def xls(path):
     try:
         data = pd.read_excel(path, engine=None)
         return data

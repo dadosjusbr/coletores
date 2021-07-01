@@ -1,10 +1,9 @@
 import read
-import utils
-import clean
+import check
 import table
 
 def update_employee_indemnity(file_name, employees):
-    rows = read.data(file_name).to_numpy()
+    rows = read.xls(file_name).to_numpy()
     begin_row = table.begin_row(rows)
     end_row = table.end_row(rows, begin_row)
     curr_row = 0
@@ -19,13 +18,13 @@ def update_employee_indemnity(file_name, employees):
             matricula = str(matricula)
         if matricula in employees.keys():
             lotacao = row[4]
-            alimentacao = clean.cell(row[5])
-            moradia = clean.cell(row[6])
-            ferias_indenizada = clean.cell(row[7])
-            licenca_premio_indenizada = clean.cell(row[8])
-            aposentadoria_incentivada = clean.cell(row[9])
-            cumulacao = clean.cell(row[10])
-            complemento = clean.cell(row[11])
+            alimentacao = table.clean_cell(row[5])
+            moradia = table.clean_cell(row[6])
+            ferias_indenizada = table.clean_cell(row[7])
+            licenca_premio_indenizada = table.clean_cell(row[8])
+            aposentadoria_incentivada = table.clean_cell(row[9])
+            cumulacao = table.clean_cell(row[10])
+            complemento = table.clean_cell(row[11])
             emp = employees[matricula]
 
             emp["income"].update(
