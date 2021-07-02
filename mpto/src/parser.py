@@ -40,7 +40,7 @@ def parse_employees(file_name):
         previdencia = abs(table.clean_cell(row[16]))  # Contribuição Previdenciária
         imp_renda = abs(table.clean_cell(row[18]))  # Imposto de Renda
         teto_constitucional = abs(table.clean_cell(row[20]))  # Retenção por Teto Constitucional
-        total_desconto = abs(table.clean_cell(row[22]))
+        total_desconto = previdencia + teto_constitucional + imp_renda
         total_gratificacoes = (
             grat_natalina
             + ferias
@@ -116,11 +116,13 @@ def update_employee_indemnity(file_name, employees):
             verbas_rescisorias = table.clean_cell(row[10])
             cumulacao = table.clean_cell(row[11])
             complemento = table.clean_cell(row[12])
+            total_temporario = licenca_premio_indenizada + aposentadoria_incentivada + verbas_rescisorias + cumulacao + complemento
             emp = employees[matricula]
 
             emp["income"].update(
                 {
                     "perks": {
+                        "total": round(alimentacao + moradia + ferias_indenizada, 2),
                         "food": alimentacao,
                         "housing_aid": moradia,
                         "vacation": ferias_indenizada,
@@ -134,6 +136,15 @@ def update_employee_indemnity(file_name, employees):
                     "Verbas Rescisórias": verbas_rescisorias,
                     "Cumulação": cumulacao,
                     "Complemento por Entrância": complemento
+                }
+            )
+
+            emp["income"]["other"].update(
+                {
+                    "others_total": round(
+                        emp["income"]["other"]["others_total"] + total_temporario, 2
+                    ),
+                    "total": round(emp["income"]["other"]["total"] + total_temporario, 2),
                 }
             )
 

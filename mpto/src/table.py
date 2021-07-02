@@ -39,7 +39,7 @@ def end_row(table, begin_row):
             end_row += 1
             continue
         # Then keep moving until find a blank row.
-        if check.is_nan(row[0]):
+        if check.is_nan(row[0]) or row[0] == "TOTAL GERAL":
             break
         end_row += 1
     end_row -= 1
