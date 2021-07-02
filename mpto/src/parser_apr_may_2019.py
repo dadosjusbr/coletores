@@ -101,11 +101,20 @@ def update_employee_indemnity(file_name, employees):
             cumulacao = table.clean_cell(row[6])
             complemento = table.clean_cell(row[7])
             total_temporario = licenca_premio_indenizada + cumulacao + complemento
+            total_perks = alimentacao + moradia + ferias_indenizada
+            total_indenizacoes = total_temporario + total_perks
             emp = employees[matricula]
 
             emp["income"].update(
                 {
+                    "total": round(emp["income"]["total"] + total_indenizacoes, 2),
+                }
+            )
+
+            emp["income"].update(
+                {
                     "perks": {
+                        "total": round(total_perks, 2),
                         "food": alimentacao,
                         "housing_aid": moradia,
                         "vacation": ferias_indenizada,

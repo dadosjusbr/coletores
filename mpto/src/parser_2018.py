@@ -99,6 +99,7 @@ def update_employee_indemnity(file_name, employees):
             emp["income"].update(
                 {
                     "perks": {
+                        "total": round(alimentacao + moradia + ferias_indenizada, 2),
                         "food": alimentacao,
                         "housing_aid": moradia,
                         "vacation": ferias_indenizada,

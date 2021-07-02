@@ -36,11 +36,15 @@ def update_employee_indemnity(file_name, employees):
 
             emp["income"].update(
                 {
-                    "perks": {
-                        "food": alimentacao,
-                        "housing_aid": moradia,
-                        "vacation": ferias_indenizada,
-                    }
+                    "total": round(emp["income"]["total"] + total_temporario, 2), # Aqui é acrescentado apenas o total temporário porque o total_perks já foi incluso usando o valor que vem na planilha de remuneração mensal
+                }
+            )
+
+            emp["income"]["perks"].update(
+                {
+                "food": alimentacao,
+                "housing_aid": moradia,
+                "vacation": ferias_indenizada,
                 }
             )
             emp["income"]["other"]["others"].update(

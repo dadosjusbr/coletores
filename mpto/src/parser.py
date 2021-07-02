@@ -36,9 +36,8 @@ def parse_employees(file_name):
         grat_natalina = abs(table.clean_cell(row[9]))  # Gratificação Natalina
         ferias = table.clean_cell(row[10])
         permanencia = table.clean_cell(row[11])  # Abono de Permanência
-        outras_remuneracoes_temporarias = abs(table.clean_cell(row[12]))
+        outras_remuneracoes_temporarias = abs(table.clean_cell(row[12])) # Como esse valor é correspondente ao que vem descrito na planilha de verbas indenizatórias, não iremos utiliza-lo
         total_indenizacao = table.clean_cell(row[13])
-        total_bruto = table.clean_cell(row[14])
         previdencia = abs(table.clean_cell(row[16]))  # Contribuição Previdenciária
         imp_renda = abs(table.clean_cell(row[18]))  # Imposto de Renda
         teto_constitucional = abs(
@@ -50,8 +49,8 @@ def parse_employees(file_name):
             + ferias
             + permanencia
             + confianca_comissao
-            + outras_remuneracoes_temporarias
         )
+        total_bruto = remuneracao_cargo_efetivo + outras_verbas_remuneratorias + total_indenizacao + total_gratificacoes
         employees[matricula] = {
             "reg": matricula,
             "name": nome,
@@ -74,7 +73,6 @@ def parse_employees(file_name):
                         "Gratificação Natalina": grat_natalina,
                         "Férias (1/3 constitucional)": ferias,
                         "Abono de Permanência": permanencia,
-                        "Outras Remunerações Temporárias": outras_remuneracoes_temporarias,
                     },
                 },
             },
@@ -129,12 +127,15 @@ def update_employee_indemnity(file_name, employees):
 
             emp["income"].update(
                 {
-                    "perks": {
-                        "total": round(alimentacao + moradia + ferias_indenizada, 2),
-                        "food": alimentacao,
-                        "housing_aid": moradia,
-                        "vacation": ferias_indenizada,
-                    }
+                    "total": round(emp["income"]["total"] + total_temporario, 2),
+                }
+            )
+
+            emp["income"]["perks"].update(
+                {
+                "food": alimentacao,
+                "housing_aid": moradia,
+                "vacation": ferias_indenizada, 
                 }
             )
             emp["income"]["other"]["others"].update(

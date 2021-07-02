@@ -32,7 +32,6 @@ class TestParser(unittest.TestCase):
                         "Gratificação Natalina": 0.0,
                         "Férias (1/3 constitucional)": 0.0,
                         "Abono de Permanência": 0.0,
-                        "Outras Remunerações Temporárias": 0.0,
                         "Licença Prêmio Indenizada": 0.0,
                         "Programa de Aposentadoria Incentivada": 0.0,
                         "Verbas Rescisórias": 0.0,
@@ -72,16 +71,20 @@ class TestParser(unittest.TestCase):
             "income": {
                 "total": 60244.6,
                 "wage": 33689.11,
-                "perks": {"food": 1200.0, "housing_aid": 0.0, "vacation": 0.0},
+                "perks": {
+                    "total": 1200.0,
+                    "food": 1200.0,
+                    "housing_aid": 0.0,
+                    "vacation": 0.0,
+                },
                 "other": {
-                    "total": 33866.42,
+                    "total": 25355.49,
                     "trust_position": 0.0,
                     "others_total": 25355.49,
                     "others": {
                         "Gratificação Natalina": 16844.56,
                         "Férias (1/3 constitucional)": 0.0,
                         "Abono de Permanência": 0.0,
-                        "Outras Remunerações Temporárias": 8510.93,
                         "Licença Prêmio Indenizada": 0.0,
                         "Programa de Aposentadoria Incentivada": 0.0,
                         "Cumulação": 6737.82,
@@ -118,7 +121,7 @@ class TestParser(unittest.TestCase):
             "workplace": "17ª PROMOTORIA DE JUSTIÇA DA CAPITAL",
             "active": True,
             "income": {
-                "total": 33689.11,
+                "total": 43400.04,
                 "wage": 33689.11,
                 "other": {
                     "total": 8510.93,
@@ -133,7 +136,12 @@ class TestParser(unittest.TestCase):
                         "Complemento por Entrância": 1773.11,
                     },
                 },
-                "perks": {"food": 1200.0, "housing_aid": 0.0, "vacation": 0.0},
+                "perks": {
+                    "total": 1200.0,
+                    "food": 1200.0,
+                    "housing_aid": 0.0,
+                    "vacation": 0.0,
+                },
             },
             "discounts": {
                 "total": 14754.34,
@@ -148,7 +156,6 @@ class TestParser(unittest.TestCase):
             "./output_test/Membros ativos-Verbas Indenizatorias-04-2019.ods",
         )
         employees = parser.parse(files, "2019", "04")
-
         # Verificações
         self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
@@ -179,7 +186,12 @@ class TestParser(unittest.TestCase):
                         "Complemento por Entrância": 1523.56,
                     },
                 },
-                "perks": {"food": 2400.0, "housing_aid": 4377.73, "vacation": 28947.55},
+                "perks": {
+                    "total": 35725.28,
+                    "food": 2400.0,
+                    "housing_aid": 4377.73,
+                    "vacation": 28947.55,
+                },
             },
             "discounts": {
                 "total": 12964.45,

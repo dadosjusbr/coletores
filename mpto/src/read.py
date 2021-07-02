@@ -4,7 +4,6 @@ import os
 
 # Read data downloaded from the crawler
 def xls(path):
-    print(path)
     try:
         data = pd.read_excel(path, engine=None)
         return data
