@@ -30,7 +30,9 @@ def parse_employees(file_name):
             lotacao = "Não informado"
         remuneracao_cargo_efetivo = table.clean_cell(row[6])
         outras_verbas_remuneratorias = table.clean_cell(row[7])
-        confianca_comissao = table.clean_cell(row[8])  # Função de Confiança ou Cargo em Comissão
+        confianca_comissao = table.clean_cell(
+            row[8]
+        )  # Função de Confiança ou Cargo em Comissão
         grat_natalina = abs(table.clean_cell(row[9]))  # Gratificação Natalina
         ferias = table.clean_cell(row[10])
         permanencia = table.clean_cell(row[11])  # Abono de Permanência
@@ -39,7 +41,9 @@ def parse_employees(file_name):
         total_bruto = table.clean_cell(row[14])
         previdencia = abs(table.clean_cell(row[16]))  # Contribuição Previdenciária
         imp_renda = abs(table.clean_cell(row[18]))  # Imposto de Renda
-        teto_constitucional = abs(table.clean_cell(row[20]))  # Retenção por Teto Constitucional
+        teto_constitucional = abs(
+            table.clean_cell(row[20])
+        )  # Retenção por Teto Constitucional
         total_desconto = previdencia + teto_constitucional + imp_renda
         total_gratificacoes = (
             grat_natalina
@@ -61,9 +65,7 @@ def parse_employees(file_name):
                 "wage": round(
                     remuneracao_cargo_efetivo + outras_verbas_remuneratorias, 2
                 ),
-                "perks": {
-                    "total": total_indenizacao,
-                },
+                "perks": {"total": total_indenizacao},
                 "other": {  # Gratificações
                     "total": round(total_gratificacoes, 2),
                     "trust_position": confianca_comissao,
@@ -116,7 +118,13 @@ def update_employee_indemnity(file_name, employees):
             verbas_rescisorias = table.clean_cell(row[10])
             cumulacao = table.clean_cell(row[11])
             complemento = table.clean_cell(row[12])
-            total_temporario = licenca_premio_indenizada + aposentadoria_incentivada + verbas_rescisorias + cumulacao + complemento
+            total_temporario = (
+                licenca_premio_indenizada
+                + aposentadoria_incentivada
+                + verbas_rescisorias
+                + cumulacao
+                + complemento
+            )
             emp = employees[matricula]
 
             emp["income"].update(
@@ -129,13 +137,13 @@ def update_employee_indemnity(file_name, employees):
                     }
                 }
             )
-            emp['income']['other']['others'].update(
+            emp["income"]["other"]["others"].update(
                 {
                     "Licença Prêmio Indenizada": licenca_premio_indenizada,
                     "Programa de Aposentadoria Incentivada": aposentadoria_incentivada,
                     "Verbas Rescisórias": verbas_rescisorias,
                     "Cumulação": cumulacao,
-                    "Complemento por Entrância": complemento
+                    "Complemento por Entrância": complemento,
                 }
             )
 
@@ -144,7 +152,9 @@ def update_employee_indemnity(file_name, employees):
                     "others_total": round(
                         emp["income"]["other"]["others_total"] + total_temporario, 2
                     ),
-                    "total": round(emp["income"]["other"]["total"] + total_temporario, 2),
+                    "total": round(
+                        emp["income"]["other"]["total"] + total_temporario, 2
+                    ),
                 }
             )
 
@@ -159,7 +169,7 @@ def update_employee_indemnity(file_name, employees):
 
 def parse(file_names, year, month):
     employees = {}
-    if year == '2019' and month in ['4', '5']:  # 4 for April and 5 for May
+    if year == "2019" and month.zfill(2) in ["04", "05"]:  # 4 for April and 5 for May
         for fn in file_names:
             if "Verbas Indenizatorias" not in fn:
                 # Puts all parsed employees in the big map
@@ -174,7 +184,11 @@ def parse(file_names, year, month):
             )
             os._exit(1)
 
-    elif year == '2019' and month in ['6', '7', '8']:   # 6 for June, 7 for July and 8 for August
+    elif year == "2019" and month.zfill(2) in [
+        "06",
+        "07",
+        "08",
+    ]:  # 6 for June, 7 for July and 8 for August
         for fn in file_names:
             if "Verbas Indenizatorias" not in fn:
                 # Puts all parsed employees in the big map
@@ -189,11 +203,11 @@ def parse(file_names, year, month):
             )
             os._exit(1)
 
-    else:     
+    else:
         for fn in file_names:
             if "Verbas Indenizatorias" not in fn:
                 # Puts all parsed employees in the big map
-                employees.update(parse_employees(fn))   
+                employees.update(parse_employees(fn))
         try:
             for fn in file_names:
                 if "Verbas Indenizatorias" in fn:

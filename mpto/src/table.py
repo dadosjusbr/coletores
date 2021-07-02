@@ -1,13 +1,15 @@
 import check
 
-# After extracting the data, we need to delete the 'nan' fields, 
+# After extracting the data, we need to delete the 'nan' fields,
 # resulting in lists with only valid data.
 # Ex: [12345, Maria, nan, nan, 29000] -> [12345, Maria, 29000]
-def treat_rows(table): 
+def treat_rows(table):
     emps_clean = []
     for row in table:
-        emp_clean = [x for x in row if str(x) != 'nan']
-        if emp_clean and (str(emp_clean[0]).isdigit() and len(str(emp_clean[0])) > 2):  # Delete placeholder fields | Ex: ['Página 5']
+        emp_clean = [x for x in row if str(x) != "nan"]
+        if emp_clean and (
+            str(emp_clean[0]).isdigit() and len(str(emp_clean[0])) > 2
+        ):  # Delete placeholder fields | Ex: ['Página 5']
             emps_clean.append(emp_clean)
 
     return emps_clean
@@ -30,7 +32,7 @@ def begin_row(table):
 
 
 # Function to find the last useful row of the table,
-# looking for a blank row. 
+# looking for a blank row.
 def end_row(table, begin_row):
     end_row = 0
     for row in table:

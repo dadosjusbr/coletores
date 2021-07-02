@@ -22,20 +22,30 @@ def parse_employees(file_name):
                     lotacao = "Não informado"
                 remuneracao_cargo_efetivo = table.clean_cell(row[4])
                 outras_verbas_remuneratorias = table.clean_cell(row[5])
-                confianca_comissao = table.clean_cell(row[6])  # Função de Confiança ou Cargo em Comissão
+                confianca_comissao = table.clean_cell(
+                    row[6]
+                )  # Função de Confiança ou Cargo em Comissão
                 grat_natalina = abs(table.clean_cell(row[7]))  # Gratificação Natalina
                 ferias = table.clean_cell(row[8])
                 permanencia = table.clean_cell(row[9])  # Abono de Permanência
-                total_bruto = table.clean_cell(row[10])
-                previdencia = abs(table.clean_cell(row[11]))  # Contribuição Previdenciária
-                imp_renda = abs(table.clean_cell(row[12]))  # Imposto de Renda
-                teto_constitucional = abs(table.clean_cell(row[13]))  # Retenção por Teto Constitucional
-                total_desconto = abs(table.clean_cell(row[14]))
-                total_gratificacoes = (
-                    grat_natalina
+                total_bruto = (
+                    remuneracao_cargo_efetivo
+                    + outras_verbas_remuneratorias
+                    + confianca_comissao
+                    + grat_natalina
                     + ferias
                     + permanencia
-                    + confianca_comissao
+                )
+                previdencia = abs(
+                    table.clean_cell(row[11])
+                )  # Contribuição Previdenciária
+                imp_renda = abs(table.clean_cell(row[12]))  # Imposto de Renda
+                teto_constitucional = abs(
+                    table.clean_cell(row[13])
+                )  # Retenção por Teto Constitucional
+                total_desconto = abs(table.clean_cell(row[14]))
+                total_gratificacoes = (
+                    grat_natalina + ferias + permanencia + confianca_comissao
                 )
                 employees[matricula] = {
                     "reg": matricula,
@@ -53,7 +63,9 @@ def parse_employees(file_name):
                         "other": {  # Gratificações
                             "total": round(total_gratificacoes, 2),
                             "trust_position": confianca_comissao,
-                            "others_total": round(grat_natalina + ferias + permanencia, 2),
+                            "others_total": round(
+                                grat_natalina + ferias + permanencia, 2
+                            ),
                             "others": {
                                 "Gratificação Natalina": grat_natalina,
                                 "Férias (1/3 constitucional)": ferias,
@@ -88,6 +100,7 @@ def update_employee_indemnity(file_name, employees):
             licenca_premio_indenizada = table.clean_cell(row[5])
             cumulacao = table.clean_cell(row[6])
             complemento = table.clean_cell(row[7])
+            total_temporario = licenca_premio_indenizada + cumulacao + complemento
             emp = employees[matricula]
 
             emp["income"].update(
@@ -99,11 +112,21 @@ def update_employee_indemnity(file_name, employees):
                     }
                 }
             )
-            emp['income']['other']['others'].update(
+            emp["income"]["other"]["others"].update(
                 {
                     "Licença Prêmio Indenizada": licenca_premio_indenizada,
                     "Cumulação": cumulacao,
-                    "Complemento por Entrância": complemento
+                    "Complemento por Entrância": complemento,
+                }
+            )
+            emp["income"]["other"].update(
+                {
+                    "others_total": round(
+                        emp["income"]["other"]["others_total"] + total_temporario, 2
+                    ),
+                    "total": round(
+                        emp["income"]["other"]["total"] + total_temporario, 2
+                    ),
                 }
             )
 

@@ -2,6 +2,7 @@ import read
 import check
 import table
 
+
 def update_employee_indemnity(file_name, employees):
     rows = read.xls(file_name).to_numpy()
     begin_row = table.begin_row(rows)
@@ -25,6 +26,12 @@ def update_employee_indemnity(file_name, employees):
             aposentadoria_incentivada = table.clean_cell(row[9])
             cumulacao = table.clean_cell(row[10])
             complemento = table.clean_cell(row[11])
+            total_temporario = (
+                licenca_premio_indenizada
+                + aposentadoria_incentivada
+                + cumulacao
+                + complemento
+            )
             emp = employees[matricula]
 
             emp["income"].update(
@@ -36,12 +43,22 @@ def update_employee_indemnity(file_name, employees):
                     }
                 }
             )
-            emp['income']['other']['others'].update(
+            emp["income"]["other"]["others"].update(
                 {
                     "Licença Prêmio Indenizada": licenca_premio_indenizada,
                     "Programa de Aposentadoria Incentivada": aposentadoria_incentivada,
                     "Cumulação": cumulacao,
-                    "Complemento por Entrância": complemento
+                    "Complemento por Entrância": complemento,
+                }
+            )
+            emp["income"]["other"].update(
+                {
+                    "others_total": round(
+                        emp["income"]["other"]["others_total"] + total_temporario, 2
+                    ),
+                    "total": round(
+                        emp["income"]["other"]["total"] + total_temporario, 2
+                    ),
                 }
             )
 
