@@ -34,3 +34,56 @@ O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e
 - **Lotação (String)**: Local (cidade, departamento, promotoria) em que o funcionário trabalha.
 - **Verbas Indenizatórias**: Auxílio-Alimentação, Auxílio-Moradia, Férias Indenizadas, Licença Prêmio Indenizada e outras dessa natureza.
 - **Outras Remunerações Temporárias**: Valores pagos a título de cumulações, complementos por entrância e outros dessa natureza.
+
+
+## Dificuldades 
+
+- Cada planilha de dados, liberada mensalmente, possui um ID único de acesso, dificultando assim uma automação mais eficiente da coleta.
+
+- Durante todo o período monitorado, 2018 até o momento, a maneira de disponibilazação dos dados foi alterada três vezes. Alterações na maneira que o arquivo é formatado e no conteúdo das colunas obrigaram a necessidade da criação de diferentes arquivos parser que se adéquem a cada um deles.
+
+Exemplos:
+    - Durante o ano de 2018, os dados são expostos com subdivisões por páginas, o que gera linhas de dados excepcionais que não são previstas no parser padrão, por exemplo, numeração de páginas e duplicação de cabeçalhos.
+    - Durante todo o ano de 2018 e Junho, Julho e Agosto de 2019 ocorrem alterações em quais colunas temos disponíveis nas planilhas de verbas indenizatórias, com a saída do dado sobre verbas recisórias.
+
+## Como usar
+
+ ### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+  ```sh
+    $ cd coletores/mpto
+    $ sudo docker build -t mpto .
+  ```
+ - Execução:
+ 
+  ```sh
+    $ sudo docker run -e MONTH=02 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpto
+  ```
+
+ ### Executando sem Docker
+
+ - É necessário ter instalado o [Python](https://www.python.org/downloads/release/python-385/) versão 3.8.5;
+ 
+No Linux, distribuições Ubuntu/Mint:
+
+```
+sudo apt install python3 python3-pip
+```
+
+ - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
+  
+    ```sh
+      $ cd coletores/mpto
+      $ pip3 install -r requirements.txt
+    ```
+
+  - Após concluida a instalação das dependências utilize os seguintes comandos:  
+
+   ```sh
+      $ cd src
+      $ MONTH=01 YEAR=2020 GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+  ```
