@@ -1,0 +1,1 @@
+# Coletor de dados do site mpal
