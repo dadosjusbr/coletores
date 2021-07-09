@@ -9,7 +9,7 @@ base_url = 'https://sistemas.mpal.mp.br/transparencia/contracheque/index/'
 def generate_remuneration_url(year, month):
     link = ''
 
-    link = f"{base_url}'65?tipo=membrosativos&mes='{month}'&ano='{year}'&busca=&download=json'"
+    link = f"{base_url}65?tipo=membrosativos&mes={month}&ano={year}&busca=&download=json"
 
     return link
 
