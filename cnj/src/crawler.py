@@ -17,20 +17,21 @@ payroll_types = {1: ['QvFrame Document_TX3522', '13', 'Contracheque'],
                  4: ['QvFrame Document_TX3711', '6', 'Direitos Eventuais']
                 }
 
-def crawl(court, driver_path, output_path):
+def crawl(court, year, driver_path, output_path):
     files = []
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
+    select_court_and_year(court, year, driver)
     for payroll in payroll_types.values():
-        file_path = download(court, payroll, output_path, driver)
+        file_path = download(court, year, payroll, output_path, driver)
         files.append(file_path)
     driver.quit()
     return files
 
-def download(court, payroll, output_path, driver):
+def select_court_and_year(court, year, driver):
     driver.get(base_URL)
-    
-    ## Opening the search bar
+
+    # Opening the search bar - Tribunal
     # Other approaches, such as waiting for the elements to be visible, did not work. 
     # So, as it is necessary to wait for the page to load, time.sleep was used here
     # and below. (https://stackoverflow.com/questions/45347675/make-selenium-wait-10-seconds)
@@ -39,17 +40,36 @@ def download(court, payroll, output_path, driver):
     search_icon = courts.find_element(By.XPATH, "//*[@title='Pesquisar']")
     search_icon.click()
 
-    ## Selecting the input text in the search bar
+    # Selecting the input text in the search bar
     time.sleep(5)
     search_bar = driver.find_element_by_class_name("PopupSearch")
     input_text = search_bar.find_element(By.XPATH, "//input[@type='text']")
 
-    ## Searching by court name
+    # Searching by court name
     time.sleep(5)
     input_text.send_keys(court)
     input_text.send_keys(Keys.ENTER)
     sys.stderr.write("Court selected.\n")
 
+    # Opening the search bar - Ano
+    time.sleep(10)
+    select_year = driver.find_element(By.XPATH, "//*[@title='Ano']")       
+    search_icon = select_year.find_element(By.XPATH, "//html/body/div[5]/div/div[13]/div[1]/div[1]")
+    search_icon.click()
+    
+    
+    ## Selecting the input text in the search bar
+    time.sleep(5)
+    search_bar = driver.find_element_by_class_name("PopupSearch")
+    input_year = search_bar.find_element(By.XPATH, "//input[@type='text']")
+
+     ## Searching by year
+    time.sleep(5)
+    input_year.send_keys(year)
+    input_year.send_keys(Keys.ENTER)
+    sys.stderr.write("Year selected.\n")
+
+def download(court, year, payroll, output_path, driver):  
     # Selecting the payroll
     time.sleep(5)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
@@ -62,11 +82,11 @@ def download(court, payroll, output_path, driver):
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
 
-    # The court of SP is way bigger than the others 
-    if(court in ["TJSP", "TJPR"]):
+    # TJSP, TJPR and TJMG are way bigger than the others 
+    if(court in ["TJSP", "TJPR", "TJMG"]):
         time.sleep(180)
     else: 
-        time.sleep(50)
+        time.sleep(60)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename

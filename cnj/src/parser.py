@@ -4,22 +4,21 @@ import os
 import datetime
 import json
 
-def parse(court, file_names, output_path, crawler_version):
+def parse(court, year, file_names, output_path, crawler_version):
     now = datetime.datetime.now()
     current_month = now.month
     current_year = now.year
     months = list(range(1, 13))
-    years = list(range(2018, current_year + 1))
     files = []
 
-    for year in years:
-        for month in months:
-            if year == current_year and month >= current_month:
-                break
-            employees = {}
-            employees.update(parse_files(court, file_names, month, year))
-            file_path = save_file(court, month, year, output_path, crawler_version, employees)
-            files.append(file_path)
+  
+    for month in months:
+        if year == current_year and month >= current_month:
+            break
+        employees = {}
+        employees.update(parse_files(court, file_names, month, year))
+        file_path = save_file(court, month, year, output_path, crawler_version, employees)
+        files.append(file_path)
     
     return files
 

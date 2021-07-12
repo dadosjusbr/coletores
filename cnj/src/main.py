@@ -8,6 +8,11 @@ if('COURT' in os.environ):
 else:
     sys.stderr.write("Invalid arguments, missing parameter: 'COURT'.\n")
     os._exit(1)
+if('YEAR' in os.environ):
+    year = os.environ['YEAR']
+else:
+    sys.stderr.write("Invalid arguments, missing parameter: 'YEAR'.\n")
+    os._exit(1)
 if('DRIVER_PATH' in os.environ):
     driver_path = os.environ['DRIVER_PATH']
 else:
@@ -25,6 +30,6 @@ else:
 
 # Main execution
 if __name__ == '__main__':
-    file_names = crawler.crawl(court, driver_path, output_path)
-    files = parser.parse(court, file_names, output_path, crawler_version)
+    file_names = crawler.crawl(court, year, driver_path, output_path)
+    files = parser.parse(court, year, file_names, output_path, crawler_version)
     print(files)
