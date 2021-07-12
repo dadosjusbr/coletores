@@ -37,12 +37,12 @@ As planilhas referentes á remunerações possuem as seguintes colunas:
 
   ```sh
     $ cd coletores/mpal
-    $ sudo docker build -t mprn .
+    $ sudo docker build -t mpal .
   ```
  - Execução:
  
   ```sh
-    $ sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mprn
+    $ sudo docker run -e MONTH=2 -e YEAR=2020 -e GIT_COMMIT=$(git rev-list -1 HEAD) mpal
   ```
 
  ### Executando sem Docker
