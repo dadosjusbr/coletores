@@ -70,7 +70,6 @@ def select_court_and_year(court, year, driver):
     sys.stderr.write("Year selected.\n")
 
 def download(court, year, payroll, output_path, driver):  
-    
     # Selecting the payroll
     time.sleep(5)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
