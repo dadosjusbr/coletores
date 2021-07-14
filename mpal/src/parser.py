@@ -3,6 +3,8 @@ import pathlib
 import sys
 import os
 
+
+# Ler os arquivos json
 def read_data(path):
     try:
         with open((pathlib.Path(path)), 'r') as arq:
@@ -13,9 +15,15 @@ def read_data(path):
                         path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
+
+# converte e remove os espaços em branco do incio e do fim da string
 def conv(name):
+    '''
+    Converte uma váriavel em string e depois tira os espaçoes vázios.
+    '''
     nome = str(name)
     return nome.strip()
+
 
 def parse(arq):
     employees = []
