@@ -73,32 +73,29 @@ def parse(arq):
             'type': 'membro',
             'workplace': conv(workplace),
             'active': True,
-            "income":
-                {
-                    'total': total,
-                    'wage': remuneration + other_verbs,
-                    'perks': {
-                        'total': idemnity,
-                    },
-                    'other':
-                    {
-                        'total': trust_pos + ferias + abono_permanencia + temp_remu,
-                        'trust_position': trust_pos,
-                        'others_total': ferias + abono_permanencia + gratificao_natalina + temp_remu,
-                        'others': {
-                            'Gratigicação natalina': gratificao_natalina,
-                            'Vacation': ferias,
-                            'Abono de permanência': abono_permanencia,
-                            'Outras Remunerações Temporárias': temp_remu,
-                        }
-                    },
+            'income':{
+                'total': total,
+                'wage': remuneration + other_verbs,
+                'perks': {
+                    'total': idemnity,
+                },
+                'other':{
+                    'total': trust_pos + ferias + abono_permanencia + temp_remu,
+                    'trust_position': trust_pos,
+                    'others_total': ferias + abono_permanencia + gratificao_natalina + temp_remu,
+                    'others': {
+                        'Gratigicação natalina': gratificao_natalina,
+                        'Vacation': ferias,
+                        'Abono de permanência': abono_permanencia,
+                        'Outras Remunerações Temporárias': temp_remu
+                    }
+                },
             },
-            'discounts':
-                {
-                    'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
-                    'prev_contribution': prev_contrib,
-                    'ceil_retention': ceil_ret,
-                    'income_tax': imposto_renda
+            'discounts':{
+                'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
+                'prev_contribution': prev_contrib,
+                'ceil_retention': ceil_ret,
+                'income_tax': imposto_renda
             }
         })
 

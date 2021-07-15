@@ -3,7 +3,7 @@ import unittest
 
 class TestParser(unittest.TestCase):
 
-    def test_membros_jan_2020(self):
+    def membros_ativos_6_2021(self):
         self.maxDiff = None
 
         expected = {
