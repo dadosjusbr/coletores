@@ -17,18 +17,18 @@ payroll_types = {1: ['QvFrame Document_TX3522', '13', 'Contracheque'],
                  4: ['QvFrame Document_TX3711', '6', 'Direitos Eventuais']
                 }
 
-def crawl(court, year, driver_path, output_path):
+def crawl(court, year, month, driver_path, output_path):
     files = []
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
-    select_court_and_year(court, year, driver)
+    select_court_and_year(court, year, month, driver)
     for payroll in payroll_types.values():
-        file_path = download(court, year, payroll, output_path, driver)
+        file_path = download(court, payroll, output_path, driver)
         files.append(file_path)
     driver.quit()
     return files
 
-def select_court_and_year(court, year, driver):
+def select_court_and_year(court, year, month, driver):
     driver.get(base_URL)
 
     # Opening the search bar - Tribunal
@@ -44,12 +44,17 @@ def select_court_and_year(court, year, driver):
     time.sleep(5)
     search_bar = driver.find_element_by_class_name("PopupSearch")
     input_text = search_bar.find_element(By.XPATH, "//input[@type='text']")
-
+      
     # Searching by court name
     time.sleep(5)
     input_text.send_keys(court)
     input_text.send_keys(Keys.ENTER)
     sys.stderr.write("Court selected.\n")
+    
+    if court == "TJMS":
+        time.sleep(5)
+        search_icon = driver.find_element(By.XPATH, "//html/body/div[5]/div/div[4]/div[2]/div/div[1]/div[1]")
+        search_icon.click()
 
     # Opening the search bar - Ano
     time.sleep(10)
@@ -69,24 +74,39 @@ def select_court_and_year(court, year, driver):
     input_year.send_keys(Keys.ENTER)
     sys.stderr.write("Year selected.\n")
 
-def download(court, year, payroll, output_path, driver):  
-    # Selecting the payroll
+    # Opening the search bar - Month
+    time.sleep(10)
+    select_year = driver.find_element(By.XPATH, "//*[@title='Mês Referencia']")       
+    search_icon = select_year.find_element(By.XPATH, "//html/body/div[5]/div/div[16]/div[1]/div[1]")
+    search_icon.click()
+    
+    
+    ## Selecting the input text in the search bar
     time.sleep(5)
+    search_bar = driver.find_element_by_class_name("PopupSearch")
+    input_month = search_bar.find_element(By.XPATH, "//input[@type='text']")
+
+     ## Searching by year
+    time.sleep(5)
+    input_month.send_keys(month)
+    input_month.send_keys(Keys.ENTER)
+    sys.stderr.write("Month selected.\n")
+
+def download(court, payroll, output_path, driver): 
+    driver.get(base_URL) 
+    
+    # Selecting the payroll
+    time.sleep(10)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
     current_payroll = driver.find_element(By.XPATH, x_path)
     current_payroll.click()
     sys.stderr.write("Payroll selected: {}.\n".format(payroll[2]))
-
+    
     # Donwloading the file
-    time.sleep(5)
+    time.sleep(10)
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
-
-    # TJSP, TJPR and TJMG are way bigger than the others 
-    if(court in ["TJSP", "TJPR", "TJMG"]):
-        time.sleep(180)
-    else: 
-        time.sleep(60)
+    time.sleep(60)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
