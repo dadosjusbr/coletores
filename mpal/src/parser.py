@@ -12,75 +12,94 @@ def read_data(path):
             return data
     except Exception as excep:
         sys.stderr.write("'Não foi possível ler o arquivo: " +
-                        path + '. O seguinte erro foi gerado: ' + excep)
+                         path + '. O seguinte erro foi gerado: ' + excep)
         os._exit(1)
 
 
 # converte e remove os espaços em branco do incio e do fim da string
 def conv(name):
-    '''
-    Converte uma váriavel em string e depois tira os espaçoes vázios.
-    '''
     nome = str(name)
     return nome.strip()
 
 
+def soma(*args):
+    return sum(args)
+
+
 def parse(arq):
     employees = []
-    caminho = read_data(arq)
+    data = read_data(arq)
 
-    for item in caminho:
-        reg = item['Nome'] # Identificação do membro (Nome)
-        role = item['Cargo'] #Cargo
-        workplace = item['Lotação'] #Lotação
-        remuneration = item['RemuneracaoCargoEfetivo'] #Remuneração do Cargo Efetivo
-        other_verbs = item['OutrasVerbasRemuneratoriasLegaisJudiciais'] #Outras Verbas Remuneratórias Legais/Judiciais
-        trust_pos = item['FuncaoConfiancaCargoComissao']  #Função de Confiança ou Cargo em Comissão 
-        decimo = 0 #13o. Salário 
-        ferias = item['Ferias'] #Adicional de Férias
-        abono_permanencia = item['AbonoPermanencia'] #Abono de Permanência
-        temp_remu = 0 #Outras Remunerações Temporárias
-        idemnity = 0 #Verbas Indenizatórias
-        total = item['TotalRendimentosBruto'] #Total de rendimentos brutos 
-        prev_contrib = item['ContribuicaoPrevidenciaria'] #Contribuição Previdenciária
-        imposto_renda = item['ImpostoRenda'] #Imposto de Renda
-        ceil_ret = item['RetencaoTetoConstitucional'] #Retenção do Teto      
+    for item in data:
+        # Identificação do membro (Nome), único identificador.
+        reg = item['Nome'] 
+        # Cargo
+        role = item['Cargo']  
+        # Lotação
+        workplace = item['Lotação']  
+        # Remuneração do Cargo Efetivo
+        remuneration = item['RemuneracaoCargoEfetivo'] 
+        # Outras Verbas Remuneratórias Legais/Judiciais
+        other_verbs = item['OutrasVerbasRemuneratoriasLegaisJudiciais']
+        # Função de Confiança ou Cargo em Comissão
+        trust_pos = item['FuncaoConfiancaCargoComissao']
+        # Adicional de Férias
+        ferias = item['Ferias']  
+        # Abono de Permanência
+        abono_permanencia = item['AbonoPermanencia']  
+        # Outras Remunerações Temporárias
+        temp_remu = soma(item['Insalubridade'], item['_RemuneracaoLei6773'], item['RemuneracaoLei6818'],
+                         item['DifEntrancia'], item['RemuneracaoLei6773/Ato9/2012'],
+                         item['Remuneracao/Ato9/112018'], item['CoordGruposTrabalho'], 
+                         item['ParticComissaoProjetos'], item['RemunChefiaDirecaoAsses'],)  
+        # Verbas Indenizatórias
+        idemnity = soma(item['Aux_Alimentacao'], item['Aux_Transporte'], 
+                        item['Aux_Moradia'], item['Aux_FeriasIndenizadas'], 
+                        item['Aux_FeriasIndenizadasEstagio'])  
+        # Total de rendimentos brutos
+        total = item['TotalRendimentosBruto']  
+        gratificao_natalina = item['GratificacaoNatalina']
+        # Contribuição Previdenciária
+        prev_contrib = item['ContribuicaoPrevidenciaria'] 
+        # Imposto de Renda
+        imposto_renda = item['ImpostoRenda']  
+        # Retenção do Teto
+        ceil_ret = item['RetencaoTetoConstitucional']  
 
         employees.append({
-                'reg': conv(reg),
-                'name': conv(reg),
-                'role': conv(role),
-                'type': 'membro',
-                'workplace': conv(workplace),
-                'active': True,
-                "income":
+            'reg': conv(reg),
+            'name': conv(reg),
+            'role': conv(role),
+            'type': 'membro',
+            'workplace': conv(workplace),
+            'active': True,
+            "income":
                 {
                     'total': total,
                     'wage': remuneration + other_verbs,
-                    'perks':{
+                    'perks': {
                         'total': idemnity,
                     },
                     'other':
-                    { 
-                        'total': trust_pos + decimo + ferias + abono_permanencia + temp_remu,
+                    {
+                        'total': trust_pos + ferias + abono_permanencia + temp_remu,
                         'trust_position': trust_pos,
-                        'eventual_benefits': temp_remu,
-                        'others_total': decimo + ferias + abono_permanencia,
+                        'others_total': ferias + abono_permanencia + gratificao_natalina + temp_remu,
                         'others': {
-                            '13o. Salário': decimo,
-                            'Adicional de Férias': ferias,
+                            'Gratigicação natalina': gratificao_natalina,
+                            'Vacation': ferias,
                             'Abono de permanência': abono_permanencia,
+                            'Outras Remunerações Temporárias': temp_remu,
                         }
                     },
-
-                },
-                'discounts':
+            },
+            'discounts':
                 {
                     'total': round(prev_contrib + ceil_ret + imposto_renda, 2),
                     'prev_contribution': prev_contrib,
                     'ceil_retention': ceil_ret,
                     'income_tax': imposto_renda
-                }
-            })
+            }
+        })
 
     return employees

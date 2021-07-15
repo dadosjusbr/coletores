@@ -36,7 +36,7 @@ def crawl(year, month, output_path):
 
     pathlib.Path(output_path).mkdir(exist_ok=True)
 
-    file_name = 'membros_ativos' + '-' + month + '-' + year + '.JSON'
+    file_name = 'membros_ativos' + '-' + month + '-' + year + '.json'
 
     file_path = output_path + '/' + file_name.replace('/', '')
     download(urls_remunerations, file_path)
