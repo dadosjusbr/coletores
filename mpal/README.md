@@ -58,7 +58,7 @@ sudo apt install python3 python3-pip
  - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
   
     ```sh
-      $ cd coletores/mapl
+      $ cd coletores/mpal
       $ pip3 install -r requirements.txt
     ```
 
