@@ -5,7 +5,9 @@ import datetime
 import crawler
 import json
 import parser
-import parser_2018
+import parser_jun_forward_2018
+import parser_jan_may_2018
+import parser_2021
 
 if "MONTH" in os.environ:
     month = os.environ["MONTH"]
@@ -44,10 +46,14 @@ if int(year) > current_year:
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, output_path)
-    if year == "2018" or (
+    if (year == "2018" and month.zfill(2) not in ["01", "02", "03", "04", "05"]) or (
         year == "2019" and month.zfill(2) in ["01", "02", "03"]
-    ):  # 1 for January, 2 for February and 3 for March
-        employees = parser_2018.parse(file_names)
+    ):  # 1 for January, 2 for February, 3 for March, 4 for April and 5 for May
+        employees = parser_jun_forward_2018.parse(file_names)
+    elif year == "2018" and month.zfill(2) in ["01", "02", "03", "04", "05"]:
+        employees = parser_jan_may_2018.parse(file_names)
+    elif year == "2021":
+        employees = parser_2021.parse(file_names)
     else:
         employees = parser.parse(file_names, year, month)
     cr = {
