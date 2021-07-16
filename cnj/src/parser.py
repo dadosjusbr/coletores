@@ -207,9 +207,15 @@ def update_employees_eventual_gratifications(data, employees):
         # Gratificações
         abono_constitucional = round(float(row[3]), 2)
         indenizacao_ferias = round(float(row[4]), 2)
-        antecipacao_ferias = 0.0
-        if str(row[5]) != '-':
-            antecipacao_ferias = round(float(antecipacao_ferias), 2)
+        antecipacao_ferias = row[5]
+        if type(antecipacao_ferias) == str:
+            if antecipacao_ferias == '-':
+                antecipacao_ferias = 0.0
+            elif antecipacao_ferias == "0":
+                antecipacao_ferias = 0.0
+            else:
+                antecipacao_ferias = float(int(antecipacao_ferias))
+                
         gratificacao_natalina = round(float(row[6]), 2)
         antecipacao_grat_natal = round(float(str(row[7]).replace(",", ".")), 2)
         substituicao = round(float(row[8]), 2)
@@ -217,7 +223,7 @@ def update_employees_eventual_gratifications(data, employees):
         gratificacao_encargo = round(float(row[10]), 2)
         pagamentos_retroativos = round(float(row[11]), 2)
         jeton = round(float(row[12]), 2)
-        total = abono_constitucional + indenizacao_ferias + antecipacao_ferias + gratificacao_natalina + antecipacao_grat_natal + substituicao + gratificacao_exercicio_cumulativo + gratificacao_encargo + pagamentos_retroativos + jeton
+        total = abono_constitucional + gratificacao_natalina + antecipacao_grat_natal + substituicao + gratificacao_exercicio_cumulativo + gratificacao_encargo + pagamentos_retroativos + jeton
         # São dadas algumas colunas nomeadas "Outra" com um valor cuja descrição vem na coluna seguinte.
         # As colunas nomeadas "Detalhe" descrevem a origem do valor da coluna anterior.
         outra_1 = round(float(row[13]), 2)
@@ -230,7 +236,11 @@ def update_employees_eventual_gratifications(data, employees):
             emp = employees[name]
 
             emp['income'].update({
-                'total': round(emp['income']['total'] + total, 2)
+                'total': round(emp['income']['total'] + + indenizacao_ferias + antecipacao_ferias + total, 2)
+            })
+            emp['income']['perks'].update({
+                'total': round(emp['income']['perks']['total'] + indenizacao_ferias + antecipacao_ferias, 2),
+                'vacation': round(indenizacao_ferias + antecipacao_ferias, 2)
             })
             emp['income']['other'].update({
                 'total':  round(emp['income']['other']['total'] + total, 2),
@@ -239,8 +249,6 @@ def update_employees_eventual_gratifications(data, employees):
             emp['income']['other']['others'].update({
                 'Abono constitucional de 1/3 de férias': abono_constitucional,
                 'Indenização de férias': indenizacao_ferias,
-                'Antecipação de férias': antecipacao_ferias,
-                'Gratificação natalina': gratificacao_natalina,
                 'Antecipação de gratificação natalina': antecipacao_grat_natal,
                 'Substituição': substituicao,
                 'Gratificação por exercício cumulativo': gratificacao_exercicio_cumulativo,
@@ -348,6 +356,8 @@ def save_file(court, month, year, output_path, crawler_version, employees):
         # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
+
     final_file_name = court + "-" + str(month) + "-" + str(year) + ".json"
     file_path = "." + output_path + "/" + final_file_name
     with open(file_path, "w") as file:
