@@ -77,6 +77,7 @@ def parse(arq):
                 'total': total,
                 'wage': remuneration + other_verbs,
                 'perks': {
+                    'vacation': ferias,
                     'total': idemnity,
                 },
                 'other':{
@@ -85,7 +86,6 @@ def parse(arq):
                     'others_total': ferias + abono_permanencia + gratificao_natalina + temp_remu,
                     'others': {
                         'Gratigicação natalina': gratificao_natalina,
-                        'Vacation': ferias,
                         'Abono de permanência': abono_permanencia,
                         'Outras Remunerações Temporárias': temp_remu
                     }

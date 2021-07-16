@@ -17,6 +17,7 @@ class TestParser(unittest.TestCase):
                 'total': 33689.16,
                 'wage': 0.0,
                 'perks': {
+                    'vacation': 0.0,
                     'total': 0.0
                 },
                 'other': {
@@ -25,7 +26,6 @@ class TestParser(unittest.TestCase):
                     'others_total': 33689.16,
                     'others': {
                         'Gratigicação natalina': 33689.16,
-                        'Vacation': 0.0,
                         'Abono de permanência': 0.0,
                         'Outras Remunerações Temporárias': 0.0
                     }
