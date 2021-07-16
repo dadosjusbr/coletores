@@ -32,7 +32,7 @@ def parse(arq):
 
     for item in data:
         # Identificação do membro (Nome), único identificador.
-        reg = item['Nome'] 
+        name = item['Nome'] 
         # Cargo
         role = item['Cargo']  
         # Lotação
@@ -67,8 +67,8 @@ def parse(arq):
         ceil_ret = item['RetencaoTetoConstitucional']  
 
         employees.append({
-            'reg': conv(reg),
-            'name': conv(reg),
+            'reg': '',
+            'name': conv(name),
             'role': conv(role),
             'type': 'membro',
             'workplace': conv(workplace),

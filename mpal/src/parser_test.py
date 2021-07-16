@@ -7,7 +7,7 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
-            'reg': 'ADEZIA LIMA DE CARVALHO',
+            'reg': '',
             'name': 'ADEZIA LIMA DE CARVALHO',
             'role': 'PROMOTOR DE 3ª',
             'type': 'membro',
