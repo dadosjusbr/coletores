@@ -1,6 +1,6 @@
 # Ministério Público do Estado de Alagoas
 
-Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos dos membros ativos do Ministério Público do Estado de Alagoas nos anos 201, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 e 2021. O site com as informações pode ser acessado [aqui](https://sistemas.mpal.mp.br/).
+Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos dos membros ativos do Ministério Público do Estado de Alagoas nos anos 2018, 2019, 2020 e 2021. O site com as informações pode ser acessado [aqui](https://sistemas.mpal.mp.br/).
 
 O coletor será estruturado como uma CLI. Uma vez passado como argumentos mês e ano, será feito o download de um arquivo, no formato JSON.
 
@@ -58,7 +58,7 @@ sudo apt install python3 python3-pip
  - Utilize o PiP (foi utilizada a versão 20.3.3) para instalar as dependências que estão listadas no arquivo requirements.txt.
   
     ```sh
-      $ cd coletores/mapl
+      $ cd coletores/mpal
       $ pip3 install -r requirements.txt
     ```
 
