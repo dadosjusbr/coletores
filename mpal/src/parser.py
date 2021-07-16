@@ -77,8 +77,8 @@ def parse(arq):
                 'total': total,
                 'wage': remuneration + other_verbs,
                 'perks': {
-                    'vacation': ferias,
                     'total': idemnity,
+                    'vacation': ferias
                 },
                 'other':{
                     'total': trust_pos + ferias + abono_permanencia + temp_remu,

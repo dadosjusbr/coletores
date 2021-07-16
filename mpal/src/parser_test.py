@@ -17,8 +17,8 @@ class TestParser(unittest.TestCase):
                 'total': 33689.16,
                 'wage': 0.0,
                 'perks': {
-                    'vacation': 0.0,
-                    'total': 0.0
+                    'total': 0.0,
+                    'vacation': 0.0
                 },
                 'other': {
                     'total': 0.0,
