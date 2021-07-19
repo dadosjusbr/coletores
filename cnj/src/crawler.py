@@ -16,26 +16,25 @@ payroll_types = {1: ['QvFrame Document_TX3522', '12', 'Contracheque'],
                  3: ['QvFrame Document_TX3713', '15', 'Indenizações'],
                  4: ['QvFrame Document_TX3711', '6', 'Direitos Eventuais']
                 }
-
-def crawl(court, year, month, driver_path, output_path):
+def crawl(court, year, driver_path, output_path):
     files = []
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
-    select_court_and_year(court, year, month, driver)
+    select_court_and_year(court, year, driver)
     for payroll in payroll_types.values():
-        file_path = download(court, year, month, payroll, output_path, driver)
+        file_path = download(court, year, payroll, output_path, driver)
         files.append(file_path)
     driver.quit()
     return files
 
-def select_court_and_year(court, year, month, driver):
+def select_court_and_year(court, year, driver):
     driver.get(base_URL)
 
     # Opening the search bar - Tribunal
     # Other approaches, such as waiting for the elements to be visible, did not work. 
     # So, as it is necessary to wait for the page to load, time.sleep was used here
     # and below. (https://stackoverflow.com/questions/45347675/make-selenium-wait-10-seconds)
-    time.sleep(15)
+    time.sleep(20)
     courts = driver.find_element(By.XPATH, "//*[@title='Tribunal']")
     search_icon = courts.find_element(By.XPATH, "//*[@title='Pesquisar']")
     search_icon.click()
@@ -44,17 +43,18 @@ def select_court_and_year(court, year, month, driver):
     time.sleep(5)
     search_bar = driver.find_element_by_class_name("PopupSearch")
     input_text = search_bar.find_element(By.XPATH, "//input[@type='text']")
-      
+
     # Searching by court name
     time.sleep(5)
     input_text.send_keys(court)
     input_text.send_keys(Keys.ENTER)
     sys.stderr.write("Court selected.\n")
-    
+
     if court == "TJMS":
         time.sleep(5)
         search_icon = driver.find_element(By.XPATH, "//html/body/div[5]/div/div[4]/div[2]/div/div[1]/div[1]")
         search_icon.click()
+
 
     # Opening the search bar - Ano
     time.sleep(10)
@@ -74,27 +74,8 @@ def select_court_and_year(court, year, month, driver):
     input_year.send_keys(Keys.ENTER)
     sys.stderr.write("Year selected.\n")
 
-    # Opening the search bar - Month
-    time.sleep(10)
-    select_month = driver.find_element(By.XPATH, "//*[@title='Mês Referencia']")       
-    search_icon = select_month.find_element(By.XPATH, "//html/body/div[5]/div/div[16]/div[1]/div[1]")
-    search_icon.click()
-    
-    
-    ## Selecting the input text in the search bar
-    time.sleep(5)
-    search_bar = driver.find_element_by_class_name("PopupSearch")
-    input_month = search_bar.find_element(By.XPATH, "//input[@type='text']")
-
-     ## Searching by month
-    time.sleep(5)
-    input_month.send_keys(month)
-    input_month.send_keys(Keys.ENTER)
-    sys.stderr.write("Month selected.\n")
-
-def download(court, year, month, payroll, output_path, driver): 
-    driver.get(base_URL) 
-    
+def download(court, year, payroll, output_path, driver):  
+    driver.get(base_URL)
     # Selecting the payroll
     time.sleep(5)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
@@ -107,8 +88,8 @@ def download(court, year, month, payroll, output_path, driver):
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
 
-    # The court of SP is way bigger than the others 
-    if(court == "TJSP"):
+    # TJSP and TJPR are way bigger than the others 
+    if(court in ["TJSP", "TJPR"]):
         time.sleep(180)
     else: 
         time.sleep(50)
@@ -129,9 +110,6 @@ def setup_driver(driver_path, output_path):
     prefs = {"download.default_directory" : path_prefs}
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("prefs", prefs)
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument("--disable-setuid-sandbox")
     return webdriver.Chrome(executable_path = path_chrome, chrome_options = chrome_options)
 
 def format_filename(output_path, payroll_name, court):
