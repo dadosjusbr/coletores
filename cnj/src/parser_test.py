@@ -63,7 +63,7 @@ class TestParser(unittest.TestCase):
                 './src/output_test/TJRJ-direitos-pessoais.xlsx',
                 './src/output_test/TJRJ-indenizações.xlsx')
 
-        parser.parse('TJRJ', files, '/src/output_test', 'teste')
+        parser.parse('TJRJ', "2018", files, '/src/output_test', 'teste')
         with open('./src/output_test/TJRJ-1-2018.json') as json_file:
             data = json.load(json_file)
         employees = data['cr']['employees']
@@ -131,7 +131,7 @@ class TestParser(unittest.TestCase):
                 './src/output_test/TJRJ-direitos-pessoais.xlsx',
                 './src/output_test/TJRJ-indenizações.xlsx')
 
-        parser.parse('TJRJ', files, '/src/output_test', 'teste')
+        parser.parse('TJRJ', "2019", files, '/src/output_test', 'teste')
         with open('./src/output_test/TJRJ-1-2019.json') as json_file:
             data = json.load(json_file)
         employees = data['cr']['employees']

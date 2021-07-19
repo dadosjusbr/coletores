@@ -11,12 +11,11 @@ base_URL = 'https://paineis.cnj.jus.br/QvAJAXZfc/opendoc.htm?document=qvw_l%2FPa
 
 # The types described below are the payrolls, followed by their ids on the html 
 # page, used in the element identification, and their name
-payroll_types = {1: ['QvFrame Document_TX3522', '13', 'Contracheque'],
-                 2: ['QvFrame Document_TX3712', '14', 'Direitos Pessoais'],
-                 3: ['QvFrame Document_TX3713', '16', 'Indenizações'],
+payroll_types = {1: ['QvFrame Document_TX3522', '12', 'Contracheque'],
+                 2: ['QvFrame Document_TX3712', '13', 'Direitos Pessoais'],
+                 3: ['QvFrame Document_TX3713', '15', 'Indenizações'],
                  4: ['QvFrame Document_TX3711', '6', 'Direitos Eventuais']
                 }
-
 def crawl(court, year, driver_path, output_path):
     files = []
     pathlib.Path(output_path).mkdir(exist_ok=True)
@@ -35,7 +34,7 @@ def select_court_and_year(court, year, driver):
     # Other approaches, such as waiting for the elements to be visible, did not work. 
     # So, as it is necessary to wait for the page to load, time.sleep was used here
     # and below. (https://stackoverflow.com/questions/45347675/make-selenium-wait-10-seconds)
-    time.sleep(10)
+    time.sleep(20)
     courts = driver.find_element(By.XPATH, "//*[@title='Tribunal']")
     search_icon = courts.find_element(By.XPATH, "//*[@title='Pesquisar']")
     search_icon.click()
@@ -50,6 +49,12 @@ def select_court_and_year(court, year, driver):
     input_text.send_keys(court)
     input_text.send_keys(Keys.ENTER)
     sys.stderr.write("Court selected.\n")
+
+    if court == "TJMS":
+        time.sleep(5)
+        search_icon = driver.find_element(By.XPATH, "//html/body/div[5]/div/div[4]/div[2]/div/div[1]/div[1]")
+        search_icon.click()
+
 
     # Opening the search bar - Ano
     time.sleep(10)
@@ -70,6 +75,7 @@ def select_court_and_year(court, year, driver):
     sys.stderr.write("Year selected.\n")
 
 def download(court, year, payroll, output_path, driver):  
+    driver.get(base_URL)
     # Selecting the payroll
     time.sleep(5)
     x_path = "//div[@class='" + payroll[0] + "'][@id='"+ payroll[1] + "']"
@@ -82,11 +88,11 @@ def download(court, year, payroll, output_path, driver):
     download = driver.find_element(By.XPATH, "//*[@title='Enviar para Excel']")
     download.click()
 
-    # TJSP, TJPR and TJMG are way bigger than the others 
-    if(court in ["TJSP", "TJPR", "TJMG"]):
+    # TJSP and TJPR are way bigger than the others 
+    if(court in ["TJSP", "TJPR"]):
         time.sleep(180)
     else: 
-        time.sleep(60)
+        time.sleep(50)
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename

@@ -7,7 +7,7 @@ ARG MONTH
 ENV FILE=${COURT}-${MONTH}-${YEAR}.json
 
 # copy the file to the working directory
-ADD https://github.com/diegooalmeida/backup/raw/master/${COURT}.zip .
+ADD https://github.com/dadosjusbr/backup-cnj/raw/master/${COURT}.zip .
 
 RUN unzip ${COURT}.zip
 RUN rm ${COURT}.zip
