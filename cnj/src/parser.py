@@ -193,6 +193,22 @@ def update_employees_indemnities(data, employees):
             employees[name] = emp
 
     return employees
+def isNaN(string):
+    return string != string
+
+def format_value(element):
+    # A value was found with incorrect formatting. (3,045.99 instead of 3045.99)
+    if isNaN(element):
+        return 0.0
+    if type(element) == str:
+        if "." in element and "," in element:
+            element = element.replace(".", "").replace(",", ".")
+        elif "," in element:
+            element = element.replace(",", ".")
+        elif "-" in element:
+            element = 0.0
+
+    return float(element)
 
 def update_employees_eventual_gratifications(data, employees):
     rows = rows = data.to_numpy()
@@ -202,15 +218,7 @@ def update_employees_eventual_gratifications(data, employees):
         # Gratificações
         abono_constitucional = round(float(row[3]), 2)
         indenizacao_ferias = round(float(row[4]), 2)
-        antecipacao_ferias = row[5]
-        if type(antecipacao_ferias) == str:
-            if antecipacao_ferias == '-':
-                antecipacao_ferias = 0.0
-            elif antecipacao_ferias == "0":
-                antecipacao_ferias = 0.0
-            else:
-                antecipacao_ferias = float(int(antecipacao_ferias))
-                
+        antecipacao_ferias = format_value(row[5])          
         gratificacao_natalina = round(float(row[6]), 2)
         antecipacao_grat_natal = round(float(str(row[7]).replace(",", ".")), 2)
         substituicao = round(float(row[8]), 2)
