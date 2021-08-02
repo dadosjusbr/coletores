@@ -23,7 +23,8 @@ def conv(name):
 
 
 def soma(*args):
-    return sum(args)
+    new_value = round(sum(args),2)
+    return new_value
 
 
 def parse(arq):
@@ -75,15 +76,15 @@ def parse(arq):
             'active': True,
             'income':{
                 'total': total,
-                'wage': remuneration + other_verbs,
+                'wage': round(remuneration + other_verbs, 2),
                 'perks': {
                     'total': idemnity,
                     'vacation': ferias
                 },
                 'other':{
-                    'total': trust_pos + ferias + abono_permanencia + temp_remu,
+                    'total': round(trust_pos + ferias + abono_permanencia + temp_remu, 2),
                     'trust_position': trust_pos,
-                    'others_total': ferias + abono_permanencia + gratificao_natalina + temp_remu,
+                    'others_total': round(ferias + abono_permanencia + gratificao_natalina + temp_remu, 2),
                     'others': {
                         'Gratigicação natalina': gratificao_natalina,
                         'Abono de permanência': abono_permanencia,
