@@ -50,7 +50,7 @@ def main():
         'aid': 'mpal',
         'month': int(month),
         'year': int(year),
-        'files': file_names,
+        'files': list(file_names),
         'crawler': {
             'id': 'mpal',
             'version': crawler_version,
