@@ -43,10 +43,11 @@ if(int(year) > current_year):
 
 # Main execution
 def main():
-    file_names = crawler.crawl(year, month, output_path)
-    print(file_names)
-    # employees = parser.parse(file_names)
-    
+    # file_names = crawler.crawl(year, month, output_path)
+    # print(file_names)
+    file_names = ['./output/remuneração-membros-ativos-8-2019.ods', './output/membros-ativos-8-2019.odt']
+    employees = parser.parse(file_names)
+    print(employees)
     # cr = {
     #     'aid': 'mpse',
     #     'month': int(month),
