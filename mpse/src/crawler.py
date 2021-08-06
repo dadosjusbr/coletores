@@ -3,7 +3,7 @@ import pathlib
 import sys
 import os
 
-# Vou comparar uma key com a outra se for igual eu juntos as duas kkkk
+# Keys usadas para baixar as planilhas, cada uma corresponde a um ano mês
 # Formatos em ods e odt
 keys_remuneration = {
     # Aqui é formarto ods
@@ -97,6 +97,7 @@ keys_indemnisation = {
 def return_base():
     return 'https://sistemas.mpse.mp.br/2.0/PublicDoc/PublicacaoDocumento/AbrirDocumento.aspx?cd_documento={}'
 
+
 def download(url, file_path):
     try:
         response = requests.get(url, allow_redirects=True)
@@ -118,17 +119,17 @@ def generate_url_remuneration(year, month):
     for years, months in keys_remuneration.items():
         if str(year) == years:
             for y, m in months.items():
-                # for monthss in months:
+                # Pegando as keys se os meses forem iguais
                 if str(month) == y:
-                    print(m)
                     url = return_base().format(m)
                     return url
+
 
 def generate_url_indemnisation(year, month):
     for years, months in keys_indemnisation.items():
         if str(year) == years:
             for y, m in months.items():
-                # for monthss in months:
+                # Pegando as keys se os meses forem iguais
                 if str(month) == y:
                     url = return_base().format(m)
                     return url
@@ -181,6 +182,7 @@ def crawl(year, month, output_path):
             file_path = file_dowload_odt(year, month, output_path, url_remuneration)
             files.append(file_path)
             print('remu')
+            
         else:
             # aqui vai pega só do mês 1 ao 6 de 2019
             file_path = file_dowload_odt(year, month, output_path, url_remuneration)
