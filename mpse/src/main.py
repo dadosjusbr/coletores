@@ -45,24 +45,24 @@ if(int(year) > current_year):
 def main():
     # file_names = crawler.crawl(year, month, output_path)
     # print(file_names)
-    file_names = ['./output/remuneração-membros-ativos-8-2019.ods', './output/membros-ativos-8-2019.odt']
-    employees = parser.parse(file_names)
-    print(employees)
-    # cr = {
-    #     'aid': 'mpse',
-    #     'month': int(month),
-    #     'year': int(year),
-    #     'files': file_names,
-    #     'crawler': {
-    #         'id': 'mpse',
-    #         'version': crawler_version,
-    #     },
-    #     'employees': employees,
-    #     # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-    #     'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    # }
+    # file_names = ['./output/indenizacao-membros-ativos-8-2019.ods', './output/remuneracao-membros-ativos-8-2019.odt']
+    file_names = ['./output/remuneracao-membros-ativos-5-2019.odt']
+    employees = parser.parse(file_names, '2019', '5')
+    cr = {
+        'aid': 'mpse',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpse',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
 
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 main()
 # if __name__ == "__main__":

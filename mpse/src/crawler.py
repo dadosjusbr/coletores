@@ -140,9 +140,9 @@ def file_dowload_ods(year, month, output_path, url_remuneration, indemnisation =
     pathlib.Path(output_path).mkdir(exist_ok=True)
 
     if indemnisation: 
-        name = 'remuneração-membros-ativos'
+        name = 'indenizacao-membros-ativos'
     else:
-        name = 'membros-ativos' 
+        name = 'remuneracao-membros-ativos' 
     
     file_name = name + '-' + month + '-' + year + '.ods'
     file_path = output_path + '/' + file_name
@@ -152,7 +152,7 @@ def file_dowload_ods(year, month, output_path, url_remuneration, indemnisation =
 
 def file_dowload_odt(year, month, output_path, url_remuneration):
     pathlib.Path(output_path).mkdir(exist_ok=True)
-    file_name = 'membros-ativos' + '-' + month + '-' + year + '.odt'
+    file_name = 'remuneracao-membros-ativos' + '-' + month + '-' + year + '.odt'
     file_path = output_path + '/' + file_name
     download(url_remuneration, file_path)
     return file_path
