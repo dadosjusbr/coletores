@@ -2,6 +2,7 @@ import table
 
 
 def parser(file):
+    # print(file)
     begin_row = table.get_begin_row(file, 'Matrícula')
     end_row = table.get_end_row(file, 'Total Geral')
 

@@ -130,7 +130,6 @@ def generate_url_indemnisation(year, month):
             for y, m in months.items():
                 # for monthss in months:
                 if str(month) == y:
-                    print(m)
                     url = return_base().format(m)
                     return url
 

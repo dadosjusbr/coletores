@@ -27,20 +27,3 @@ def parse(tabela, year, month):
             table_odt_remuneration = read_table.read_odt(tabela[0])
             employees = parser_remuneration_odt.parser(table_odt_remuneration)
             return employees
-            
-
-
-    # df = read_table.read_odt(tabela[1])
-    # begin_row = table.get_begin_row(df, 'Matrícula')
-    # end_row = table.get_end_row(df, 'Data da última atualização:')
-    # curr_row = 0
-
-    # for nome in df:
-    #     curr_row +=1
-    #     if curr_row <= begin_row:
-    #         continue
-
-    #     print(nome[1])
-
-    #     if curr_row > end_row:
-    #         break
