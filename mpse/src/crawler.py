@@ -173,15 +173,12 @@ def crawl(year, month, output_path):
             url_indemnisation = generate_url_indemnisation(year, month)
             # Para pegar os que são dois arquivos juntos remuneração e indenização
             # vai ser uma lista:
-            print(url_indemnisation)
-            print(url_remuneration)
+
             file_path = file_dowload_ods(year, month, output_path, url_indemnisation, True)
             files.append(file_path)
-            print('Ind')
             
             file_path = file_dowload_odt(year, month, output_path, url_remuneration)
             files.append(file_path)
-            print('remu')
             
         else:
             # aqui vai pega só do mês 1 ao 6 de 2019

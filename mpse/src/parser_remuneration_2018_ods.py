@@ -64,14 +64,17 @@ def parser(file):
                 "wage": round(
                     remuneracao_cargo_efetivo + outras_verbas_remuneratorias, 2
                 ),
-                "perks": {"total": total_indenizacao},
+                "perks": {
+                    "total": total_indenizacao,
+                    "vacation": ferias
+                },
                 "other": {  
                     # Gratificações
                     "total": round(total_gratificacoes, 2),
                     "trust_position": confianca_comissao,
                     "others_total": round(grat_natalina + ferias + permanencia, 2),
                     "others": {
-                        "vacation": ferias,
+                        
                         "Gratificação Natalina": grat_natalina,
                         "Abono de Permanência": permanencia,
                     },
