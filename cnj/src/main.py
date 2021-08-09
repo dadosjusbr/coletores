@@ -46,8 +46,8 @@ def main():
     employees = parser.parse(file_names)
     cr = {
         'aid': court.lower(),
-        'month': month,
-        'year': year,
+        'month': int(month),
+        'year': int(year),
         'files': file_names,
         'crawler': {
             'id': court.lower(),
