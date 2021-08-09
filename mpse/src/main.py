@@ -71,6 +71,5 @@ def main():
 
     print(json.dumps({'cr': cr}, ensure_ascii=False))
 
-main()
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

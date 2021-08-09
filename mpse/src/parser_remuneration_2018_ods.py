@@ -71,8 +71,8 @@ def parser(file):
                     "trust_position": confianca_comissao,
                     "others_total": round(grat_natalina + ferias + permanencia, 2),
                     "others": {
+                        "vacation": ferias,
                         "Gratificação Natalina": grat_natalina,
-                        "Férias (1/3 constitucional)": ferias,
                         "Abono de Permanência": permanencia,
                     },
                 },
