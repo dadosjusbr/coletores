@@ -112,7 +112,7 @@ def download(court, year, month, payroll, output_path, driver):
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
-    file_name = format_filename('.' + output_path, payroll[2], court)
+    file_name = format_filename(output_path, payroll[2], court)
 
     return file_name
 
