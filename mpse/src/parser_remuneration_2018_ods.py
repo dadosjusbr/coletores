@@ -32,7 +32,7 @@ def parser(file):
         permanencia = table.clean_cell(row[10])
         # Como esse valor é correspondente ao que vem descrito na planilha de verbas indenizatórias,
         # não iremos utiliza-lo
-        # outras_remuneracoes_temporarias = abs(table.clean_cell(row[12]))
+        outras_remuneracoes_temporarias = abs(table.clean_cell(row[16]))
         total_indenizacao = table.clean_cell(row[17])
         # Contribuição Previdenciária
         previdencia = abs(table.clean_cell(row[12]))
@@ -48,7 +48,8 @@ def parser(file):
             + confianca_comissao
         )
         total_bruto = remuneracao_cargo_efetivo + \
-            outras_verbas_remuneratorias + total_indenizacao + total_gratificacoes
+            outras_verbas_remuneratorias + outras_remuneracoes_temporarias \
+                 + total_indenizacao + total_gratificacoes
 
         employees[matricula] = {
             "reg": matricula,
