@@ -899,3 +899,95 @@ def update_employee_indemnity_mar_apr_2021(file_name, employees):
             break
 
     return employees
+
+
+# June  2021
+def update_employee_indemnity_june_2021(file_name, employees):
+    rows = parser.read_data(file_name).to_numpy()
+    begin_row = parser.get_begin_row(rows)
+    end_row = parser.get_end_row(rows, begin_row, file_name)
+
+    curr_row = 0
+
+    for row in rows:
+        if curr_row < begin_row:
+            curr_row += 1
+            continue
+
+        matricula = str(int(row[0]))  # convert to string by removing the '.0'
+        alimentação = format_value(row[4])
+        ferias_pc = format_value(row[5])
+        licensa_pc = format_value(row[6])
+        saude = format_value(row[7])
+        cumulativa = format_value(row[8])  # Gratificação Cumulativa
+        grat_natureza = format_value(row[9])  # Gratificação de Natureza Especial
+        atuacao_especial = format_value(
+            row[10]
+        )  # Gratificação de Grupo de Atuação Especial
+
+        if (
+            matricula in employees.keys()
+        ):  # Realiza o update apenas para os servidores que estão na planilha de remuneração mensal
+
+            emp = employees[matricula]
+            total_outras_gratificacoes = round(
+                emp["income"]["other"]["others_total"]
+                + cumulativa
+                + grat_natureza
+                + atuacao_especial,
+                2,
+            )
+
+            total_gratificacoes = round(
+                emp["income"]["other"]["total"]
+                + cumulativa
+                + grat_natureza
+                + atuacao_especial,
+                2,
+            )
+
+            total_bruto = round(
+                emp["income"]["total"] + cumulativa + grat_natureza + atuacao_especial,
+                2,
+            )
+
+            emp["income"].update(
+                {
+                    "total": round(
+                        total_bruto,
+                        2,
+                    )
+                }
+            )
+
+            emp["income"]["perks"].update(
+                {
+                    "food": alimentação,
+                    "vacation_pecuniary": ferias_pc,
+                    "premium_license_pecuniary": licensa_pc,
+                    "health": saude
+
+                }
+            )
+            emp["income"]["other"].update(
+                {
+                    "total": total_gratificacoes,
+                    "others_total": total_outras_gratificacoes,
+                }
+            )
+
+            emp["income"]["other"]["others"].update(
+                {
+                    "GRAT. CUMULATIVA": cumulativa,
+                    "GRAT. NATUREZA ESPECIAL": grat_natureza,
+                    "GRAT. DE GRUPO DE ATUAÇÃO ESPECIAL": atuacao_especial,
+                }
+            )
+
+            employees[matricula] = emp
+
+        curr_row += 1
+        if curr_row > end_row:
+            break
+
+    return employees
