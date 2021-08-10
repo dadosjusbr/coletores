@@ -37,7 +37,7 @@ def links_remuneration(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-                elif month in ["03", "04", "05"]:
+                elif month in ["03", "04", "05", "06"]:
                     link = (
                         baseURL
                         + beneficiary_types[key]
@@ -1120,7 +1120,7 @@ def links_other_funds(month, year):
                         + ".ods"
                     )
                     links_type[beneficiary_types[key]] = link
-                elif month in ["03", "04", "05"]:
+                elif month in ["03", "04", "05", "06"]:
                     link = (
                         baseURL
                         + "verbas_indeniz/verb_ind_mem/verb_ind_mem_ativos/membros-ativos-verba-indenizatoria-"
