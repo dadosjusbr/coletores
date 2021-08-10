@@ -169,7 +169,6 @@ def crawl(year, month, output_path):
 
     else:
         if int(year) == 2019 and int(month) >= 7 or int(year)>= 2020:
-            print('aqui')
             url_indemnisation = generate_url_indemnisation(year, month)
             # Para pegar os que são dois arquivos juntos remuneração e indenização
             # vai ser uma lista:

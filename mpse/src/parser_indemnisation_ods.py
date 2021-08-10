@@ -11,6 +11,9 @@ def update(remuneration, indemnsation):
         if curr_row <= begin_row:
             continue
 
+        if row[3] == 'INATIVOS':
+            continue
+
         matricula = row[0]
         if type(matricula) != str:
             matricula = str(matricula)
@@ -155,6 +158,9 @@ def update_fev_em_diante(remuneration, indemnsation):
     for row in indemnsation:
         curr_row += 1
         if curr_row <= begin_row:
+            continue
+
+        if row[3] == 'INATIVOS':
             continue
 
         matricula = row[0]

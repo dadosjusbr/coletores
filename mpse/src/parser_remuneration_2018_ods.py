@@ -12,6 +12,9 @@ def parser(file):
         curr_row += 1
         if curr_row <= begin_row:
             continue
+
+        if row[4] == 'INATIVO':
+            continue
             
         matricula = row[1]
         if type(matricula) != str:
@@ -30,10 +33,6 @@ def parser(file):
         ferias = table.clean_cell(row[9])
         # Abono de Permanência
         permanencia = table.clean_cell(row[10])
-        # Como esse valor é correspondente ao que vem descrito na planilha de verbas indenizatórias,
-        # não iremos utiliza-lo
-        outras_remuneracoes_temporarias = abs(table.clean_cell(row[16]))
-        total_indenizacao = table.clean_cell(row[17])
         # Contribuição Previdenciária
         previdencia = abs(table.clean_cell(row[12]))
         # Imposto de Renda
@@ -41,15 +40,17 @@ def parser(file):
         # Retenção por Teto Constitucional
         teto_constitucional = abs(table.clean_cell(row[14]))  
         total_desconto = previdencia + teto_constitucional + imp_renda
+        total_indenizacao = table.clean_cell(row[17])
+        outras_remuneracoes_temporarias = abs(table.clean_cell(row[18]))
+        
         total_gratificacoes = (
             grat_natalina
-            + ferias
             + permanencia
             + confianca_comissao
         )
         total_bruto = remuneracao_cargo_efetivo + \
             outras_verbas_remuneratorias + outras_remuneracoes_temporarias \
-                 + total_indenizacao + total_gratificacoes
+                + total_indenizacao + total_gratificacoes
 
         employees[matricula] = {
             "reg": matricula,

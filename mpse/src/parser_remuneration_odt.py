@@ -10,7 +10,11 @@ def parser(file):
 
     for row in file:
         curr_row += 1
+
         if curr_row <= begin_row:
+            continue
+
+        if row[3] == 'INATIVOS':
             continue
             
         matricula = row[0]

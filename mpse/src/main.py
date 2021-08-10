@@ -43,22 +43,8 @@ if(int(year) > current_year):
 
 # Main execution
 def main():
-    # file_names = crawler.crawl(year, month, output_path)
-    # employees = parser.parse(file_names, year, month)
-
-    # print(file_names)
-    file_names = ['./output/indenizacao-membros-ativos-8-2019.ods',
-                  './output/remuneracao-membros-ativos-8-2019.odt']
-    # file_names = ['./output/remuneracao-membros-ativos-5-2019.odt']
-    # file_names = ['./output/remuneracao-membros-ativos-12-2018.ods']
-    employees = parser.parse(file_names, '2019', '8')
-    # employees = parser.parse(file_names, '5', '2019')
-    # employees = parser.parse(file_names, '2018', '12')
-
-    with open('./labo/json.json', 'w') as fp:
-            json.dump(employees, fp, indent=2, separators=(',', ': '), ensure_ascii=False)
-
-    # print(json.dumps(employees['14'], ensure_ascii=False))
+    file_names = crawler.crawl(year, month, output_path)
+    employees = parser.parse(file_names, year, month)
 
     cr = {
         'aid': 'mpse',
@@ -74,7 +60,9 @@ def main():
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
 
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    # with open(f'./labo/{year}-{month}.json', 'w') as fp:
+    #         json.dump(cr, fp, indent=2, separators=(',', ': '), ensure_ascii=False)
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
