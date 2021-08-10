@@ -294,7 +294,7 @@ def parse_active_members(file_names, month, year):
                                 fn, employees
                             )
                         )
-                    elif month in == "06":
+                    elif month == "06":
                         employees.update(
                             active_members_indemnity_parser.update_employee_indemnity_june_2021(
                                 fn, employees
