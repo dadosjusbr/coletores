@@ -15,7 +15,7 @@ def parser(file):
 
         if row[4] == 'INATIVO':
             continue
-            
+
         matricula = row[1]
         if type(matricula) != str:
             matricula = str(matricula)
@@ -36,13 +36,15 @@ def parser(file):
         # Contribuição Previdenciária
         previdencia = abs(table.clean_cell(row[12]))
         # Imposto de Renda
-        imp_renda = abs(table.clean_cell(row[13])) 
+        imp_renda = abs(table.clean_cell(row[13]))
         # Retenção por Teto Constitucional
-        teto_constitucional = abs(table.clean_cell(row[14]))  
+        teto_constitucional = abs(table.clean_cell(row[14]))
         total_desconto = previdencia + teto_constitucional + imp_renda
+        # Indenizações
         total_indenizacao = table.clean_cell(row[17])
+        # Remunerações tempórarias
         outras_remuneracoes_temporarias = abs(table.clean_cell(row[18]))
-        
+
         total_gratificacoes = (
             grat_natalina
             + permanencia
@@ -50,7 +52,7 @@ def parser(file):
         )
         total_bruto = remuneracao_cargo_efetivo + \
             outras_verbas_remuneratorias + outras_remuneracoes_temporarias \
-                + total_indenizacao + total_gratificacoes
+            + total_indenizacao + total_gratificacoes
 
         employees[matricula] = {
             "reg": matricula,
@@ -70,20 +72,21 @@ def parser(file):
                     "total": total_indenizacao,
                     "vacation": ferias
                 },
-                "other": {  
+                "other": {
                     # Gratificações
                     "total": round(total_gratificacoes, 2),
                     "trust_position": confianca_comissao,
+                    "eventual_benefits": outras_remuneracoes_temporarias,
                     "others_total": round(grat_natalina + ferias + permanencia, 2),
                     "others": {
-                        
+
                         "Gratificação Natalina": grat_natalina,
                         "Abono de Permanência": permanencia,
                     },
                 },
             },
-            "discounts": {  
-                # Discounts Object. Using abs to garantee numbers are positive 
+            "discounts": {
+                # Discounts Object. Using abs to garantee numbers are positive
                 # (spreadsheet have negative discounts).
                 "total": round(total_desconto, 2),
                 "prev_contribution": previdencia,
@@ -97,5 +100,3 @@ def parser(file):
             break
 
     return(employees)
-
-    

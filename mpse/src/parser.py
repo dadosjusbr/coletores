@@ -20,7 +20,7 @@ def parse(tabela, year, month):
             table_ods_indemnisation = read_table.read_ods(tabela[0])
 
             if int(year) == 2021 and int(month) >= 2:
-                employees = parser_indemnisation_ods.update_fev_em_diante(employees, table_ods_indemnisation)
+                employees = parser_indemnisation_ods.update(employees, table_ods_indemnisation, True)
                 return employees
 
             else:
