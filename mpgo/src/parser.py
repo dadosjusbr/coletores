@@ -18,6 +18,10 @@ def isEmpty(file_name):
         return True
     else:
         return False
+        
+# Checa se o valor é NaN
+def isNaN(string):
+    return string != string
 
 # Parser para quando a tabela de remunerações e indenizações contém informações. Nesse caso, o valor das indenizações e remunerações temporárias é calculado através da soma de todos os beneficios recebidos
 def employees_parser(file_path):
@@ -33,6 +37,8 @@ def employees_parser(file_path):
         name = row[3] #Nome
         role = row[4] #Cargo
         workplace = row[5] #Lotação
+        if isNaN(workplace):
+            workplace = "Não informado"
         remuneration = row[6] #Remuneração do cargo efetivo
         other_verbs = row[7] #Outras Verbas Remuneratórias
         trust_pos = row[8] #Função de Confiança ou Cargo em Comissão
@@ -101,6 +107,8 @@ def employees_parser_without_indemnities(file_path):
         name = row[3] #Nome
         role = row[4] #Cargo
         workplace = row[5] #Lotação
+        if isNaN(workplace):
+            workplace = "Não informado"
         remuneration = row[6] #Remuneração do cargo efetivo
         other_verbs = row[7] #Outras Verbas Remuneratórias
         trust_pos = row[8] #Função de Confiança ou Cargo em Comissão
