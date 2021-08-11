@@ -57,10 +57,10 @@ def parser(file):
 
         employees[matricula] = {
             "reg": matricula,
-            "name": nome,
-            "role": cargo_efetivo,
+            "name": table.conv(nome),
+            "role": table.conv(cargo_efetivo),
             "type": "membro",
-            "workplace": lotacao,
+            "workplace": table.conv(lotacao),
             "active": True,
             "income": {
                 "total": round(total_bruto, 2),
