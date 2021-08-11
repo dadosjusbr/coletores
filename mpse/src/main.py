@@ -60,9 +60,7 @@ def main():
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
 
-    with open(f'./labo/{year}-{month}.json', 'w') as fp:
-            json.dump(cr, fp, indent=2, separators=(',', ': '), ensure_ascii=False)
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
