@@ -42,8 +42,8 @@ class TestParser(unittest.TestCase):
         employees = parser.parse(files, '2018', '2')
 
         # Verificações
-        self.assertEqual(len(employees), len(employees))
-        self.assertDictEqual(employees[1], expected)
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
 
 
     def test_membros_ativos_remuneracao_2019(self):
@@ -86,7 +86,7 @@ class TestParser(unittest.TestCase):
         employees = parser.parse(files, '2019', '6')
 
         # Verificações
-        self.assertEqual(791, len(employees))
+        self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
 
@@ -151,7 +151,7 @@ class TestParser(unittest.TestCase):
         employees = parser.parse(files, '2021', '1')
 
         # Verificações
-        self.assertEqual(len(employees), len(employees))
+        self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
 
@@ -217,7 +217,7 @@ class TestParser(unittest.TestCase):
         employees = parser.parse(files, '2021', '2')
 
         # Verificações
-        self.assertEqual(len(employees), len(employees))
+        self.assertEqual(1, len(employees))
         self.assertDictEqual(employees[0], expected)
 
 
