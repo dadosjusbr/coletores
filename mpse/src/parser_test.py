@@ -8,7 +8,7 @@ class TestParser(unittest.TestCase):
         expected = {
             "reg": "16",
             "name": "CELSO LUIS DORIA LEO",
-            "role": "PROCURADOR DE JUSTIÇA",
+            "role": " PROCURADOR DE JUSTIÇA ",
             "type": "membro",
             "workplace": "SEDE/MP",
             "active": True,
@@ -54,7 +54,7 @@ class TestParser(unittest.TestCase):
             "name": "ADALBERTO MENDES DE OLIVEIRA NETO",
             "role": "ANALISTA DO MP - DIREITO",
             "type": "membro",
-            "workplace": "PROMOTORIA DE JUSTICA ESPECIAL CIVEL E CRIMINAL - ESTANCIA",
+            "workplace": "PROMOTORIA DE JUSTICA ESPECIAL CIVEL E CRIMINAL - ESTANCIA ",
             "active": True,
             "income": {
                 "total": 13443.12,
