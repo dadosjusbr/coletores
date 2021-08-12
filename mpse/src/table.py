@@ -1,6 +1,11 @@
 def is_nan(string):
     return string != string
 
+# Remove os espaços branco
+def conv(name):
+    nome = str(name)
+    return nome.strip()
+
 # Usado pra pegar a primeira linha das tabelas normais
 def get_begin_row(data, begin_string):
     begin_row = 0
