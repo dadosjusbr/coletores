@@ -46,15 +46,6 @@ def main():
     file_names = crawler.crawl(year, month, output_path)
     employees = parser.parse(file_names, year, month)
 
-    # print(file_names)
-    # file_names = ['./output/indenizacao-membros-ativos-8-2019.ods', './output/remuneracao-membros-ativos-8-2019.odt']
-    # file_names = ['./output/remuneracao-membros-ativos-5-2019.odt']
-    # file_names = ['./output/remuneracao-membros-ativos-12-2018.ods']
-
-    # employees = parser.parse(file_names, '5', '2019')
-    # employees = parser.parse(file_names, '2018', '12')
-    # print(employees['14'])
-
     cr = {
         'aid': 'mpse',
         'month': int(month),
@@ -70,6 +61,7 @@ def main():
     }
 
     print(json.dumps({'cr': cr}, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     main()
