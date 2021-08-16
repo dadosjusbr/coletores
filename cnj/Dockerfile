@@ -15,7 +15,7 @@ RUN apt-get install -y google-chrome-stable
 # install chromedriver
 RUN apt-get install -yqq unzip
 # Download the Chrome Driver
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_87.0.4280`/chromedriver_linux64.zip
+RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_91.0.4472`/chromedriver_linux64.zip  
 RUN unzip /tmp/chromedriver.zip chromedriver -d ./
 
 #Set up Environment variables
