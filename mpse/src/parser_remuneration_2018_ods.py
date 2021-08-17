@@ -20,6 +20,12 @@ def parser(file):
         if type(matricula) != str:
             matricula = str(matricula)
 
+        if matricula == 'nan':
+            continue
+
+        if row[1] == 'TotalGeral':
+            break
+
         nome = row[2]
         # Remuneração cargo efetivo
         cargo_efetivo = row[3]

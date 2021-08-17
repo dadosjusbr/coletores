@@ -22,6 +22,12 @@ def parser(file):
         if type(matricula) != str:
             matricula = str(matricula)
 
+        if matricula == 'nan':
+            continue
+    
+        if row[0] == 'Total Geral':
+            break
+
         nome = row[1]
         cargo_efetivo = row[2]
         lotacao = row[3]
