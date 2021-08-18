@@ -236,7 +236,6 @@ class TestParser(unittest.TestCase):
                     "other": {
                         "total": 6625.58,
                         "trust_position": 0.0,
-                        "eventual_benefits": 2246.0,
                         "others_total": 6625.58,
                         "others": {
                             "Gratificação Natalina": 0.0,
@@ -288,7 +287,6 @@ class TestParser(unittest.TestCase):
                     "other": {
                         "total": 3567.46,
                         "trust_position": 3567.46,
-                        "eventual_benefits": 0.0,
                         "others_total": 0.0,
                         "others": {
                             "Gratificação Natalina": 0.0,
@@ -355,7 +353,6 @@ class TestParser(unittest.TestCase):
                 "other": {
                     "total": 0.0,
                     "trust_position": 0.0,
-                    "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others": {
                         "Gratificação Natalina": 0.0,
@@ -420,7 +417,6 @@ class TestParser(unittest.TestCase):
                 "other": {
                     "total": 0.0,
                     "trust_position": 0.0,
-                    "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others":{
                         "Gratificação Natalina": 0.0,

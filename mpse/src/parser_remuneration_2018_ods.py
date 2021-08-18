@@ -55,6 +55,7 @@ def parser(file):
             grat_natalina
             + permanencia
             + confianca_comissao
+            + outras_remuneracoes_temporarias
         )
         total_bruto = remuneracao_cargo_efetivo + \
             outras_verbas_remuneratorias + outras_remuneracoes_temporarias \

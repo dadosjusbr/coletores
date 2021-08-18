@@ -1,7 +1,7 @@
 import table
 
 
-def parser(file):
+def parser(file, no_budge_sheets = False):
     begin_row = table.get_begin_row(file, 'Matrícula')
     end_row = table.get_end_row(file, 'Total Geral')
 
@@ -82,7 +82,7 @@ def parser(file):
                 "other": {  # Gratificações
                     "total": total_gratificacoes,
                     "trust_position": confianca_comissao,
-                    "eventual_benefits": outras_remuneracoes_temporarias,
+                    #"eventual_benefits": outras_remuneracoes_temporarias,
                     "others_total": round(grat_natalina + permanencia, 2),
                     "others": {
                         "Gratificação Natalina": grat_natalina,
@@ -100,6 +100,13 @@ def parser(file):
                 "income_tax": imp_renda,
             },
         }
+
+        if no_budge_sheets:
+            employees[matricula]['income']['other'].update(
+                {
+                    "eventual_benefits": outras_remuneracoes_temporarias,
+                }
+            )
 
         if curr_row > end_row:
             break
