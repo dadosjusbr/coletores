@@ -218,6 +218,58 @@ class TestParser(unittest.TestCase):
             self.maxDiff = None
 
             expected = {
+                "reg": "401",
+                "name": "ADEMILTON DE OLIVEIRA SANTOS",
+                "role": "PROMOTOR DE JUSTIÇA DE ENTR. FINAL",
+                "type": "membro",
+                "workplace": "2ª PROMOTORIA DE JUSTICA CRIMINAL - ITABAIANA",
+                "active": True,
+                "income": {
+                    "total": 42509.4,
+                    "wage": 33689.11,
+                    "perks": {
+                        "total": 2194.71,
+                        "vacation": 0.0,
+                        "food": 1020.9,
+                        "health": 1173.81
+                    },
+                    "other": {
+                        "total": 6625.58,
+                        "trust_position": 0.0,
+                        "eventual_benefits": 2246.0,
+                        "others_total": 6625.58,
+                        "others": {
+                            "Gratificação Natalina": 0.0,
+                            "Abono de Permanência": 4379.58,
+                            "Auxilio Interiorização": 0.0,
+                            "Auxilio lei 8.625/93": 0.0,
+                            "Indenizações Férias/Licença-Prêmio": 0.0,
+                            "Abono Pecuniário": 0.0,
+                            "Ressarcimentos": 0.0,
+                            "GEO": 0.0,
+                            "Insalubridade": 0.0,
+                            "Periculosidade": 0.0,
+                            "Adicional Trabalho Tecnico": 0.0,
+                            "Grat. Atividade Ensino": 0.0,
+                            "Substituições": 0.0,
+                            "Cumulação": 2246.0,
+                            "Represetação de Direção": 0.0,
+                            "Grat. Turma Recursal": 0.0,
+                            "Grat. Dificil Provimento": 0.0,
+                            "Grat. Acessor": 0.0,
+                            "Representação GAEGO": 0.0
+                        }
+                    }
+                },
+                "discounts": {
+                    "total": 13392.38,
+                    "prev_contribution": 4379.58,
+                    "ceil_retention": 0.0,
+                    "income_tax": 9012.8
+                }
+            }
+
+            second_expected = {
                 "reg": "1480",
                 "name": "THIAGO LIMA FEITOZA",
                 "role": "ANALISTA DO MP -Informática - G. e A.de P. de Sistemas",
@@ -275,8 +327,9 @@ class TestParser(unittest.TestCase):
             employees = parser.parse(files, '2019', '8')
 
             # Verificações
-            self.assertEqual(1, len(employees))
+            self.assertEqual(2, len(employees))
             self.assertDictEqual(employees[0], expected)
+            self.assertDictEqual(employees[1], second_expected)
 
 
 
