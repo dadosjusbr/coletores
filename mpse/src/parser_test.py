@@ -50,6 +50,39 @@ class TestParser(unittest.TestCase):
         self.maxDiff = None
 
         expected = {
+            "reg": "2069",
+            "name": "LEA ALVES SCHLINGMANN",
+            "role": "TÉCNICO DO MP",
+            "type": "membro",
+            "workplace": "SEDE/MP",
+            "active": True,
+            "income": {
+                "total": 13509.64,
+                "wage": 2497.35,
+                "perks": {
+                    "total": 1000.0,
+                    "vacation": 4169.88
+                },
+                "other": {
+                    "total": 10012.29,
+                    "trust_position": 10012.29,
+                    "eventual_benefits": 0.0,
+                    "others_total": 4169.88,
+                    "others": {
+                        "Gratificação Natalina": 0.0,
+                        "Abono de Permanência": 0.0
+                    }
+                }
+            },
+            "discounts": {
+                "total": 2806.17,
+                "prev_contribution": 324.66,
+                "ceil_retention": 0.0,
+                "income_tax": 2481.51
+            }
+        }
+
+        second_expected = {
             "reg": "2134",
             "name": "JOSE AUGUSTO RAMOS DA SILVA",
             "role": "POLICIAL MILITAR ",
@@ -87,8 +120,9 @@ class TestParser(unittest.TestCase):
         employees = parser.parse(files, '2018', '5')
 
         # Verificações
-        self.assertEqual(1, len(employees))
+        self.assertEqual(2, len(employees))
         self.assertDictEqual(employees[0], expected)
+        self.assertDictEqual(employees[1], second_expected)
 
 
     def test_membros_ativos_remuneracao_2018_10(self):
