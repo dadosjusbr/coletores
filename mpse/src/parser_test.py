@@ -17,7 +17,6 @@ class TestParser(unittest.TestCase):
                 "wage": 31519.76,
                 "perks": {
                     "total": 6527.73,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 4097.57,
@@ -25,6 +24,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 4097.57,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 4097.57
                     }
@@ -57,18 +57,18 @@ class TestParser(unittest.TestCase):
             "workplace": "SEDE/MP",
             "active": True,
             "income": {
-                "total": 13509.64,
+                "total": 17679.52,
                 "wage": 2497.35,
                 "perks": {
                     "total": 1000.0,
-                    "vacation": 4169.88
                 },
                 "other": {
-                    "total": 10012.29,
+                    "total": 14182.17,
                     "trust_position": 10012.29,
                     "eventual_benefits": 0.0,
                     "others_total": 4169.88,
                     "others": {
+                        "Férias 1/3 constitucionais": 4169.88,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0
                     }
@@ -94,7 +94,6 @@ class TestParser(unittest.TestCase):
                 "wage": 1259.55,
                 "perks": {
                     "total": 0.0,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 0.0,
@@ -102,6 +101,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0
                     }
@@ -140,7 +140,6 @@ class TestParser(unittest.TestCase):
                 "wage": 0.0,
                 "perks": {
                     "total": 1020.9,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 2070.92,
@@ -148,6 +147,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0
                     }
@@ -185,7 +185,6 @@ class TestParser(unittest.TestCase):
                 "wage": 7854.38,
                 "perks": {
                     "total": 2598.78,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 2989.96,
@@ -193,6 +192,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 2989.96,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 2989.96,
                         "Abono de Permanência": 0.0
                     }
@@ -229,7 +229,6 @@ class TestParser(unittest.TestCase):
                     "wage": 33689.11,
                     "perks": {
                         "total": 2194.71,
-                        "vacation": 0.0,
                         "food": 1020.9,
                         "health": 1173.81
                     },
@@ -238,6 +237,7 @@ class TestParser(unittest.TestCase):
                         "trust_position": 0.0,
                         "others_total": 6625.58,
                         "others": {
+                            "Férias 1/3 constitucionais": 0.0,
                             "Gratificação Natalina": 0.0,
                             "Abono de Permanência": 4379.58,
                             "Auxilio Interiorização": 0.0,
@@ -280,7 +280,6 @@ class TestParser(unittest.TestCase):
                     "wage": 9132.61,
                     "perks": {
                         "total": 1735.39,
-                        "vacation": 0.0,
                         "food": 1020.9,
                         "health": 714.49
                     },
@@ -289,6 +288,7 @@ class TestParser(unittest.TestCase):
                         "trust_position": 3567.46,
                         "others_total": 0.0,
                         "others": {
+                            "Férias 1/3 constitucionais": 0.0,
                             "Gratificação Natalina": 0.0,
                             "Abono de Permanência": 0.0,
                             "Auxilio Interiorização": 0.0,
@@ -346,7 +346,6 @@ class TestParser(unittest.TestCase):
                 "wage": 7087.14,
                 "perks": {
                     "total": 2384.07,
-                    "vacation": 0.0,
                     "food": 1056.0,
                     "health": 1328.07
                 },
@@ -355,6 +354,7 @@ class TestParser(unittest.TestCase):
                     "trust_position": 0.0,
                     "others_total": 0.0,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0,
                         "Auxilio Interiorização": 0.0,
@@ -410,7 +410,6 @@ class TestParser(unittest.TestCase):
                 "wage": 7087.14,
                 "perks":{
                     "total": 2384.07,
-                    "vacation": 0.0,
                     "food": 1056.0,
                     "health": 1328.07
                 },
@@ -419,6 +418,7 @@ class TestParser(unittest.TestCase):
                     "trust_position": 0.0,
                     "others_total": 0.0,
                     "others":{
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0,
                         "Auxilio Interiorização": 0.0,

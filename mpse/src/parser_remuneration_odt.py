@@ -1,7 +1,7 @@
 import table
 
 
-def parser(file, no_budge_sheets = False):
+def parser(file, no_budge_sheets=False):
     begin_row = table.get_begin_row(file, 'Matrícula')
     end_row = table.get_end_row(file, 'Total Geral')
 
@@ -24,7 +24,7 @@ def parser(file, no_budge_sheets = False):
 
         if matricula == 'nan':
             continue
-    
+
         if row[0] == 'Total Geral':
             break
 
@@ -55,6 +55,7 @@ def parser(file, no_budge_sheets = False):
             grat_natalina
             + permanencia
             + confianca_comissao
+            + ferias
         )
 
         total_bruto = remuneracao_cargo_efetivo + \
@@ -77,14 +78,13 @@ def parser(file, no_budge_sheets = False):
                 ),
                 "perks": {
                     "total": total_indenizacao,
-                    "vacation": ferias
                 },
                 "other": {  # Gratificações
                     "total": total_gratificacoes,
                     "trust_position": confianca_comissao,
-                    #"eventual_benefits": outras_remuneracoes_temporarias,
-                    "others_total": round(grat_natalina + permanencia, 2),
+                    "others_total": round(grat_natalina + ferias + permanencia, 2),
                     "others": {
+                        "Férias 1/3 constitucionais": ferias,
                         "Gratificação Natalina": grat_natalina,
                         "Abono de Permanência": permanencia,
                     },
@@ -105,6 +105,11 @@ def parser(file, no_budge_sheets = False):
             employees[matricula]['income']['other'].update(
                 {
                     "eventual_benefits": outras_remuneracoes_temporarias,
+                }
+            )
+            employees[matricula]['income']['other'].update(
+                {
+                    'total': employees[matricula]['income']['other']['total'] + outras_remuneracoes_temporarias
                 }
             )
 
