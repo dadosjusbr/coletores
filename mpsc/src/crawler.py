@@ -14,7 +14,7 @@ def crawl(court, year, driver_path, output_path):
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
     driver.get(base_url)
-    time.sleep(8)
+    time.sleep(5)
     contracheque = driver.find_element(By.XPATH, '//*[@id="16"]/div[3]')
     contracheque.click()
     print('CONTRACHEQUE')
@@ -29,35 +29,35 @@ def crawl(court, year, driver_path, output_path):
 def select_year_and_document_type(year, driver, flag):
     driver.get(base_url)
 
-    time.sleep(8)
+    time.sleep(5)
     if(flag == 0):
         document_type = driver.find_element(By.XPATH, '//*[@id="56"]/div[3]')
         document_type.click()
         print('MEMBROS ATIVOS')
         # Selecting year
-        time.sleep(8)
+        time.sleep(5)
         if(year == "2018"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[61]/div[3]/div/div[1]/div[3]')
+            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[3]')
         elif(year == "2019"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[61]/div[3]/div/div[1]/div[4]')
+            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[4]')
         elif(year == "2020"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[61]/div[3]/div/div[1]/div[5]')
+            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[5]')
         elif(year == "2021"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[61]/div[3]/div/div[1]/div[6]')
+            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[6]')
     else:
         document_type = driver.find_element(By.XPATH, '//*[@id="65"]/div[3]')
         document_type.click()   
         print('VERBAS IDENIZATÓRIAS')  
         # Selecting year
-        time.sleep(8)
+        time.sleep(5)
         if(year == "2018"):
             select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[3]')
         elif(year == "2019"):
             select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[4]')
         elif(year == "2020"):
-            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[6]')
-        elif(year == "2021"):
             select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[5]')
+        elif(year == "2021"):
+            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[6]')
 
     select_year.click()
     print('ANO ' + str(year))
@@ -72,7 +72,7 @@ def download(court, month, year, output_path, driver, flag):
     print('MÊS ' + str(month))
 
     # Downloading the file
-    time.sleep(4)
+    time.sleep(2)
     if(flag == 0):
         download = driver.find_element(By.XPATH, '//*[@id="24"]/div[2]/div[1]')
         download.click()
@@ -82,6 +82,7 @@ def download(court, month, year, output_path, driver, flag):
     sys.stderr.write("File downloaded.\n")
 
     # Formating the filename
+    time.sleep(8)
     file_name = format_filename('.' + output_path, court, month, year, flag)
     time.sleep(2)
     ok_button = driver.find_element(By.XPATH, '/html/body/div[7]/div[2]/button')
@@ -103,16 +104,15 @@ def setup_driver(driver_path, output_path):
 
 def format_filename(output_path, court, month, year, flag):
     # Identifying the name of the last downloaded file
-    filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)], key=os.path.getctime, default='0')
+    filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)], key=os.path.getctime)
 
     # renaming the file properly, according to the month
     if(flag == 0):
         new_filename = court + "-" + month + "_" + year + "-Membros Ativos" + ".xlsx"
     else:
         new_filename = court + "-" + month + "_" + year + "-Verbas Indenizatórias" + ".xlsx"
-    # ??
+
     shutil.move(filename,os.path.join(output_path,r"{}".format(new_filename)))
-    # ??
     new_output_path = output_path + "/" + new_filename
 
     return new_output_path
