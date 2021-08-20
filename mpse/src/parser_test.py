@@ -17,7 +17,6 @@ class TestParser(unittest.TestCase):
                 "wage": 31519.76,
                 "perks": {
                     "total": 6527.73,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 4097.57,
@@ -25,6 +24,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 4097.57,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 4097.57
                     }
@@ -46,6 +46,130 @@ class TestParser(unittest.TestCase):
         self.assertDictEqual(employees[0], expected)
 
 
+    def test_membros_ativos_remuneracao_2018_5(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "2069",
+            "name": "LEA ALVES SCHLINGMANN",
+            "role": "TÉCNICO DO MP",
+            "type": "membro",
+            "workplace": "SEDE/MP",
+            "active": True,
+            "income": {
+                "total": 17679.52,
+                "wage": 2497.35,
+                "perks": {
+                    "total": 1000.0,
+                },
+                "other": {
+                    "total": 14182.17,
+                    "trust_position": 10012.29,
+                    "eventual_benefits": 0.0,
+                    "others_total": 4169.88,
+                    "others": {
+                        "Férias 1/3 constitucionais": 4169.88,
+                        "Gratificação Natalina": 0.0,
+                        "Abono de Permanência": 0.0
+                    }
+                }
+            },
+            "discounts": {
+                "total": 2806.17,
+                "prev_contribution": 324.66,
+                "ceil_retention": 0.0,
+                "income_tax": 2481.51
+            }
+        }
+
+        second_expected = {
+            "reg": "2134",
+            "name": "JOSE AUGUSTO RAMOS DA SILVA",
+            "role": "POLICIAL MILITAR ",
+            "type": "membro",
+            "workplace": "SEDE/MP",
+            "active": True,
+            "income": {
+                "total": 1259.55,
+                "wage": 1259.55,
+                "perks": {
+                    "total": 0.0,
+                },
+                "other": {
+                    "total": 0.0,
+                    "trust_position": 0.0,
+                    "eventual_benefits": 0.0,
+                    "others_total": 0.0,
+                    "others": {
+                        "Férias 1/3 constitucionais": 0.0,
+                        "Gratificação Natalina": 0.0,
+                        "Abono de Permanência": 0.0
+                    }
+                }
+            },
+            "discounts": {
+                "total": 0.0,
+                "prev_contribution": 0.0,
+                "ceil_retention": 0.0,
+                "income_tax": 0.0
+            }
+        }
+
+        files = ['./output_test/remuneracao-membros-ativos-5-2018.ods']
+
+        employees = parser.parse(files, '2018', '5')
+
+        # Verificações
+        self.assertEqual(2, len(employees))
+        self.assertDictEqual(employees[0], expected)
+        self.assertDictEqual(employees[1], second_expected)
+
+
+    def test_membros_ativos_remuneracao_2018_10(self):
+        self.maxDiff = None
+
+        expected = {
+            "reg": "2155",
+            "name": "LARISSA CAROLAINE MENEZES DE OLIVEIRA",
+            "role": "ASSESSOR OPERACIONAL",
+            "type": "membro",
+            "workplace": "SEDE/MP",
+            "active": True,
+            "income": {
+                "total": 3091.82,
+                "wage": 0.0,
+                "perks": {
+                    "total": 1020.9,
+                },
+                "other": {
+                    "total": 2070.92,
+                    "trust_position": 2070.92,
+                    "eventual_benefits": 0.0,
+                    "others_total": 0.0,
+                    "others": {
+                        "Férias 1/3 constitucionais": 0.0,
+                        "Gratificação Natalina": 0.0,
+                        "Abono de Permanência": 0.0
+                    }
+                }
+            },
+            "discounts": {
+                "total": 186.38,
+                "prev_contribution": 186.38,
+                "ceil_retention": 0.0,
+                "income_tax": 0.0
+            }
+        }
+
+        files = ['./output_test/remuneracao-membros-ativos-10-2018.ods']
+
+        employees = parser.parse(files, '2018', '10')
+
+        # Verificações
+        self.assertEqual(1, len(employees))
+        self.assertDictEqual(employees[0], expected)
+
+
     def test_membros_ativos_remuneracao_2019(self):
         self.maxDiff = None
 
@@ -61,7 +185,6 @@ class TestParser(unittest.TestCase):
                 "wage": 7854.38,
                 "perks": {
                     "total": 2598.78,
-                    "vacation": 0.0
                 },
                 "other": {
                     "total": 2989.96,
@@ -69,6 +192,7 @@ class TestParser(unittest.TestCase):
                     "eventual_benefits": 0.0,
                     "others_total": 2989.96,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 2989.96,
                         "Abono de Permanência": 0.0
                     }
@@ -90,6 +214,123 @@ class TestParser(unittest.TestCase):
         self.assertDictEqual(employees[0], expected)
 
 
+    def test_membros_ativos_remuneracao_2019_8(self):
+            self.maxDiff = None
+
+            expected = {
+                "reg": "401",
+                "name": "ADEMILTON DE OLIVEIRA SANTOS",
+                "role": "PROMOTOR DE JUSTIÇA DE ENTR. FINAL",
+                "type": "membro",
+                "workplace": "2ª PROMOTORIA DE JUSTICA CRIMINAL - ITABAIANA",
+                "active": True,
+                "income": {
+                    "total": 42509.4,
+                    "wage": 33689.11,
+                    "perks": {
+                        "total": 2194.71,
+                        "food": 1020.9,
+                        "health": 1173.81
+                    },
+                    "other": {
+                        "total": 6625.58,
+                        "trust_position": 0.0,
+                        "others_total": 6625.58,
+                        "others": {
+                            "Férias 1/3 constitucionais": 0.0,
+                            "Gratificação Natalina": 0.0,
+                            "Abono de Permanência": 4379.58,
+                            "Auxilio Interiorização": 0.0,
+                            "Auxilio lei 8.625/93": 0.0,
+                            "Indenizações Férias/Licença-Prêmio": 0.0,
+                            "Abono Pecuniário": 0.0,
+                            "Ressarcimentos": 0.0,
+                            "GEO": 0.0,
+                            "Insalubridade": 0.0,
+                            "Periculosidade": 0.0,
+                            "Adicional Trabalho Tecnico": 0.0,
+                            "Grat. Atividade Ensino": 0.0,
+                            "Substituições": 0.0,
+                            "Cumulação": 2246.0,
+                            "Represetação de Direção": 0.0,
+                            "Grat. Turma Recursal": 0.0,
+                            "Grat. Dificil Provimento": 0.0,
+                            "Grat. Acessor": 0.0,
+                            "Representação GAEGO": 0.0
+                        }
+                    }
+                },
+                "discounts": {
+                    "total": 13392.38,
+                    "prev_contribution": 4379.58,
+                    "ceil_retention": 0.0,
+                    "income_tax": 9012.8
+                }
+            }
+
+            second_expected = {
+                "reg": "1480",
+                "name": "THIAGO LIMA FEITOZA",
+                "role": "ANALISTA DO MP -Informática - G. e A.de P. de Sistemas",
+                "type": "membro",
+                "workplace": "DIRETORIA DE TECNOLOGIA DA INFORMACAO",
+                "active": True,
+                "income": {
+                    "total": 14435.46,
+                    "wage": 9132.61,
+                    "perks": {
+                        "total": 1735.39,
+                        "food": 1020.9,
+                        "health": 714.49
+                    },
+                    "other": {
+                        "total": 3567.46,
+                        "trust_position": 3567.46,
+                        "others_total": 0.0,
+                        "others": {
+                            "Férias 1/3 constitucionais": 0.0,
+                            "Gratificação Natalina": 0.0,
+                            "Abono de Permanência": 0.0,
+                            "Auxilio Interiorização": 0.0,
+                            "Auxilio lei 8.625/93": 0.0,
+                            "Indenizações Férias/Licença-Prêmio": 0.0,
+                            "Abono Pecuniário": 0.0,
+                            "Ressarcimentos": 0.0,
+                            "GEO": 0.0,
+                            "Insalubridade": 0.0,
+                            "Periculosidade": 0.0,
+                            "Adicional Trabalho Tecnico": 0.0,
+                            "Grat. Atividade Ensino": 0.0,
+                            "Substituições": 0.0,
+                            "Cumulação": 0.0,
+                            "Represetação de Direção": 0.0,
+                            "Grat. Turma Recursal": 0.0,
+                            "Grat. Dificil Provimento": 0.0,
+                            "Grat. Acessor": 0.0,
+                            "Representação GAEGO": 0.0
+                        }
+                    }
+                },
+                "discounts": {
+                    "total": 3483.91,
+                    "prev_contribution": 1187.24,
+                    "ceil_retention": 0.0,
+                    "income_tax": 2296.67
+                }
+            }
+
+            files = ['./output_test/indenizacao-membros-ativos-8-2019.ods',
+                    './output_test/remuneracao-membros-ativos-8-2019.odt']
+
+            employees = parser.parse(files, '2019', '8')
+
+            # Verificações
+            self.assertEqual(2, len(employees))
+            self.assertDictEqual(employees[0], expected)
+            self.assertDictEqual(employees[1], second_expected)
+
+
+
     def test_membros_ativos_remuneracao_2021_1(self):
         self.maxDiff = None
 
@@ -105,16 +346,15 @@ class TestParser(unittest.TestCase):
                 "wage": 7087.14,
                 "perks": {
                     "total": 2384.07,
-                    "vacation": 0.0,
                     "food": 1056.0,
                     "health": 1328.07
                 },
                 "other": {
                     "total": 0.0,
                     "trust_position": 0.0,
-                    "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others": {
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0,
                         "Auxilio Interiorização": 0.0,
@@ -170,16 +410,15 @@ class TestParser(unittest.TestCase):
                 "wage": 7087.14,
                 "perks":{
                     "total": 2384.07,
-                    "vacation": 0.0,
                     "food": 1056.0,
                     "health": 1328.07
                 },
                 "other": {
                     "total": 0.0,
                     "trust_position": 0.0,
-                    "eventual_benefits": 0.0,
                     "others_total": 0.0,
                     "others":{
+                        "Férias 1/3 constitucionais": 0.0,
                         "Gratificação Natalina": 0.0,
                         "Abono de Permanência": 0.0,
                         "Auxilio Interiorização": 0.0,

@@ -30,5 +30,5 @@ def parse(tabela, year, month):
         else:
             # Aqui vai pegar só do mês 1 ao 6 de 2019 que estão em no formato .odt
             table_odt_remuneration = read_table.read_odt(tabela[0])
-            employees = parser_remuneration_odt.parser(table_odt_remuneration)
+            employees = parser_remuneration_odt.parser(table_odt_remuneration, no_budge_sheets = True)
             return list(employees.values())

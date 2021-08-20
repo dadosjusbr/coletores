@@ -20,6 +20,12 @@ def parser(file):
         if type(matricula) != str:
             matricula = str(matricula)
 
+        if matricula == 'nan':
+            continue
+
+        if row[1] == 'TotalGeral':
+            break
+
         nome = row[2]
         # Remuneração cargo efetivo
         cargo_efetivo = row[3]
@@ -49,6 +55,8 @@ def parser(file):
             grat_natalina
             + permanencia
             + confianca_comissao
+            + outras_remuneracoes_temporarias
+            + ferias
         )
         total_bruto = remuneracao_cargo_efetivo + \
             outras_verbas_remuneratorias + outras_remuneracoes_temporarias \
@@ -70,7 +78,6 @@ def parser(file):
                 ),
                 "perks": {
                     "total": total_indenizacao,
-                    "vacation": ferias
                 },
                 "other": {
                     # Gratificações
@@ -79,7 +86,7 @@ def parser(file):
                     "eventual_benefits": outras_remuneracoes_temporarias,
                     "others_total": round(grat_natalina + ferias + permanencia, 2),
                     "others": {
-
+                        "Férias 1/3 constitucionais": ferias,
                         "Gratificação Natalina": grat_natalina,
                         "Abono de Permanência": permanencia,
                     },

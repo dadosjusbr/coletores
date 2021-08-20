@@ -19,6 +19,12 @@ def update(remuneration, indemnsation, new=False):
         if type(matricula) != str:
             matricula = str(matricula)
 
+        if matricula == 'nan':
+            continue
+
+        if row[0] == 'Total Geral':
+            break
+
         if matricula in remuneration.keys():
             # Verbas Indenizatorias
             auxilio_saude = table.clean_cell(row[4])
