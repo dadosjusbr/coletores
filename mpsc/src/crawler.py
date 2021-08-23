@@ -5,7 +5,6 @@ import time
 import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 base_url = 'https://transparencia.mpsc.mp.br/QvAJAXZfc/opendoc.htm?document=Portal%20Transparencia%2FPortal%20Transp%20MPSC.qvw&host=QVS%40qvias&anonymous=true'
 

@@ -1,7 +1,7 @@
 import sys
 import os
 import crawler
-#import parser
+import parser
 
 if('COURT' in os.environ):
     court = os.environ['COURT']
@@ -31,5 +31,5 @@ else:
 # Main execution
 if __name__ == '__main__':
     file_names = crawler.crawl(court, year, driver_path, output_path)
-    #files = parser.parse(court, year, file_names, output_path, crawler_version)
-    #print(files)
+    files = parser.parse(court, year, file_names, output_path, crawler_version)
+    print(files)
