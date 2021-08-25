@@ -1,7 +1,7 @@
 import sys
 import os
 import crawler
-# import parser
+import parser
 import json
 import datetime
 
@@ -38,26 +38,26 @@ current_month = now.month
 # Main execution
 def main():
     file_names = crawler.crawl(year, month, driver_path, output_path)
-    print(file_names)
-    # employees = parser.parse(file_names)
+    # # print(file_names)
+    
+    employees = parser.parse(file_names, year, month)
 
-    # cr = {
-    #     'aid': court.lower(),
-    #     'month': int(month),
-    #     'year': int(year),
-    #     'files': file_names,
-    #     'crawler': {
-    #         'id': court.lower(),
-    #         'version': crawler_version,
-    #     },
-    #     'employees': employees,
-    #     # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-    #     'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    # }
-    # with open(f'./tests/{month}-{year}.json', 'w') as f:
-    #     json.dump(employees, f, indent=2, separators=(',', ': '), ensure_ascii=False)
+    cr = {
+        'aid': 'mpms',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpms',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    with open(f'./tests/{month}-{year}.json', 'w') as f:
+        json.dump({'cr':cr}, f, indent=2, separators=(',', ': '), ensure_ascii=False)
     # print(json.dumps({'cr': cr}, ensure_ascii=False))
-
 
 if __name__ == '__main__':
     main()

@@ -4,11 +4,7 @@ import sys
 from time import sleep
 import shutil
 from selenium import webdriver
-from selenium.webdriver.common import by
-from selenium.webdriver.common import keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
 
 BASE_URL = 'https://transparencia.mpms.mp.br/QvAJAXZfc/opendoc.htm?document=portaltransparencia%5Cportaltransparencia.qvw&lang=pt-BR&host=QVS%40srv-1645&anonymous=true'
 
@@ -22,8 +18,8 @@ def crawl(year, month, driver_path, output_path):
     driver = setup_driver(driver_path, output_path)
 
     step_one(driver)
-
     select_contracheque(driver)
+    
     if(year != '2021'):
         select_year(year, driver)
     # Usar o mês passado como parâmetro para pegar o equivalente em string
@@ -32,6 +28,7 @@ def crawl(year, month, driver_path, output_path):
 
     if(year != '2018' and (year == '2019' and int(month)>=7)):
         select_indenizacoes(driver)
+
         if(year != '2021'):
             select_year(year, driver)
         # Usar o mês passado como parâmetro para pegar o equivalente em string
