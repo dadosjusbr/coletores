@@ -17,8 +17,8 @@ def crawl(year, month, driver_path, output_path):
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
 
-    step_one(driver)
-    select_contracheque(driver)
+    find_paycheck(driver)
+    select_remuneration(driver)
     
     if(year != '2021'):
         select_year(year, driver)
@@ -26,8 +26,8 @@ def crawl(year, month, driver_path, output_path):
     select_month(MONTHS[int(month) - 1], driver)
     file.append(download(output_path, driver, year, month, 'remuneracao'))
 
-    if(year != '2018' and (year == '2019' and int(month)>=7)):
-        select_indenizacoes(driver)
+    if year == '2019' and int(month)>=7 and year != '2018':
+        select_indemnization(driver)
 
         if(year != '2021'):
             select_year(year, driver)
@@ -46,42 +46,44 @@ def setup_driver(driver_path, output_path):
 
     # Attributing the paths to the webdriver
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("prefs", {
-        "download.default_directory": path_prefs,
-        "download.prompt_for_download": False
+    chrome_options.add_argument('user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"')
+    chrome_options.add_experimental_option('prefs', {
+        'download.default_directory': path_prefs,
+        'download.prompt_for_download': False
     })
 
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument("--disable-setuid-sandbox")
+    chrome_options.add_argument('--disable-setuid-sandbox')
+    chrome_options.add_argument('start-maximized')
     return webdriver.Chrome(executable_path=path_chrome, chrome_options=chrome_options)
 
-def step_one(driver):
+
+def find_paycheck(driver):
     driver.get(BASE_URL)
+    
     sleep(15)
 
-    # Limpar depois
-    n1 = driver.find_element_by_id('20')
-    n2 = n1.find_elements_by_class_name(name='QvContent')[0]
-    n3 = n2.find_element_by_class_name(name='TextObject')
-    n3.click()
+    # find_main_contain = driver.find_element_by_css_selector('.QvPageBody')
+    find_div_by_id = driver.find_element_by_class_name('Document_TX28')
+    selected_div_qvcontent = find_div_by_id.find_elements_by_class_name(name='QvContent')[0]
+    find_div_clickable = selected_div_qvcontent.find_element_by_class_name(name='TextObject')
+    find_div_clickable.click()
     sleep(3)
 
-def select_contracheque(driver):
-    # Limpar depois
-    n1 = driver.find_element_by_id('26')
-    n2 = n1.find_elements_by_class_name(name='QvContent')[0]
-    n3 = n2.find_element_by_class_name(name='TextObject')
-    n3.click()
+def select_remuneration(driver):
+    find_div_by_id = driver.find_element_by_id('26')
+    selected_div_qvcontent = find_div_by_id.find_elements_by_class_name(name='QvContent')[0]
+    find_div_clickable = selected_div_qvcontent.find_element_by_class_name(name='TextObject')
+    find_div_clickable.click()
     sleep(3)
 
 
-def select_indenizacoes(driver):
-    # Limpar depois
-    n1 = driver.find_element_by_id('83')
-    n2 = n1.find_elements_by_class_name(name='QvContent')[0]
-    n3 = n2.find_element_by_class_name(name='TextObject')
-    n3.click()
+def select_indemnization(driver):
+    find_div_by_id = driver.find_element_by_id('83')
+    selected_div_qvcontent = find_div_by_id.find_elements_by_class_name(name='QvContent')[0]
+    find_div_clickable = selected_div_qvcontent.find_element_by_class_name(name='TextObject')
+    find_div_clickable.click()
     sleep(3)
 
 

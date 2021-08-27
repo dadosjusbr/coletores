@@ -3,16 +3,15 @@ import parser_remuneration
 import parser_indemnization
 
 def parse(filenames, year, month):
-    df = table.read_ods(filenames[0])
+    table_excel = table.read_xlsx(filenames[0])
 
     if(int(year) == 2018 or (int(year) == 2019 and int(month)<=6)):
-        ods_remuneration = parser_remuneration.parser(df, True)
-        return list(ods_remuneration.values())
+        xlsx_remuneration = parser_remuneration.parser(table_excel, True)
+        return list(xlsx_remuneration.values())
 
-    ods_remuneration = parser_remuneration.parser(df)
+    xlsx_remuneration = parser_remuneration.parser(table_excel)
 
-    if(int(year) != 2018 and (int(year) == 2019 and int(month)>=7)):
-        df = table.read_ods(filenames[1])
-        ods_remuneration = parser_indemnization.update(ods_remuneration, df)
+    table_excel = table.read_ods(filenames[1])
+    xlsx_remuneration = parser_indemnization.update(xlsx_remuneration, table_excel)
 
-    return list(ods_remuneration.values())
+    return list(xlsx_remuneration.values())

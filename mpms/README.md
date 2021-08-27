@@ -40,7 +40,7 @@ Planilha de verbas indenizatórias e outras remunerações temporárias (disponi
 
 ## Como usar
 
-### Executando com Docker
+<!-- ### Executando com Docker
 
  - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
 
@@ -54,14 +54,14 @@ Planilha de verbas indenizatórias e outras remunerações temporárias (disponi
  
     ```sh
     $ sudo docker run -e YEAR=2020 -e MONTH=2 -e DRIVER_PATH=/chromedriver -e GIT_COMMIT=$(git rev-list -1 HEAD) mpms
-    ```
+    ``` -->
 
 ### Execução sem Docker:
 
 - Para executar o script é necessário rodar o seguinte comando, a partir do diretório mpms, adicionando às variáveis seus respectivos valores, a depender da consulta desejada. É válido lembrar que faz-se necessario ter o [Python 3.8+](https://www.python.org/downloads/) instalado, bem como o chromedriver compatível com a versão do seu Google Chrome. Ele pode ser baixado [aqui](https://chromedriver.chromium.org/downloads).
  
     ```sh
-    $ YEAR=2018 MONTH=03 DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 main.py
+    $ YEAR=2018 MONTH=03 DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
     ```
 - Para que a execução do script possa ser corretamente executada é necessário que todos os requirements sejam devidamente instalados. Para isso, executar o [PIP](https://pip.pypa.io/en/stable/installing/) passando o arquivo requiments.txt, por meio do seguinte comando:
    

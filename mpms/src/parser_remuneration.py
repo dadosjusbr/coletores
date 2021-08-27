@@ -2,22 +2,11 @@ import table
 
 
 def parser(file, no_budge_sheets=False):
-    # begin_row = table.get_begin_row(file, 'Matrícula')
-
-    # print(begin_row)
-    # end_row = table.get_end_row(file, 'Total')
-    # print(end_row)
-
-    # curr_row = 0
     employees = {}
 
     for row in file:
-        # curr_row += 1
-
-        # if curr_row <= begin_row:
-        #     continue
-
         matricula = row[0]
+        
         if type(matricula) != str:
             matricula = str(matricula)
 
@@ -40,8 +29,6 @@ def parser(file, no_budge_sheets=False):
         permanencia = table.clean_cell(row[9])  # Abono de Permanência
         # Remunerações tempórarias
         outras_remuneracoes_temporarias = table.clean_cell(row[10])
-        if outras_remuneracoes_temporarias != 0.0:
-            print(outras_remuneracoes_temporarias)
         # Indenizações
         total_indenizacao = table.clean_cell(row[11])
         # Contribuição Previdenciária
@@ -114,6 +101,4 @@ def parser(file, no_budge_sheets=False):
                 }
             )
 
-        # if curr_row > end_row:
-        #     break
     return employees
