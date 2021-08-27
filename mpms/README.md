@@ -40,7 +40,7 @@ Planilha de verbas indenizatórias e outras remunerações temporárias (disponi
 
 ## Como usar
 
-<!-- ### Executando com Docker
+### Executando com Docker
 
  - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
 
@@ -54,7 +54,7 @@ Planilha de verbas indenizatórias e outras remunerações temporárias (disponi
  
     ```sh
     $ sudo docker run -e YEAR=2020 -e MONTH=2 -e DRIVER_PATH=/chromedriver -e GIT_COMMIT=$(git rev-list -1 HEAD) mpms
-    ``` -->
+    ```
 
 ### Execução sem Docker:
 
