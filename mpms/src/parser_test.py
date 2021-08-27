@@ -72,9 +72,9 @@ class TestParser(unittest.TestCase):
                     "HousingAid": 0.0
                 },
                 "other": {
-                    "total": 61148.26,
+                    "total": 12647.13,
                     "trust_position": 5161.41,
-                    "others_total": 55986.85,
+                    "others_total": 7485.72,
                     "others": {
                         "Férias 1/3 constitucionais": 7485.72,
                         "Gratificação Natalina": 0.0,

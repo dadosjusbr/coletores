@@ -53,8 +53,7 @@ def main():
         # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
-    # with open(f'./src/tests/{month}-{year}.json', 'w') as f:
-    #     json.dump({'cr':cr}, f, indent=2, separators=(',', ': '), ensure_ascii=False)
+    
     print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 if __name__ == '__main__':

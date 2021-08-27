@@ -32,18 +32,10 @@ def update(remuneration, indemnsation):
             # Remunerações Temporárias
             cumulacao = table.clean_cell(row[15])
             
-            total_temporario = (
-                auxilio_alimentacao
-                + assistencia_medico_social
-                + auxilio_moradia
-                + auxilio_transporte
-                + auxilio_pre_escolar
-                + ajuda_custo
-                + licenca_premio
-                + indenizaao_substituicao
-                + abono_pecuniario_ferias
-                + ferias_indenizadas
-                + compensacao_platao)
+            total_temporario = (  
+                indenizaao_substituicao
+                + compensacao_platao
+                + cumulacao)
 
             emp = remuneration[matricula]
 
