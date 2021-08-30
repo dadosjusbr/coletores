@@ -42,7 +42,7 @@ def setup_driver(driver_path, output_path):
     # Seting the directorys to be used by selenium
     current_directory = os.getcwd()
     path_chrome = current_directory + driver_path
-    path_prefs = current_directory + output_path
+    path_prefs = output_path
 
     # Attributing the paths to the webdriver
     chrome_options = webdriver.ChromeOptions()
