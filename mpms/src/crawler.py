@@ -26,7 +26,7 @@ def crawl(year, month, driver_path, output_path):
     select_month(MONTHS[int(month) - 1], driver)
     file.append(download(output_path, driver, year, month, 'remuneracao'))
 
-    if year == '2019' and int(month)>=7 and year != '2018':
+    if year == '2020' or year == '2021' or (year == '2019' and int(month)>=7):
         select_indemnization(driver)
 
         if(year != '2021'):
@@ -121,12 +121,12 @@ def download(output_path, driver, year, month, name):
 
 def format_filename(output_path, year, month, name):
     # Identifying the name of the last downloaded file
-    filename = max([os.path.join(output_path, f) for f in os.listdir(current_directory)],
+    filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)],
                    key=os.path.getctime)
 
     # renaming the file properly, according to the payroll
     new_filename = name + "-" + year + '-' + month + ".xlsx"
-    shutil.move(filename,os.path.join(current_directory,f"{new_filename}"))
-    new_output_path =current_directory + "/" + new_filename
+    shutil.move(filename,os.path.join(output_path,f"{new_filename}"))
+    new_output_path =output_path + "/" + new_filename
 
     return new_output_path
