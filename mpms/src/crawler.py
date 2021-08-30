@@ -120,9 +120,8 @@ def download(output_path, driver, year, month, name):
     return file_name
 
 def format_filename(output_path, year, month, name):
-    current_directory = os.getcwd() + output_path
     # Identifying the name of the last downloaded file
-    filename = max([os.path.join(current_directory, f) for f in os.listdir(current_directory)],
+    filename = max([os.path.join(output_path, f) for f in os.listdir(current_directory)],
                    key=os.path.getctime)
 
     # renaming the file properly, according to the payroll
