@@ -902,7 +902,7 @@ def update_employee_indemnity_mar_apr_2021(file_name, employees):
 
 
 # June  2021
-def update_employee_indemnity_june_2021(file_name, employees):
+def update_employee_indemnity_june_jul_2021(file_name, employees):
     rows = parser.read_data(file_name).to_numpy()
     begin_row = parser.get_begin_row(rows)
     end_row = parser.get_end_row(rows, begin_row, file_name)
