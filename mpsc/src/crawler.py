@@ -35,31 +35,38 @@ def select_year_and_document_type(year, driver, flag):
         print('MEMBROS ATIVOS')
         # Selecting year
         time.sleep(5)
-        if(year == "2018"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[3]')
-        elif(year == "2019"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[4]')
-        elif(year == "2020"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[5]')
-        elif(year == "2021"):
-            select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[6]')
+        if(year in ['2018', '2019', '2020']):
+            if(year == "2018"):
+                select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[3]')
+            elif(year == "2019"):
+                select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[4]')
+            elif(year == "2020"):
+                select_year = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[64]/div[3]/div/div[1]/div[5]')
+                    
+            select_year.click()
+            print('ANO ' + str(year))
+        else:
+            print('ANO ' + str(year))
+
     else:
         document_type = driver.find_element(By.XPATH, '//*[@id="65"]/div[3]')
         document_type.click()   
         print('VERBAS IDENIZATÓRIAS')  
         # Selecting year
         time.sleep(5)
-        if(year == "2018"):
-            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[3]')
-        elif(year == "2019"):
-            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[4]')
-        elif(year == "2020"):
-            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[5]')
-        elif(year == "2021"):
-            select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[6]')
+        if(year in ['2018', '2019', '2020']):
+            if(year == "2018"):
+                select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[3]')
+            elif(year == "2019"):
+                select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[4]')
+            elif(year == "2020"):
+                select_year = driver.find_element(By.XPATH, '//*[@id="53"]/div[3]/div/div[1]/div[5]')
 
-    select_year.click()
-    print('ANO ' + str(year))
+            select_year.click()
+            print('ANO ' + str(year))
+        else:
+            print('ANO ' + str(year))
+
     
 def download(court, month, year, output_path, driver, flag):  
     driver.get(base_url)
