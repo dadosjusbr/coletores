@@ -11,9 +11,12 @@ BASE_URL = 'https://servicos-portal.mpro.mp.br/web/mp-transparente/contracheque'
 BASE_URL_MEMBROS_ATIVOS = 'https://servicos-portal.mpro.mp.br/plcVis/frameset?__report=..%2FROOT%2Frel%2Fcontracheque%2Fmembros%2FremuneracaoMembrosAtivos.rptdesign&anomes='
 BASE_URL_VERBAS_INDENIZATORIAS = 'https://servicos-portal.mpro.mp.br/plcVis/frameset?__report=..%2FROOT%2Frel%2Fcontracheque%2Fmembros%2FverbasIndenizatoriasMembrosAtivos.rptdesign&anomes='
 FLAG = ['remuneracao','verbas-indenizatorias']
+REMUNERACAO = 'remuneracao'
+VERBAS_INDENIZATORIAS = 'verbas-indenizatorias'
 
 def crawl(month, year, driver_path, output_path):
     files = []
+    
     pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
     driver.get(BASE_URL)
@@ -30,7 +33,7 @@ def download(month, year, output_path, driver, flag):
     main_tab = driver.window_handles[0]
     time.sleep(3)
 
-    if(flag == 'remuneracao'):
+    if(flag == REMUNERACAO):
         document_type = driver.find_element(By.XPATH, '//*[@id="article_10154_29101_2483282_1.3"]/p/span/a')
         document_type.click()
     else:
@@ -58,12 +61,12 @@ def download(month, year, output_path, driver, flag):
     new_url = ''
 
     # Downloading the file
-    if(flag == 'remuneracao'):
+    if(flag == REMUNERACAO):
         show_data = driver.find_element(By.XPATH, '//*[@id="article_10154_29101_2483760_1.9"]/table/tbody/tr[4]/td[1]/input')
         show_data.click()
         new_url = BASE_URL_MEMBROS_ATIVOS + year + month + '&nome=&cargo=&lotacao='
 
-    elif(flag == 'verbar-indenizatorias'):
+    elif(flag == VERBAS_INDENIZATORIAS):
         show_data = driver.find_element(By.XPATH, '//*[@id="article_10154_29101_5313882_1.3"]/table/tbody/tr[4]/td[1]')
         show_data.click()
         new_url = BASE_URL_VERBAS_INDENIZATORIAS + year + month
@@ -101,7 +104,7 @@ def setup_driver(driver_path, output_path):
     # Attributing the paths to the webdriver
     prefs = {"download.default_directory" : path_prefs}
     chrome_options = webdriver.ChromeOptions()
-    
+
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-setuid-sandbox')
@@ -113,9 +116,9 @@ def format_filename(output_path, month, year, flag):
     filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)], key=os.path.getctime)
 
     # renaming the file properly, according to the month
-    if(flag == 'remuneracao'):
+    if(flag == REMUNERACAO):
         new_filename = month + "-" + year + "-" +flag +"-membros-ativos" + ".csv"
-    elif(flag == 'verbar-indenizatorias'):
+    elif(flag == VERBAS_INDENIZATORIAS):
         new_filename = month + "-" + year + "-" +flag + "-membros-ativos" + ".csv"
 
     shutil.move(filename,os.path.join(output_path,r"{}".format(new_filename)))
