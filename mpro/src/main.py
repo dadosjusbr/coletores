@@ -3,11 +3,6 @@ import os
 import crawler
 #import parser
 
-if('COURT' in os.environ):
-    court = os.environ['COURT']
-else:
-    sys.stderr.write("Invalid arguments, missing parameter: 'COURT'.\n")
-    os._exit(1)
 if('YEAR' in os.environ):
     year = os.environ['YEAR']
 else:
