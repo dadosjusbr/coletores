@@ -1,8 +1,13 @@
 import sys
 import os
 import crawler
-#import parser
 
+if('MONTH' in os.environ):
+    month = os.environ['MONTH']
+    month = month.zfill(2)
+else:
+    sys.stderr.write("Invalid arguments, missing parameter: 'MONTH'.\n")
+    os._exit(1)
 if('YEAR' in os.environ):
     year = os.environ['YEAR']
 else:
@@ -23,8 +28,11 @@ else:
     sys.stderr.write("crawler_version cannot be empty")
     os._exit(1)
 
+
+def main():
+    file_names = crawler.crawl(month, year, driver_path, output_path)
 # Main execution
+
+
 if __name__ == '__main__':
-    file_names = crawler.crawl(court, year, driver_path, output_path)
-    # files = parser.parse(court, year, file_names, output_path, crawler_version)
-    # print(files)
+    main()
