@@ -30,7 +30,7 @@ else:
 
 
 def main():
-    file_names = crawler.crawl(month, year, driver_path, output_path)
+    crawler.crawl(month, year, driver_path, output_path)
 # Main execution
 
 
