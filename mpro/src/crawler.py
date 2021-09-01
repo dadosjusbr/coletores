@@ -21,7 +21,7 @@ def crawl(month, year, driver_path, output_path):
     driver = setup_driver(driver_path, output_path)
     driver.get(BASE_URL)
     time.sleep(4)
-    for flag in FLAG:   # 0 for Membros Ativos
+    for flag in FLAG: 
         file_path = download(str(month), year, output_path, driver, flag)
         files.append(file_path)
     driver.quit()
