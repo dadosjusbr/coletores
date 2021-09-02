@@ -35,7 +35,22 @@ O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O �
 Estas planilhas contém as informações de pagamento de todos os meses disponíveis, a fim de gerar os *crawling results* de cada mês.
 
 ## Como usar
-### Execução com Python:
+### Executando com Docker
+
+ - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
+
+ - Construção da imagem:
+
+    ```sh
+    $ cd coletores/mpro
+    $ sudo docker build -t mpro .
+    ```
+ - Execução:
+ 
+    ```sh
+    $ sudo docker run -e YEAR=2020 -e MONTH=2 -e DRIVER_PATH=/chromedriver -e GIT_COMMIT=$(git rev-list -1 HEAD) mpro
+    ```
+### Execução sem o Docker:
 
 - Para executar o script é necessário rodar o seguinte comando, a partir do diretório `/mpro`, adicionando às variáveis seus respectivos valores, a depender da consulta desejada. É válido lembrar que faz-se necessario ter o [Python 3.6.9](https://www.python.org/downloads/) instalado, bem como o chromedriver compatível com a versão do seu Google Chrome. Ele pode ser baixado [aqui](https://chromedriver.chromium.org/downloads).
 
@@ -47,17 +62,17 @@ Estas planilhas contém as informações de pagamento de todos os meses disponí
    ```sh
    pip install -r requirements.txt
    ```
-### Execução Rápida:
-- Para configurar de maneira mais rápida o python, pip, chromedriver e o requirements.txt, use o `config.sh` dentro do diretório `/mpro`:
-   - Primeiro de permissão para executar:
-      ```sh
-      chmod +x config.sh
-      ```
-   - Rode com:
-      ```sh
-      ./config.sh
-      ```
-   - Depois use o comando para iniciar o coletor:
-      ```sh
-      MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
-      ```
+### Execução rápida com o Phyton:
+Para configurar de maneira mais rápida o python, pip, chromedriver e o requirements.txt, use o `config.sh` dentro do diretório `/mpro`:
+- Primeiro de permissão para executar:
+   ```sh
+   chmod +x config.sh
+   ```
+- Rode com:
+   ```sh
+   ./config.sh
+   ```
+- Depois use o comando para iniciar o coletor:
+   ```sh
+   MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
+   ```
