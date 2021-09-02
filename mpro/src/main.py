@@ -39,12 +39,12 @@ def main():
     file_names = crawler.crawl(month, year, driver_path, output_path)
     employees = parser.parse(file_names)
     cr = {
-        'aid': 'mpms',
+        'aid': 'mpro',
         'month': int(month),
         'year': int(year),
         'files': file_names,
         'crawler': {
-            'id': 'mpms',
+            'id': 'mpro',
             'version': crawler_version,
         },
         'employees': employees,
