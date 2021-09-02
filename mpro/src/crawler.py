@@ -105,7 +105,7 @@ def setup_driver(driver_path, output_path):
     prefs = {"download.default_directory" : path_prefs}
     chrome_options = webdriver.ChromeOptions()
 
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-setuid-sandbox')
     chrome_options.add_experimental_option("prefs", prefs)
