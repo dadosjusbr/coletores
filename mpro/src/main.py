@@ -1,6 +1,9 @@
 import sys
 import os
 import crawler
+import parser
+import json
+import datetime
 
 if('MONTH' in os.environ):
     month = os.environ['MONTH']
@@ -28,11 +31,28 @@ else:
     sys.stderr.write("crawler_version cannot be empty")
     os._exit(1)
 
+now = datetime.datetime.now()
+current_year = now.year
+current_month = now.month
 
 def main():
-    crawler.crawl(month, year, driver_path, output_path)
+    file_names = crawler.crawl(month, year, driver_path, output_path)
+    employees = parser.parse(file_names)
+    cr = {
+        'aid': 'mpro',
+        'month': int(month),
+        'year': int(year),
+        'files': file_names,
+        'crawler': {
+            'id': 'mpro',
+            'version': crawler_version,
+        },
+        'employees': employees,
+        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
+        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
+    }
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
+
 # Main execution
-
-
 if __name__ == '__main__':
     main()
