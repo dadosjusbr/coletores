@@ -31,7 +31,7 @@ def crawl(month, year, driver_path, output_path):
 def download(month, year, output_path, driver, flag):  
     driver.get(BASE_URL)
     main_tab = driver.window_handles[0]
-    time.sleep(3)
+    time.sleep(5)
 
     if(flag == REMUNERACAO):
         document_type = driver.find_element(By.XPATH, '//*[@id="article_10154_29101_2483282_1.3"]/p/span/a')
@@ -74,19 +74,19 @@ def download(month, year, output_path, driver, flag):
     new_tab = driver.window_handles[1]
     time.sleep(2)
     driver.get(new_url)
-    time.sleep(8)
+    time.sleep(12)
     export = driver.find_element(By.XPATH, '//*[@id="toolbar"]/table/tbody/tr[2]/td[6]/input')
     export.click()
-    time.sleep(2)
+    time.sleep(4)
     select_columns = driver.find_element(By.XPATH, '//*[@id="simpleExportDialogBody"]/tbody/tr[5]/td[2]/table/tbody/tr/td/table/tbody/tr[1]/td')
     select_columns.click()
     download = driver.find_element(By.XPATH, '//*[@id="simpleExportDataDialogokButton"]')
     download.click()
 
     # Formating the filename
-    time.sleep(4)
+    time.sleep(5)
     file_name = format_filename('.' + output_path, month, year, flag)
-    time.sleep(2)
+    time.sleep(3)
 
     # Closing new tabs
     driver.switch_to_window(new_tab)
@@ -105,7 +105,7 @@ def setup_driver(driver_path, output_path):
     prefs = {"download.default_directory" : path_prefs}
     chrome_options = webdriver.ChromeOptions()
 
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-setuid-sandbox')
     chrome_options.add_experimental_option("prefs", prefs)
