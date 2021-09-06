@@ -85,7 +85,7 @@ def download(month, year, output_path, driver, flag):
 
     # Formating the filename
     time.sleep(5)
-    file_name = format_filename('.' + output_path, month, year, flag)
+    file_name = format_filename(output_path, month, year, flag)
     time.sleep(3)
 
     # Closing new tabs
@@ -99,7 +99,7 @@ def setup_driver(driver_path, output_path):
     # Seting the directorys to be used by selenium
     current_directory = os.getcwd()
     path_chrome = current_directory + driver_path
-    path_prefs = current_directory + output_path
+    path_prefs = output_path
 
     # Attributing the paths to the webdriver
     prefs = {"download.default_directory" : path_prefs}
