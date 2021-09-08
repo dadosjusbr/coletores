@@ -2,8 +2,8 @@
 
 Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos de funcionários a partir do Ministério Público do Acre. O site com as informações pode ser acessado [aqui](https://servicos-portal.mpro.mp.br/web/mp-transparente/contracheque).
 
-O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O órgão e o caminho para o diretório do chromedriver, e serão baixadas duas planilhas no formato ods, cada planilha é referente a uma destas categorias:
-1. Contracheque - Membros Ativos
+O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O órgão e o caminho para o diretório do chromedriver, e será baixada uma planilha no formato ods, essa planilha é referente a uma categoria:
+ - Contracheque - Membros Ativos
 
    |Campo|Descrição|
    |-----|---------|
@@ -26,13 +26,7 @@ O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O �
    |Total de Descontos|Total dos descontos efetuados no mês.|
    |Rendimento Líquido Total|Rendimento líquido após os descontos referidos nos itens anteriores.|
 
-2. Contracheque - Verbas Indenizatórias
-   |Campo|Descrição|
-   |-|-|
-   |VERBAS INDENIZATÓRIAS|Auxílio-alimentação, auxílio-transporte, auxílio-moradia, ajuda de custo e outras dessa natureza, exceto diárias (que serão divulgadas no Portal da Transparência), discriminada de forma individualizada.|
-   |OUTRAS REMUNERAÇÕES TEMPORÁRIAS|Valores pagos a título de adicional de insalubridade ou de periculosidade, adicional noturno, serviço extraordinário, substituição de função, cumulações.|
-   |Total|Valor total pago, excluindo-se eventuais descontos.|
-Estas planilhas contém as informações de pagamento de todos os meses disponíveis, a fim de gerar os *crawling results* de cada mês.
+Esta planilha contém as informações de pagamento de todos os meses disponíveis, a fim de gerar os *crawling results* de cada mês.
 
 ## Como usar
 ### Executando com Docker

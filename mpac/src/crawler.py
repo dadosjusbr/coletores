@@ -1,20 +1,13 @@
 import pathlib
 import os
-import sys
 from time import sleep
 import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 
 
 BASE_URL_MEMBROS_ATIVOS = 'http://transparencia.mpac.mp.br/categoria_arquivos/112'
-BASE_URL_VERBAS_INDENIZATORIAS = 'http://transparencia.mpac.mp.br/categoria_arquivos/119'
-
-FLAG = ['remuneracao', 'verbas-indenizatorias']
-REMUNERACAO = 'remuneracao'
-VERBAS_INDENIZATORIAS = 'verbas-indenizatorias'
 
 
 def crawl(month, year, driver_path, output_path):
@@ -24,22 +17,16 @@ def crawl(month, year, driver_path, output_path):
     driver = setup_driver(driver_path, output_path)
 
     sleep(4)
-    for flag in FLAG:
-        if flag == REMUNERACAO:
-            driver.get(BASE_URL_MEMBROS_ATIVOS)
-            sleep(5)
-            file_path = download(str(month), year, output_path, driver, flag)
-            files.append(file_path)
-        elif flag == VERBAS_INDENIZATORIAS:
-            driver.get(BASE_URL_VERBAS_INDENIZATORIAS)
-            sleep(5)
-            file_path = download(str(month), year, output_path, driver, flag)
-            files.append(file_path)
+
+    driver.get(BASE_URL_MEMBROS_ATIVOS)
+    sleep(5)
+    file_path = download(str(month), year, output_path, driver)
+
     driver.quit()
-    return files
+    return file_path
 
 
-def download(month, year, output_path, driver, flag):
+def download(month, year, output_path, driver):
     select_year = driver.find_element(By.XPATH, '//*[@id="ano"]')
     select_year.click()
 
@@ -67,7 +54,7 @@ def download(month, year, output_path, driver, flag):
 
     # Formating the filename
     sleep(2)
-    file_name = format_filename('.' + output_path, month, year, flag)
+    file_name = format_filename(output_path, month, year)
 
     return file_name
 
@@ -76,7 +63,7 @@ def setup_driver(driver_path, output_path):
     # Seting the directorys to be used by selenium
     current_directory = os.getcwd()
     path_chrome = current_directory + driver_path
-    path_prefs = current_directory + output_path
+    path_prefs = output_path
 
     # Attributing the paths to the webdriver
     prefs = {"download.default_directory": path_prefs}
@@ -86,22 +73,17 @@ def setup_driver(driver_path, output_path):
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-setuid-sandbox')
     chrome_options.add_experimental_option("prefs", prefs)
-    return webdriver.Chrome(executable_path=path_chrome, chrome_options=chrome_options)
+    return webdriver.Chrome(executable_path = path_chrome, chrome_options = chrome_options)
 
 
-def format_filename(output_path, month, year, flag):
+def format_filename(output_path, month, year):
     # Identifying the name of the last downloaded file
     filename = max([os.path.join(output_path, f)
                    for f in os.listdir(output_path)], key=os.path.getctime)
-
     # renaming the file properly, according to the month
-    if(flag == REMUNERACAO):
-        new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".ods"
-    elif(flag == VERBAS_INDENIZATORIAS):
-        new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".ods"
+    new_filename = year + "-" + month + "-" + "remuneracao-membros-ativos" + ".ods"
 
-    shutil.move(filename, os.path.join(
-        output_path, r"{}".format(new_filename)))
+    shutil.move(filename, os.path.join(output_path, r"{}".format(new_filename)))
     new_output_path = output_path + "/" + new_filename
 
     return new_output_path
