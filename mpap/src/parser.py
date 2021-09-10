@@ -20,7 +20,6 @@ def openOds(file):
         os._exit(1)
 
 def parse(data):
-    print('aqui')
     remuneration = openCsv(data[0])
     # indemnization = openOds(data[1])
     employes_remuneration = Remuneration(remuneration).parser()
