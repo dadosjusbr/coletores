@@ -20,10 +20,9 @@ VERBAS_INDENIZATORIAS = 'verbas-indenizatorias'
 
 
 def crawl(month, year, driver_path, output_path):
-    current_directory = os.getcwd()
     files = []
 
-    pathlib.Path(current_directory + output_path).mkdir(exist_ok=True)
+    pathlib.Path(output_path).mkdir(exist_ok=True)
     driver = setup_driver(driver_path, output_path)
 
     sleep(4)
@@ -122,7 +121,7 @@ def setup_driver(driver_path, output_path):
     current_directory = os.getcwd()
     path_chrome = current_directory + driver_path
     # Remover depois para funcionar com o docker
-    path_prefs = current_directory + output_path
+    path_prefs = output_path
     # Attributing the paths to the webdriver
     prefs = {"download.default_directory": path_prefs}
     chrome_options = webdriver.ChromeOptions()
@@ -136,22 +135,20 @@ def setup_driver(driver_path, output_path):
 
 # Dá um nome para o arquivo
 def format_filename(output_path, month, year, flag):
-    # Remover depois para funcionar com o docker
-    current_directory = os.getcwd() + output_path
-
+    # Cria uma variável vázia
     new_filename = ""
     if(flag == REMUNERACAO):
         new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".csv"
-        new_output_path = current_directory + "/" + new_filename
+        new_output_path = output_path + "/" + new_filename
         return new_output_path
     
     # Identifying the name of the last downloaded file
-    filename = max([os.path.join(current_directory, f)
-                   for f in os.listdir(current_directory)], key=os.path.getctime)
+    filename = max([os.path.join(output_path, f)
+                   for f in os.listdir(output_path)], key=os.path.getctime)
     
     # Renaming the file properly, according to the month
     new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".xls"
     shutil.move(filename, os.path.join(
-        current_directory, r"{}".format(new_filename)))
-    new_output_path = current_directory + "/" + new_filename
+        output_path, r"{}".format(new_filename)))
+    new_output_path = output_path + "/" + new_filename
     return filename

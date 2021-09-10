@@ -1,7 +1,6 @@
 import sys
 import os
 import crawler
-import parser
 import json
 import datetime
 
@@ -36,28 +35,7 @@ current_year = now.year
 current_month = now.month
 
 def main():
-    file_names = crawler.crawl(month, year, driver_path, output_path)
-    print(file_names)
-    employees = parser.parse(file_names)
-
-    cr = {
-        'aid': 'mpap',
-        'month': int(month),
-        'year': int(year),
-        'files': file_names,
-        'crawler': {
-            'id': 'mpap',
-            'version': crawler_version,
-        },
-        'employees': employees,
-        # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
-        'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
-    }
-    # with open(f'./src/json/{month}-{year}.json', 'w') as fp:
-    #     json.dump(cr, fp, indent=4, separators=(',', ': '), ensure_ascii=False)
-
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
-
-# Main execution
+    crawler.crawl(month, year, driver_path, output_path)
+    
 if __name__ == '__main__':
     main()
