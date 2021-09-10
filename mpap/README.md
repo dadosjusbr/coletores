@@ -31,7 +31,6 @@ O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O �
    |-|-|
    |VERBAS INDENIZATÓRIAS|Auxílio-alimentação, Auxílio-transporte, Auxílio-moradia, Ajuda de Custo e outras despesas desa natureza, exceto diárias, que serão divulgadas discriminadamente de forma individualizada na consulta de Diárias e Passagens.|
    |OUTRAS REMUNERAÇÕES TEMPORÁRIAS|VValores pagos a título de Adicional de Insalubridade ou de Periculosidade, Adicional Noturno, Serviço Extraordinário, Substituição de Função, Cumulações.|
-   |Total|Valor total pago, excluindo-se eventuais descontos.|
 Estas planilhas contém as informações de pagamento de todos os meses disponíveis, a fim de gerar os *crawling results* de cada mês.
 
 ## Como usar
