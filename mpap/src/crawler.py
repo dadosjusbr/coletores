@@ -14,6 +14,7 @@ BASE_URL_MEMBROS_ATIVOS = 'https://www.mpap.mp.br/transparencia/index.php?pg=con
 BASE_URL_VERBAS_INDENIZATORIAS = 'https://www.mpap.mp.br/transparencia/index.php?pg=consulta_verbas_indenizatorias'
 
 FLAG = ['remuneracao', 'verbas-indenizatorias']
+# Usado para fazer as comparações
 REMUNERACAO = 'remuneracao'
 VERBAS_INDENIZATORIAS = 'verbas-indenizatorias'
 
@@ -29,11 +30,14 @@ def crawl(month, year, driver_path, output_path):
     # Roda duas vezes, uma para pegar a planilha de remuneração, e outra para as de verbas indenizatorias
     for flag in FLAG:
         if flag == REMUNERACAO:
+            # Carrega a pagina de remuneração
             driver.get(BASE_URL_MEMBROS_ATIVOS)
             sleep(5)
             file_path = download(month, year, output_path, driver, flag)
             files.append(file_path)
+
         elif flag == VERBAS_INDENIZATORIAS:
+            # Carrega a pagina de verbas indenizatorias
             driver.get(BASE_URL_VERBAS_INDENIZATORIAS)
             sleep(5)
             file_path = download(month, year, output_path, driver, flag)
@@ -117,6 +121,7 @@ def setup_driver(driver_path, output_path):
     # Seting the directorys to be used by selenium
     current_directory = os.getcwd()
     path_chrome = current_directory + driver_path
+    # Remover depois para funcionar com o docker
     path_prefs = current_directory + output_path
     # Attributing the paths to the webdriver
     prefs = {"download.default_directory": path_prefs}
@@ -131,7 +136,9 @@ def setup_driver(driver_path, output_path):
 
 # Dá um nome para o arquivo
 def format_filename(output_path, month, year, flag):
+    # Remover depois para funcionar com o docker
     current_directory = os.getcwd() + output_path
+
     new_filename = ""
     if(flag == REMUNERACAO):
         new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".csv"
@@ -141,8 +148,8 @@ def format_filename(output_path, month, year, flag):
     # Identifying the name of the last downloaded file
     filename = max([os.path.join(current_directory, f)
                    for f in os.listdir(current_directory)], key=os.path.getctime)
-    print(filename)
-    # renaming the file properly, according to the month
+    
+    # Renaming the file properly, according to the month
     new_filename = year + "-" + month + "-" + flag + "-membros-ativos" + ".xls"
     shutil.move(filename, os.path.join(
         current_directory, r"{}".format(new_filename)))
