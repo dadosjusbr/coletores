@@ -94,15 +94,19 @@ class Remuneration:
                     # REMUNERAÇÃO BÁSICA = campos['Remuneração Cargo Efetivo'] + campos['Outras Verbas Remuneratórias'],
                     # legais ou judiciais
                     "wage": round(
-                        campos['remuneracao_cargo_efetivo'] + campos['outras_verbas_remuneratorias'], 2
-                    ),
+                                campos['remuneracao_cargo_efetivo'] + 
+                                campos['outras_verbas_remuneratorias'], 2
+                            ),
                     "perks": {
                         "total": round(campos['total_indenizacao'],2),
                     },
                     "other": {  # Gratificações
                         "total": campos['total_gratificacoes'],
                         "trust_position": campos['confianca_comissao'],
-                        "others_total": round(campos['grat_natalina'] + campos['ferias'] + campos['permanencia'], 2),
+                        "others_total": round(
+                                            campos['grat_natalina'] + 
+                                            campos['ferias'] + campos['permanencia'], 2
+                                        ),
                         "others": {
                             "Férias 1/3 constitucionais": campos['ferias'],
                             "Gratificação Natalina": campos['grat_natalina'],
