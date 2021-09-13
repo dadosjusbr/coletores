@@ -8,34 +8,34 @@ class UpdateRemuneration:
 
     def update(self):
         for row in self.indemnization:
-            matricula = row[0]
+            matricula = row['Matrícula']
             if type(matricula) != str:
                 matricula = str(matricula)
 
             if matricula in self.remuneration.keys():
 
                 # Verbas Indenizatorias
-                auxilio_saude = clean_cell(row[4])
-                auxilio_doenca = clean_cell(row[5])
-                auxilio_moradia= clean_cell(row[6])
-                auxilio_alimentacao = clean_cell(row[7])
-                licenca_premio = clean_cell(row[8])
-                ferias_indenizadas = clean_cell(row[9])
+                auxilio_saude = clean_cell(row['Auxílio_Saúde'])
+                auxilio_doenca = clean_cell(row['Auxílio_Doença'])
+                auxilio_moradia= clean_cell(row['Auxílio_Moradia'])
+                auxilio_alimentacao = clean_cell(row['Auxílio_Alimentação'])
+                licenca_premio = clean_cell(row['Licença_Prêmio'])
+                ferias_indenizadas = clean_cell(row['Indenização_de_Férias'])
 
-                abono_pecuniario = clean_cell(row[10])
-                resseco_administrativo = clean_cell(row[11])
-                dif_indenizada = clean_cell(row[12])
-                plantao_indenizado = clean_cell(row[13])
+                abono_pecuniario = clean_cell(row['Abono_Pecuniário'])
+                resseco_administrativo = clean_cell(row['Recesso_Administrativo'])
+                dif_indenizada = clean_cell(row['Diferença_Indenizada'])
+                plantao_indenizado = clean_cell(row['Plantão_indenizado'])
 
                 # Remunerações Temporárias
-                substituicao = clean_cell(row[15])
-                hora_extra = clean_cell(row[16])
-                plantao = clean_cell(row[17])
-                dif_recebimentos = clean_cell(row[18])
-                cumulacao = clean_cell(row[19])
-                devolucoes_descontos = clean_cell(row[20])
+                substituicao = clean_cell(row['Substituição'])
+                hora_extra = clean_cell(row['Hora-Extra'])
+                plantao = clean_cell(row['Plantão'])
+                dif_recebimentos = clean_cell(row['Diferença_de_Recebimentos'])
+                cumulacao = clean_cell(row['Cumulação'])
+                devolucoes_descontos = clean_cell(row['Devoluções_de_Desconto'])
 
-                gratificacoes = clean_cell(row[21])
+                gratificacoes = clean_cell(row['Gratificações'])
                 
                 total_temporario = (  
                     auxilio_doenca
