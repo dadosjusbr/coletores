@@ -14,7 +14,7 @@ def openCsv(file):
 
 def openXls(file):
     try:
-        data = pd.read_excel(file, engine='xlrd', ignore_workbook_corruption=True).to_numpy()
+        data = pd.read_excel(file, engine='xlrd').to_numpy()
         return data
     except Exception as excep:
         sys.stderr.write(f"Não foi possível ler o arquivo: {file}. O seguinte erro foi gerado: {str(excep)}")
