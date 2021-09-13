@@ -7,9 +7,7 @@ class UpdateRemuneration:
         self.indemnization = indemnization
 
     def update(self):
-
         for row in self.indemnization:
-
             matricula = row[0]
             if type(matricula) != str:
                 matricula = str(matricula)

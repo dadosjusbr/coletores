@@ -12,9 +12,9 @@ def openCsv(file):
         sys.stderr.write(f"Não foi possível ler o arquivo: {file}. O seguinte erro foi gerado: {str(excep)}")
         os._exit(1)
 
-def openOds(file):
+def openXls(file):
     try:
-        data = pd.read_excel(file)
+        data = pd.read_excel(file, engine='xlrd', ignore_workbook_corruption=True).to_numpy()
         return data
     except Exception as excep:
         sys.stderr.write(f"Não foi possível ler o arquivo: {file}. O seguinte erro foi gerado: {str(excep)}")
@@ -22,7 +22,7 @@ def openOds(file):
 
 def parse(data):
     remuneration = openCsv(data[0])
-    indemnization = openOds(data[1])
+    indemnization = openXls(data[1])
     employes_remuneration = Remuneration(remuneration).parser()
     employes_update = UpdateRemuneration(employes_remuneration, indemnization).update()
     return list(employes_update.values())

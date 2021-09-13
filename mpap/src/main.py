@@ -37,8 +37,6 @@ current_month = now.month
 
 def main():
     file_names = crawler.crawl(month, year, driver_path, output_path)
-    # file_names = ["./output/2020-05-remuneracao-membros-ativos.csv",
-    # "./output/2020-05-verbas-indenizatorias-membros-ativos.xls"]
     employees = parse(file_names)
     cr = {
         'aid': 'mpro',
