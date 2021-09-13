@@ -1,6 +1,7 @@
 import pandas as pd
 import sys, os
 from parser_remuneration import Remuneration
+from update_remuneration import UpdateRemuneration
 # import update_remuneration
 
 def openCsv(file):
@@ -21,8 +22,7 @@ def openOds(file):
 
 def parse(data):
     remuneration = openCsv(data[0])
-    # indemnization = openOds(data[1])
+    indemnization = openOds(data[1])
     employes_remuneration = Remuneration(remuneration).parser()
-    return list(employes_remuneration.values())
-    # employes_update = update_remuneration.update(employes_remuneration, indemnization)
-    # return list(employes_update.values())
+    employes_update = UpdateRemuneration(employes_remuneration, indemnization).update()
+    return list(employes_update.values())
