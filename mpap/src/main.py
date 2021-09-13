@@ -36,9 +36,7 @@ current_year = now.year
 current_month = now.month
 
 def main():
-    # file_names = crawler.crawl(month, year, driver_path, output_path)
-    file_names = ['./output/2020-05-remuneracao-membros-ativos.csv',
-               './output/2020-05-verbas-indenizatorias-membros-ativos.csv']
+    file_names = crawler.crawl(month, year, driver_path, output_path)
     employees = parse(file_names)
     cr = {
         'aid': 'mpro',
@@ -53,8 +51,6 @@ def main():
         # https://hackernoon.com/today-i-learned-dealing-with-json-datetime-when-unmarshal-in-golang-4b281444fb67
         'timestamp': now.astimezone().replace(microsecond=0).isoformat(),
     }
-    with open(f'./src/json/{month}-{year}.json', 'w') as fp:
-        json.dump(cr, fp, indent=2, separators=(',', ': '), ensure_ascii=False)
     print(json.dumps({'cr': cr}, ensure_ascii=False))
 
 if __name__ == '__main__':
