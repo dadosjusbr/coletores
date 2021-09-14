@@ -21,14 +21,14 @@ def crawl(month, year, driver_path, output_path):
     # Carrega a pagina de remuneração
     driver.get(BASE_URL_MEMBROS_ATIVOS)
     sleep(5)
-    download(month, year, driver)
+    select_month_and_year(month, year, driver)
     file_path = download_remuneracao(driver, output_path, month, year)
     files.append(file_path)
 
     # Carrega a pagina de verbas indenizatorias
     driver.get(BASE_URL_VERBAS_INDENIZATORIAS)
     sleep(5)
-    download(month, year, driver)
+    select_month_and_year(month, year, driver)
     file_path = download_indenizacao(driver, output_path, month, year)
     files.append(file_path)
 
@@ -36,7 +36,7 @@ def crawl(month, year, driver_path, output_path):
     return files
 
 
-def download(month, year, driver):
+def select_month_and_year(month, year, driver):
     # Como o id de ano muda nas páginas, usei o try except para se der erro em um é o outro.
     try:
         current_year = driver.find_element(By.XPATH, '//*[@id="ano"]')
