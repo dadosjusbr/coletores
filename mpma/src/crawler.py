@@ -77,7 +77,7 @@ class Crawler:
         # Attributing the paths to the webdriver
         prefs = {"download.default_directory": output_path}
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-setuid-sandbox')
         chrome_options.add_experimental_option("prefs", prefs)

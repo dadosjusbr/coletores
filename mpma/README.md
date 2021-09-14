@@ -1,11 +1,3 @@
-# Links:
-- Contracheque:
-    - https://www.mpma.mp.br/index.php/contracheque
-- Remuneração:
-    - https://folha.mpma.mp.br/transparencia/membrosativos/
-- Verbas indenizatórias:
-    - https://folha.mpma.mp.br/transparencia/remuneracoestemporarias/
-
 # Ministério Público do Maranhão(MPMA)
 
 Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos de funcionários a partir do Ministério Público de Rondônia. O site com as informações pode ser acessado [aqui](https://www.mpma.mp.br/index.php/contracheque).
