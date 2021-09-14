@@ -1,6 +1,5 @@
 import pathlib
 import os
-import sys
 from time import sleep
 import shutil
 from selenium import webdriver
