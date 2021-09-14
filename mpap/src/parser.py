@@ -2,7 +2,6 @@ import pandas as pd
 import sys, os
 from parser_remuneration import Remuneration
 from update_remuneration import UpdateRemuneration
-# import update_remuneration
 
 def openCsv(file):
     try:
