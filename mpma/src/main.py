@@ -1,6 +1,6 @@
 import sys
 import os
-from crawler import Crawler
+import crawler
 import json
 import datetime
 
@@ -35,8 +35,7 @@ current_year = now.year
 current_month = now.month
 
 def main():
-    file_names = Crawler(month, year, driver_path, output_path).crawl()
-    print(file_names)
+    crawler.crawl(month, year, driver_path, output_path)
     
 if __name__ == '__main__':
     main()
