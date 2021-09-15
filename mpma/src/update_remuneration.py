@@ -1,97 +1,78 @@
 from table import clean_cell
 
 
-class UpdateRemuneration:
-    def __init__(self, remuneration, indemnization):
-        self.remuneration = remuneration
-        self.indemnization = indemnization
+def update(remuneration, indemnization):
+    for row in indemnization:
+        matricula = row[0]
+        if type(matricula) != str:
+            matricula = str(matricula)
 
-    def update(self):
-        for i,row in self.indemnization.iterrows():
-            matricula = row['Matrícula']
-            if type(matricula) != str:
-                matricula = str(matricula)
+        if matricula in remuneration.keys():
 
-            if matricula in self.remuneration.keys():
+            # Verbas Indenizatorias
+            # Nessa tabela juntaram vários valores em uma coluna
+            ajuda_custo = clean_cell(row[4])
+            auxilio_saude = clean_cell(row[5])
+            auxilio_alimentacao = clean_cell(row[6])
+            licenca_premio = clean_cell(row[8])
+            inden_conv_ferias_em_pecunia = clean_cell(row[9])
 
-                # Verbas Indenizatorias
-                auxilio_saude = clean_cell(row['Auxílio_Saúde'])
-                auxilio_doenca = clean_cell(row['Auxílio_Doença'])
-                auxilio_moradia= clean_cell(row['Auxílio_Moradia'])
-                auxilio_alimentacao = clean_cell(row['Auxílio_Alimentação'])
-                licenca_premio = clean_cell(row['Licença_Prêmio'])
-                ferias_indenizadas = clean_cell(row['Indenização_de_Férias'])
+            dif_inden_conv_pec_lic_comp_subs_cumul_membro = clean_cell(row[7])
+            inden_conv_pec_lic_compensatoria_subs_cumul_membro = clean_cell(row[10])
 
-                abono_pecuniario = clean_cell(row['Abono_Pecuniário'])
-                resseco_administrativo = clean_cell(row['Recesso_Administrativo'])
-                dif_indenizada = clean_cell(row['Diferença_Indenizada'])
-                plantao_indenizado = clean_cell(row['Plantão_indenizado'])
+            # Remunerações Temporárias
+            dif_abono_permanencia = clean_cell(row[13])
+            dif_direcao_promotoria = clean_cell(row[14])
+            dif_gratificacao_por_funcao_ministerio_publico = clean_cell(row[15])
+            dif_resp_direcao_promotoria = clean_cell(row[16])
+            direcao_promotoria = clean_cell(row[17])
+            resp_direcao_promotoria = clean_cell(row[18])
 
-                # Remunerações Temporárias
-                substituicao = clean_cell(row['Substituição'])
-                hora_extra = clean_cell(row['Hora-Extra'])
-                plantao = clean_cell(row['Plantão'])
-                dif_recebimentos = clean_cell(row['Diferença_de_Recebimentos'])
-                cumulacao = clean_cell(row['Cumulação'])
-                devolucoes_descontos = clean_cell(row['Devoluções_de_Desconto'])
+            total_temporario = round(
+                dif_inden_conv_pec_lic_comp_subs_cumul_membro
+                + inden_conv_pec_lic_compensatoria_subs_cumul_membro
+                + dif_abono_permanencia 
+                + dif_direcao_promotoria
+                + dif_gratificacao_por_funcao_ministerio_publico 
+                + dif_resp_direcao_promotoria 
+                + direcao_promotoria 
+                + resp_direcao_promotoria, 2
+            )
 
-                gratificacoes = clean_cell(row['Gratificações'])
-                
-                total_temporario = (  
-                    auxilio_doenca
-                    + abono_pecuniario
-                    + resseco_administrativo
-                    + dif_indenizada
-                    + plantao_indenizado
-                    + substituicao
-                    + hora_extra
-                    + plantao
-                    + dif_recebimentos
-                    + cumulacao
-                    + devolucoes_descontos
-                )
+            emp = remuneration[matricula]
 
-                emp = self.remuneration[matricula]
+            emp["income"]["perks"].update(
+                {
+                    "Food": auxilio_alimentacao,
+                    "Health": auxilio_saude,
+                    "Subsistence": ajuda_custo,
+                    "VacationPecuniary": inden_conv_ferias_em_pecunia,
+                    "PremiumLicensePecuniary": licenca_premio,
+                }
+            )
 
-                emp["income"]["perks"].update(
-                    {
-                        "Food": auxilio_alimentacao,
-                        "Health": auxilio_saude,
-                        "Vacation": ferias_indenizadas,
-                        "HousingAid": auxilio_moradia,
-                        "PremiumLicensePecuniary": licenca_premio,
-                    }
-                )
+            emp["income"]["other"]["others"].update(
+                {
+                    "Dif. Inden. Conv. Pec. Lic. Comp. Subs. Cumul. Membro": dif_inden_conv_pec_lic_comp_subs_cumul_membro,
+                    "Inden. Conv. Pec. Lic. Compensatoria Subs. Cumul. Membro": inden_conv_pec_lic_compensatoria_subs_cumul_membro,
+                    "Dif. Abono de Permanência": dif_abono_permanencia,
+                    "Dif. Direção de Promotoria": dif_direcao_promotoria,
+                    "Dif. Gratificação por Função Mininistério Público": dif_gratificacao_por_funcao_ministerio_publico,
+                    "Dif. RESP. Direção de Promotorias": dif_resp_direcao_promotoria,
+                    "Direção de Promotoria": direcao_promotoria,
+                    "RESP. Direção de Promotorias": resp_direcao_promotoria,
+                }
+            )
 
-                emp["income"]["other"]["others"].update(
-                    {
-                        "Abono Pecuniário": abono_pecuniario,
-                        "Auxílio Doença": auxilio_doenca,
-                        "Recesso Administrativo": resseco_administrativo,
-                        "Diferença Indenizada": dif_indenizada,
-                        "Plantão indenizado": plantao_indenizado,
-                        "Substituição": substituicao,
-                        "Hora-Extra": hora_extra,
-                        "Plantão": plantao,
-                        "Diferença de Recebimentos": dif_recebimentos,
-                        "Cumulação": cumulacao,
-                        "Devoluções de Descontos": devolucoes_descontos,
-                    }
-                )
+            emp["income"]["other"].update(
+                {
+                    "others_total": round(
+                        emp["income"]["other"]["others_total"] +
+                        total_temporario, 2
+                    )
+                }
+            )
 
-                emp["income"]["other"].update(
-                    {
-                        "others_total": round(
-                            emp["income"]["other"]["others_total"] +
-                            total_temporario, 2
-                        ),
-                        "gratification": gratificacoes,
-                        "total": round(
-                            emp["income"]["other"]["total"] + total_temporario + gratificacoes, 2
-                        )
-                    }
-                )
+            remuneration[matricula] = emp
 
-                self.remuneration[matricula] = emp
-
-        return self.remuneration
+    return remuneration

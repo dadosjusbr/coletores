@@ -1,11 +1,9 @@
 from table import clean_cell
 
 
-
 def parse(data):
     employees = {}
     for row in data:
-
         matricula = row[0]
 
         if type(matricula) != str:
@@ -39,16 +37,16 @@ def parse(data):
         teto_constitucional = abs(clean_cell(row[15]))
         total_desconto = previdencia + teto_constitucional + imp_renda
 
-        total_gratificacoes = (
+        total_gratificacoes = round(
             grat_natalina
             + permanencia
             + confianca_comissao
-            + ferias
+            + ferias, 2
         )
 
-        total_bruto = remuneracao_cargo_efetivo + \
+        total_bruto = round(remuneracao_cargo_efetivo + \
             outras_verbas_remuneratorias + outras_remuneracoes_temporarias \
-            + total_indenizacao + total_gratificacoes
+            + total_indenizacao + total_gratificacoes, 2)
 
         campos = {
             'matricula': matricula,

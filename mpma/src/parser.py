@@ -1,27 +1,28 @@
 import pandas as pd
 import sys
 import os
-from parser_remuneration import parse
-from update_remuneration import UpdateRemuneration
+import parser_remuneration 
+import update_remuneration
+import table
 
-
-def openHTML(file):
+def read_html(path):
     try:
-        data = pd.read_html(file)
-        data = data[0].to_numpy()
+        data = pd.read_html(path,decimal=',')
+        data = data[0]
         return data
+
     except Exception as excep:
-        print(
-            f"Não foi possível ler o arquivo: {file}. O seguinte erro foi gerado: {str(excep)}")
+        print(f'Não foi possível ler o arquivo: {path}. O seguinte erro foi gerado: {str(excep)}')
         os._exit(1)
 
-
 def parse(data):
-    remuneration = openHTML(data[0])
-    # for row in rows:
-    #     print(row)
+    remuneration = read_html(data[0])
+    indemnization = read_html(data[1])
+    #Parsing data
+    remuneration = remuneration.to_numpy()
+    indemnization = indemnization.to_numpy()
 
-    # indemnization = openHTML(data[1])
-    employes_remuneration = parse(remuneration)
-    # employes_update = UpdateRemuneration(employes_remuneration, indemnization).update()
-    return list(employes_remuneration.values())
+    employes_remuneration = parser_remuneration.parse(remuneration)
+    employes_update = update_remuneration.update(employes_remuneration, indemnization)
+    return list(employes_update.values())
+    
