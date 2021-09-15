@@ -7,7 +7,7 @@ import table
 
 def read_html(path):
     try:
-        data = pd.read_html(path,decimal=',')
+        data = pd.read_html(path,decimal=',') # Coloca uma vírgula nas casas decimais
         data = data[0]
         return data
 

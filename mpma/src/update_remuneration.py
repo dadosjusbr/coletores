@@ -69,6 +69,10 @@ def update(remuneration, indemnization):
                     "others_total": round(
                         emp["income"]["other"]["others_total"] +
                         total_temporario, 2
+                    ),
+                    "total": round(
+                        emp["income"]["other"]["total"] +
+                        total_temporario, 2
                     )
                 }
             )

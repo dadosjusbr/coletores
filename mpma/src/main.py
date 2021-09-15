@@ -36,9 +36,9 @@ current_year = now.year
 current_month = now.month
 
 def main():
-    # file_names = crawl(month, year, driver_path, output_path)
-    file_names = ['./output/07-2020-remuneracao-membros-ativos.html',
-                './output/07-2020-verbas-indenizatorias-membros-ativos.html']
+    file_names = crawl(month, year, driver_path, output_path)
+    # file_names = ['./output/07-2020-remuneracao-membros-ativos.html',
+    #             './output/07-2020-verbas-indenizatorias-membros-ativos.html']
     employees = parse(file_names)
     cr = {
         'aid': 'mpro',
