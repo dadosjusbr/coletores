@@ -1,7 +1,7 @@
 import pandas as pd
 import sys, os
-from parser_remuneration import Remuneration
-from update_remuneration import UpdateRemuneration
+import parser_remuneration
+import update_remuneration
 
 def openCsv(file):
     try:
@@ -14,6 +14,6 @@ def openCsv(file):
 def parse(data):
     remuneration = openCsv(data[0])
     indemnization = openCsv(data[1])
-    employes_remuneration = Remuneration(remuneration).parser()
-    employes_update = UpdateRemuneration(employes_remuneration, indemnization).update()
+    employes_remuneration = parser_remuneration.parse(remuneration)
+    employes_update = update_remuneration.update(employes_remuneration, indemnization)
     return list(employes_update.values())
