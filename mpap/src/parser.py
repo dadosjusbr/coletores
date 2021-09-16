@@ -11,9 +11,11 @@ def openCsv(file):
         sys.stderr.write(f"Não foi possível ler o arquivo: {file}. O seguinte erro foi gerado: {str(excep)}")
         os._exit(1)
 
-def parse(data):
+def parse(data, year):
     remuneration = openCsv(data[0])
-    indemnization = openCsv(data[1])
     employes_remuneration = parser_remuneration.parse(remuneration)
+    if year == '2018':
+        return list(employes_remuneration.values())
+    indemnization = openCsv(data[1])
     employes_update = update_remuneration.update(employes_remuneration, indemnization)
     return list(employes_update.values())
