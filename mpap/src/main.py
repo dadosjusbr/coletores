@@ -37,7 +37,7 @@ current_month = now.month
 
 def main():
     file_names = crawler.crawl(month, year, driver_path, output_path)
-    employees = parse(file_names)
+    employees = parse(file_names, year)
     cr = {
         'aid': 'mpro',
         'month': int(month),

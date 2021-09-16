@@ -26,11 +26,12 @@ def crawl(month, year, driver_path, output_path):
     files.append(file_path)
 
     # Carrega a pagina de verbas indenizatorias
-    driver.get(BASE_URL_VERBAS_INDENIZATORIAS)
-    sleep(5)
-    select_month_and_year(month, year, driver)
-    file_path = download_indenizacao(driver, output_path, month, year)
-    files.append(file_path)
+    if year != '2018':
+        driver.get(BASE_URL_VERBAS_INDENIZATORIAS)
+        sleep(5)
+        select_month_and_year(month, year, driver)
+        file_path = download_indenizacao(driver, output_path, month, year)
+        files.append(file_path)
 
     driver.quit()
     return files
