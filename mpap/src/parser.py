@@ -13,9 +13,11 @@ def openCsv(file):
 
 def parse(data, year):
     remuneration = openCsv(data[0])
-    employes_remuneration = parser_remuneration.parse(remuneration)
     if year == '2018':
+        employes_remuneration = parser_remuneration.parse(remuneration, True)
         return list(employes_remuneration.values())
+        
+    employes_remuneration = parser_remuneration.parse(remuneration)
     indemnization = openCsv(data[1])
     employes_update = update_remuneration.update(employes_remuneration, indemnization)
     return list(employes_update.values())
