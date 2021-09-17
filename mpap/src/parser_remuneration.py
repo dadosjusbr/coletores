@@ -1,7 +1,7 @@
 from table import clean_cell
 
 
-def parse( data):
+def parse(data, no_budge_sheets=False):
     employees = {}
     for i, row in data.iterrows():
 
@@ -74,7 +74,17 @@ def parse( data):
         }
 
         employees[matricula] = table(campos)
-
+        if no_budge_sheets:
+            employees[matricula]['income']['other'].update(
+                {
+                    "eventual_benefits": outras_remuneracoes_temporarias,
+                }
+            )
+            employees[matricula]['income']['other'].update(
+                {
+                    'total': employees[matricula]['income']['other']['total'] + outras_remuneracoes_temporarias
+                }
+            )
     return employees
 
 def table(campos):
