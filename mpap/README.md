@@ -1,10 +1,10 @@
 # Ministério Público do Amapá (MPAP)
 
-Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos de funcionários a partir do Ministério Público de Rondônia. O site com as informações pode ser acessado [aqui](https://www.mpap.mp.br/transparencia/index.php?pg=painel_contracheque).
+Este coletor tem como objetivo a recuperação de informações sobre folhas de pagamentos de funcionários a partir do Ministério Público do Amapá. O site com as informações pode ser acessado [aqui](https://www.mpap.mp.br/transparencia/index.php?pg=painel_contracheque).
 
-O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O órgão e o caminho para o diretório do chromedriver, e serão baixadas duas planilhas no formato html e xls, cada planilha é referente a uma destas categorias:
+O crawler está estruturado como uma CLI. Você deve passar quatro argumentos, sendo o de download opcional: O caminho para o diretório do chromedriver, o caminho de download da planilha, o mês e o ano, e será gerada duas planilhas no formato `.csv`, cada planilha é referente a uma destas categorias:
+
 1. Contracheque - Membros Ativos
-
    |Campo|Descrição|
    |-----|---------|
    |Matricula|Código funcional do membro.|
@@ -31,47 +31,48 @@ O crawler está estruturado como uma CLI. Você deve passar dois argumentos: O �
    |-|-|
    |VERBAS INDENIZATÓRIAS|Auxílio-alimentação, Auxílio-transporte, Auxílio-moradia, Ajuda de Custo e outras despesas desa natureza, exceto diárias, que serão divulgadas discriminadamente de forma individualizada na consulta de Diárias e Passagens.|
    |OUTRAS REMUNERAÇÕES TEMPORÁRIAS|VValores pagos a título de Adicional de Insalubridade ou de Periculosidade, Adicional Noturno, Serviço Extraordinário, Substituição de Função, Cumulações.|
-Estas planilhas contém as informações de pagamento de todos os meses disponíveis, a fim de gerar os *crawling results* de cada mês.
+Estas planilhas contém as informações de pagamento do mês que foi passado como parâmetro, a fim de gerar os *crawling results* de cada mês.
 
 ## Como usar
+> Remova o sifrão "$".
 ### Executando com Docker
-
+Para executar com o docker não é necessário passar a pasta de download via parâmetro. 
  - Inicialmente é preciso instalar o [Docker](https://docs.docker.com/install/). 
 
  - Construção da imagem:
 
     ```sh
     $ cd coletores/mpap
-    $ sudo docker build -t mpap .
+    $ docker build -t mpap .
     ```
  - Execução:
  
     ```sh
-    $ sudo docker run -e YEAR=2020 -e MONTH=2 -e DRIVER_PATH=/chromedriver -e GIT_COMMIT=$(git rev-list -1 HEAD) mpap
+    $ docker run -e YEAR=2020 -e MONTH=2 -e DRIVER_PATH=/chromedriver -e GIT_COMMIT=$(git rev-list -1 HEAD) mpap
     ```
 ### Execução sem o Docker:
 
 - Para executar o script é necessário rodar o seguinte comando, a partir do diretório `/mpap`, adicionando às variáveis seus respectivos valores, a depender da consulta desejada. É válido lembrar que faz-se necessario ter o [Python 3.6.9](https://www.python.org/downloads/) instalado, bem como o chromedriver compatível com a versão do seu Google Chrome. Ele pode ser baixado [aqui](https://chromedriver.chromium.org/downloads).
 
     ```sh
-    MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver OUTPUT_FOLDER="Local de Download" GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
+    $ MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver OUTPUT_FOLDER="Local de Download" GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
     ```
 - Para que a execução do script possa ser corretamente executada é necessário que todos os requirements sejam devidamente instalados. Para isso, executar o [PIP](https://pip.pypa.io/en/stable/installing/) passando o arquivo requiments.txt, por meio do seguinte comando:
 
    ```sh
-   pip install -r requirements.txt
+   $ pip install -r requirements.txt
    ```
 ### Execução rápida com o Python:
 Para configurar de maneira mais rápida o python, pip, chromedriver e o requirements.txt, use o `config.sh` dentro do diretório `/mpap`:
 - Primeiro de permissão para executar:
    ```sh
-   chmod +x config.sh
+   $ chmod +x config.sh
    ```
 - Rode com:
    ```sh
-   ./config.sh
+   $ ./config.sh
    ```
-- Depois use o comando para iniciar o coletor:
+- Depois use o comando abaixo para iniciar o coletor:
    ```sh
-   MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver OUTPUT_FOLDER="Local de Download" GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
+   $ MONTH=1 YEAR=2018 DRIVER_PATH=/chromedriver OUTPUT_FOLDER="Local de Download" GIT_COMMIT=$(git rev-list -1 HEAD) python3 src/main.py
    ```
