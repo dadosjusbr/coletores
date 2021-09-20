@@ -49,5 +49,8 @@ def crawl(year, month, output_path):
         file_path = f'{output_path}/{file_name}'
         download(url_generated, file_path)
         files.append(file_path)
+        # Os meses que se encaixam abaixo não tem planilha de verbas remuneratorias
+        if year == '2018' or (year == '2019' and int(month) <=6):
+            break
 
     return files
