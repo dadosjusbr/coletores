@@ -62,7 +62,7 @@ Para executar com o docker não é necessário passar a pasta de download via pa
    ```sh
    $ pip install -r requirements.txt
    ```
-### Execução rápida com o Python:
+### Execução rápida com o Python (Caso use Ubuntu ou derivadas):
 Para configurar de maneira mais rápida o python, pip e o requirements.txt, use o `config.sh` dentro do diretório `/mpmt`:
 - Primeiro de permissão para executar:
    ```sh
