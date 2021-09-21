@@ -23,11 +23,27 @@ def update(remuneration, indemnization):
             # Remunerações Temporárias
             dif_abono_permanencia = clean_cell(row[13])
             dif_direcao_promotoria = clean_cell(row[14])
-            dif_gratificacao_por_funcao_ministerio_publico = clean_cell(row[15])
-            dif_resp_direcao_promotoria = clean_cell(row[16])
-            direcao_promotoria = clean_cell(row[17])
-            resp_direcao_promotoria = clean_cell(row[18])
 
+            try:
+                dif_gratificacao_por_funcao_ministerio_publico = clean_cell(row[15])
+            except:
+                dif_gratificacao_por_funcao_ministerio_publico = 0.0
+
+            try:
+                dif_resp_direcao_promotoria = clean_cell(row[16])
+            except:
+                dif_resp_direcao_promotoria =  0.0
+
+            try:
+                direcao_promotoria = clean_cell(row[17])
+            except:
+                direcao_promotoria = 0.0
+            
+            try:
+                resp_direcao_promotoria = clean_cell(row[18])
+            except:
+                resp_direcao_promotoria = 0.0
+                
             total_temporario = round(
                 dif_inden_conv_pec_lic_comp_subs_cumul_membro
                 + inden_conv_pec_lic_compensatoria_subs_cumul_membro

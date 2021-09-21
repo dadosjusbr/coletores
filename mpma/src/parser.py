@@ -1,9 +1,7 @@
-import pandas as pd
 import sys
-import os
+import pandas as pd
 import parser_remuneration 
 import update_remuneration
-import table
 
 def read_html(path):
     try:
@@ -12,8 +10,7 @@ def read_html(path):
         return data
 
     except Exception as excep:
-        print(f'Não foi possível ler o arquivo: {path}. O seguinte erro foi gerado: {str(excep)}')
-        os._exit(1)
+        sys.exit(f'Não foi possível ler o arquivo: {path}. O seguinte erro foi gerado: {str(excep)}')
 
 def parse(data):
     remuneration = read_html(data[0])
