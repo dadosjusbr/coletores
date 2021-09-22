@@ -33,6 +33,10 @@ O crawler está estruturado como uma CLI. Você deve passar quatro argumentos, s
    |OUTRAS REMUNERAÇÕES TEMPORÁRIAS|Valores pagos a título de Adicional de Insalubridade ou de Periculosidade, Adicional Noturno, Serviço Extraordinário, Substituição de Função, Cumulações.|
 Estas planilhas contém as informações de pagamento do mês que foi passado como parâmetro, a fim de gerar os *crawling results* de cada mês.
 
+## Dificuldades
+- Não ter uma api publica para pegar esses dados, complica muito.
+- Não exite planilhas de verbas indenizatórias de 2018 e até o mês de junho de 2019.
+
 ## Como usar
 > Remova o sifrão "$".
 ### Executando com Docker
