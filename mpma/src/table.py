@@ -11,5 +11,4 @@ def clean_cell(element):
             element = element.replace(".", "").replace(",", ".")       
         elif "." in element:
             element = element.replace(".", "")
-
     return round(float(element),2)

@@ -36,9 +36,10 @@ current_year = now.year
 current_month = now.month
 
 def main():
+
     # file_names = crawl(month, year, driver_path, output_path)
-    file_names = ['./output/01-2018-remuneracao-membros-ativos.html',
-                './output/01-2018-verbas-indenizatorias-membros-ativos.html']
+    file_names = ['./output/05-2021-remuneracao-membros-ativos.html',
+                './output/05-2021-verbas-indenizatorias-membros-ativos.html']
     employees = parse(file_names)
     cr = {
         'aid': 'mpma',
@@ -55,7 +56,7 @@ def main():
     }
     with open(f'./src/json/{year}-{month}.json', 'w') as fp:
             json.dump(cr, fp, indent=4, separators=(',', ': '), ensure_ascii=False)
-    # print(json.dumps({'cr': cr}, ensure_ascii=False))
+    print(json.dumps({'cr': cr}, ensure_ascii=False))
     
 if __name__ == '__main__':
     main()
