@@ -81,9 +81,10 @@ def setup_driver( driver_path, output_path):
 def format_filename( month, year, output_path, flag):
     # Identifying the name of the last downloaded file
     filename = max([os.path.join(output_path, f) for f in os.listdir(output_path)], key=os.path.getctime)
+    new_filename = ''
     # renaming the file properly, according to the month
     new_filename = month + "-" + year + "-" + flag + "-membros-ativos" + ".html"
-    
+
     shutil.move(filename,os.path.join(output_path,r"{}".format(new_filename)))
     new_output_path = output_path + "/" + new_filename
     return new_output_path 
