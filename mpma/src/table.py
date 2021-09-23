@@ -13,3 +13,10 @@ def clean_cell(element):
         elif "." in element:
             element = element.replace(".", "")
     return round(float(element),2)
+
+def test_error(row, value):
+    try:
+        new = clean_cell(row[value])
+    except:
+        return 0.0
+    return new
