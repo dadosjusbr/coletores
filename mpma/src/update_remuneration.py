@@ -70,8 +70,10 @@ def get_values_of_table_csv(row):
         
     }
 
-    total_temporario = generate_total(data)
+    total_temporario = generate_total(data)[0]
     data.update({'total_temporario': total_temporario})
+
+    return data
 
 
 def generate_json(emp, data):
@@ -125,6 +127,7 @@ def generate_json(emp, data):
             )
         }
     )  
+    return emp
 
 
 def update(remuneration, indemnization):
@@ -137,7 +140,7 @@ def update(remuneration, indemnization):
         if matricula in remuneration.keys():
             data = get_values_of_table_csv(row)
             emp = remuneration[matricula]
-            generate_json(emp, data)
-            remuneration[matricula] = emp
+            empr = generate_json(emp, data)
+            remuneration[matricula] = empr
 
     return remuneration
