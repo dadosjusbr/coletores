@@ -35,6 +35,7 @@ def generate_total(data):
 
 
 def get_values_of_table_csv(row):
+    # Nome das colunas, que vem nas tabelas
     data = {
         'ajuda_custo': test_error(row,'Ajuda de custo'),
         'auxilio_saude': test_error(row,'Assistência médico-social (auxílio-saúde) Membro MP'),
@@ -55,7 +56,6 @@ def get_values_of_table_csv(row):
         'inden_conv_pec_lic_compensatoria_subs_cumul_membro': test_error(row,'Inden. Conv. Pec. Lic. Compensatoria Subs. Cumul. Membro'),
         'dif_ress_conv_mestrado_int_direito': test_error(row,'Dif. RESS. Conv. Mestrado Int. Direito MINTER UNDB'),
         'ress_conv_mestrado_int_direito': test_error(row, 'RESS. Conv. Mestrado Int. Direito MINTER UNDB'),
-        # Remunerações Temporárias
         'dif_subsidios': test_error(row,'Dif. Subsídios'),
         'dif_abono_permanencia': test_error(row,'Dif. Abono de Permanência'),
         'direcao_promotoria': test_error(row,'Direção de Promotoria'),
@@ -70,7 +70,7 @@ def get_values_of_table_csv(row):
         
     }
 
-    total_temporario = generate_total(data)[0]
+    total_temporario = generate_total(data)[0] # pego o valor de dentro da tupla
     data.update({'total_temporario': total_temporario})
 
     return data
@@ -132,15 +132,18 @@ def generate_json(emp, data):
 
 def update(remuneration, indemnization):
     df = pd.read_csv(indemnization)
+
     for i, row in df.iterrows():
         matricula = row['Matrícula']
         if type(matricula) != str:
             matricula = str(matricula)
 
         if matricula in remuneration.keys():
+            # Pega os valores da linha, e retorna já convertidos para float
             data = get_values_of_table_csv(row)
             emp = remuneration[matricula]
-            empr = generate_json(emp, data)
-            remuneration[matricula] = empr
+            # Atualiza o json de remunerações
+            employer = generate_json(emp, data)
+            remuneration[matricula] = employer
 
     return remuneration

@@ -14,7 +14,12 @@ def clean_cell(element):
             element = element.replace(".", "")
     return round(float(element),2)
 
+
 def test_error(row, value):
+    """
+        Nesta função, quando der erro de Keyerror, ela vai retornar 0.0, 
+        Caso não der erro retorna o valor formatado
+    """
     try:
         new = clean_cell(row[value])
     except:
