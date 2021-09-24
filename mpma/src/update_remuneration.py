@@ -4,6 +4,7 @@ import sys
 
 
 def generate_total(data):
+    # Faz a soma dos campos que vão dentro do emp["income"]["other"]["others"].
     total_temporario = round(
             data['grat_encargo_curso_concurso']
             + data['ind_licenca_premio_espec_nao_gozada']
@@ -32,7 +33,7 @@ def generate_total(data):
 
 
 def get_values_of_table_csv(row):
-    # Nome das colunas, que vem nas tabelas
+    # Nome das colunas, que vem nas tabelas.
     data = {
         'ajuda_custo': test_error(row,'Ajuda de custo'),
         'auxilio_saude': test_error(row,'Assistência médico-social (auxílio-saúde) Membro MP'),
@@ -68,6 +69,7 @@ def get_values_of_table_csv(row):
     }
 
     total_temporario = generate_total(data)[0] # pego o valor de dentro da tupla
+    # Adiciona total_temporario dentro do data.
     data.update({'total_temporario': total_temporario})
 
     return data
@@ -149,8 +151,8 @@ def update(remuneration, indemnization):
             data = get_values_of_table_csv(row)
             emp = remuneration[matricula]
             # Atualiza o json de remunerações
-            employer = generate_json(emp, data)
-            remuneration[matricula] = employer
+            employees = generate_json(emp, data)
+            remuneration[matricula] = employees
 
     return remuneration
     
