@@ -4,6 +4,7 @@ Versão totalmente de demonstração haha
 
 from table import test_error
 import pandas as pd
+import sys
 
 
 def generate_total(data):
@@ -131,7 +132,11 @@ def generate_json(emp, data):
 
 
 def update(remuneration, indemnization):
-    df = pd.read_csv(indemnization)
+
+    try:
+        df = pd.read_csv(indemnization)
+    except Exception as excpt:
+        sys.exit(str(excpt))
 
     for i, row in df.iterrows():
         matricula = row['Matrícula']
