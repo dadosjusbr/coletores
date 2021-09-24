@@ -132,7 +132,6 @@ def generate_json(emp, data):
 
 
 def update(remuneration, indemnization):
-
     try:
         df = pd.read_csv(indemnization)
     except Exception as excpt:
