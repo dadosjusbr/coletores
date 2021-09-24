@@ -1,7 +1,3 @@
-"""
-Versão totalmente de demonstração haha
-"""
-
 from table import test_error
 import pandas as pd
 import sys
@@ -131,13 +127,19 @@ def generate_json(emp, data):
     return emp
 
 
-def update(remuneration, indemnization):
+def read_doc_csv(indemnization):
     try:
-        df = pd.read_csv(indemnization)
+        data = pd.read_csv(indemnization)
     except Exception as excpt:
         sys.exit(str(excpt))
 
-    for i, row in df.iterrows():
+    return data
+
+
+def update(remuneration, indemnization):
+    data = read_doc_csv(indemnization)
+
+    for i, row in data.iterrows():
         matricula = row['Matrícula']
         if type(matricula) != str:
             matricula = str(matricula)
@@ -151,3 +153,4 @@ def update(remuneration, indemnization):
             remuneration[matricula] = employer
 
     return remuneration
+    

@@ -13,21 +13,24 @@ def read_html(path, head = None):
     except Exception as excep:
         sys.exit(f'Não foi possível ler o arquivo: {path}. O seguinte erro foi gerado: {str(excep)}')
 
+
+def writer_csv_indemnization(output_patch, indemnization):
+    file_csv = open(output_patch, 'w')
+    writer_file_csv = csv.writer(file_csv)
+    writer_file_csv.writerow(indemnization)
+    for row in indemnization.to_numpy():
+        writer_file_csv.writerow(row)
+    file_csv.close()
+
+
 def parse(data):
     remuneration = read_html(data[0])
     indemnization = read_html(data[1], head = 1)
-    output_patch = f'{data[1].replace(".html", "")}.csv'
+    output_patch = data[1].replace('.html', '.csv')
 
-    # f = csv.writer(open(output_patch,'w'))
-    f = open(output_patch, 'w')
-    abre = csv.writer(f)
-    abre.writerow(indemnization)
-    for row in indemnization.to_numpy():
-        abre.writerow(row)
-    f.close()
+    writer_csv_indemnization(output_patch, indemnization)
     
     remuneration = remuneration.to_numpy()
     employes_remuneration = parser_remuneration.parse(remuneration)
     employes_update = update_remuneration.update(employes_remuneration, output_patch)
     return list(employes_update.values())
-    
