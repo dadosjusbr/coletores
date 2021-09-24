@@ -8,9 +8,9 @@ class TestParser(unittest.TestCase):
         expected = {
             "reg": "1070738",
             "name": "AARAO CARLOS LIMA CASTRO",
-            "role": "Promotor de Justiï¿½a de Ent. Intermediï¿½ria",
+            "role": "Promotor de Justiça de Ent. Intermediária",
             "type": "membro",
-            "workplace": "Promotoria de Justiï¿½a da Comarca de Colinas",
+            "workplace": "Promotoria de Justiça da Comarca de Colinas",
             "active": True,
             "income": {
                 "total": 64329.44,
