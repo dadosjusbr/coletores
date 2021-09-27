@@ -78,8 +78,8 @@ def get_values_of_table_csv(row):
 def generate_json(emp, data):
     emp["income"]["perks"].update(
         {
-            "Food": data['auxilio_alimentacao'],
-            "Health": data['auxilio_saude'],
+            "Food": data['auxilio_alimentacao'] + data['dif_auxilio_alimentacao'],
+            "Health": data['auxilio_saude'] + data['dif_auxilio_saude'],
             "Subsistence": data['ajuda_custo'],
             "VacationPecuniary": data['inden_conv_ferias_em_pecunia'],
             "PremiumLicensePecuniary": data['licenca_premio'],
