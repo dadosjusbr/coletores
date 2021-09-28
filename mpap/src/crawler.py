@@ -54,7 +54,7 @@ def select_month_and_year(month, year, driver):
     select_month = Select(current_month)
     # Como os numeros passados quando convertidos para string ficam com um "0" na frente,
     # uso isso para remover, e pegar corretamente o valor da tag.
-    select_month.select_by_value(month.replace('0', ''))
+    select_month.select_by_value(month.replace('0', '') if month != '10' else month)
     sleep(2)
 
     button_enviar = driver.find_element(By.XPATH, '//*[@id="enviar"]')
