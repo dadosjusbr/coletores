@@ -3,7 +3,7 @@ chardet==4.0.0
 defusedxml==0.6.0
 idna==2.10
 lml==0.1.0
-numpy==1.19.5
+numpy==1.21.0
 odfpy==1.4.1
 pyexcel-io==0.6.4
 pyexcel-ods==0.6.0
