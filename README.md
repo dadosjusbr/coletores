@@ -1,4 +1,13 @@
-[![Build Status](https://travis-ci.org/dadosjusbr/coletores.svg?branch=master)](https://travis-ci.org/dadosjusbr/coletores) [![codecov](https://codecov.io/gh/dadosjusbr/coletores/branch/master/graph/badge.svg)](https://codecov.io/gh/dadosjusbr/coletores) [![Go Report Card](https://goreportcard.com/badge/github.com/dadosjusbr/coletores)](https://goreportcard.com/report/github.com/dadosjusbr/coletores)
+:warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
+
+Este repositório está **depreciado** e serve apenas para consulta histórica. Os coletores atuais podem ser encontrados [aqui](https://github.com/orgs/dadosjusbr/repositories?q=coletor-&type=all&language=&sort=name).
+
+:warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
+
+
+-------------------
+
+
 
 # Coletores
 
