@@ -1,10 +1,27 @@
-# Criando um um coletor de remunerações do sistema justiça
+# Criando um coletor de remunerações do sistema justiça
 
-Na nomenclatura do DadosJusBR, um coletor (_crawler_) de remunerações é responsável por duas tarefas: baixar os dados do site oficial do órgão e convertê-los para o formato padronizado de [resultado de coleta](https://github.com/dadosjusbr/storage/blob/master/agency.go#L27) (_crawling result_). Para facilitar o processo de revisão, aconselhamos que separe a automação do download dos arquivos (*Craw*) e da tradução (*parsing*) em dois [PRs](https://help.github.com/pt/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), sendo o segundo aberto depois do primeiro ter sido aprovado. Assim, acreditamos que o processo de revisão fica mais simples e rápido.
+Na nomenclatura do DadosJusBR, um coletor (_crawler_) de remunerações é responsável por duas tarefas: baixar os dados do site oficial do órgão e convertê-los para o formato padronizado de [resultado de coleta](https://github.com/dadosjusbr/storage/blob/master/agency.go#L27) (_crawling result_). 
 
 Outro esclarecimento importante é que buscamos todos os órgãos do *sistema de justiça* e não apenas do Judiciário. Também estamos interessados em órgãos regionais e federais. Isso quer dizer que é do interesse e escopo do projeto libertar remunerações de tribunais (por exemplo, TRF1, TRT13, TREPB e TJPB), Ministérios Públicos (por exemplo, MPF e MPPB), Defensorias e Procuradorias.
 
-Feitos os devidos esclarecimentos preliminares, mãos a obra!
+### Desenvolvimento do Coletor
+
+O primeiro passo para construir o coletor é estudar como o órgão disponibiliza os dados (variáveis, tipo e significado) e a partir dessas informações começar a construir o Readme. Como exemplo, esse [link](https://github.com/dadosjusbr/coletores/blob/master/mprn/Readme.md) pode ser consultado.
+
+Após analisar como os dados estão disponibilizados, começamos a construir o crawler com o objetivo de realizar o download das planilhas. Importante lembrar que:
+- Estamos utilizando as informações referentes às remunerações mensais, verbas indenizatórias e outras remunerações temporárias:
+- No momento estamos analisando apenas as informações referente aos *MEMBROS ATIVOS*;
+- Estamos utilizando os dados a partir de 2018 até o presente momento.
+
+É importante identificar como podemos fazer o download dos dados. Caso mais de um formato seja disponibilizado, opte por um formato aberto (dados no formato tabular é ideal que sejam publicados em formatos abertos como CSV ou ODS pois facilita o acesso e manipulação).
+
+
+Após o desenvolvimento do código que automatiza o download das planilhas, consolidamos essas informações para um [único formato](https://github.com/dadosjusbr/storage/blob/master/agency.go#L27).
+
+
+Para facilitar o processo de revisão, aconselhamos que separe a automação do download dos arquivos (*Craw*) e da tradução (*parsing*) em dois [PRs](https://help.github.com/pt/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request), sendo o segundo aberto depois do primeiro ter sido aprovado. Assim, acreditamos que o processo de revisão fica mais simples e rápido.
+
+Empecilhos encontrado para automatizar o processo de coleta devem estar descritos no README.
 
 ## Design e API
 
@@ -57,3 +74,16 @@ Apesar da definição da API e da utilização de contêiners Docker permitir a 
 - Preciso escrever testes para o coletor?
 
 Sim. Testes são uma peça importantíssima para tentar diminuir a quantidade de defeitos e não seria diferente com coletores no DadosJusBR. Somado a isso, prezamos pela sanidade mental e o tempo das pessoas que gentilmente estão tentando manter as coletas executando mensalmente.
+
+- O que fazer quando um órgão não segue um padrão na forma de disponibilização dos dados? 
+
+Quando o link para download das planilhas não seguem um padrão, isto é, não altera apenas o mês ou ano mas também insere alguns caracteres aleatórios que variam a cada planilha, o processo de automatização do download dos dados se torna mais custoso. É necessario que o crawler contenha todas as variações de links e caso o formato das planilhas também altere, deve-se construir um parser para cada formato. 
+
+- O que precisa conter no Readme?
+
+As variáveis que existem na planilha, bem com, o significado e o tipo. Também deve conter instruções de como executar o código e as dificuldades que foram encontradas no desenvolvimento do coletor.
+
+
+
+
+
